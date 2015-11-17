@@ -12,7 +12,7 @@ program
   .parse(process.argv);
 
 if (!program.suite || !program.env) {
-  program.outputHelp(function (txt) {
+  program.outputHelp((txt) => {
     return colors.red(txt);
   });
   process.exit(1);
