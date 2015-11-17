@@ -7,18 +7,20 @@ const expect = chakram.expect;
 const notificationSchema = require('./notification.schema.json');
 const subscriptionSchema = require('./subscription.schema.json');
 
+const notifyGen = (opts) => new Object({
+  severity: (opts.severity || 'low'),
+  topic: (opts.topic || 'churros-topic'),
+  message: (opts.message || 'this is a test message'),
+  from: (opts.from || 'churros')
+});
+
 describe('notifications and subscriptions APIs', () => {
   const url = '/notifications';
 
   it('should allow creating, retrieving and deleting a notification', () => {
-    const notification = {
-      severity: 'low',
-      topic: 'churros-topic',
-      message: 'this is a test message',
-      from: 'churros'
-    };
+    const n = notifyGen();
 
-    return chakram.post(url, notification)
+    return chakram.post(url, notifyGen())
       .then((r) => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(notificationSchema);
@@ -28,9 +30,9 @@ describe('notifications and subscriptions APIs', () => {
       .then((r) => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(notificationSchema);
-        expect(r.body.severity).to.equal(notification.severity);
-        expect(r.body.topic).to.equal(notification.topic);
-        expect(r.body.message).to.equal(notification.message);
+        expect(r.body.severity).to.equal(n.severity);
+        expect(r.body.topic).to.equal(n.topic);
+        expect(r.body.message).to.equal(n.message);
 
         return chakram.delete(url + '/' + r.body.id);
       })
@@ -40,19 +42,14 @@ describe('notifications and subscriptions APIs', () => {
   });
 
   it('should return one notification when searching for this topic', function () {
-    const randomTopic = 'churros-topic-' + Math.random().toString(36).substring(7);
-    const randomNotification = {
-      message: "this is a test message",
-      from: "churros",
-      severity: "low",
-      topic: randomTopic
-    };
-    return chakram.post(url, randomNotification)
+    const n = notifyGen({topic: 'churros-topic-' + Math.random().toString(36).substring(7)});
+
+    return chakram.post(url, n)
       .then((r) => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(notificationSchema);
 
-        return chakram.get(url + '?topics[]=' + randomTopic);
+        return chakram.get(url + '?topics[]=' + n);
       })
       .then((r) => {
         expect(r).to.have.status(200);
@@ -67,14 +64,9 @@ describe('notifications and subscriptions APIs', () => {
   });
 
   it('should allow acknowledging a notification', function () {
-    const notification = {
-      severity: 'low',
-      topic: 'churros-topic',
-      message: 'this is a test message',
-      from: 'churros'
-    };
+    const n = notifyGen();
 
-    return chakram.post(url, notification)
+    return chakram.post(url, n)
       .then((r) => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(notificationSchema);
@@ -122,12 +114,9 @@ describe('notifications and subscriptions APIs', () => {
   });
 
   it('should throw a 400 if missing fields when creating a notification', function () {
-    const badNotification = {
-      topic: null,
-      message: 'this is a test message',
-      severity: 'low'
-    };
-    return chakram.post(url, badNotification)
+    const n = notifyGen({topic: null});
+
+    return chakram.post(url, n)
       .then((r) => {
         expect(r).to.have.status(400);
       });
