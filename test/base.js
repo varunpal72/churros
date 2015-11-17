@@ -14,12 +14,14 @@ exports.start = function (suite, baseUrl, username, password) {
 
   chakram.post(url, formData, options)
     .then(function (response) {
-      console.log(response);
+      console.log(response.body);
 
       return chakram.get(baseUrl + '/elements/api-v1/ui/getSecrets');
     })
     .then(function (response) {
-      console.log(response);
+      console.log(response.body);
+
+      var credentials = response.body;
 
       chakram.setRequestDefaults({
         baseUrl: baseUrl + '/elements/api-v2',
