@@ -2,9 +2,10 @@ var chakram = require('chakram');
 
 exports.start = function (suite) {
   chakram.setRequestDefaults({
+    // TODO - JJW - setup the base URL and headers dynamically
     baseUrl: 'http://localhost:8080/elements/api-v2',
     headers: {
-      Authorization: 'User H1zrY4pTsfm47b61rCDE44uM79qIjqCrkdeVZ7FCXqQ, Organization c70a6b99e05a0d0ef4a74dc8300ddfec'
+      Authorization: 'User TODO, Organization TODO'
     }
   });
 
