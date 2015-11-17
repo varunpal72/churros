@@ -1,14 +1,34 @@
 var chakram = require('chakram');
+var util = require('util');
 
-exports.start = function (suite) {
-  chakram.setRequestDefaults({
-    // TODO - JJW - setup the base URL and headers dynamically
-    baseUrl: 'http://localhost:8080/elements/api-v2',
-    headers: {
-      Authorization: 'User TODO, Organization TODO'
-    }
-  });
+exports.start = function (suite, baseUrl, username, password) {
+  var url = baseUrl + '/elements/j_spring_security_check';
+  var formData = {
+    j_username: username,
+    j_password: password
+  };
 
-  // run the specified suite
-  require('./' + suite);
+  var options = {
+    form: formData
+  };
+
+  chakram.post(url, formData, options)
+    .then(function (response) {
+      console.log(response);
+
+      return chakram.get(baseUrl + '/elements/api-v1/ui/getSecrets');
+    })
+    .then(function (response) {
+      console.log(response);
+
+      chakram.setRequestDefaults({
+        baseUrl: baseUrl + '/elements/api-v2',
+        headers: {
+          Authorization: util.format('User %s, Organization %s', credentials.userSecret, credentials.orgSecret)
+        }
+      });
+
+      // run the specified suite
+      require('./' + suite);
+    });
 };
