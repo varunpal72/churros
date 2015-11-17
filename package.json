@@ -1,0 +1,16 @@
+{
+  "name": "churros",
+  "version": "0.0.1",
+  "description": "Test suite for all things soba",
+  "scripts": {
+    "test": "mocha test/runner.js --suite"
+  },
+  "author": "jjwyse",
+  "license": "ISC",
+  "dependencies": {
+    "chakram": "^1.2.1",
+    "commander": "^2.9.0",
+    "mocha": "^2.3.4",
+    "zombie": "^4.2.1"
+  }
+}
