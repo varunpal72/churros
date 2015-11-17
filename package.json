@@ -3,12 +3,13 @@
   "version": "0.0.1",
   "description": "Test suite for all things soba",
   "scripts": {
-    "test": "mocha test/runner.js --suite"
+    "test": "mocha test/all.js --reporter spec --ui bdd"
   },
   "author": "jjwyse",
   "license": "ISC",
   "dependencies": {
     "chakram": "^1.2.1",
+    "colors": "^1.1.2",
     "commander": "^2.9.0",
     "mocha": "^2.3.4",
     "zombie": "^4.2.1"
