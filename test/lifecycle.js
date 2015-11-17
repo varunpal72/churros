@@ -28,7 +28,9 @@ before((done) => {
       chakram.setRequestDefaults({
         baseUrl: baseUrl + '/elements/api-v2',
         headers: {
-          Authorization: util.format('User %s, Organization %s', creds.userSecret, creds.orgSecret)
+          Authorization: util.format('User %s, Organization %s', creds.userSecret, creds.orgSecret),
+          Content-Type: 'application/json',
+          Accept: 'application/json'
         }
       });
     })
