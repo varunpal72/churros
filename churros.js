@@ -1,15 +1,7 @@
-var program = require('commander');
-var colors = require('colors');
-var base = require('./base');
+'use strict';
 
-var environments = {
-  'localhost': 'http://localhost:8080',
-  'local': 'http://localhost:8080',
-  'snapshot': 'https://snapshot.cloud-elements.com',
-  'qa': 'https://qa.cloud-elements.com',
-  'staging': 'https://staging.cloud-elements.com',
-  'prod': 'https://api.cloud-elements.com'
-};
+const program = require('commander');
+const colors = require('colors');
 
 program
   .version('0.0.1')
@@ -25,5 +17,3 @@ if (!program.suite || !program.env) {
   });
   process.exit(1);
 }
-
-base.start(program.suite, environments[program.env], program.user, program.password);
