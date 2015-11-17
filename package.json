@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Test suite for all things soba",
   "scripts": {
-    "test": "mocha test/all.js --reporter spec --ui bdd"
+    "test": "mocha test/all.js --reporter spec --ui bdd --bail"
   },
   "author": "jjwyse",
   "license": "ISC",

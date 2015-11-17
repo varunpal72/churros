@@ -4,8 +4,8 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 
 // load the JSON schemas to validate against
-const notificationSchema = require('./notification.schema.json');
-const subscriptionSchema = require('./subscription.schema.json');
+const notificationSchema = require('../assets/notification.schema.json');
+const subscriptionSchema = require('../assets/subscription.schema.json');
 
 const notifyGen = (opts) => new Object({
   severity: (opts.severity || 'low'),
@@ -20,7 +20,7 @@ describe('notifications and subscriptions APIs', () => {
   it('should allow creating, retrieving and deleting a notification', () => {
     const n = notifyGen();
 
-    return chakram.post(url, notifyGen())
+    return chakram.post(url, n)
       .then((r) => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(notificationSchema);
@@ -41,7 +41,7 @@ describe('notifications and subscriptions APIs', () => {
       });
   });
 
-  it('should return one notification when searching for this topic', function () {
+  it('should return one notification when searching for this topic', () => {
     const n = notifyGen({topic: 'churros-topic-' + Math.random().toString(36).substring(7)});
 
     return chakram.post(url, n)
@@ -63,7 +63,7 @@ describe('notifications and subscriptions APIs', () => {
       });
   });
 
-  it('should allow acknowledging a notification', function () {
+  it('should allow acknowledging a notification', () => {
     const n = notifyGen();
 
     return chakram.post(url, n)
@@ -86,7 +86,7 @@ describe('notifications and subscriptions APIs', () => {
       });
   });
 
-  it('should return an empty array if no notifications are found with the given topic', function () {
+  it('should return an empty array if no notifications are found with the given topic', () => {
     return chakram.get(url + '?topics[]=fake-topic-name')
       .then((r) => {
         expect(r).to.have.status(200);
@@ -94,26 +94,26 @@ describe('notifications and subscriptions APIs', () => {
       });
   });
 
-  it('should throw a 400 if missing search query', function () {
+  it('should throw a 400 if missing search query', () => {
     return chakram.get(url).then((r) => {
       expect(r).to.have.status(400);
     });
   });
 
-  it('should throw a 404 if the notification does not exist', function () {
+  it('should throw a 404 if the notification does not exist', () => {
     return chakram.get(url + '/' + -1).then((r) => {
       expect(r).to.have.status(404);
     });
   });
 
-  it('should throw a 400 if notification JSON is null', function () {
+  it('should throw a 400 if notification JSON is null', () => {
     return chakram.post(url, null)
       .then((r) => {
         expect(r).to.have.status(400);
       });
   });
 
-  it('should throw a 400 if missing fields when creating a notification', function () {
+  it('should throw a 400 if missing fields when creating a notification', () => {
     const n = notifyGen({topic: null});
 
     return chakram.post(url, n)
@@ -122,7 +122,7 @@ describe('notifications and subscriptions APIs', () => {
       });
   });
 
-  it('should allow creating, retrieving and deleting a subscription', function () {
+  it('should allow creating, retrieving and deleting a subscription', () => {
     const subscription = {
       channel: 'webhook',
       topics: ['churros-topic'],
@@ -152,7 +152,7 @@ describe('notifications and subscriptions APIs', () => {
       });
   });
 
-  it('should throw a 400 if an email subscription is missing an email address', function () {
+  it('should throw a 400 if an email subscription is missing an email address', () => {
     const subscriptionUrl = url + '/subscriptions';
     const badSubscription = {
       channel: 'email',
@@ -164,7 +164,7 @@ describe('notifications and subscriptions APIs', () => {
       });
   });
 
-  it('should throw a 404 if the subscription ID does not exist', function () {
+  it('should throw a 404 if the subscription ID does not exist', () => {
     const subscriptionUrl = url + '/subscriptions';
     return chakram.get(subscriptionUrl + '/' + -1).then((r) => {
       expect(r).to.have.status(404);

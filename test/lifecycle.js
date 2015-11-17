@@ -18,7 +18,10 @@ before((done) => {
   const form = {j_username: process.env.CHURROS_USERNAME, j_password: process.env.CHURROS_PASSWORD};
 
   chakram.post(url, form, {form: form})
-    .then(r => chakram.get(baseUrl + '/elements/api-v1/ui/getSecrets'))
+    .then(r => {
+      console.log('Attempting to get user and organization secrets');
+      chakram.get(baseUrl + '/elements/api-v1/ui/getSecrets')
+    })
     .then(r => {
       const creds = r.body;
 
@@ -30,5 +33,8 @@ before((done) => {
       });
     })
     .then(done)
-    .catch(done);
+    .catch(r => {
+      console.log('Error while running tests: ' + r);
+      done();
+    });
 });
