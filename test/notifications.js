@@ -4,8 +4,8 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 
 // load the JSON schemas to validate against
-const notificationSchema = require('./notification.schema.json');
-const subscriptionSchema = require('./subscription.schema.json');
+const notificationSchema = require('../assets/notification.schema.json');
+const subscriptionSchema = require('../assets/subscription.schema.json');
 
 const notifyGen = (opts) => new Object({
   severity: (opts.severity || 'low'),
