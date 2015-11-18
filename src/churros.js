@@ -22,4 +22,5 @@ if (!program.suite || !program.env) {
 process.env.CHURROS_ENVIRONMENT = program.env;
 process.env.CHURROS_USERNAME = program.user;
 process.env.CHURROS_PASSWORD = program.password;
-require('../test/all');
+require('../test/lifecycle');
+require('../test/' + program.suite);
