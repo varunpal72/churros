@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Test suite for all things soba",
   "scripts": {
-    "test": "mocha test/all.js --reporter spec --ui bdd --bail"
+    "test": "mocha test/all.js --reporter spec --ui bdd --bail --timeout 15000"
   },
   "author": "jjwyse",
   "license": "ISC",
@@ -12,6 +12,11 @@
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "mocha": "^2.3.4",
+    "request": "^2.65.0",
     "zombie": "^4.2.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.2.0"
   }
 }
