@@ -4,6 +4,8 @@
 ## setup
 If you don't have `node` and `npm` installed, do that first.
 
+Then, clone this repository and run:
+
 ```bash
 $ npm install
 ```

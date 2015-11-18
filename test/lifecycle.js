@@ -19,9 +19,7 @@ before((done) => {
 
   chakram.post(url, null, { jar: true, form: form })
     .then((r) => {
-      return chakram.get(baseUrl + '/elements/api-v1/ui/getSecrets', {
-        jar: true
-      });
+      return chakram.get(baseUrl + '/elements/api-v1/ui/getSecrets', { jar: true });
     })
     .then((r) => {
       chakram.setRequestDefaults({
