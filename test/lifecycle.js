@@ -2,7 +2,6 @@
 
 const chakram = require('chakram');
 const util = require('util');
-const request = require('request');
 
 const environments = {
   'localhost': 'http://localhost:8080',
@@ -16,19 +15,21 @@ const environments = {
 before((done) => {
   const baseUrl = environments[process.env.CHURROS_ENVIRONMENT];
   const url = baseUrl + '/elements/j_spring_security_check';
-  const form = {j_username: process.env.CHURROS_USERNAME, j_password: process.env.CHURROS_PASSWORD};
+  const form = { j_username: process.env.CHURROS_USERNAME, j_password: process.env.CHURROS_PASSWORD };
 
-  request.post(url, { jar: true, form: form }, (err, response, body) => {
-    request.get(baseUrl + '/elements/api-v1/ui/getSecrets', { jar: true }, (err, response, body) => {
-      const json = JSON.parse(body);
-
+  chakram.post(url, null, { jar: true, form: form })
+    .then((r) => {
+      return chakram.get(baseUrl + '/elements/api-v1/ui/getSecrets', {
+        jar: true
+      });
+    })
+    .then((r) => {
       chakram.setRequestDefaults({
         baseUrl: baseUrl + '/elements/api-v2',
         headers: {
-          Authorization: util.format('User %s, Organization %s', json.user, json.company)
+          Authorization: util.format('User %s, Organization %s', r.body.user, r.body.company)
         }
       });
       done();
     });
-  });
 });
