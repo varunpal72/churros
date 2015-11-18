@@ -1,8 +1,5 @@
-# churros
-
+# churros <sub><sup>| Cloud Elements API testing framework </sup></sub>
 --------------------------------------------------------------------------------
-
-:older-man: API testing framework
 
 ## setup
 If you don't have `node` and `npm` installed, do that first.
