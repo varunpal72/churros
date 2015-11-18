@@ -14,7 +14,6 @@ const environments = {
 };
 
 before((done) => {
-  setTimeout(0);
   const baseUrl = environments[process.env.CHURROS_ENVIRONMENT];
   const url = baseUrl + '/elements/j_spring_security_check';
   const form = {j_username: process.env.CHURROS_USERNAME, j_password: process.env.CHURROS_PASSWORD};
