@@ -17,3 +17,9 @@ if (!program.suite || !program.env) {
   });
   process.exit(1);
 }
+
+// TODO - JJW - build process should set this up a little nicer...need some guidance from rocky and t-mac on best approach
+process.env.CHURROS_ENVIRONMENT = program.env;
+process.env.CHURROS_USERNAME = program.user;
+process.env.CHURROS_PASSWORD = program.password;
+require('../test/all');

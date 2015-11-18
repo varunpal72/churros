@@ -14,10 +14,9 @@ const environments = {
 };
 
 before((done) => {
-  // TODO - JJW
-  const baseUrl = environments['local']; //environments[process.env.CHURROS_ENVIRONMENT];
+  const baseUrl = environments[process.env.CHURROS_ENVIRONMENT];
   const url = baseUrl + '/elements/j_spring_security_check';
-  const form = { j_username: 'system', j_password: 'system' }; //{j_username: process.env.CHURROS_USERNAME, j_password: process.env.CHURROS_PASSWORD};
+  const form = {j_username: process.env.CHURROS_USERNAME, j_password: process.env.CHURROS_PASSWORD};
 
   request.post(url, { jar: true, form: form }, (err, response, body) => {
     request.get(baseUrl + '/elements/api-v1/ui/getSecrets', { jar: true }, (err, response, body) => {
