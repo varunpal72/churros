@@ -8,6 +8,7 @@ Then, clone this repository and run:
 
 ```bash
 $ npm install
+$ npm install --global phantomjs
 ```
 
 ## running
