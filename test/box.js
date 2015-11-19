@@ -1,42 +1,64 @@
 'use strict';
 
-const sleep = require('sleep');
-const Browser = require('zombie');
+const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
+const webdriver = require('selenium-webdriver');
+const url = require('url');
 
 describe('box apis', () => {
   before((done) => {
-    const browser = new Browser();
+    // const browser = new Browser();
+    const apiKey = '52v6ewrxiwxz5fnyzqlu4m5tl73p5i16';
+    const apiSecret = '2DxBFKLon7NSocJLpqFyeU3CBRKmGtmn';
+    const callbackUrl = 'https://P3yGfbuTJYfRMCneIJflFnRPX0FjDj.com';
 
-    var options = {
+    const options = {
       qs: {
-        apiKey: '52v6ewrxiwxz5fnyzqlu4m5tl73p5i16',
-        apiSecret: '2DxBFKLon7NSocJLpqFyeU3CBRKmGtmn',
-        callbackUrl: 'https://P3yGfbuTJYfRMCneIJflFnRPX0FjDj.com'
+        apiKey: apiKey,
+        apiSecret: apiSecret,
+        callbackUrl: callbackUrl
       }
     };
+
     chakram.get('/elements/box/oauth/url', options)
       .then((r) => {
-        var redirect = r.body.oauthUrl;
-        console.log('Redirecting to: ' + redirect);
-        return browser.visit(redirect);
+        var driver = new webdriver.Builder()
+          .withCapabilities(webdriver.Capabilities.firefox())
+          .build()
+
+        driver.get(r.body.oauthUrl);
+        driver.findElement(webdriver.By.name('login')).sendKeys('box@cloud-elements.com');
+        driver.findElement(webdriver.By.name('password')).sendKeys('Cloud3l3m3nts!');
+        driver.findElement(webdriver.By.name('login_submit')).click();
+        driver.findElement(webdriver.By.name('consent_accept')).click();
+        return driver.getCurrentUrl()
       })
       .then((r) => {
-        console.log('Populating box oauth information');
-        browser.fill('login', 'box@cloud-elemenets.com');
-        browser.fill('password', 'Cloud3l3m3nts!');
-        return browser.pressButton('login_submit');
+        const query = url.parse(r, true).query;
+        const instance = {
+          name: 'churros-box-instance',
+          element: {
+            key: 'box'
+          },
+          configuration: {
+            'oauth.api.key': apiKey,
+            'oauth.api.secret': apiSecret,
+            'oauth.callback.url': callbackUrl
+          },
+          providerData: {
+            code: query.code
+          }
+        };
+        return chakram.post('/instances', instance);
       })
       .then((r) => {
-        sleep.sleep(5);
-        console.log('Current url: ' + browser.url);
-        return browser.pressButton('consent_accept_button'); // TODO - JJW - not finding this button
-      })
-      .then((r) => {
-        sleep.sleep(5);
-        console.log('Current url: ' + browser.url);
-        browser.assert.success();
+        chakram.setRequestDefaults({
+          baseUrl: process.env.CHURROS_BASE_URL + '/elements/api-v2',
+          headers: {
+            Authorization: util.format('User %s, Organization %s, Element %s', process.env.CHURROS_USER_SECRET, process.env.CHURROS_ORG_SECRET, r.body.token)
+          }
+        });
         done();
       })
       .catch((r) => {

@@ -22,6 +22,9 @@ before((done) => {
       return chakram.get(baseUrl + '/elements/api-v1/ui/getSecrets', { jar: true });
     })
     .then((r) => {
+      process.env.CHURROS_BASE_URL = baseUrl;
+      process.env.CHURROS_USER_SECRET = r.body.user;
+      process.env.CHURROS_ORG_SECRET = r.body.company;
       chakram.setRequestDefaults({
         baseUrl: baseUrl + '/elements/api-v2',
         headers: {
