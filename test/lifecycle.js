@@ -32,5 +32,9 @@ before((done) => {
         }
       });
       done();
+    })
+    .catch((r) => {
+      console.log('Failed to get user secret: ' + r);
+      done();
     });
 });

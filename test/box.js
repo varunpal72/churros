@@ -8,11 +8,6 @@ const url = require('url');
 
 describe('box apis', () => {
   before((done) => {
-    // const browser = new Browser();
-    //const apiKey = '52v6ewrxiwxz5fnyzqlu4m5tl73p5i16';
-    //const apiSecret = '2DxBFKLon7NSocJLpqFyeU3CBRKmGtmn';
-    //const callbackUrl = 'https://P3yGfbuTJYfRMCneIJflFnRPX0FjDj.com';
-
     const apiKey = 's1bpue2luhqmv8cbrak2slr1g2xgdhkn';
     const apiSecret = '3f1NnMdrdjaYxghrQodcqpkbNHGNXI7u';
     const callbackUrl = 'https://httpbin.org/get';
@@ -26,8 +21,8 @@ describe('box apis', () => {
     };
 
     var driver = new webdriver.Builder()
-                              .forBrowser('phantomjs')
-                              .build()
+      .forBrowser('phantomjs')
+      .build()
 
     chakram.get('/elements/box/oauth/url', options)
       .then((r) => {
