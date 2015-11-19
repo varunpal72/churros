@@ -21,18 +21,18 @@ describe('box apis', () => {
       }
     };
 
+    var driver = new webdriver.Builder()
+                              .forBrowser('firefox')
+                              .build()
+
     chakram.get('/elements/box/oauth/url', options)
       .then((r) => {
-        var driver = new webdriver.Builder()
-          .withCapabilities(webdriver.Capabilities.firefox())
-          .build()
-
         driver.get(r.body.oauthUrl);
         driver.findElement(webdriver.By.name('login')).sendKeys('box@cloud-elements.com');
         driver.findElement(webdriver.By.name('password')).sendKeys('Cloud3l3m3nts!');
         driver.findElement(webdriver.By.name('login_submit')).click();
         driver.findElement(webdriver.By.name('consent_accept')).click();
-        return driver.getCurrentUrl()
+        return driver.getCurrentUrl();
       })
       .then((r) => {
         const query = url.parse(r, true).query;
@@ -59,17 +59,19 @@ describe('box apis', () => {
             Authorization: util.format('User %s, Organization %s, Element %s', process.env.CHURROS_USER_SECRET, process.env.CHURROS_ORG_SECRET, r.body.token)
           }
         });
+        driver.close();
         done();
       })
       .catch((r) => {
         console.log('Error wile trying to OAuth into box: ' + r);
+        driver.close();
         done();
       });
   });
 
   it('should allow listing folder contents', () => {
-    var url = '/hubs/documents/folders/contents';
-    return chakram.get(url + '?path=/').then((r) => {
+    var uri = '/hubs/documents/folders/contents';
+    return chakram.get(uri + '?path=/').then((r) => {
       expect(r).to.have.status(200);
     });
   });
