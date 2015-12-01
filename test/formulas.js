@@ -31,7 +31,7 @@ describe('formulas APIs', () => {
       });
   });
 
-  it('should allow adding and removing schedule trigger to a formula', () => {
+  it('should allow adding and removing "scheduled" trigger to a formula', () => {
     const f = formulaGen({});
 
     var formulaId;
@@ -43,7 +43,7 @@ describe('formulas APIs', () => {
 
         formulaId = r.body.id;
         const t = {
-          type: 'schedule',
+          type: 'scheduled',
           properties: {
             cron: '0 0/15 * 1/1 * ? *'
           }
@@ -70,7 +70,7 @@ describe('formulas APIs', () => {
       });
   });
 
-  it('should not allow an invalid cron for a schedule trigger', () => {
+  it('should not allow an invalid cron for a "scheduled" trigger', () => {
     const f = formulaGen({});
 
     var formulaId;
@@ -82,7 +82,7 @@ describe('formulas APIs', () => {
 
         formulaId = r.body.id;
         const t = {
-          type: 'schedule',
+          type: 'scheduled',
           properties: {
             cron: '0 0/14 * 1/1 * ? *'
           }
