@@ -7,6 +7,7 @@ const webdriver = require('selenium-webdriver');
 const url = require('url');
 
 describe('box apis', () => {
+  var instanceId = 0;
   before((done) => {
     const apiKey = 's1bpue2luhqmv8cbrak2slr1g2xgdhkn';
     const apiSecret = '3f1NnMdrdjaYxghrQodcqpkbNHGNXI7u';
@@ -58,6 +59,7 @@ describe('box apis', () => {
             Authorization: util.format('User %s, Organization %s, Element %s', process.env.CHURROS_USER_SECRET, process.env.CHURROS_ORG_SECRET, r.body.token)
           }
         });
+        instanceId = r.body.id;
         driver.close();
         done();
       })
@@ -73,5 +75,17 @@ describe('box apis', () => {
     return chakram.get(uri + '?path=/').then((r) => {
       expect(r).to.have.status(200);
     });
+  });
+
+  after((done) => {
+    if (!instanceId) {
+      done();
+    }
+
+    var uri = util.format('/instances/%s', instanceId);
+    chakram.delete(uri).then((r) => {
+      expect(r).to.have.status(200);
+      done();
+    })
   });
 });
