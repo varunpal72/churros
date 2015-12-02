@@ -97,4 +97,40 @@ describe('formulas APIs', () => {
         expect(r).to.have.status(200);
       });
   });
+
+  it('should not allow creating an instance of a formula with an invalid on success step', () => {
+    const f = formulaGen({});
+
+    var formulaId;
+    var url = '/formulas';
+    return chakram.post(url, f)
+      .then((r) => {
+        expect(r).to.have.status(200);
+        expect(r).to.have.schema(formulaSchema);
+
+        formulaId = r.body.id;
+        const t = {
+          type: 'scheduled',
+          properties: {
+            cron: '0 0/15 * 1/1 * ? *'
+          },
+          onSuccess: ['fake-step-name']
+        };
+        return chakram.post(util.format('/formulas/%s/triggers', formulaId), t);
+      })
+      .then((r) => {
+        expect(r).to.have.status(200);
+        const fi = {
+          name: 'churros-formula-instance-name'
+        }
+        return chakram.post(util.format('/formulas/%s/instances', formulaId), fi);
+      })
+      .then((r) => {
+        expect(r).to.have.status(400);
+        return chakram.delete(util.format('/formulas/%s', formulaId));
+      })
+      .then((r) => {
+        expect(r).to.have.status(200);
+      });
+  });
 });
