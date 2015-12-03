@@ -1,5 +1,8 @@
 # churros <sub><sup>| Cloud Elements API testing framework </sup></sub>
 --------------------------------------------------------------------------------
+[![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
+
+
 
 ## setup
 If you don't have `node` and `npm` installed, do that first.
@@ -22,3 +25,6 @@ You can also leverage some of the other command-line arguments to run as a diffe
 ```bash
 $ mocha src/churros.js --help
 ```
+
+## contributing
+See [CONTRIBUTING.md](CONTRIBUTING.md)
