@@ -42,7 +42,9 @@ describe('notifications and subscriptions APIs', () => {
   });
 
   it('should return one notification when searching for this topic', () => {
-    const n = notifyGen({ topic: 'churros-topic-' + Math.random().toString(36).substring(7) });
+    const n = notifyGen({
+      topic: 'churros-topic-' + Math.random().toString(36).substring(7)
+    });
 
     return chakram.post(url, n)
       .then((r) => {
@@ -169,6 +171,17 @@ describe('notifications and subscriptions APIs', () => {
     const subscriptionUrl = url + '/subscriptions';
     return chakram.get(subscriptionUrl + '/' + -1).then((r) => {
       expect(r).to.have.status(404);
+    });
+  });
+
+  it('should throw a 400 if you pass invalid fields when creating a subscription', () => {
+    const badSubscription = {
+      channel: 'email',
+      badField: ''
+    };
+    const subscriptionUrl = url + '/subscriptions';
+    return chakram.post(subscriptionUrl, badSubscription).then((r) => {
+      expect(r).to.have.status(400);
     });
   });
 });
