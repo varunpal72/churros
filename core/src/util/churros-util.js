@@ -11,5 +11,5 @@ this.replaceWith = function (object, value) {
 }
 
 this.json = function (file) {
-  return require('../../../assets/' + file + '.json');
+  return require('../../../test/assets/' + file + '.json');
 }

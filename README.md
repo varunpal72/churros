@@ -18,12 +18,12 @@ $ npm install --global phantomjs
 To run against your local machine as the `system` user, you can simply run:
 
 ```bash
-$ mocha src/churros.js --suite notifications
+$ mocha cli/src/churros.js --suite notifications
 ```
 
 You can also leverage some of the other command-line arguments to run as a different user, run against another environment, etc.  To see these options, run:
 ```bash
-$ mocha src/churros.js --help
+$ mocha cli/src/churros.js --help
 ```
 
 ## contributing
