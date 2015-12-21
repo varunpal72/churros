@@ -23,5 +23,5 @@ process.env.CHURROS_ENVIRONMENT = program.env;
 process.env.CHURROS_USERNAME = program.user;
 process.env.CHURROS_PASSWORD = program.password;
 process.env.CHURROS_SUITE = program.suite;
-require('../test/lifecycle');
-require('../test/' + program.suite);
+require('../../test/lifecycle');
+require('../../test/' + program.suite);

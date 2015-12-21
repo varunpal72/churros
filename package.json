@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Test suite for all things soba",
   "scripts": {
-    "test": "mocha src/churros.js --reporter spec --ui bdd --bail --timeout 15000 --suite all"
+    "test": "mocha cli/src/churros.js --reporter spec --ui bdd --bail --timeout 15000 --suite all"
   },
   "author": "jjwyse",
   "license": "ISC",

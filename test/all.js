@@ -3,8 +3,9 @@
 require('./lifecycle');
 
 // platform
-require('./notifications');
-require('./formulas');
+require('./notifications/all');
+require('./formulas/all');
+require('./elements/all');
 
 // elements
-require('./box');
+require('./elements/all');

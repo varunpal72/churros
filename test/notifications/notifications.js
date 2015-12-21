@@ -2,10 +2,8 @@
 
 const chakram = require('chakram');
 const expect = chakram.expect;
-
-// load the JSON schemas to validate against
-const notificationSchema = require('../assets/notification.schema.json');
-const subscriptionSchema = require('../assets/subscription.schema.json');
+const churrosUtil = require('../../core/src/util/churros-util');
+const api = require('../../core/src/util/api-helper');
 
 const notifyGen = (opts) => new Object({
   severity: (opts.severity || 'low'),
@@ -19,37 +17,20 @@ describe('notifications and subscriptions APIs', () => {
 
   it('should allow creating, retrieving and deleting a notification', () => {
     const n = notifyGen({});
-
-    return chakram.post(url, n)
-      .then((r) => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(notificationSchema);
-
-        return chakram.get(url + '/' + r.body.id);
-      })
-      .then((r) => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(notificationSchema);
-        expect(r.body.severity).to.equal(n.severity);
-        expect(r.body.topic).to.equal(n.topic);
-        expect(r.body.message).to.equal(n.message);
-
-        return chakram.delete(url + '/' + r.body.id);
-      })
-      .then((r) => {
-        expect(r).to.have.status(200);
-      });
+    const schema = churrosUtil.json('notification.schema');
+    return api.crd(url, n, schema);
   });
 
   it('should return one notification when searching for this topic', () => {
     const n = notifyGen({
-      topic: 'churros-topic-' + Math.random().toString(36).substring(7)
+      topic: 'churros-topic-' + churrosUtil.random()
     });
 
+    const schema = churrosUtil.json('notification.schema');
     return chakram.post(url, n)
       .then((r) => {
         expect(r).to.have.status(200);
-        expect(r).to.have.schema(notificationSchema);
+        expect(r).to.have.schema(schema);
 
         return chakram.get(url + '?topics[]=' + n.topic);
       })
@@ -67,11 +48,12 @@ describe('notifications and subscriptions APIs', () => {
 
   it('should allow acknowledging a notification', () => {
     const n = notifyGen({});
+    const schema = churrosUtil.json('notification.schema');
 
     return chakram.post(url, n)
       .then((r) => {
         expect(r).to.have.status(200);
-        expect(r).to.have.schema(notificationSchema);
+        expect(r).to.have.schema(schema);
         expect(r.body.acknowledged).to.equal(false);
 
         return chakram.put(url + '/' + r.body.id + '/acknowledge');
@@ -97,15 +79,17 @@ describe('notifications and subscriptions APIs', () => {
   });
 
   it('should throw a 400 if missing search query', () => {
-    return chakram.get(url).then((r) => {
-      expect(r).to.have.status(400);
-    });
+    return chakram.get(url)
+      .then((r) => {
+        expect(r).to.have.status(400);
+      });
   });
 
   it('should throw a 404 if the notification does not exist', () => {
-    return chakram.get(url + '/' + -1).then((r) => {
-      expect(r).to.have.status(404);
-    });
+    return chakram.get(url + '/' + -1)
+      .then((r) => {
+        expect(r).to.have.status(404);
+      });
   });
 
   it('should throw a 400 if notification JSON is null', () => {
@@ -134,17 +118,18 @@ describe('notifications and subscriptions APIs', () => {
       }
     };
     const subscriptionUrl = url + '/subscriptions';
+    const schema = churrosUtil.json('subscription.schema');
 
     return chakram.post(subscriptionUrl, subscription)
       .then((r) => {
         expect(r).to.have.status(200);
-        expect(r).to.have.schema(subscriptionSchema);
+        expect(r).to.have.schema(schema);
 
         return chakram.get(subscriptionUrl + '/' + r.body.id);
       })
       .then((r) => {
         expect(r).to.have.status(200);
-        expect(r).to.have.schema(subscriptionSchema);
+        expect(r).to.have.schema(schema);
         expect(r.body.topic).to.equal(subscription.topic);
         expect(r.body.channel).to.equal(subscription.channel);
 
