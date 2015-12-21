@@ -5,6 +5,9 @@ const expect = chakram.expect;
 const churrosUtil = require('../../core/src/util/churros-util');
 const api = require('../../core/src/util/api-helper');
 
+const schema = require('./assets/notification.schema.json');
+const subscriptionSchema = require('./assets/subscription.schema');
+
 const notifyGen = (opts) => new Object({
   severity: (opts.severity || 'low'),
   topic: (opts.topic || 'churros-topic'),
@@ -17,7 +20,6 @@ describe('notifications and subscriptions APIs', () => {
 
   it('should allow creating, retrieving and deleting a notification', () => {
     const n = notifyGen({});
-    const schema = churrosUtil.json('notification.schema');
     return api.crd(url, n, schema);
   });
 
@@ -26,7 +28,6 @@ describe('notifications and subscriptions APIs', () => {
       topic: 'churros-topic-' + churrosUtil.random()
     });
 
-    const schema = churrosUtil.json('notification.schema');
     return chakram.post(url, n)
       .then((r) => {
         expect(r).to.have.status(200);
@@ -48,7 +49,6 @@ describe('notifications and subscriptions APIs', () => {
 
   it('should allow acknowledging a notification', () => {
     const n = notifyGen({});
-    const schema = churrosUtil.json('notification.schema');
 
     return chakram.post(url, n)
       .then((r) => {
@@ -118,18 +118,17 @@ describe('notifications and subscriptions APIs', () => {
       }
     };
     const subscriptionUrl = url + '/subscriptions';
-    const schema = churrosUtil.json('subscription.schema');
 
     return chakram.post(subscriptionUrl, subscription)
       .then((r) => {
         expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
+        expect(r).to.have.schema(subscriptionSchema);
 
         return chakram.get(subscriptionUrl + '/' + r.body.id);
       })
       .then((r) => {
         expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
+        expect(r).to.have.schema(subscriptionSchema);
         expect(r.body.topic).to.equal(subscription.topic);
         expect(r.body.channel).to.equal(subscription.channel);
 

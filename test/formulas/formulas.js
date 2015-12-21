@@ -7,8 +7,8 @@ const ei = require('../../core/src/util/element-instances');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
-const schema = churrosUtil.json('formula.schema');
-const triggerSchema = churrosUtil.json('formula-trigger.schema');
+const schema = require('./assets/formula.schema');
+const triggerSchema = require('./assets/formula-trigger.schema');
 
 const formulaGen = (opts) => new Object({
   name: (opts.name || 'churros-formula-name-' + churrosUtil.random())
@@ -123,10 +123,10 @@ describe('formulas APIs', () => {
 
   it('should allow creating a big azz formula and then an instance', () => {
     return ei.id().then((eiId) => {
-      var bigAzzFi = churrosUtil.json('big-formula-instance');
+      var bigAzzFi = require('./assets/big-formula-instance.json');
       churrosUtil.replaceWith(bigAzzFi.configuration, eiId);
 
-      var bigAzzF = churrosUtil.json('big-formula');
+      var bigAzzF = require('./assets/big-formula.json');
       bigAzzF.name = churrosUtil.random();
       var formulaId;
       var url = '/formulas';
