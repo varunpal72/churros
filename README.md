@@ -5,13 +5,14 @@
 
 
 ## setup
-If you don't have `node` and `npm` installed, do that first.
+If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/getting-started/installing-node) first.
 
-Then, clone this repository and run:
+Then, clone this repository and run (may have to `sudo` the global installs depending on your environment):
 
 ```bash
 $ npm install
 $ npm install --global phantomjs
+$ npm install --global gulp
 ```
 
 ## running
