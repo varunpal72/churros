@@ -26,4 +26,8 @@ process.env.CHURROS_SUITE = program.suite;
 
 // TODO - JJW - hacky as all get out...
 require('../../test/lifecycle');
-require('../../test/' + program.suite + '/all');
+
+if (program.suite !== 'all') {
+  require('../../test/' + program.suite + '/all');
+}
+require('../../test/all');
