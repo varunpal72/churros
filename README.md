@@ -12,6 +12,7 @@ Then, clone this repository and run (may have to `sudo` the global installs depe
 ```bash
 $ npm install
 $ npm install --global phantomjs
+$ npm install --global mocha 
 $ npm install --global gulp
 ```
 
