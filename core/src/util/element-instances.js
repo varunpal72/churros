@@ -1,11 +1,12 @@
+const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
-this.id = function () {
+this.all = function () {
   const url = '/instances';
   return chakram.get(url)
     .then((r) => {
-      console.log('Found an element instance with ID: ' + r.body[0].id);
+      console.log(util.format('Found %s element instances', r.body.size));
       expect(r).to.have.status(200);
       return r.body[0].id;
     });

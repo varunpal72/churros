@@ -29,5 +29,6 @@ require('../../test/lifecycle');
 
 if (program.suite !== 'all') {
   require('../../test/' + program.suite + '/all');
+} else {
+  require('../../test/all');
 }
-require('../../test/all');
