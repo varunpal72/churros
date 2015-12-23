@@ -10,7 +10,7 @@ this.all = function () {
       expect(r).to.have.status(200);
       return r.body[0].id;
     });
-}
+};
 
 this.delete = function (id) {
   const url = '/instances/' + id;
@@ -19,5 +19,5 @@ this.delete = function (id) {
       console.log('Deleted element instance with ID: ' + id);
       expect(r).to.have.status(200);
       return r.body;
-    })
-}
+    });
+};

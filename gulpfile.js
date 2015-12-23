@@ -1,9 +1,21 @@
+'use strict';
 
-var gulp = require('gulp');
-var mocha = require('gulp-mocha');
- 
+const gulp = require('gulp');
+const mocha = require('gulp-mocha');
+const uglify = require('gulp-uglify');
+const jshint = require('gulp-jshint');
+const concat = require('gulp-concat');
+
 gulp.task('default', function () {
-    return gulp.src(['./test/notifications/*.js'], {read: false})
-        // gulp-mocha needs filepaths so you can't have any plugins before it 
+    return gulp.src(['./test//*.js'], {read: false})
+        // gulp-mocha needs filepaths so you can't have any plugins before it
         .pipe(mocha({reporter: 'spec'}));
+});
+
+gulp.task('dothings', function () {
+   return gulp.src('core/src/**/*.js')
+      .pipe(jshint())
+      .pipe(jshint.reporter('default'))
+      .pipe(concat('app.js'))
+      .pipe(gulp.dest('build'));
 });

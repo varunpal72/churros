@@ -17,7 +17,7 @@ this.crd = function (api, payload, schema) {
     .then((r) => {
       expect(r).to.have.status(200);
     });
-}
+};
 
 this.crud = function (api, payload, schema) {
   return chakram.post(api, payload)
@@ -39,4 +39,4 @@ this.crud = function (api, payload, schema) {
     .then((r) => {
       expect(r).to.have.status(200);
     });
-}
+};
