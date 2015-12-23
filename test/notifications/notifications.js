@@ -6,7 +6,6 @@ const churrosUtil = require('../../core/src/util/churros-util');
 const api = require('../../core/src/util/api');
 
 const schema = require('./assets/notification.schema.json');
-const subscriptionSchema = require('./assets/subscription.schema');
 
 const notifyGen = (opts) => new Object({
   severity: (opts.severity || 'low'),
@@ -15,7 +14,7 @@ const notifyGen = (opts) => new Object({
   from: (opts.from || 'churros')
 });
 
-describe('notifications and subscriptions APIs', () => {
+describe('notification APIs', () => {
   const url = '/notifications';
 
   it('should allow creating, retrieving and deleting a notification', () => {
@@ -107,65 +106,5 @@ describe('notifications and subscriptions APIs', () => {
       .then((r) => {
         expect(r).to.have.status(400);
       });
-  });
-
-  it('should allow creating, retrieving and deleting a subscription', () => {
-    const subscription = {
-      channel: 'webhook',
-      topics: ['churros-topic'],
-      config: {
-        url: 'http://fake.churros.url.com'
-      }
-    };
-    const subscriptionUrl = url + '/subscriptions';
-
-    return chakram.post(subscriptionUrl, subscription)
-      .then((r) => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(subscriptionSchema);
-
-        return chakram.get(subscriptionUrl + '/' + r.body.id);
-      })
-      .then((r) => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(subscriptionSchema);
-        expect(r.body.topic).to.equal(subscription.topic);
-        expect(r.body.channel).to.equal(subscription.channel);
-
-        return chakram.delete(subscriptionUrl + '/' + r.body.id);
-      })
-      .then((r) => {
-        expect(r).to.have.status(200);
-      });
-  });
-
-  it('should throw a 400 if an email subscription is missing an email address', () => {
-    const subscriptionUrl = url + '/subscriptions';
-    const badSubscription = {
-      channel: 'email',
-      topics: ['churros-topic']
-    };
-    return chakram.post(subscriptionUrl, badSubscription)
-      .then((r) => {
-        expect(r).to.have.status(400);
-      });
-  });
-
-  it('should throw a 404 if the subscription ID does not exist', () => {
-    const subscriptionUrl = url + '/subscriptions';
-    return chakram.get(subscriptionUrl + '/' + -1).then((r) => {
-      expect(r).to.have.status(404);
-    });
-  });
-
-  it('should throw a 400 if you pass invalid fields when creating a subscription', () => {
-    const badSubscription = {
-      channel: 'email',
-      badField: ''
-    };
-    const subscriptionUrl = url + '/subscriptions';
-    return chakram.post(subscriptionUrl, badSubscription).then((r) => {
-      expect(r).to.have.status(400);
-    });
   });
 });

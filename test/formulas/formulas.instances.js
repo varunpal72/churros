@@ -1,3 +1,5 @@
+'use strict';
+
 const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');

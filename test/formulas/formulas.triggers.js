@@ -1,3 +1,5 @@
+'use strict';
+
 const util = require('util');
 const ei = require('../../core/src/util/element-instances');
 const chakram = require('chakram');
