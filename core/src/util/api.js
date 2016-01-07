@@ -1,8 +1,12 @@
+'use strict';
+
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
-this.crd = function (api, payload, schema) {
+var exports = module.exports = {};
+
+exports.crd = function (api, payload, schema) {
   return chakram.post(api, payload)
     .then((r) => {
       expect(r).to.have.status(200);
@@ -19,7 +23,7 @@ this.crd = function (api, payload, schema) {
     });
 };
 
-this.crud = function (api, payload, schema) {
+exports.crud = function (api, payload, schema) {
   return chakram.post(api, payload)
     .then((r) => {
       expect(r).to.have.status(200);

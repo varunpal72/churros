@@ -1,8 +1,12 @@
+'use strict';
+
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
-this.all = function () {
+var exports = module.exports = {};
+
+exports.all = function () {
   const url = '/instances';
   return chakram.get(url)
     .then((r) => {
@@ -12,7 +16,7 @@ this.all = function () {
     });
 };
 
-this.delete = function (id) {
+exports.delete = function (id) {
   const url = '/instances/' + id;
   return chakram.delete(url)
     .then((r) => {

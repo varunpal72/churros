@@ -5,6 +5,7 @@ const mocha = require('gulp-mocha');
 const uglify = require('gulp-uglify');
 const jshint = require('gulp-jshint');
 const concat = require('gulp-concat');
+const util = require('gulp-util');
 
 gulp.task('default', function () {
     return gulp.src(['./test//*.js'], {read: false})
@@ -15,7 +16,9 @@ gulp.task('default', function () {
 gulp.task('dothings', function () {
    return gulp.src('core/src/**/*.js')
       .pipe(jshint())
-      .pipe(jshint.reporter('default'))
+      // .pipe(jshint.reporter('default'))
       .pipe(concat('app.js'))
-      .pipe(gulp.dest('build'));
+      // .pipe(uglify())
+      .pipe(gulp.dest('build'))
+      .on('error', util.log);
 });
