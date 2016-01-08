@@ -2,8 +2,15 @@
   "name": "churros",
   "version": "0.0.1",
   "description": "Test suite for all things soba",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cloud-elements/churros.git"
+  },
   "scripts": {
     "test": "mocha cli/src/churros.js --reporter spec --ui bdd --bail --timeout 15000 --suite all"
+  },
+  "bin": {
+    "churros": "src/cli/churros.js"
   },
   "author": "jjwyse",
   "license": "ISC",
@@ -12,6 +19,8 @@
     "colors": "^1.1.2",
     "commander": "^2.9.0",
     "mocha": "^2.3.4",
+    "optimist": "^0.6.1",
+    "prompt": "^0.2.14",
     "selenium-webdriver": "^2.48.2"
   },
   "devDependencies": {

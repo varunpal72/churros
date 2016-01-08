@@ -45,5 +45,14 @@ You can also leverage some of the other command-line arguments to run as a diffe
 $ mocha cli/src/churros.js --help
 ```
 
-## contributing
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md)
+
+## Contributing
+
 See [CONTRIBUTING.md](CONTRIBUTING.md)
+
+## License
+
+See [LICENSE.md](LICENSE.md)
