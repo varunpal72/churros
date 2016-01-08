@@ -45,15 +45,17 @@ prompt.get(schema, (err, result) => {
   if (!fs.existsSync(propsDir)) {
     fs.mkdirSync(propsDir);
   }
-  
+
   writeProperties(propsDir, output);
 });
 
 function writeProperties(dir, output) {
-  fs.writeFile(dir + '/churros.json', JSON.stringify(output, null, 2), (err) => {
+  const file = dir + 'churros.json';
+  console.log('Saving default properties to ' + file);
+  fs.writeFile(file, JSON.stringify(output, null, 2), (err) => {
     if (err) {
       return console.log(err);
     }
-    console.log('\nFinished initialization of churros');
+    console.log('Finished Initializing churros');
   });
 }
