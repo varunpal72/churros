@@ -25,10 +25,10 @@ process.env.CHURROS_PASSWORD = program.password;
 process.env.CHURROS_SUITE = program.suite;
 
 // TODO - JJW - hacky as all get out...
-require('../../test/lifecycle');
+require('../test/lifecycle');
 
 if (program.suite !== 'all') {
-  require('../../test/' + program.suite + '/all');
+  require('../test/' + program.suite + '/all');
 } else {
-  require('../../test/all');
+  require('../test/all');
 }
