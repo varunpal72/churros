@@ -1,0 +1,9 @@
+language: javascript
+install:
+  - npm install
+  - npm install --global phantomjs
+  - npm install --global mocha
+  - npm install --global gulp
+  - sudo npm link
+
+script: "sudo $(which npm) test"
