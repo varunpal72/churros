@@ -4,8 +4,8 @@ const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const url = require('url');
-const box = require('../../../core/src/provision/box');
-const ei = require('../../../core/src/util/element-instances')
+const box = require('core/provision/box');
+const ei = require('core/util/element-instances')
 
 describe('files apis', () => {
   it('should throw a 404 when trying to find an invalid file', () => {

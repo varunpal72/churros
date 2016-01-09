@@ -1,7 +1,7 @@
 'use strict';
 
 const util = require('util');
-const ei = require('../../core/src/util/element-instances');
+const ei = require('core/util/element-instances');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const formulasUtil = require('./formulas.util');

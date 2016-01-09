@@ -3,9 +3,9 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
-const churrosUtil = require('../../core/src/util/churros-util');
+const churrosUtil = require('core/util/churros-util');
 const formulasUtil = require('./formulas.util');
-const box = require('../../core/src/provision/box');
+const box = require('core/provision/box');
 
 const schema = require('./assets/formula.schema');
 

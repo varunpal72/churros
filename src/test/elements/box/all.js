@@ -1,6 +1,6 @@
 'use strict';
-const box = require('../../../core/src/provision/box');
-const ei = require('../../../core/src/util/element-instances')
+const box = require('core/provision/box');
+const ei = require('core/util/element-instances')
 
 describe('box apis', () => {
   var instanceId = 0;
