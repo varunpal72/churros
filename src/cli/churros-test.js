@@ -1,33 +1,24 @@
 'use strict';
 
-const program = require('commander');
+const commander = require('commander');
 const colors = require('colors');
 
-program
-  .option('-s, --suite [suite]', 'The name of the suite to run', '')
-  .option('-e, --env [env]', 'The environment to run the tests against', /^(local|snapshot|qa|staging|prod)$/i, 'local')
-  .option('-u, --user [user]', 'The soba user to run the tests as', 'system')
-  .option('-p, --password [password]', 'The password for this user', 'system')
+commander
   .parse(process.argv);
 
-if (!program.suite || !program.env) {
-  program.outputHelp((txt) => {
-    return colors.red(txt);
-  });
-  process.exit(1);
-}
+// TODO - JJW - build out the test required and non-required options into commander here
 
 // TODO - JJW - build process should set this up a little nicer...need some guidance from rocky and t-mac on best approach
-process.env.CHURROS_ENVIRONMENT = program.env;
-process.env.CHURROS_USERNAME = program.user;
-process.env.CHURROS_PASSWORD = program.password;
-process.env.CHURROS_SUITE = program.suite;
+// process.env.CHURROS_ENVIRONMENT = commander.env;
+// process.env.CHURROS_USERNAME = commander.user;
+// process.env.CHURROS_PASSWORD = commander.password;
+// process.env.CHURROS_SUITE = commander.suite;
 
 // TODO - JJW - hacky as all get out...
-require('../../test/lifecycle');
-
-if (program.suite !== 'all') {
-  require('../../test/' + program.suite + '/all');
-} else {
-  require('../../test/all');
-}
+// require('../../test/lifecycle');
+//
+// if (commander.suite !== 'all') {
+//   require('../../test/' + commander.suite + '/all');
+// } else {
+//   require('../../test/all');
+// }

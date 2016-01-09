@@ -3,18 +3,25 @@
 const prompt = require('prompt');
 const optimist = require('optimist');
 const fs = require('fs');
+const commander = require('commander');
+
+commander
+  .option('-u, --user <user>', 'The user to run tests as', '')
+  .option('-p, --password <password>', 'The password for the specified user', '')
+  .option('-r, --url <url>', 'The url to run tests against', '')
+  .parse(process.argv);
+
+console.log('Initializing churros...\n');
 
 prompt.message = "   ";
 prompt.delimiter = "";
 prompt.override = optimist.argv // allows for properties to be sent as command-line args
 
-console.log('Initializing churros...\n');
-
-const schema = {
+const prompts = {
   properties: {
-    username: {
+    user: {
       required: true,
-      description: 'username: '
+      description: 'user: '
     },
     password: {
       hidden: true,
@@ -24,38 +31,39 @@ const schema = {
     url: {
       default: 'api.cloud-elements.com',
       description: 'url: ',
-      before: (value) => {
-        if (value.startsWith('localhost')) value = 'http://' + value;
-        if (!value.startsWith('http')) value = 'https://' + value;
-        return value + '/elements/api-v2';
+      before: (url) => {
+        if (url.startsWith('localhost')) url = 'http://' + url;
+        if (!url.startsWith('http')) url = 'https://' + url;
+        return url + '/elements/api-v2';
       }
     }
   }
 };
 
 prompt.start();
-prompt.get(schema, (err, result) => {
+prompt.get(prompts, (err, result) => {
   const propsDir = process.env.HOME + '/.churros/';
-  const output = {
-    username: result.username,
-    password: result.password,
-    url: result.url
-  }
+  const file = propsDir + 'churros.json';
 
-  if (!fs.existsSync(propsDir)) {
-    fs.mkdirSync(propsDir);
-  }
-
-  writeProperties(propsDir, output);
-});
-
-function writeProperties(dir, output) {
-  const file = dir + 'churros.json';
   console.log('Saving default properties to ' + file);
-  fs.writeFile(file, JSON.stringify(output, null, 2), (err) => {
+
+  // directory doesn't exist? create it
+  if (!fs.existsSync(propsDir)) fs.mkdirSync(propsDir);
+
+  // props file doesn't exist? stub it out
+  if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify({}, null, 2));
+
+  // load file and append our properties to it so we don't override properties that could already be there
+  var properties = require(file);
+  properties.user = result.user;
+  properties.password= result.password;
+  properties.url = result.url;
+
+  fs.writeFile(file, JSON.stringify(properties, null, 2), (err) => {
     if (err) {
+      console.log('Error while initializing churros');
       return console.log(err);
     }
-    console.log('Finished Initializing churros');
+    console.log('Finished initializing churros');
   });
-}
+});

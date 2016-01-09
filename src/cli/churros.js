@@ -3,7 +3,6 @@
 'use strict';
 
 const commander = require('commander');
-const colors = require('colors');
 
 commander
   .version('0.1.0')
@@ -11,7 +10,15 @@ commander
   .command('test', 'run a specific set of tests')
   .parse(process.argv);
 
-if (!process.argv.slice(2).length) {
-  commander.outputHelp((txt) => { return colors.red(txt); });
-  process.exit(1);
-}
+// manually validate invalid commands as they're not handle explicity https://github.com/tj/commander.js/issues/432
+commander.args.forEach((arg) => {
+  var isValid = false;
+  commander.commands.forEach((command) => {
+    if (command._name === arg) {
+      isValid = true;
+    }
+  });
+  if (!isValid) {
+    commander.outputHelp();
+  }
+});

@@ -1,13 +1,13 @@
 {
   "name": "churros",
-  "version": "0.0.1",
-  "description": "Test suite for all things soba",
+  "version": "0.1.0",
+  "description": "Test suite for all things cloud elements",
   "repository": {
     "type": "git",
     "url": "git://github.com/cloud-elements/churros.git"
   },
   "scripts": {
-    "test": "mocha cli/src/churros.js --reporter spec --ui bdd --bail --timeout 15000 --suite all"
+    "test": "mocha test --reporter spec --ui bdd"
   },
   "bin": {
     "churros": "src/cli/churros.js"
