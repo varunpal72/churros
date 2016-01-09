@@ -16,6 +16,12 @@ $ sudo npm link
 ```
 > may have to `sudo` the global installs depending on your environment
 
+```bash
+$ churros init
+```
+
+Follow the given prompts where you will be guided through setting the default values that will be used when running tests
+
 ## running
 
 Coming Soon
