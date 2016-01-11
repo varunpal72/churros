@@ -26,7 +26,7 @@ before((done) => {
       done();
     })
     .catch((r) => {
-      console.log('Well shucks...failed to finish setup. Is %s up and running?', url);
+      console.log('Well shucks...failed to finish setup...\n  Is %s up and running?\n  Do you have the write username and password?', url);
       process.exit(1);
     });
 });
