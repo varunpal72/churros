@@ -34,7 +34,7 @@ const prompts = {
       before: (url) => {
         if (url.startsWith('localhost')) url = 'http://' + url;
         if (!url.startsWith('http')) url = 'https://' + url;
-        return url + '/elements/api-v2';
+        return url;
       }
     }
   }
@@ -56,7 +56,7 @@ prompt.get(prompts, (err, result) => {
   // load file and append our properties to it so we don't override properties that could already be there
   var properties = require(file);
   properties.user = result.user;
-  properties.password= result.password;
+  properties.password = result.password;
   properties.url = result.url;
 
   fs.writeFile(file, JSON.stringify(properties, null, 2), (err) => {

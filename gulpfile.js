@@ -6,19 +6,16 @@ const uglify = require('gulp-uglify');
 const jshint = require('gulp-jshint');
 const concat = require('gulp-concat');
 const util = require('gulp-util');
+const watch = require('gulp-watch');
 
 gulp.task('default', function () {
-    return gulp.src(['./test//*.js'], {read: false})
-        // gulp-mocha needs filepaths so you can't have any plugins before it
-        .pipe(mocha({reporter: 'spec'}));
-});
+  gulp.src(['src/core', 'src/test'])
+    .pipe(jshint())
+    .pipe(gulp.dest('dist'))
+    .on('error', util.log);
 
-gulp.task('dothings', function () {
-   return gulp.src('core/src/**/*.js')
-      .pipe(jshint())
-      // .pipe(jshint.reporter('default'))
-      .pipe(concat('app.js'))
-      // .pipe(uglify())
-      .pipe(gulp.dest('build'))
-      .on('error', util.log);
+  gulp.src(['src/cli/**'])
+    .pipe(jshint())
+    .pipe(gulp.dest('dist/bin'))
+    .on('error', util.log);
 });

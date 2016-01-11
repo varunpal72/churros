@@ -1,24 +1,33 @@
 'use strict';
 
+const path = require('path');
 const commander = require('commander');
-const colors = require('colors');
+const util = require('util');
+const config = require(process.env.HOME + '/.churros/churros.json');
+const shell = require('shelljs');
 
 commander
+  .option('-s, --suite <suite>', 'The suite(s) of tests to run', '')
+  .option('-t, --test <test>', 'The specific test(s) to run', '')
+  .option('-u, --user <user>', '', '')
+  .option('-p, --password <password>', '', '')
+  .option('-r, --url <url>', '', '')
+  .on('--help', () => {
+    console.log('  Examples:');
+    console.log('');
+    console.log('    $ churros test formulas');
+    console.log('    $ churros test formulas --suite formulas.instances --suite formulas.triggers');
+    console.log('    $ churros test formulas --suite formulas.instances --suite formulas.triggers --test *file* --test *other*');
+    console.log('');
+  })
   .parse(process.argv);
 
-// TODO - JJW - build out the test required and non-required options into commander here
+var appDir = path.dirname(require.main.filename);
+const dir = appDir + '/../test/lifecycle';
+const user = commander.user || config.user;
+const password = commander.password || config.password;
+const url = commander.url || config.url;
 
-// TODO - JJW - build process should set this up a little nicer...need some guidance from rocky and t-mac on best approach
-// process.env.CHURROS_ENVIRONMENT = commander.env;
-// process.env.CHURROS_USERNAME = commander.user;
-// process.env.CHURROS_PASSWORD = commander.password;
-// process.env.CHURROS_SUITE = commander.suite;
-
-// TODO - JJW - hacky as all get out...
-// require('../../test/lifecycle');
-//
-// if (commander.suite !== 'all') {
-//   require('../../test/' + commander.suite + '/all');
-// } else {
-//   require('../../test/all');
-// }
+const args = util.format('%s --user %s --password %s --url %s', dir, user, password, url);
+const cmd = util.format('mocha %s', args);
+shell.exec(cmd);
