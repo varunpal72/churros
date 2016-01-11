@@ -22,12 +22,14 @@ commander
   })
   .parse(process.argv);
 
-var appDir = path.dirname(require.main.filename);
-const dir = appDir + '/../test/lifecycle';
 const user = commander.user || config.user;
 const password = commander.password || config.password;
 const url = commander.url || config.url;
 
-const args = util.format('%s --user %s --password %s --url %s', dir, user, password, url);
-const cmd = util.format('mocha %s', args);
+// probe the url
+console.log('Checking if %s is up...', url);
+
+const suite = path.dirname(require.main.filename) + '/../test/notifications';
+const args = util.format('--user %s --password %s --url %s --timeout 20000 --reporter spec --ui bdd', user, password, url);
+const cmd = util.format('mocha %s %s', suite, args);
 shell.exec(cmd);
