@@ -26,7 +26,7 @@ before((done) => {
       done();
     })
     .catch((r) => {
-      console.log('Failed to get user secret: ' + r);
-      done();
+      console.log('Well shucks...failed to finish setup. Is %s up and running?', url);
+      process.exit(1);
     });
 });

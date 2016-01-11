@@ -7,7 +7,7 @@ const config = require(process.env.HOME + '/.churros/churros.json');
 const shell = require('shelljs');
 
 commander
-  .option('-s, --suite <suite>', 'The suite(s) of tests to run', '')
+  .option('-s, --suite <suite>', 'The suite(s) of tests to run')
   .option('-t, --test <test>', 'The specific test(s) to run', '')
   .option('-u, --user <user>', '', '')
   .option('-p, --password <password>', '', '')
@@ -26,10 +26,8 @@ const user = commander.user || config.user;
 const password = commander.password || config.password;
 const url = commander.url || config.url;
 
-// probe the url
-console.log('Checking if %s is up...', url);
-
-const suite = path.dirname(require.main.filename) + '/../test/notifications';
+const setup = path.dirname(require.main.filename) + '/../test/setup';
+const suite = path.dirname(require.main.filename) + '/../test/' + commander.suite;
 const args = util.format('--user %s --password %s --url %s --timeout 20000 --reporter spec --ui bdd', user, password, url);
-const cmd = util.format('mocha %s %s', suite, args);
+const cmd = util.format('mocha %s %s %s', setup, suite, args);
 shell.exec(cmd);
