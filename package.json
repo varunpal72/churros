@@ -7,7 +7,7 @@
     "url": "git://github.com/cloud-elements/churros.git"
   },
   "scripts": {
-    "test": "mocha test --reporter spec --ui bdd"
+    "test": "mocha test/cli.js --reporter spec --ui bdd"
   },
   "bin": {
     "churros": "src/cli/churros.js"
