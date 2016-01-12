@@ -74,6 +74,7 @@ commander
     console.log('  Examples:');
     console.log('');
     console.log('    $ churros test formulas');
+    console.log('    $ churros test formulas --file formulas.instances');
     console.log('    $ churros test formulas --file formulas.instances --file formulas.triggers');
     console.log('    $ churros test formulas --file formulas.instances --file formulas.triggers --test \'should not allow\'');
     console.log('');
