@@ -27,9 +27,9 @@ Follow the given prompts where you will be guided through setting the default va
 $ churros test formulas
 $ churros test formulas --file formulas.triggers
 $ churros test formulas --file formulas.triggers --file formulas.instances
-$ churros test formulas --file formulas.triggers --file formulas.instances --test \`should not allow\`
+$ churros test formulas --file formulas.triggers --file formulas.instances --test `should not allow`
 ```
-> Note: Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value setup during `churros init`
+> Note: Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`
 
 ## Changelog
 
