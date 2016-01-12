@@ -11,9 +11,9 @@ If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/g
 ```bash
 $ npm install
 $ npm install --global phantomjs
-$ sudo npm link
+$ npm link
 ```
-> Note: May have to `sudo` the global installs depending on your environment
+> Note: May have to `sudo` the global install and `npm link` depending on your environment setup
 
 ```bash
 $ churros init
