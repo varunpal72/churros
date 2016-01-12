@@ -3,6 +3,8 @@
 const box = require('core/provision/box');
 const ei = require('core/util/element-instances')
 
+var instanceId = 0;
+
 before((done) => {
   box.create()
     .then((r) => {

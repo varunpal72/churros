@@ -22,13 +22,13 @@ const runTests = function runTests(resource, options) {
 
   const rootTestDir = path.dirname(require.main.filename) + '/../test';
 
-  // always pass the setup file first.  if it's an element, then use that element's setup file, otherwise use the default setup file
+  // always pass the setup file first.  if it's an element, then use that element's setup file too
+  const setup = util.format('%s/%s', rootTestDir, resource, 'setup');
+  mochaPaths.push(rootTestDir + '/setup');
+
   if (resource.startsWith('elements')) {
-    const setup = util.format('%s/%s/%s', rootTestDir, resource, 'setup');
-    mochaPaths.push(setup);
-  } else {
-    const setup = util.format('%s/%s', rootTestDir, resource, 'setup');
-    mochaPaths.push(rootTestDir + '/setup');
+    const elementSetup = util.format('%s/%s/%s', rootTestDir, resource, 'setup');
+    mochaPaths.push(elementSetup);
   }
 
   // validate the root resource path before continuing

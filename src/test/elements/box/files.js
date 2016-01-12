@@ -3,8 +3,6 @@
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const url = require('url');
-const box = require('core/provision/box');
 const ei = require('core/util/element-instances')
 
 describe('files', () => {

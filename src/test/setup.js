@@ -3,11 +3,17 @@
 const chakram = require('chakram');
 const util = require('util');
 const argv = require('optimist').demand('user').argv
+const props = require('core/util/properties');
 
 before((done) => {
   const user = argv.user;
   const password = argv.password;
   const url = argv.url;
+
+  // override properties here on initialization
+  props.override('user', user);
+  props.override('password', password);
+  props.override('url', url);
 
   const secUrl = url + '/elements/j_spring_security_check';
   const form = { j_username: user, j_password: password };
@@ -17,6 +23,8 @@ before((done) => {
       return chakram.get(url + '/elements/api-v1/ui/getSecrets', { jar: true });
     })
     .then((r) => {
+      props.override('user.secret', r.body.user);
+      props.override('org.secret', r.body.company);
       chakram.setRequestDefaults({
         baseUrl: url + '/elements/api-v2',
         headers: {
