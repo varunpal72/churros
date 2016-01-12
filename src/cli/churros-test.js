@@ -67,15 +67,15 @@ commander
   .action((suite, options) => runTests(suite, options))
   .option('-s, --file <file>', 'The file(s) of tests to run (exclude the .js)', collect, [])
   .option('-t, --test <test>', 'The specific test(s) to run.  This searches through all "describe(...)" and "it(...)" strings', '')
-  .option('-u, --user <user>', '', '')
-  .option('-p, --password <password>', '', '')
-  .option('-r, --url <url>', '', '')
+  .option('-u, --user <user>', 'Overrides the default user setup during initialization', '')
+  .option('-p, --password <password>', 'Overrides the default password setup during initialization', '')
+  .option('-r, --url <url>', 'Overrides the default URL setup during initialization', '')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
     console.log('    $ churros test formulas');
     console.log('    $ churros test formulas --file formulas.instances --file formulas.triggers');
-    console.log("    $ churros test formulas --file formulas.instances --file formulas.triggers --test 'file'");
+    console.log('    $ churros test formulas --file formulas.instances --file formulas.triggers --test \'should not allow\'');
     console.log('');
   })
   .parse(process.argv);
