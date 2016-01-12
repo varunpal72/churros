@@ -1,6 +1,7 @@
 #!/usr/bin/env bats
 
-@test "churros is not a CLI yet" {
+@test "It should display help when run with -h" {
   run churros -h
-  [ "$status" -eq 127 ]
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "  Usage: churros [options] [command]" ]
 }
