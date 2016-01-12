@@ -7,7 +7,7 @@
     "url": "git://github.com/cloud-elements/churros.git"
   },
   "scripts": {
-    "test": "mocha test/cli.js --reporter spec --ui bdd"
+    "test": "mocha test/cli.js --reporter spec --ui bdd && bats test/"
   },
   "bin": {
     "churros": "src/cli/churros.js"
@@ -23,6 +23,7 @@
     "selenium-webdriver": "^2.48.2"
   },
   "devDependencies": {
+    "bats": "^0.4.2",
     "gulp": "^3.9.0",
     "gulp-mocha": "^2.2.0"
   }
