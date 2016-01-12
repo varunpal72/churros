@@ -1,5 +1,3 @@
-'use strict';
-
 const mocha = require('mocha');
 
 describe('Fake Test', () => {
