@@ -4,8 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const commander = require('commander');
 const util = require('util');
-const config = require(process.env.HOME + '/.churros/churros.json');
 const shell = require('shelljs');
+const config = require(process.env.HOME + '/.churros/churros.json');
 
 const collect = function collect(val, list) {
   list.push(val);
@@ -22,8 +22,14 @@ const runTests = function runTests(resource, options) {
 
   const rootTestDir = path.dirname(require.main.filename) + '/../test';
 
-  // always pass the setup file first
-  mochaPaths.push(rootTestDir + '/setup');
+  // always pass the setup file first.  if it's an element, then use that element's setup file, otherwise use the default setup file
+  if (resource.startsWith('elements')) {
+    const setup = util.format('%s/%s/%s', rootTestDir, resource, 'setup');
+    mochaPaths.push(setup);
+  } else {
+    const setup = util.format('%s/%s', rootTestDir, resource, 'setup');
+    mochaPaths.push(rootTestDir + '/setup');
+  }
 
   // validate the root resource path before continuing
   var testPath = util.format('%s/%s', rootTestDir, resource);
