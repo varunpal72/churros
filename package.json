@@ -22,7 +22,8 @@
     "optimist": "^0.6.1",
     "phantomjs": "^1.9.19",
     "prompt": "^0.2.14",
-    "selenium-webdriver": "^2.48.2"
+    "selenium-webdriver": "^2.48.2",
+    "shelljs": "^0.5.3"
   },
   "devDependencies": {
     "bats": "^0.4.2",
