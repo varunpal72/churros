@@ -13,7 +13,7 @@ $ npm install
 $ npm install --global phantomjs
 $ sudo npm link
 ```
-> may have to `sudo` the global installs depending on your environment
+> Note: May have to `sudo` the global installs depending on your environment
 
 ```bash
 $ churros init
@@ -23,7 +23,13 @@ Follow the given prompts where you will be guided through setting the default va
 
 ## running
 
-Coming Soon
+```bash
+$ churros test formulas
+$ churros test formulas --file formulas.triggers
+$ churros test formulas --file formulas.triggers --file formulas.instances
+$ churros test formulas --file formulas.triggers --file formulas.instances --test \`should not allow\`
+```
+> Note: Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value setup during `churros init`
 
 ## Changelog
 

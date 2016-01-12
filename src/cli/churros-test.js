@@ -12,43 +12,46 @@ const collect = function collect(val, list) {
   return list;
 }
 
-const runTests = function runTests(resource, options) {
+const runTests = function runTests(suite, options) {
+  const file = options.file;
+  const test = options.test;
   const user = options.user || config.user;
   const password = options.password || config.password;
-  const url = options.url || config.url;
-  const suite = options.suite;
-  const test = options.test;
-  const mochaPaths = [];
+  var url = options.url || config.url;
+
+  if (url.startsWith('localhost')) url = 'http://' + url;
+  if (!url.startsWith('http')) url = 'https://' + url;
 
   const rootTestDir = path.dirname(require.main.filename) + '/../test';
 
   // always pass the setup file first.  if it's an element, then use that element's setup file too
-  const setup = util.format('%s/%s', rootTestDir, resource, 'setup');
+  const mochaPaths = [];
+  const setup = util.format('%s/%s', rootTestDir, suite, 'setup');
   mochaPaths.push(rootTestDir + '/setup');
 
-  if (resource.startsWith('elements')) {
-    const elementSetup = util.format('%s/%s/%s', rootTestDir, resource, 'setup');
+  if (suite.startsWith('elements')) {
+    const elementSetup = util.format('%s/%s/%s', rootTestDir, suite, 'setup');
     mochaPaths.push(elementSetup);
   }
 
-  // validate the root resource path before continuing
-  var testPath = util.format('%s/%s', rootTestDir, resource);
+  // validate the root suite path before continuing
+  var testPath = util.format('%s/%s', rootTestDir, suite);
   if (!fs.existsSync(testPath)) {
-    console.log('Invalid resource: %s', resource);
+    console.log('Invalid suite: %s', suite);
     process.exit(1);
   }
 
-  // add the resource next, unless a specific suite was passed
-  if (suite.length < 1) {
+  // add the suite next, unless a specific file was passed
+  if (file.length < 1) {
     mochaPaths.push(testPath);
   } else {
-    suite.forEach((s) => {
-      var suitePath = testPath + '/' + s;
-      if (!fs.existsSync(suitePath + '.js')) {
-        console.log('Invalid suite: %s', s);
+    file.forEach((s) => {
+      var filePath = testPath + '/' + s;
+      if (!fs.existsSync(filePath + '.js')) {
+        console.log('Invalid file: %s', s);
         process.exit(1);
       }
-      mochaPaths.push(suitePath);
+      mochaPaths.push(filePath);
     });
   }
 
@@ -60,10 +63,10 @@ const runTests = function runTests(resource, options) {
 }
 
 commander
-  .command('resource', 'The resource to test (formulas, notifications, elements/box, etc.)')
-  .action((resource, options) => runTests(resource, options))
-  .option('-s, --suite <suite>', 'The suite(s) of tests to run', collect, [])
-  .option('-t, --test <test>', 'The specific test to run', '')
+  .command('suite', 'The suite to test (formulas, notifications, elements/box, etc.)')
+  .action((suite, options) => runTests(suite, options))
+  .option('-s, --file <file>', 'The file(s) of tests to run (exclude the .js)', collect, [])
+  .option('-t, --test <test>', 'The specific test(s) to run.  This searches through all "describe(...)" and "it(...)" strings', '')
   .option('-u, --user <user>', '', '')
   .option('-p, --password <password>', '', '')
   .option('-r, --url <url>', '', '')
@@ -71,8 +74,8 @@ commander
     console.log('  Examples:');
     console.log('');
     console.log('    $ churros test formulas');
-    console.log('    $ churros test formulas --suite formulas.instances --suite formulas.triggers');
-    console.log("    $ churros test formulas --suite formulas.instances --suite formulas.triggers --test 'file'");
+    console.log('    $ churros test formulas --file formulas.instances --file formulas.triggers');
+    console.log("    $ churros test formulas --file formulas.instances --file formulas.triggers --test 'file'");
     console.log('');
   })
   .parse(process.argv);
