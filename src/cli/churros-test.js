@@ -55,7 +55,7 @@ const runTests = function runTests(resource, options) {
   var args = util.format('--user %s --password %s --url %s --timeout 20000 --reporter spec --ui bdd', user, password, url);
   if (test) args += util.format(" --grep '%s'", test);
 
-  var cmd = util.format('mocha %s %s', mochaPaths.join(' '), args);
+  var cmd = util.format('./node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
   shell.exec(cmd);
 }
 

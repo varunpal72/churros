@@ -11,8 +11,6 @@ If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/g
 ```bash
 $ npm install
 $ npm install --global phantomjs
-$ npm install --global mocha
-$ npm install --global gulp
 $ sudo npm link
 ```
 > may have to `sudo` the global installs depending on your environment
