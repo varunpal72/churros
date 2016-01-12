@@ -7,7 +7,7 @@ const formulasUtil = require('./formulas.util');
 
 const schema = require('./assets/formula.schema');
 
-describe('formulas APIs', () => {
+describe('formulas', () => {
   it('should allow cruding a simple formula', () => {
     return api.crud('/formulas', formulasUtil.gen({}), schema);
   });

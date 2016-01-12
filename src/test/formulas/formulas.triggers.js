@@ -9,7 +9,7 @@ const formulasUtil = require('./formulas.util');
 const schema = require('./assets/formula.schema');
 const triggerSchema = require('./assets/formula-trigger.schema');
 
-describe('formula triggers APIs', () => {
+describe('formula triggers', () => {
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
     const f = formulasUtil.gen({});
 

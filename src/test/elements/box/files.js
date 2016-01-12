@@ -7,7 +7,7 @@ const url = require('url');
 const box = require('core/provision/box');
 const ei = require('core/util/element-instances')
 
-describe('files apis', () => {
+describe('files', () => {
   it('should throw a 404 when trying to find an invalid file', () => {
     var uri = '/hubs/documents/files/-1';
     return chakram.get(uri).then((r) => {

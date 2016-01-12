@@ -5,7 +5,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const url = require('url');
 
-describe('folders apis', () => {
+describe('folders', () => {
   it('should allow listing folder contents', () => {
     var uri = '/hubs/documents/folders/contents';
     return chakram.get(uri + '?path=/').then((r) => {

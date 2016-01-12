@@ -9,7 +9,7 @@ const box = require('core/provision/box');
 
 const schema = require('./assets/formula.schema');
 
-describe('formula instances APIs', () => {
+describe('formula instances', () => {
   it('should not allow creating an instance of a formula with an invalid on success step', () => {
     const f = formulasUtil.gen({});
 
