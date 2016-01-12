@@ -17,6 +17,7 @@ const runTests = function runTests(resource, options) {
   const password = options.password || config.password;
   const url = options.url || config.url;
   const suite = options.suite;
+  const test = options.test;
   const mochaPaths = [];
 
   const rootTestDir = path.dirname(require.main.filename) + '/../test';
@@ -32,7 +33,7 @@ const runTests = function runTests(resource, options) {
   }
 
   // add the resource next, unless a specific suite was passed
-  if (!suite || suite.length < 1) {
+  if (suite.length < 1) {
     mochaPaths.push(testPath);
   } else {
     suite.forEach((s) => {
@@ -45,7 +46,9 @@ const runTests = function runTests(resource, options) {
     });
   }
 
-  const args = util.format('--user %s --password %s --url %s --timeout 20000 --reporter spec --ui bdd', user, password, url);
+  var args = util.format('--user %s --password %s --url %s --timeout 20000 --reporter spec --ui bdd', user, password, url);
+  if (test) args += util.format(" --grep '%s'", test);
+
   var cmd = util.format('mocha %s %s', mochaPaths.join(' '), args);
   shell.exec(cmd);
 }
@@ -54,7 +57,7 @@ commander
   .command('resource', 'The resource to test (formulas, notifications, elements/box, etc.)')
   .action((resource, options) => runTests(resource, options))
   .option('-s, --suite <suite>', 'The suite(s) of tests to run', collect, [])
-  .option('-t, --test <test>', 'The specific test(s) to run', '')
+  .option('-t, --test <test>', 'The specific test to run', '')
   .option('-u, --user <user>', '', '')
   .option('-p, --password <password>', '', '')
   .option('-r, --url <url>', '', '')
@@ -63,7 +66,7 @@ commander
     console.log('');
     console.log('    $ churros test formulas');
     console.log('    $ churros test formulas --suite formulas.instances --suite formulas.triggers');
-    console.log('    $ churros test formulas --suite formulas.instances --suite formulas.triggers --test *file* --test *other*');
+    console.log("    $ churros test formulas --suite formulas.instances --suite formulas.triggers --test 'file'");
     console.log('');
   })
   .parse(process.argv);
