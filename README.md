@@ -11,11 +11,10 @@ If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/g
 ```bash
 $ npm install
 $ npm install --global phantomjs
-$ npm install --global mocha
-$ npm install --global gulp
-$ sudo npm link
+$ npm link
+$ ln -s ../src/core node_modules/core
 ```
-> may have to `sudo` the global installs depending on your environment
+> Note: May have to `sudo` the global install and `npm link` depending on your environment setup
 
 ```bash
 $ churros init
@@ -25,7 +24,13 @@ Follow the given prompts where you will be guided through setting the default va
 
 ## running
 
-Coming Soon
+```bash
+$ churros test formulas
+$ churros test formulas --file formulas.triggers
+$ churros test formulas --file formulas.triggers --file formulas.instances
+$ churros test formulas --file formulas.triggers --file formulas.instances --test `should not allow`
+```
+> Note: Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`
 
 ## Changelog
 

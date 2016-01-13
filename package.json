@@ -1,13 +1,14 @@
 {
   "name": "churros",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Test suite for all things cloud elements",
   "repository": {
     "type": "git",
     "url": "git://github.com/cloud-elements/churros.git"
   },
   "scripts": {
-    "test": "mocha test/cli.js --reporter spec --ui bdd && bats test/"
+    "test": "mocha test/cli.js --reporter spec --ui bdd && bats test/",
+    "gulp": "gulp"
   },
   "bin": {
     "churros": "src/cli/churros.js"
@@ -16,12 +17,12 @@
   "license": "ISC",
   "dependencies": {
     "chakram": "^1.2.1",
-    "colors": "^1.1.2",
     "commander": "^2.9.0",
     "mocha": "^2.3.4",
     "optimist": "^0.6.1",
     "prompt": "^0.2.14",
-    "selenium-webdriver": "^2.48.2"
+    "selenium-webdriver": "^2.48.2",
+    "shelljs": "^0.5.3"
   },
   "devDependencies": {
     "bats": "^0.4.2",

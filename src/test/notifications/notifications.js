@@ -14,7 +14,7 @@ const notifyGen = (opts) => new Object({
   from: (opts.from || 'churros')
 });
 
-describe('notification APIs', () => {
+describe('notifications', () => {
   const url = '/notifications';
 
   it('should allow creating, retrieving and deleting a notification', () => {

@@ -4,7 +4,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const subscriptionSchema = require('./assets/subscription.schema');
 
-describe('subscription APIs', () => {
+describe('subscriptions', () => {
   const url = '/notifications/subscriptions';
 
   it('should allow creating, retrieving and deleting a subscription', () => {
