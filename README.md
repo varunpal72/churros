@@ -12,6 +12,7 @@ If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/g
 $ npm install
 $ npm install --global phantomjs
 $ npm link
+$ ln -s ../src/core node_modules/core
 ```
 > Note: May have to `sudo` the global install and `npm link` depending on your environment setup
 
