@@ -3,6 +3,7 @@
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
+const auth = require('core/util/auth');
 
 var exports = module.exports = {};
 
@@ -22,6 +23,7 @@ exports.delete = (id) => {
     .then((r) => {
       console.log('Deleted element instance with ID: ' + id);
       expect(r).to.have.status(200);
+      auth.reset(); // resets auth to our standard User <>, Organization <>
       return r.body;
     });
 };
