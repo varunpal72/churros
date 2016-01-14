@@ -6,7 +6,7 @@ const expect = chakram.expect;
 
 var exports = module.exports = {};
 
-exports.crd = function (api, payload, schema) {
+exports.crd = (api, payload, schema) => {
   return chakram.post(api, payload)
     .then((r) => {
       expect(r).to.have.status(200);
@@ -23,7 +23,7 @@ exports.crd = function (api, payload, schema) {
     });
 };
 
-exports.crud = function (api, payload, schema) {
+exports.crud = (api, payload, schema) => {
   return chakram.post(api, payload)
     .then((r) => {
       expect(r).to.have.status(200);

@@ -11,7 +11,7 @@ commander
   .option('-r, --url <url>', 'The url to run tests against', '')
   .parse(process.argv);
 
-console.log('Initializing churros...\n');
+console.log('Initializating churros...');
 
 prompt.message = "   ";
 prompt.delimiter = "";
@@ -21,16 +21,16 @@ const prompts = {
   properties: {
     user: {
       required: true,
-      description: 'user: '
+      description: 'Enter the default CE user to run churros as: '
     },
     password: {
       hidden: true,
       required: true,
-      description: 'password: '
+      description: 'Enter the password for that user: '
     },
     url: {
       default: 'api.cloud-elements.com',
-      description: 'url: ',
+      description: 'Enter the default URL to run churros against: ',
       before: (url) => {
         if (url.startsWith('localhost')) url = 'http://' + url;
         if (!url.startsWith('http')) url = 'https://' + url;

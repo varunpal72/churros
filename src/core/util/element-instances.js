@@ -6,7 +6,7 @@ const expect = chakram.expect;
 
 var exports = module.exports = {};
 
-exports.all = function () {
+exports.all = () => {
   const url = '/instances';
   return chakram.get(url)
     .then((r) => {
@@ -16,7 +16,7 @@ exports.all = function () {
     });
 };
 
-exports.delete = function (id) {
+exports.delete = (id) => {
   const url = '/instances/' + id;
   return chakram.delete(url)
     .then((r) => {

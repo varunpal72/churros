@@ -3,6 +3,7 @@
 USAGE="  Usage: churros [options] [command]"
 INIT_USAGE="  Usage: churros-init [options]"
 TEST_USAGE="  Usage: churros-test [options] [command]"
+PROPS_USAGE="  Usage: churros-props [options] [command]"
 
 @test "It should display help when run with -h" {
   run churros -h
@@ -48,4 +49,15 @@ TEST_USAGE="  Usage: churros-test [options] [command]"
   run churros test notifications --file fake.file.name
   [ "$status" -gt 0 ]
   [ "${lines[0]}" = "Invalid file: fake.file.name" ]
+}
+
+@test "It should support churros help props" {
+  run churros help props
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "${PROPS_USAGE}" ]
+}
+
+@test "It should support churros props --list to list all properties" {
+  run churros props --list
+  [ "$status" -eq 0 ]
 }

@@ -11,9 +11,9 @@ before((done) => {
   const url = argv.url;
 
   // override properties here on initialization
-  props.override('user', user);
-  props.override('password', password);
-  props.override('url', url);
+  props.set('user', user);
+  props.set('password', password);
+  props.set('url', url);
 
   const secUrl = url + '/elements/j_spring_security_check';
   const form = { j_username: user, j_password: password };
@@ -23,8 +23,8 @@ before((done) => {
       return chakram.get(url + '/elements/api-v1/ui/getSecrets', { jar: true });
     })
     .then((r) => {
-      props.override('user.secret', r.body.user);
-      props.override('org.secret', r.body.company);
+      props.set('user.secret', r.body.user);
+      props.set('org.secret', r.body.company);
       chakram.setRequestDefaults({
         baseUrl: url + '/elements/api-v2',
         headers: {

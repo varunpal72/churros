@@ -1,11 +1,22 @@
 'use strict';
 
 const config = require(process.env.HOME + '/.churros/churros.json');
+const prompt = require('prompt');
+prompt.message = "   ";
+prompt.delimiter = "";
 
 var exports = module.exports = {};
 
-exports.prop = config;
+exports.get = (key) => {
+  var value = config[key];
+  if (value) return value;
 
-exports.override = function (key, value) {
+  // right now, if a property isn't found we just fail immediately.  long term, we want to add the ability to run in
+  // '--prompt' mode, which will prompt the user for a value to use.
+  console.log("No value found for required property: '%s'\n   > can set this value by calling 'churros props %s <value>'", key, key);
+  process.exit(1);
+};
+
+exports.set = (key, value) => {
   config[key] = value;
-}
+};

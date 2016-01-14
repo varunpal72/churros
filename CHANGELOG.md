@@ -17,3 +17,7 @@ $ churros test notifications --file subscriptions --file notifications --test \'
 ```bash
 $ churros test notifications --user frank_ricard --password old_school --url frank.old-school.com
 ```
+
+* `$ churros props` support for interfacing with the `$HOME/.churros/churros.json` property file that contains all sensitive data
+* [CircleCI](https://circleci.com/gh/cloud-elements/churros) support
+* Gracefully handles if endpoint that tests are running against is not currently running

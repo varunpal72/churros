@@ -4,17 +4,16 @@ const util = require('util');
 const chakram = require('chakram');
 const webdriver = require('selenium-webdriver');
 const url = require('url');
-const props = require('core/util/properties').prop;
-const boxProps = require('core/util/properties').prop.box;
+const props = require('core/util/properties');
 
 var exports = module.exports = {};
 
-exports.create = function () {
-  const apiKey = boxProps['oauth.api.key'];
-  const apiSecret = boxProps['oauth.api.secret'];
-  const callbackUrl = boxProps['oauth.callback.url'];
-  const username = boxProps['username'];
-  const password = boxProps['password'];
+exports.create = () => {
+  const apiKey = props.get('box.oauth.api.key');
+  const apiSecret = props.get('box.oauth.api.secret');
+  const callbackUrl = props.get('box.oauth.callback.url');
+  const username = props.get('box.username');
+  const password = props.get('box.password');
 
   const options = {
     qs: {
@@ -57,9 +56,9 @@ exports.create = function () {
     })
     .then((r) => {
       chakram.setRequestDefaults({
-        baseUrl: props['url'] + '/elements/api-v2',
+        baseUrl: props.get('url') + '/elements/api-v2',
         headers: {
-          Authorization: util.format('User %s, Organization %s, Element %s', props['user.secret'], props['org.secret'], r.body.token)
+          Authorization: util.format('User %s, Organization %s, Element %s', props.get('user.secret'), props.get('org.secret'), r.body.token)
         }
       });
       console.log('Created box element instance with ID: ' + r.body.id);
