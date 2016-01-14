@@ -8,8 +8,7 @@
   },
   "scripts": {
     "postinstall" : "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
-    "test": "mocha test/cli.js --reporter spec --ui bdd && bats test/",
-    "gulp": "gulp"
+    "test": "mocha test/cli.js --reporter spec --ui bdd && bats test/"
   },
   "bin": {
     "churros": "src/cli/churros.js"
@@ -26,8 +25,6 @@
     "shelljs": "^0.5.3"
   },
   "devDependencies": {
-    "bats": "^0.4.2",
-    "gulp": "^3.9.0",
-    "gulp-mocha": "^2.2.0"
+    "bats": "^0.4.2"
   }
 }
