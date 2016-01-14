@@ -7,6 +7,7 @@
     "url": "git://github.com/cloud-elements/churros.git"
   },
   "scripts": {
+    "postinstall": "ln -s ../src/core node_modules/core",
     "test": "mocha test/cli.js --reporter spec --ui bdd && bats test/",
     "gulp": "gulp"
   },
