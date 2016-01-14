@@ -9,6 +9,8 @@ If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/g
 
 > **PROTIP:** `node` version must  be >= `v4.0.0`
 
+Install the node dependencies and initalize churros.
+
 ```bash
 # Install all necessary npm packages:
 $ npm install
@@ -41,7 +43,8 @@ $ churros test formulas --file formulas.triggers --file formulas.instances
 $ churros test formulas --file formulas.triggers --file formulas.instances --test `should not allow`
 ```
 
-> **PROTIP:** Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init` **PROTIP:** The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
+> **PROTIP:** Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`
+> **PROTIP:** The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
 
 ## Changelog
 See [CHANGELOG.md](CHANGELOG.md)
