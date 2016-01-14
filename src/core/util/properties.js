@@ -13,7 +13,7 @@ exports.get = (key) => {
 
   // right now, if a property isn't found we just fail immediately.  long term, we want to add the ability to run in
   // '--prompt' mode, which will prompt the user for a value to use.
-  console.log("No value found for required property: '%s' (Set this value by calling 'churros props %s <value>')", key, key);
+  console.log("No value found for required property: '%s'\n   > can set this value by calling 'churros props %s <value>'", key, key);
   process.exit(1);
 };
 
