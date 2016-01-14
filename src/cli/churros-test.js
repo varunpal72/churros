@@ -55,7 +55,8 @@ const runTests = function runTests(suite, options) {
     });
   }
 
-  var args = util.format('--user %s --password %s --url %s --timeout 20000 --reporter spec --ui bdd', user, password, url);
+  // 10 minute timeout right now
+  var args = util.format('--user %s --password %s --url %s --timeout 600000 --reporter spec --ui bdd', user, password, url);
   if (test) args += util.format(" --grep '%s'", test);
 
   var cmd = util.format('./node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
@@ -63,13 +64,13 @@ const runTests = function runTests(suite, options) {
 }
 
 commander
-  .command('suite', 'The suite to test (formulas, notifications, elements/box, etc.)')
+  .command('suite', 'suite to test (formulas, notifications, elements/box, etc.)')
   .action((suite, options) => runTests(suite, options))
-  .option('-s, --file <file>', 'The file(s) of tests to run (exclude the .js)', collect, [])
-  .option('-t, --test <test>', 'The specific test(s) to run.  This searches through all "describe(...)" and "it(...)" strings', '')
-  .option('-u, --user <user>', 'Overrides the default user setup during initialization', '')
-  .option('-p, --password <password>', 'Overrides the default password setup during initialization', '')
-  .option('-r, --url <url>', 'Overrides the default URL setup during initialization', '')
+  .option('-s, --file <file>', 'file(s) of tests to run (exclude the .js)', collect, [])
+  .option('-t, --test <test>', 'specific test(s) to run.  This searches through all "describe(...)" and "it(...)" strings', '')
+  .option('-u, --user <user>', 'overrides the default user setup during initialization', '')
+  .option('-p, --password <password>', 'overrides the default password setup during initialization', '')
+  .option('-r, --url <url>', 'overrides the default URL setup during initialization', '')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
