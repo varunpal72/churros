@@ -8,8 +8,9 @@ const url = require('url');
 describe('folders', () => {
   it('should allow listing folder contents', () => {
     var uri = '/hubs/documents/folders/contents';
-    return chakram.get(uri + '?path=/').then((r) => {
-      expect(r).to.have.status(200);
-    });
+    return chakram.get(uri + '?path=/')
+      .then(r => {
+        expect(r).to.have.status(200);
+      });
   });
 });

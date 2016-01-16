@@ -28,7 +28,7 @@ exports.create = () => {
     .build();
 
   return chakram.get('/elements/box/oauth/url', options)
-    .then((r) => {
+    .then(r => {
       driver.get(r.body.oauthUrl);
       driver.findElement(webdriver.By.name('login')).sendKeys(username);
       driver.findElement(webdriver.By.name('password')).sendKeys(password);
@@ -36,7 +36,7 @@ exports.create = () => {
       driver.findElement(webdriver.By.name('consent_accept')).click();
       return driver.getCurrentUrl();
     })
-    .then((r) => {
+    .then(r => {
       const query = url.parse(r, true).query;
       const instance = {
         name: 'churros-box-instance',
@@ -54,7 +54,7 @@ exports.create = () => {
       };
       return chakram.post('/instances', instance);
     })
-    .then((r) => {
+    .then(r => {
       chakram.setRequestDefaults({
         baseUrl: props.get('url') + '/elements/api-v2',
         headers: {
@@ -65,7 +65,7 @@ exports.create = () => {
       driver.close();
       return r;
     })
-    .catch((r) => {
+    .catch(r => {
       console.log('Failed to create an instance of box: ' + r);
       driver.close();
       process.exit(1);

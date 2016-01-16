@@ -28,20 +28,20 @@ describe('notifications', () => {
     });
 
     return chakram.post(url, n)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(schema);
 
         return chakram.get(url + '?topics[]=' + n.topic);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r.body).to.not.be.empty;
         expect(r.body.length).to.equal(1);
 
         return chakram.delete(url + '/' + r.body[0].id);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
       });
   });
@@ -50,28 +50,28 @@ describe('notifications', () => {
     const n = notifyGen({});
 
     return chakram.post(url, n)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(schema);
         expect(r.body.acknowledged).to.equal(false);
 
         return chakram.put(url + '/' + r.body.id + '/acknowledge');
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r.body).to.not.be.empty;
         expect(r.body.acknowledged).to.equal(true);
 
         return chakram.delete(url + '/' + r.body.id);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
       });
   });
 
   it('should return an empty array if no notifications are found with the given topic', () => {
     return chakram.get(url + '?topics[]=fake-topic-name')
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r.body).to.be.empty;
       });
@@ -79,21 +79,21 @@ describe('notifications', () => {
 
   it('should throw a 400 if missing search query', () => {
     return chakram.get(url)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(400);
       });
   });
 
   it('should throw a 404 if the notification does not exist', () => {
     return chakram.get(url + '/' + -1)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(404);
       });
   });
 
   it('should throw a 400 if notification JSON is null', () => {
     return chakram.post(url, null)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(400);
       });
   });
@@ -103,7 +103,7 @@ describe('notifications', () => {
     n.topic = null;
 
     return chakram.post(url, n)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(400);
       });
   });

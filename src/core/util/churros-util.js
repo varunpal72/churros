@@ -9,7 +9,7 @@ exports.random = () => {
 };
 
 exports.replaceWith = (object, value) => {
-  Object.keys(object).forEach((key) => {
+  Object.keys(object).forEach(key => {
     object[key] = util.format(object[key], value);
   });
 };
