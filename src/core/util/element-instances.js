@@ -4,6 +4,9 @@ const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const auth = require('core/util/auth');
+const webdriver = require('selenium-webdriver');
+const props = require('core/util/properties');
+const url = require('url');
 
 var exports = module.exports = {};
 
@@ -32,13 +35,55 @@ exports.create = (instance) => {
     });
 };
 
+exports.create = (element, callback, args) => {
+  const apiKey = props.get(util.format('%s.oauth.api.key', element));
+  const apiSecret = props.get(util.format('%s.oauth.api.secret', element));
+  const callbackUrl = props.get(util.format('%s.oauth.callback.url', element));
+  const username = props.get(util.format('%s.username', element));
+  const password = props.get(util.format('%s.password', element));
+
+  const options = { qs: { apiKey: apiKey, apiSecret: apiSecret, callbackUrl: callbackUrl } };
+  const driver = new webdriver.Builder().forBrowser('phantomjs').build();
+  const oauthUrl = util.format('/elements/%s/oauth/url', element);
+
+  return chakram.get(oauthUrl, options)
+    .then(r => {
+      return callback(r, username, password, driver);
+    })
+    .then(r => {
+      const query = url.parse(r, true).query;
+      const instance = {
+        name: 'churros-instance',
+        element: { key: element },
+        configuration: {
+          'oauth.api.key': apiKey,
+          'oauth.api.secret': apiSecret,
+          'oauth.callback.url': callbackUrl
+        },
+        providerData: { code: query.code }
+      };
+      return chakram.post('/instances', instance);
+    })
+    .then(r => {
+      console.log('Created %s element instance with ID: %s', element, r.body.id);
+      auth.setup(r.body.token);
+      driver.close();
+      return r;
+    })
+    .catch(r => {
+      console.log('Failed to create an instance of %s: %s', element, r);
+      driver.close();
+      process.exit(1);
+    });
+};
+
 exports.delete = (id) => {
   const url = '/instances/' + id;
   return chakram.delete(url)
     .then(r => {
       expect(r).to.have.status(200);
       console.log('Deleted element instance with ID: ' + id);
-      auth.reset(); // resets auth to our standard User <>, Organization <>
+      auth.setup();
       return r.body;
     })
     .catch(r => {

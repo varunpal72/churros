@@ -16,7 +16,7 @@ const loadFile = () => {
 const property = (key, value) => {
   console.log('');
   loadFile()
-    .then((r) => {
+    .then(r => {
       if (typeof value != 'string') console.log(r[key])
       else {
         r[key] = value;
@@ -27,7 +27,7 @@ const property = (key, value) => {
         });
       }
     })
-    .catch((r) => console.log(r));
+    .catch(r => console.log(r));
 };
 
 commander
@@ -40,15 +40,15 @@ commander
 if (commander.list) {
   console.log('');
   loadFile()
-    .then((r) => Object.keys(r).forEach((k) => console.log('%s: %s', k, r[k])))
-    .then((r) => console.log(''))
-    .catch((r) => console.log(r));
+    .then(r => Object.keys(r).forEach((k) => console.log('%s: %s', k, r[k])))
+    .then(r => console.log(''))
+    .catch(r => console.log(r));
 }
 
 if (commander.delete) {
   console.log('');
   loadFile()
-    .then((r) => {
+    .then(r => {
       delete r[commander.delete];
       fs.writeFile(file, JSON.stringify(r, null, 2), (err) => {
         if (err) console.log('Error while trying to delete value for %s', commander.delete);
@@ -56,5 +56,5 @@ if (commander.delete) {
         console.log('');
       });
     })
-    .catch((r) => console.log(r));
+    .catch(r => console.log(r));
 }
