@@ -1,6 +1,6 @@
 'use strict';
 
-const api = require('core/util/api');
+const api = require('core/api');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const formulasUtil = require('./formulas.util');

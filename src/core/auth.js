@@ -1,7 +1,7 @@
 'use strict';
 
 const chakram = require('chakram');
-const props = require('core/util/properties');
+const props = require('core/properties');
 const util = require('util');
 
 var exports = module.exports = {};

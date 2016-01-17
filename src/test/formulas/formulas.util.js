@@ -1,6 +1,6 @@
 'use strict';
 
-const churrosUtil = require('core/util/churros-util');
+const churrosUtil = require('core/churros-util');
 
 var exports = module.exports = {};
 

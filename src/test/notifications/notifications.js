@@ -2,8 +2,8 @@
 
 const chakram = require('chakram');
 const expect = chakram.expect;
-const churrosUtil = require('core/util/churros-util');
-const api = require('core/util/api');
+const churrosUtil = require('core/churros-util');
+const api = require('core/api');
 
 const schema = require('./assets/notification.schema.json');
 

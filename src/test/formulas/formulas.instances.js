@@ -3,10 +3,9 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
-const churrosUtil = require('core/util/churros-util');
+const churrosUtil = require('core/churros-util');
 const formulasUtil = require('./formulas.util');
-const box = require('core/provision/box');
-const ei = require('core/util/element-instances');
+const ei = require('core/element-instances');
 
 const schema = require('./assets/formula.schema');
 
@@ -48,7 +47,7 @@ describe('formula instances', () => {
   });
 
   it('should allow creating a big azz formula and then an instance', () => {
-    return box.create()
+    return ei.create('box')
       .then(r => {
         const id = r.body.id;
 

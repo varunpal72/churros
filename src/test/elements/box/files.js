@@ -3,7 +3,7 @@
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const ei = require('core/util/element-instances')
+const ei = require('core/element-instances')
 
 describe('files', () => {
   it('should throw a 404 when trying to find an invalid file', () => {

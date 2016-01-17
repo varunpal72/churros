@@ -26,11 +26,12 @@ const runTests = function runTests(suite, options) {
 
   // always pass the setup file first.  if it's an element, then use that element's setup file too
   const mochaPaths = [];
-  const setup = util.format('%s/%s', rootTestDir, suite, 'setup');
   mochaPaths.push(rootTestDir + '/setup');
 
+  var element = null;
   if (suite.startsWith('elements')) {
-    const elementSetup = util.format('%s/%s/%s', rootTestDir, suite, 'setup');
+    const elementSetup = util.format('%s/%s/%s', rootTestDir, 'elements', 'setup');
+    element = suite.split('/')[1]; // i.e 'elements/box' would get 'box' here
     mochaPaths.push(elementSetup);
   }
 
@@ -58,6 +59,7 @@ const runTests = function runTests(suite, options) {
   // 10 minute timeout right now
   var args = util.format('--user %s --password %s --url %s --timeout 600000 --reporter spec --ui bdd', user, password, url);
   if (test) args += util.format(" --grep '%s'", test);
+  if (element) args += util.format(" --element %s", element);
 
   var cmd = util.format('./node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
   shell.exec(cmd);
