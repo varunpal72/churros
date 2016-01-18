@@ -7,6 +7,7 @@ const auth = require('core/auth');
 const webdriver = require('selenium-webdriver');
 const props = require('core/properties');
 const url = require('url');
+const sleep = require('sleep');
 
 const elements = {
   box: (r, username, password, driver) => {
@@ -15,6 +16,16 @@ const elements = {
     driver.findElement(webdriver.By.name('password')).sendKeys(password);
     driver.findElement(webdriver.By.name('login_submit')).click();
     driver.findElement(webdriver.By.name('consent_accept')).click();
+    return driver.getCurrentUrl();
+  },
+  sfdc: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    driver.findElement(webdriver.By.id("username")).clear();
+    driver.findElement(webdriver.By.id("username")).sendKeys(username);
+    driver.findElement(webdriver.By.id("password")).clear();
+    driver.findElement(webdriver.By.id("password")).sendKeys(password);
+    driver.findElement(webdriver.By.id("Login")).click();
+    driver.get(driver.getCurrentUrl());
     return driver.getCurrentUrl();
   }
 };
@@ -34,9 +45,11 @@ exports.all = () => {
 };
 
 exports.create = (element, args) => {
+  const callbackUrl = props.get('oauth.callback.url');
+
+  // endpoint-specific properties
   const apiKey = props.get(util.format('%s.oauth.api.key', element));
   const apiSecret = props.get(util.format('%s.oauth.api.secret', element));
-  const callbackUrl = props.get(util.format('%s.oauth.callback.url', element));
   const username = props.get(util.format('%s.username', element));
   const password = props.get(util.format('%s.password', element));
   const callback = elements[element];

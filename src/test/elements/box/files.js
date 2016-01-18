@@ -1,12 +1,10 @@
 'use strict';
 
-const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const ei = require('core/element-instances')
 
 describe('files', () => {
-  it('should throw a 404 when trying to find an invalid file', () => {
+  it('should throw a 404 when trying to retrieve a file that does not exist', () => {
     var uri = '/hubs/documents/files/-1';
     return chakram.get(uri)
     .then(r => {

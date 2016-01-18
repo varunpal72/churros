@@ -1,7 +1,6 @@
 'use strict';
 
 const ei = require('core/element-instances')
-const setup = require('../setup');
 const argv = require('optimist').demand('user').argv
 
 var instanceId = -1;
