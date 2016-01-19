@@ -1,17 +1,11 @@
 'use strict';
 
 const config = require(process.env.HOME + '/.churros/churros.json');
-const prompt = require('prompt');
-prompt.message = "   ";
-prompt.delimiter = "";
 
 var exports = module.exports = {};
 
-exports.get = (key, element) => {
-  var value = null;
-  if (element) value = config[element][key];
-  else value = config[key];
-  
+exports.get = (key) => {
+  var value = config[key];
   if (value) return value;
 
   // right now, if a property isn't found we just fail immediately.  long term, we want to add the ability to run in

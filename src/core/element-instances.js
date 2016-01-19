@@ -5,7 +5,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const auth = require('core/auth');
 const webdriver = require('selenium-webdriver');
-const props = require('core/properties');
+const props = require('core/props');
 const url = require('url');
 
 const elements = {
@@ -50,10 +50,10 @@ exports.create = (element, args) => {
     // endpoint-specific properties
     const callbackUrl = props.get('oauth.callback.url');
 
-    const apiKey = props.get('oauth.api.key', element);
-    const apiSecret = props.get('oauth.api.secret', element);
-    const username = props.get('username', element);
-    const password = props.get('password', element);
+    const apiKey = props.get(element)['oauth.api.key'];
+    const apiSecret = props.get(element)['oauth.api.secret'];
+    const username = props.get(element)['username'];
+    const password = props.get(element)['password'];
 
     const options = {
       qs: {

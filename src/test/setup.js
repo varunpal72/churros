@@ -3,7 +3,7 @@
 const chakram = require('chakram');
 const util = require('util');
 const argv = require('optimist').demand('user').argv
-const props = require('core/properties');
+const props = require('core/props');
 
 before((done) => {
   const user = argv.user;
