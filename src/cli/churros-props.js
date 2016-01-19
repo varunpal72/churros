@@ -19,7 +19,12 @@ const property = (key, value) => {
     .then(r => {
       if (typeof value != 'string') console.log(r[key])
       else {
-        r[key] = value;
+        const keys = key.split(':');
+        if (keys.length > 1) {
+          if (!r[keys[0]]) r[keys[0]] = {};
+          r[keys[0]][keys[1]] = value;
+        } else r[key] = value;
+
         fs.writeFile(file, JSON.stringify(r, null, 2), (err) => {
           if (err) console.log('Error while trying to set %s to %s', key, value);
           else console.log('Successfully set %s to %s', key, value);
@@ -30,8 +35,16 @@ const property = (key, value) => {
     .catch(r => console.log(r));
 };
 
+const display = (r, indent) => {
+  Object.keys(r).forEach((k) => {
+    const value = typeof r[k] == 'object' ? '' : r[k];
+    console.log('%s%s: %s', indent, k, value);
+    if (typeof r[k] == 'object') display(r[k], ' ');
+  });
+};
+
 commander
-  .command('key [value]', 'property key')
+  .command('key [[element|]value]', 'property key')
   .action((key, value) => property(key, value))
   .option('-l, --list', 'list all of the current properties')
   .option('-d, --delete <key>', 'delete the value for the given key')
@@ -40,7 +53,9 @@ commander
 if (commander.list) {
   console.log('');
   loadFile()
-    .then(r => Object.keys(r).forEach((k) => console.log('%s: %s', k, r[k])))
+    .then(r => {
+      display(r, '');
+    })
     .then(r => console.log(''))
     .catch(r => console.log(r));
 }

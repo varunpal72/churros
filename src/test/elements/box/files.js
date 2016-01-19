@@ -9,7 +9,7 @@ const fs = require('fs');
 const schema = require('./assets/files.schema.json');
 
 describe('files', () => {
-  common.for('files');
+  common.for('crm','files');
 
   it('should allow uploading and downloading a file', () => {
     const fullPath = util.format('/brady-%s.jpg', chocolate.random());

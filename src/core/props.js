@@ -19,6 +19,11 @@ exports.set = (key, value) => {
 };
 
 exports.all = (element) => {
+  if (!config[element]) {
+    console.log("No properties found for element: '%s'\n   Note: Can setup properties for %s by calling 'churros props %s:my.config.key <value>'", element, element, element);
+    process.exit(1);
+  }
+
   const response = {};
   Object.keys(config[element]).forEach(c => {
     response[c] = config[element][c];
