@@ -52,7 +52,7 @@ describe('formula instances', () => {
         const id = r.body.id;
 
         var bigAzzFi = require('./assets/big-formula-instance.json');
-        chocolate.replaceWith(bigAzzFi.configuration, id);
+        Object.keys(bigAzzFi.configuration).forEach(key => object[key] = util.format(object[key], id));
 
         var bigAzzF = require('./assets/big-formula.json');
         bigAzzF.name = chocolate.random();

@@ -7,15 +7,16 @@
     "url": "git://github.com/cloud-elements/churros.git"
   },
   "scripts": {
-    "postinstall" : "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
-    "test": "mocha test/cli.js --reporter spec --ui bdd && bats test/"
+    "postinstall": "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
+    "test": "mocha test/core --reporter spec --ui bdd && bats test/cli/"
   },
   "bin": {
     "churros": "src/cli/churros.js"
   },
   "author": "jjwyse",
-  "license": "ISC"  ,
+  "license": "ISC",
   "dependencies": {
+    "chai": "^3.4.1",
     "chakram": "^1.2.1",
     "commander": "^2.9.0",
     "mocha": "^2.3.4",
