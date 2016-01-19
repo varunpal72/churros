@@ -25,7 +25,7 @@ const elements = {
     driver.findElement(webdriver.By.id("password")).clear();
     driver.findElement(webdriver.By.id("password")).sendKeys(password);
     driver.findElement(webdriver.By.id("Login")).click();
-    driver.get(driver.getCurrentUrl());
+    driver.get(driver.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
     return driver.getCurrentUrl();
   }
 };
@@ -45,58 +45,82 @@ exports.all = () => {
 };
 
 exports.create = (element, args) => {
-  const callbackUrl = props.get('oauth.callback.url');
-
-  // endpoint-specific properties
-  const apiKey = props.get(util.format('%s.oauth.api.key', element));
-  const apiSecret = props.get(util.format('%s.oauth.api.secret', element));
-  const username = props.get(util.format('%s.username', element));
-  const password = props.get(util.format('%s.password', element));
   const callback = elements[element];
 
-  const options = {
-    qs: {
-      apiKey: apiKey,
-      apiSecret: apiSecret,
-      callbackUrl: callbackUrl
-    }
-  };
-  const driver = new webdriver.Builder().forBrowser('phantomjs').build();
-  const oauthUrl = util.format('/elements/%s/oauth/url', element);
+  if (callback) {
+    // endpoint-specific properties
+    const callbackUrl = props.get('oauth.callback.url');
 
-  return chakram.get(oauthUrl, options)
-    .then(r => {
-      return callback(r, username, password, driver);
-    })
-    .then(r => {
-      const query = url.parse(r, true).query;
-      const instance = {
-        name: 'churros-instance',
-        element: {
-          key: element
-        },
-        configuration: {
-          'oauth.api.key': apiKey,
-          'oauth.api.secret': apiSecret,
-          'oauth.callback.url': callbackUrl
-        },
-        providerData: {
-          code: query.code
-        }
-      };
-      return chakram.post('/instances', instance);
-    })
-    .then(r => {
-      console.log('Created %s element instance with ID: %s', element, r.body.id);
-      auth.setup(r.body.token);
-      driver.close();
-      return r;
-    })
-    .catch(r => {
-      console.log('Failed to create an instance of %s: %s', element, r);
-      driver.close();
-      process.exit(1);
-    });
+    const apiKey = props.get('oauth.api.key', element);
+    const apiSecret = props.get('oauth.api.secret', element);
+    const username = props.get('username', element);
+    const password = props.get('password', element);
+
+    const options = {
+      qs: {
+        apiKey: apiKey,
+        apiSecret: apiSecret,
+        callbackUrl: callbackUrl
+      }
+    };
+    const driver = new webdriver.Builder().forBrowser('phantomjs').build();
+    const oauthUrl = util.format('/elements/%s/oauth/url', element);
+
+    return chakram.get(oauthUrl, options)
+      .then(r => {
+        return callback(r, username, password, driver);
+      })
+      .then(r => {
+        const query = url.parse(r, true).query;
+        const instance = {
+          name: 'churros-instance',
+          element: {
+            key: element
+          },
+          configuration: {
+            'oauth.api.key': apiKey,
+            'oauth.api.secret': apiSecret,
+            'oauth.callback.url': callbackUrl
+          },
+          providerData: {
+            code: query.code
+          }
+        };
+        return chakram.post('/instances', instance);
+      })
+      .then(r => {
+        expect(r).to.have.status(200);
+        console.log('Created %s element instance with ID: %s', element, r.body.id);
+        auth.setup(r.body.token);
+        driver.close();
+        return r;
+      })
+      .catch(r => {
+        console.log('Failed to create an instance of %s: %s', element, r);
+        driver.close();
+        process.exit(1);
+      });
+  } else {
+    const instance = {
+      name: 'churros-instance',
+      element: {
+        key: element
+      },
+      configuration: props.all(element)
+    };
+
+    return chakram.post('/instances', instance)
+      .then(r => {
+        expect(r).to.have.status(200);
+        console.log('Created %s element instance with ID: %s', element, r.body.id);
+        auth.setup(r.body.token);
+        return r;
+      })
+      .catch(r => {
+        console.log('Failed to create an instance of %s: %s', element, r);
+        process.exit(1);
+      });
+  }
 };
 
 exports.delete = (id) => {
