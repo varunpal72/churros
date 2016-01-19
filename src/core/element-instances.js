@@ -7,7 +7,6 @@ const auth = require('core/auth');
 const webdriver = require('selenium-webdriver');
 const props = require('core/properties');
 const url = require('url');
-const sleep = require('sleep');
 
 const elements = {
   box: (r, username, password, driver) => {

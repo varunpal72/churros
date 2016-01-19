@@ -2,7 +2,7 @@
 
 const chakram = require('chakram');
 const expect = chakram.expect;
-const churrosUtil = require('core/churros-util');
+const chocolate = require('core/chocolate');
 const api = require('core/api');
 
 const schema = require('./assets/notification.schema.json');
@@ -24,7 +24,7 @@ describe('notifications', () => {
 
   it('should return one notification when searching for this topic', () => {
     const n = notifyGen({
-      topic: 'churros-topic-' + churrosUtil.random()
+      topic: 'churros-topic-' + chocolate.random()
     });
 
     return chakram.post(url, n)

@@ -4,6 +4,7 @@
 
 [![version](http://img.shields.io/badge/version-v0.0.0-blue.svg)](#) [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/) [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/) [![Circle CI](https://circleci.com/gh/cloud-elements/churros.svg?style=shield&circle-token=06ba43ddb954fcb3687b5e41fbdf607f1846bbc0)](https://circleci.com/gh/cloud-elements/churros)
 
+
 ## Installation
 If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/getting-started/installing-node) first.
 
@@ -44,6 +45,7 @@ $ churros test formulas --file formulas.triggers --file formulas.instances --tes
 ```
 
 > **PROTIP:** Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`
+
 > **PROTIP:** The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
 
 ## Changelog

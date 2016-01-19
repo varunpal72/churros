@@ -3,7 +3,7 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
-const churrosUtil = require('core/churros-util');
+const chocolate = require('core/chocolate');
 const formulasUtil = require('./formulas.util');
 const ei = require('core/element-instances');
 
@@ -52,10 +52,10 @@ describe('formula instances', () => {
         const id = r.body.id;
 
         var bigAzzFi = require('./assets/big-formula-instance.json');
-        churrosUtil.replaceWith(bigAzzFi.configuration, id);
+        chocolate.replaceWith(bigAzzFi.configuration, id);
 
         var bigAzzF = require('./assets/big-formula.json');
-        bigAzzF.name = churrosUtil.random();
+        bigAzzF.name = chocolate.random();
         var formulaId;
         var url = '/formulas';
         return chakram.post(url, bigAzzF)

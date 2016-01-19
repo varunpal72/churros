@@ -23,11 +23,6 @@ PROPS_USAGE="  Usage: churros-props [options] [command]"
   [ "${lines[0]}" = "${INIT_USAGE}" ]
 }
 
-@test "It should support churros init with user, password and url options" {
-  run churros init --user batsuser --password batspassword --url batsurl
-  [ "$status" -eq 0 ]
-}
-
 @test "It should show error if churros init with invalid options" {
   run churros init --invalid_option bats
   [ "$status" -gt 0 ]

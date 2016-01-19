@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "properties": {
+    "path": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "$ref": "string"
+      }
+    },
+    "createdDate": {
+      "type": "string"
+    },
+    "size": {
+      "format": "int32",
+      "type": "integer"
+    },
+    "name": {
+      "type": "string"
+    },
+    "modifiedDate": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "directory": {
+      "type": "boolean"
+    }
+  },
+  "required": ["id", "path"]
+}
