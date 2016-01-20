@@ -30,7 +30,7 @@ const elements = {
   dropbox: (r, username, password, driver) => {
     driver.get(r.body.oauthUrl);
     driver.wait(() => {
-      return driver.findElement(webdriver.By.name('login_email')).click()
+      return driver.findElement(webdriver.By.name('login_email')).clear()
         .then(() => {
           return true;
         })

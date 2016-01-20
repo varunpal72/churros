@@ -1,0 +1,117 @@
+{
+  "user": "",
+  "password": "",
+  "url": "",
+  "oauth.callback.url": "",
+  "woocommerce": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "store.url": ""
+  },
+  "box": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": ""
+  },
+  "sfdc": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": ""
+  },
+  "sugarcrmv2": {
+    "username": "",
+    "password": "",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "site.url": "",
+    "oauth.callback.url": ""
+  },
+  "zohocrm": {
+    "crm.zohocrm.username": "",
+    "crm.zohocrm.password": "",
+    "password": "",
+    "username": ""
+  },
+  "abbyy": {
+    "username": "",
+    "password": ""
+  },
+  "allbound": {
+    "apikey": "",
+    "apiinstance": ""
+  },
+  "amazons3": {
+    "document.tagging": "",
+    "filemanagement.provider.access_key": "",
+    "filemanagement.provider.secret_key": "",
+    "filemanagement.provider.bucket_name": "",
+    "filemanagement.provider.region_name": ""
+  },
+  "autotaskcrm": {
+    "crm.autotask.server.url": "",
+    "crm.autotask.username": "",
+    "crm.autotask.password": ""
+  },
+  "autotaskhelpdesk": {
+    "helpdesk.autotask.server.url": "",
+    "helpdesk.autotask.username": "",
+    "helpdesk.autotask.password": ""
+  },
+  "brighttalk": {
+    "brighttalk.api.key": "",
+    "brighttalk.api.secret": "",
+    "brighttalk.isstaging": ""
+  },
+  "cherwell": {
+    "crm.cherwell.username": "",
+    "crm.cherwell.password": ""
+  },
+  "closeio": {
+    "password": "",
+    "username": ""
+  },
+  "dropbox": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "password": "",
+    "username": ""
+  },
+  "connectwisecrm": {
+    "helpdesk.connectwise.server.url": "",
+    "helpdesk.connectwise.company": "",
+    "helpdesk.connectwise.username": "",
+    "helpdesk.connectwise.password": "",
+    "helpdesk.connectwise.wsdl.path": ""
+  },
+  "connectwisehd": {
+    "helpdesk.connectwise.server.url": "",
+    "helpdesk.connectwise.company": "",
+    "helpdesk.connectwise.username": "",
+    "helpdesk.connectwise.password": "",
+    "helpdesk.connectwise.wsdl.path": ""
+  },
+  "docusign": {
+    "username": "",
+    "password": "",
+    "oauth.api.key": "",
+    "docusign.environment": ""
+  },
+  "dynamicscrm": {
+    "dynamics.tenant": "",
+    "user.username": "",
+    "user.password": ""
+  },
+  "ecwid": {
+    "ecwid.order.key": "",
+    "ecwid.product.key": "",
+    "ecwid.store.id": ""
+  },
+  "facebooksocial": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": ""
+  }
+}
