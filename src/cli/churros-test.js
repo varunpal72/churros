@@ -22,7 +22,8 @@ const runTests = function runTests(suite, options) {
   if (url.startsWith('localhost')) url = 'http://' + url;
   if (!url.startsWith('http')) url = 'https://' + url;
 
-  const rootTestDir = path.dirname(require.main.filename) + '/../test';
+  const rootDir = path.dirname(require.main.filename); // ugly as all get out ...
+  const rootTestDir = rootDir + '/../test';
 
   // always pass the setup file first.  if it's an element, then use that element's setup file too
   const mochaPaths = [];
@@ -61,7 +62,7 @@ const runTests = function runTests(suite, options) {
   if (test) args += util.format(" --grep '%s'", test);
   if (element) args += util.format(" --element %s", element);
 
-  var cmd = util.format('./node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
+  var cmd = util.format(rootDir + '/../../node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
   shell.exec(cmd);
 }
 
