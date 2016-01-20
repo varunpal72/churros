@@ -34,15 +34,3 @@ PROPS_USAGE="  Usage: churros-props [options] [command]"
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "${PROPS_USAGE}" ]
 }
-
-@test "It should show error if churros test with invalid suite name" {
-  run churros test invalid_suite_name
-  [ "$status" -gt 0 ]
-  [ "${lines[0]}" = "Invalid suite: invalid_suite_name" ]
-}
-
-@test "It should show error if churros test with valid suite but invalid file name" {
-  run churros test notifications --file fake.file.name
-  [ "$status" -gt 0 ]
-  [ "${lines[0]}" = "Invalid file: fake.file.name" ]
-}
