@@ -1,5 +1,9 @@
 ## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
+
+#### Highlights
 * Changed name of props file to be `sauce.json` as opposed to `churros.json` cause I'm weird like that ...
+* Stub out default properties needed to provision each element during `churros init`
+* Continuing to add more elements to the elements catalog
 
 ## v0.0.0 <sub><sup>(2016-1-15)</sup></sub>
 
