@@ -76,10 +76,10 @@ exports.create = (element, args) => {
     // endpoint-specific properties
     const callbackUrl = props.get('oauth.callback.url');
 
-    const apiKey = props.get(element)['oauth.api.key'];
-    const apiSecret = props.get(element)['oauth.api.secret'];
-    const username = props.get(element)['username'];
-    const password = props.get(element)['password'];
+    const apiKey = props.getForElement(element, 'oauth.api.key');
+    const apiSecret = props.getForElement(element, 'oauth.api.secret');
+    const username = props.getForElement(element, 'username');
+    const password = props.getForElement(element, 'password');
 
     const options = {
       qs: {
