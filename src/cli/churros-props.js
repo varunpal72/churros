@@ -17,8 +17,9 @@ const property = (key, value) => {
   console.log('');
   loadFile()
     .then(r => {
-      if (typeof value != 'string') console.log(r[key])
-      else {
+      if (typeof value != 'string') {
+        typeof r[key] == 'object' ? display(r[key], ' ', key + ':') : console.log('%s\n', r[key]);
+      } else {
         const keys = key.split(':');
         if (keys.length > 1) {
           if (!r[keys[0]]) r[keys[0]] = {};
@@ -35,12 +36,14 @@ const property = (key, value) => {
     .catch(r => console.log(r));
 };
 
-const display = (r, indent) => {
+const display = (r, indent, heading) => {
+  heading ? console.log(heading) : null;
   Object.keys(r).forEach((k) => {
     const value = typeof r[k] == 'object' ? '' : r[k];
     console.log('%s%s: %s', indent, k, value);
     if (typeof r[k] == 'object') display(r[k], indent + ' ');
   });
+  console.log('');
 };
 
 commander
@@ -54,7 +57,6 @@ if (commander.list) {
   console.log('');
   loadFile()
     .then(r => display(r, ''))
-    .then(r => console.log(''))
     .catch(r => console.log(r));
 }
 
