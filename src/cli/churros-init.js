@@ -4,7 +4,6 @@ const prompt = require('prompt');
 const optimist = require('optimist');
 const fs = require('fs');
 const commander = require('commander');
-const nodegit = require('nodegit');
 
 commander
   .option('-u, --user <user>', 'default CE user to run churros as', '')
