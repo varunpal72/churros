@@ -26,6 +26,23 @@ const elements = {
     driver.findElement(webdriver.By.id("Login")).click();
     driver.get(driver.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
     return driver.getCurrentUrl();
+  },
+  dropbox: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    driver.wait(() => {
+      return driver.findElement(webdriver.By.name('login_email')).click()
+        .then(() => {
+          return true;
+        })
+        .thenCatch(() => {
+          return false;
+        })
+    }, 10000);
+    driver.findElement(webdriver.By.name('login_email')).sendKeys(username)
+    driver.findElement(webdriver.By.name("login_password")).clear();
+    driver.findElement(webdriver.By.name("login_password")).sendKeys(password);
+    driver.findElement(webdriver.By.className("login-button")).click();
+    return driver.getCurrentUrl();
   }
 };
 
@@ -62,7 +79,9 @@ exports.create = (element, args) => {
         callbackUrl: callbackUrl
       }
     };
-    const driver = new webdriver.Builder().forBrowser('phantomjs').build();
+    const driver = new webdriver.Builder()
+      .forBrowser('phantomjs')
+      .build();
     const oauthUrl = util.format('/elements/%s/oauth/url', element);
 
     return chakram.get(oauthUrl, options)

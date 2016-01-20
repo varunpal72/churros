@@ -2,6 +2,6 @@
 
 const common = require('../common');
 
-describe('tasks', () => {
-  common.for('crm', 'tasks');
+describe('files', () => {
+  common.for('crm', 'files');
 });
