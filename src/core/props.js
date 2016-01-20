@@ -1,6 +1,6 @@
 'use strict';
 
-const config = require(process.env.HOME + '/.churros/churros.json');
+const config = require(process.env.HOME + '/.churros/sauce.json');
 
 var exports = module.exports = {};
 

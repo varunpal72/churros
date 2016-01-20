@@ -5,7 +5,7 @@ const fs = require('fs');
 const commander = require('commander');
 const util = require('util');
 const shell = require('shelljs');
-const config = require(process.env.HOME + '/.churros/churros.json');
+const config = require(process.env.HOME + '/.churros/sauce.json');
 
 const collect = function collect(val, list) {
   list.push(val);

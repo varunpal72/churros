@@ -3,7 +3,7 @@
 const fs = require('fs');
 const commander = require('commander');
 const util = require('util');
-const file = util.format('%s/%s', process.env.HOME, '.churros/churros.json');
+const file = util.format('%s/%s', process.env.HOME, '.churros/sauce.json');
 
 const loadFile = () => {
   return new Promise((resolve, reject) => {

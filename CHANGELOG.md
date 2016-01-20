@@ -1,5 +1,5 @@
 ## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
-* Stay Tuned
+* Changed name of props file to be `sauce.json` as opposed to `churros.json` cause I'm weird like that ...
 
 ## v0.0.0 <sub><sup>(2016-1-15)</sup></sub>
 

@@ -43,7 +43,7 @@ const prompts = {
 prompt.start();
 prompt.get(prompts, (err, result) => {
   const propsDir = process.env.HOME + '/.churros/';
-  const file = propsDir + 'churros.json';
+  const file = propsDir + 'sauce.json';
 
   console.log('Saving default properties to ' + file);
 
