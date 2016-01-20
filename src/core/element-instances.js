@@ -38,10 +38,19 @@ const elements = {
           return false;
         })
     }, 10000);
-    driver.findElement(webdriver.By.name('login_email')).sendKeys(username)
+    driver.findElement(webdriver.By.name('login_email')).sendKeys(username);
     driver.findElement(webdriver.By.name("login_password")).clear();
     driver.findElement(webdriver.By.name("login_password")).sendKeys(password);
     driver.findElement(webdriver.By.className("login-button")).click();
+    return driver.getCurrentUrl();
+  },
+  facebooksocial: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    driver.findElement(webdriver.By.id('email')).clear();
+    driver.findElement(webdriver.By.id('email')).sendKeys(username);
+    driver.findElement(webdriver.By.id('pass')).clear();
+    driver.findElement(webdriver.By.id('pass')).sendKeys(password);
+    driver.findElement(webdriver.By.id('loginbutton')).click();
     return driver.getCurrentUrl();
   }
 };
