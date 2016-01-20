@@ -10,6 +10,11 @@ If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/g
 
 > **PROTIP:** `node` version must  be >= `v4.0.0`
 
+> **PROTIP:** `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
+```bash
+npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
+```
+
 Install the node dependencies and initalize churros.
 
 ```bash
