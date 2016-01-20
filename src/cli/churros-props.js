@@ -51,6 +51,16 @@ commander
   .action((key, value) => property(key, value))
   .option('-l, --list', 'list all of the current properties')
   .option('-d, --delete <key>', 'delete the value for the given key')
+  .on('--help', () => {
+    console.log('  Examples:');
+    console.log('');
+    console.log('    $ churros props --list');
+    console.log('    $ churros props url api.cloud-elements.com');
+    console.log('    $ churros props box:user frank@ricard.com');
+    console.log('    $ churros props box:user');
+    console.log('    $ churros props --delete box:user');
+    console.log('');
+  })
   .parse(process.argv);
 
 if (commander.list) {
