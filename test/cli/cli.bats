@@ -23,15 +23,16 @@ PROPS_USAGE="  Usage: churros-props [options] [command]"
   [ "${lines[0]}" = "${INIT_USAGE}" ]
 }
 
-@test "It should show error if churros init with invalid options" {
-  run churros init --invalid_option bats
-  [ "$status" -gt 0 ]
-}
-
 @test "It should support churros help test" {
   run churros help test
   [ "$status" -eq 0 ]
   [ "${lines[0]}" = "${TEST_USAGE}" ]
+}
+
+@test "It should support churros help props" {
+  run churros help props
+  [ "$status" -eq 0 ]
+  [ "${lines[0]}" = "${PROPS_USAGE}" ]
 }
 
 @test "It should show error if churros test with invalid suite name" {
@@ -44,15 +45,4 @@ PROPS_USAGE="  Usage: churros-props [options] [command]"
   run churros test notifications --file fake.file.name
   [ "$status" -gt 0 ]
   [ "${lines[0]}" = "Invalid file: fake.file.name" ]
-}
-
-@test "It should support churros help props" {
-  run churros help props
-  [ "$status" -eq 0 ]
-  [ "${lines[0]}" = "${PROPS_USAGE}" ]
-}
-
-@test "It should support churros props --list to list all properties" {
-  run churros props --list
-  [ "$status" -eq 0 ]
 }
