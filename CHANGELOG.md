@@ -1,3 +1,9 @@
+## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
+
+#### Highlights
+* Changed name of props file to be `sauce.json` as opposed to `churros.json` cause I'm weird like that ...
+* Stub out default properties needed to provision each element during `churros init`
+* Continuing to add more elements to the elements catalog
 
 ## v0.0.0 <sub><sup>(2016-1-15)</sup></sub>
 
@@ -11,7 +17,9 @@ $ churros test notifications --file subscriptions
 $ churros test notifications --file subscriptions --file notifications
 $ churros test notifications --file subscriptions --file notifications --test \'should throw a 400\'
 ```
+
 > The `--test` searches all of the `describe(...)` and `it(...)` strings to determine which test(s) to run.
+
 * Ability to override the default user, password and url by passing optional arguments to `churros test`, for example:
 
 ```bash

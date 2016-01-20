@@ -3,10 +3,9 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
-const churrosUtil = require('core/util/churros-util');
+const chocolate = require('core/chocolate');
 const formulasUtil = require('./formulas.util');
-const box = require('core/provision/box');
-const ei = require('core/util/element-instances');
+const ei = require('core/element-instances');
 
 const schema = require('./assets/formula.schema');
 
@@ -17,7 +16,7 @@ describe('formula instances', () => {
     var formulaId;
     var url = '/formulas';
     return chakram.post(url, f)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(schema);
 
@@ -31,51 +30,51 @@ describe('formula instances', () => {
         };
         return chakram.post(util.format('/formulas/%s/triggers', formulaId), t);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         const fi = {
           name: 'churros-formula-instance-name'
         }
         return chakram.post(util.format('/formulas/%s/instances', formulaId), fi);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(400);
         return chakram.delete(util.format('/formulas/%s', formulaId));
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
       });
   });
 
   it('should allow creating a big azz formula and then an instance', () => {
-    return box.create()
-      .then((r) => {
+    return ei.create('box')
+      .then(r => {
         const id = r.body.id;
 
         var bigAzzFi = require('./assets/big-formula-instance.json');
-        churrosUtil.replaceWith(bigAzzFi.configuration, id);
+        Object.keys(bigAzzFi.configuration).forEach(key => bigAzzFi[key] = util.format(bigAzzFi[key], id));
 
         var bigAzzF = require('./assets/big-formula.json');
-        bigAzzF.name = churrosUtil.random();
+        bigAzzF.name = chocolate.random();
         var formulaId;
         var url = '/formulas';
         return chakram.post(url, bigAzzF)
-          .then((r) => {
+          .then(r => {
             expect(r).to.have.status(200);
             expect(r).to.have.schema(schema);
 
             formulaId = r.body.id;
             return chakram.post(util.format('/formulas/%s/instances', formulaId), bigAzzFi);
           })
-          .then((r) => {
+          .then(r => {
             expect(r).to.have.status(200);
             return chakram.delete(util.format('/formulas/%s/instances/%s', formulaId, r.body.id));
           })
-          .then((r) => {
+          .then(r => {
             expect(r).to.have.status(200);
             return chakram.delete(util.format('/formulas/%s', formulaId));
           })
-          .then((r) => {
+          .then(r => {
             expect(r).to.have.status(200);
             return ei.delete(id);
           });

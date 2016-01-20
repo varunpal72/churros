@@ -5,7 +5,6 @@ const fs = require('fs');
 const commander = require('commander');
 const util = require('util');
 const shell = require('shelljs');
-const config = require(process.env.HOME + '/.churros/churros.json');
 
 const collect = function collect(val, list) {
   list.push(val);
@@ -13,6 +12,7 @@ const collect = function collect(val, list) {
 }
 
 const runTests = function runTests(suite, options) {
+  const config = require(process.env.HOME + '/.churros/sauce.json');
   const file = options.file;
   const test = options.test;
   const user = options.user || config.user;
@@ -22,15 +22,17 @@ const runTests = function runTests(suite, options) {
   if (url.startsWith('localhost')) url = 'http://' + url;
   if (!url.startsWith('http')) url = 'https://' + url;
 
-  const rootTestDir = path.dirname(require.main.filename) + '/../test';
+  const rootDir = path.dirname(require.main.filename); // ugly as all get out ...
+  const rootTestDir = rootDir + '/../test';
 
   // always pass the setup file first.  if it's an element, then use that element's setup file too
   const mochaPaths = [];
-  const setup = util.format('%s/%s', rootTestDir, suite, 'setup');
   mochaPaths.push(rootTestDir + '/setup');
 
+  var element = null;
   if (suite.startsWith('elements')) {
-    const elementSetup = util.format('%s/%s/%s', rootTestDir, suite, 'setup');
+    const elementSetup = util.format('%s/%s/%s', rootTestDir, 'elements', 'setup');
+    element = suite.split('/')[1]; // i.e 'elements/box' would get 'box' here
     mochaPaths.push(elementSetup);
   }
 
@@ -58,8 +60,9 @@ const runTests = function runTests(suite, options) {
   // 10 minute timeout right now
   var args = util.format('--user %s --password %s --url %s --timeout 600000 --reporter spec --ui bdd', user, password, url);
   if (test) args += util.format(" --grep '%s'", test);
+  if (element) args += util.format(" --element %s", element);
 
-  var cmd = util.format('./node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
+  var cmd = util.format(rootDir + '/../../node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
   shell.exec(cmd);
 }
 

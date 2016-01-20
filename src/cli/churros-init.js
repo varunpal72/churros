@@ -6,9 +6,10 @@ const fs = require('fs');
 const commander = require('commander');
 
 commander
-  .option('-u, --user <user>', 'The user to run tests as', '')
-  .option('-p, --password <password>', 'The password for the specified user', '')
-  .option('-r, --url <url>', 'The url to run tests against', '')
+  .option('-u, --user <user>', 'default CE user to run churros as', '')
+  .option('-p, --password <password>', 'password for that user', '')
+  .option('-r, --url <url>', 'default CE url to run churros against', '')
+  .option('-f, --file </full/path/to/file>', 'props file to use for churros', __dirname + '/assets/sauce.template.json')
   .parse(process.argv);
 
 console.log('Initializating churros...');
@@ -43,18 +44,20 @@ const prompts = {
 prompt.start();
 prompt.get(prompts, (err, result) => {
   const propsDir = process.env.HOME + '/.churros/';
-  const file = propsDir + 'churros.json';
+  const file = propsDir + 'sauce.json';
 
   console.log('Saving default properties to ' + file);
 
   // directory doesn't exist? create it
   if (!fs.existsSync(propsDir)) fs.mkdirSync(propsDir);
 
-  // props file doesn't exist? stub it out
-  if (!fs.existsSync(file)) fs.writeFileSync(file, JSON.stringify({}, null, 2));
-
   // load file and append our properties to it so we don't override properties that could already be there
-  var properties = require(file);
+  if (!fs.existsSync(commander.file)) {
+    console.log("No default property file found at this location: %s", commander.file);
+    process.exit(1);
+  }
+
+  var properties = require(commander.file);
   properties.user = result.user;
   properties.password = result.password;
   properties.url = result.url;
@@ -65,5 +68,6 @@ prompt.get(prompts, (err, result) => {
       return console.log(err);
     }
     console.log('Finished initializing churros');
+    process.exit(0);
   });
 });

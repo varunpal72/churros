@@ -4,12 +4,13 @@
 
 [![version](http://img.shields.io/badge/version-v0.0.0-blue.svg)](#) [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/) [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/) [![Circle CI](https://circleci.com/gh/cloud-elements/churros.svg?style=shield&circle-token=06ba43ddb954fcb3687b5e41fbdf607f1846bbc0)](https://circleci.com/gh/cloud-elements/churros)
 
+
 ## Installation
 If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/getting-started/installing-node) first.
 
 > **PROTIP:** `node` version must  be >= `v4.0.0`
 
-Install the node dependencies and initalize churros.
+Install the node dependencies and initialize churros.
 
 ```bash
 # Install all necessary npm packages:
@@ -27,6 +28,11 @@ $ churros init
 
 > **PROTIP:** May have to `sudo` the global install and `npm link` depending on your environment
 
+> **PROTIP:** `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
+```bash
+npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
+```
+
 ## Examples
 
 ```bash
@@ -43,7 +49,10 @@ $ churros test formulas --file formulas.triggers --file formulas.instances
 $ churros test formulas --file formulas.triggers --file formulas.instances --test `should not allow`
 ```
 
+
+
 > **PROTIP:** Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`
+
 > **PROTIP:** The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
 
 ## Changelog

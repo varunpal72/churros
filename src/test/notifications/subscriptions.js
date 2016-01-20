@@ -17,13 +17,13 @@ describe('subscriptions', () => {
     };
 
     return chakram.post(url, subscription)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(subscriptionSchema);
 
         return chakram.get(url + '/' + r.body.id);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(subscriptionSchema);
         expect(r.body.topic).to.equal(subscription.topic);
@@ -31,7 +31,7 @@ describe('subscriptions', () => {
 
         return chakram.delete(url + '/' + r.body.id);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
       });
   });
@@ -42,7 +42,7 @@ describe('subscriptions', () => {
       topics: ['churros-topic']
     };
     return chakram.post(url, badSubscription)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(400);
       });
   });

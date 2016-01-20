@@ -3,7 +3,7 @@
 const fs = require('fs');
 const commander = require('commander');
 const util = require('util');
-const file = util.format('%s/%s', process.env.HOME, '.churros/churros.json');
+const file = util.format('%s/%s', process.env.HOME, '.churros/sauce.json');
 
 const loadFile = () => {
   return new Promise((resolve, reject) => {
@@ -16,10 +16,16 @@ const loadFile = () => {
 const property = (key, value) => {
   console.log('');
   loadFile()
-    .then((r) => {
-      if (typeof value != 'string') console.log(r[key])
-      else {
-        r[key] = value;
+    .then(r => {
+      if (typeof value != 'string') {
+        typeof r[key] == 'object' ? display(r[key], ' ', key + ':') : console.log('%s\n', r[key]);
+      } else {
+        const keys = key.split(':');
+        if (keys.length > 1) {
+          if (!r[keys[0]]) r[keys[0]] = {};
+          r[keys[0]][keys[1]] = value;
+        } else r[key] = value;
+
         fs.writeFile(file, JSON.stringify(r, null, 2), (err) => {
           if (err) console.log('Error while trying to set %s to %s', key, value);
           else console.log('Successfully set %s to %s', key, value);
@@ -27,28 +33,47 @@ const property = (key, value) => {
         });
       }
     })
-    .catch((r) => console.log(r));
+    .catch(r => console.log(r));
+};
+
+const display = (r, indent, heading) => {
+  heading ? console.log(heading) : null;
+  Object.keys(r).forEach((k) => {
+    const value = typeof r[k] == 'object' ? '' : r[k];
+    console.log('%s%s: %s', indent, k, value);
+    if (typeof r[k] == 'object') display(r[k], indent + ' ');
+  });
+  console.log('');
 };
 
 commander
-  .command('key [value]', 'property key')
+  .command('key [[element|]value]', 'property key')
   .action((key, value) => property(key, value))
   .option('-l, --list', 'list all of the current properties')
   .option('-d, --delete <key>', 'delete the value for the given key')
+  .on('--help', () => {
+    console.log('  Examples:');
+    console.log('');
+    console.log('    $ churros props --list');
+    console.log('    $ churros props url api.cloud-elements.com');
+    console.log('    $ churros props box:user frank@ricard.com');
+    console.log('    $ churros props box:user');
+    console.log('    $ churros props --delete box:user');
+    console.log('');
+  })
   .parse(process.argv);
 
 if (commander.list) {
   console.log('');
   loadFile()
-    .then((r) => Object.keys(r).forEach((k) => console.log('%s: %s', k, r[k])))
-    .then((r) => console.log(''))
-    .catch((r) => console.log(r));
+    .then(r => display(r, ''))
+    .catch(r => console.log(r));
 }
 
 if (commander.delete) {
   console.log('');
   loadFile()
-    .then((r) => {
+    .then(r => {
       delete r[commander.delete];
       fs.writeFile(file, JSON.stringify(r, null, 2), (err) => {
         if (err) console.log('Error while trying to delete value for %s', commander.delete);
@@ -56,5 +81,5 @@ if (commander.delete) {
         console.log('');
       });
     })
-    .catch((r) => console.log(r));
+    .catch(r => console.log(r));
 }

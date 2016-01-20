@@ -1,7 +1,7 @@
 'use strict';
 
 const util = require('util');
-const ei = require('core/util/element-instances');
+const ei = require('core/element-instances');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const formulasUtil = require('./formulas.util');
@@ -16,7 +16,7 @@ describe('formula triggers', () => {
     var formulaId;
     var url = '/formulas';
     return chakram.post(url, f)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(schema);
 
@@ -29,21 +29,21 @@ describe('formula triggers', () => {
         };
         return chakram.post(util.format('/formulas/%s/triggers', formulaId), t);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(triggerSchema);
         return chakram.get(util.format('/formulas/%s/triggers/%s', formulaId, r.body.id));
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(triggerSchema);
         return chakram.delete(util.format('/formulas/%s/triggers/%s', formulaId, r.body.id));
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         return chakram.delete(util.format('/formulas/%s', formulaId));
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
       });
   });
@@ -54,7 +54,7 @@ describe('formula triggers', () => {
     var formulaId;
     var url = '/formulas';
     return chakram.post(url, f)
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
         expect(r).to.have.schema(schema);
 
@@ -67,11 +67,11 @@ describe('formula triggers', () => {
         };
         return chakram.post(util.format('/formulas/%s/triggers', formulaId), t);
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(400);
         return chakram.delete(util.format('/formulas/%s', formulaId));
       })
-      .then((r) => {
+      .then(r => {
         expect(r).to.have.status(200);
       });
   });

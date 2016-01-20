@@ -1,9 +1,9 @@
 'use strict';
 
-const churrosUtil = require('core/util/churros-util');
+const chocolate = require('core/chocolate');
 
 var exports = module.exports = {};
 
 exports.gen = (opts) => new Object({
-  name: (opts.name || 'churros-formula-name-' + churrosUtil.random())
+  name: (opts.name || 'churros-formula-name-' + chocolate.random())
 });
