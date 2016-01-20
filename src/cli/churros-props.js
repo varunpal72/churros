@@ -39,7 +39,7 @@ const display = (r, indent) => {
   Object.keys(r).forEach((k) => {
     const value = typeof r[k] == 'object' ? '' : r[k];
     console.log('%s%s: %s', indent, k, value);
-    if (typeof r[k] == 'object') display(r[k], ' ');
+    if (typeof r[k] == 'object') display(r[k], indent + ' ');
   });
 };
 
@@ -53,9 +53,7 @@ commander
 if (commander.list) {
   console.log('');
   loadFile()
-    .then(r => {
-      display(r, '');
-    })
+    .then(r => display(r, ''))
     .then(r => console.log(''))
     .catch(r => console.log(r));
 }
