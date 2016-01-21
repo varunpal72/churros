@@ -1,5 +1,7 @@
 'use strict';
 
+const chakram = require('chakram');
+const expect = chakram.expect;
 const chocolate = require('core/chocolate');
 const common = require('core/common');
 const schema = require('./assets/contact.schema')
@@ -16,5 +18,15 @@ const gen = (opts) => {
 
 common.for('crm', 'contacts', (baseUrl) => {
   common.notFoundTest(baseUrl);
-  common.crudTest(baseUrl, gen(), schema);
+
+  it('should allow creating, retrieve, updating and deleting a contact', () => {
+    return chakram.get('/hubs/crm/accounts')
+      .then(r => {
+        expect(r).to.have.status(200);
+        expect(r.body).to.not.be.empty;
+        const leadId = r.body[0].id;
+
+        return common.crud(baseUrl, gen({ lead_id: leadId }), schema);
+      });
+  });
 });

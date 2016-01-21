@@ -8,21 +8,10 @@ var exports = module.exports = {};
 
 exports.for = (hub, objectName, tests) => {
   describe(objectName, () => {
-    let baseUrl = util.format('/hubs/%s/%s', hub, objectName);
-    if (tests) tests(baseUrl);
+    let api = util.format('/hubs/%s/%s', hub, objectName);
+    if (tests) tests(api);
   })
 };
-
-const notFoundTest = (baseUrl, invalidId) => {
-  const name = util.format('should throw a 404 when trying to retrieve a(n) %s that does not exist', baseUrl);
-  it(name, () => {
-    return chakram.get(baseUrl + '/' + (invalidId || -1))
-      .then(r => {
-        expect(r).to.have.statusCode(404);
-      });
-  });
-};
-exports.notFoundTest = notFoundTest;
 
 const create = (api, payload, schema) => {
   const name = util.format('should allow creating an %s', api);
@@ -37,11 +26,12 @@ const create = (api, payload, schema) => {
     });
 };
 
-const retrieve = (api, id, schema) => {
+const retrieve = (api, id, schema, validationCallback) => {
+  validationCallback = (validationCallback || ((r) => { expect(r).to.have.schemaAnd200(schema); }));
   const name = util.format('should allow retrieving an %s', api);
   return chakram.get(api + '/' + id)
     .then(r => {
-      expect(r).to.have.schemaAnd200(schema);
+      validationCallback(r);
       return r;
     })
     .catch(r => {
@@ -77,19 +67,35 @@ const remove = (api, id) => {
     });
 };
 
+const crud = (api, payload, schema, updateCallback) => {
+  return create(api, payload, schema)
+    .then(r => {
+      return retrieve(api, r.body.id, schema);
+    })
+    .then(r => {
+      return update(api, r.body.id, payload, schema, updateCallback)
+    })
+    .then(r => {
+      return remove(api, r.body.id);
+    });
+};
+exports.crud = crud;
+
 const crudTest = (api, payload, schema, updateCallback) => {
   const name = util.format('should allow creating, retrieving, updating and deleting a %s', api);
   it(name, () => {
-    return create(api, payload, schema)
-      .then(r => {
-        return retrieve(api, r.body.id, schema);
-      })
-      .then(r => {
-        return update(api, r.body.id, payload, schema, updateCallback)
-      })
-      .then(r => {
-        return remove(api, r.body.id);
-      });
+    return crud(api, payload, schema, updateCallback);
   });
 };
 exports.crudTest = crudTest;
+
+const notFoundTest = (api, invalidId) => {
+  const name = util.format('should throw a 404 when trying to retrieve a(n) %s that does not exist', api);
+  invalidId = (invalidId || -1);
+  it(name, () => {
+    return retrieve(api, invalidId, null, (r) => {
+      expect(r).to.have.statusCode(404);
+    });
+  });
+};
+exports.notFoundTest = notFoundTest;
