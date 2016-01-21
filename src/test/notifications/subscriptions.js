@@ -18,14 +18,12 @@ describe('subscriptions', () => {
 
     return chakram.post(url, subscription)
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(subscriptionSchema);
+        expect(r).to.have.schemaAnd200(subscriptionSchema);
 
         return chakram.get(url + '/' + r.body.id);
       })
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(subscriptionSchema);
+        expect(r).to.have.schemaAnd200(subscriptionSchema);
         expect(r.body.topic).to.equal(subscription.topic);
         expect(r.body.channel).to.equal(subscription.channel);
 

@@ -17,8 +17,7 @@ describe('formula instances', () => {
     var url = '/formulas';
     return chakram.post(url, f)
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
+        expect(r).to.have.schemaAnd200(schema);
 
         formulaId = r.body.id;
         const t = {
@@ -62,8 +61,7 @@ describe('formula instances', () => {
         var url = '/formulas';
         return chakram.post(url, bigAzzF)
           .then(r => {
-            expect(r).to.have.status(200);
-            expect(r).to.have.schema(schema);
+            expect(r).to.have.schemaAnd200(schema);
 
             formulaId = r.body.id;
             return chakram.post(util.format('/formulas/%s/instances', formulaId), bigAzzFi);

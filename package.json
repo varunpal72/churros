@@ -23,7 +23,8 @@
     "optimist": "^0.6.1",
     "prompt": "^0.2.14",
     "selenium-webdriver": "^2.48.2",
-    "shelljs": "^0.5.3"
+    "shelljs": "^0.5.3",
+    "tv4": "^1.2.7"
   },
   "devDependencies": {
     "bats": "^0.4.2"

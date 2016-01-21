@@ -17,8 +17,7 @@ describe('formula triggers', () => {
     var url = '/formulas';
     return chakram.post(url, f)
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
+        expect(r).to.have.schemaAnd200(schema);
 
         formulaId = r.body.id;
         const t = {
@@ -30,13 +29,11 @@ describe('formula triggers', () => {
         return chakram.post(util.format('/formulas/%s/triggers', formulaId), t);
       })
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(triggerSchema);
+        expect(r).to.have.schemaAnd200(triggerSchema);
         return chakram.get(util.format('/formulas/%s/triggers/%s', formulaId, r.body.id));
       })
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(triggerSchema);
+        expect(r).to.have.schemaAnd200(triggerSchema);
         return chakram.delete(util.format('/formulas/%s/triggers/%s', formulaId, r.body.id));
       })
       .then(r => {
@@ -55,8 +52,7 @@ describe('formula triggers', () => {
     var url = '/formulas';
     return chakram.post(url, f)
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
+        expect(r).to.have.schemaAnd200(schema);
 
         formulaId = r.body.id;
         const t = {

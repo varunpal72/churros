@@ -29,9 +29,7 @@ describe('notifications', () => {
 
     return chakram.post(url, n)
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
-
+        expect(r).to.have.schemaAnd200(schema);
         return chakram.get(url + '?topics[]=' + n.topic);
       })
       .then(r => {
@@ -51,8 +49,7 @@ describe('notifications', () => {
 
     return chakram.post(url, n)
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
+        expect(r).to.have.schemaAnd200(schema);
         expect(r.body.acknowledged).to.equal(false);
 
         return chakram.put(url + '/' + r.body.id + '/acknowledge');

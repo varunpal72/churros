@@ -21,8 +21,7 @@ common.for('crm', 'files', () => {
         }
       })
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
+        expect(r).to.have.schemaAnd200(schema);
         fileId = r.body.id;
         return chakram.get('/hubs/documents/files/' + fileId);
       })

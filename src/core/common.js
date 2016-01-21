@@ -24,21 +24,18 @@ exports.for = (hub, objectName, tests) => {
 exports.crud = (api, payload, schema, updateCallback) => {
   return chakram.post(api, payload)
     .then(r => {
-      expect(r).to.have.status(200);
-      expect(r).to.have.schema(schema);
+      expect(r).to.have.schemaAnd200(schema);
       return chakram.get(util.format('%s/%s', api, r.body.id));
     })
     .then(r => {
-      expect(r).to.have.status(200);
-      expect(r).to.have.schema(schema);
+      expect(r).to.have.schemaAnd200(schema);
 
       // if no update callback was passed, then we're assuming this resource does *not* support update so just continue
       if (updateCallback) return updateCallback(util.format('%s/%s', api, r.body.id), payload);
       else return r;
     })
     .then(r => {
-      expect(r).to.have.status(200);
-      expect(r).to.have.schema(schema);
+      expect(r).to.have.schemaAnd200(schema);
       return chakram.delete(util.format('%s/%s', api, r.body.id));
     })
     .then(r => {
