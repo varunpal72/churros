@@ -4,6 +4,7 @@
 * Changed name of props file to be `sauce.json` as opposed to `churros.json` cause I'm weird like that ...
 * Stub out default properties needed to provision each element during `churros init`
 * Continuing to add more elements to the elements catalog
+* Added support for `should.have.schemaAnd200` `chakram` assertion as I found that I was always doing both of those at the same time and also because the error message for each of those wasn't good enough so wanted to improve it
 
 ## v0.0.0 <sub><sup>(2016-1-15)</sup></sub>
 
