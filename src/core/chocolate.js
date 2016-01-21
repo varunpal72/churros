@@ -1,7 +1,6 @@
 'use strict';
 
 const chakram = require('chakram');
-const props = require('core/props');
 const util = require('util');
 
 var exports = module.exports = {};
@@ -11,6 +10,7 @@ exports.random = () => {
 };
 
 exports.authReset= (token) => {
+  const props = require('core/props');
   const url = props.get('url');
   const us = props.get('user.secret');
   const os = props.get('org.secret');
