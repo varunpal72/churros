@@ -52,6 +52,15 @@ const elements = {
     driver.findElement(webdriver.By.id('pass')).sendKeys(password);
     driver.findElement(webdriver.By.id('loginbutton')).click();
     return driver.getCurrentUrl();
+  },
+  instagram: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    driver.findElement(webdriver.By.id("id_username")).clear();
+    driver.findElement(webdriver.By.id("id_username")).sendKeys(username);
+    driver.findElement(webdriver.By.id("id_password")).clear();
+    driver.findElement(webdriver.By.id("id_password")).sendKeys(password);
+    driver.findElement(webdriver.By.className("button-green")).click();
+    return driver.getCurrentUrl();
   }
 };
 
