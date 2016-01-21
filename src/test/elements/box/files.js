@@ -26,11 +26,11 @@ common.for('crm', 'files', () => {
         return chakram.get('/hubs/documents/files/' + fileId);
       })
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
         return chakram.delete('/hubs/documents/files/' + fileId);
       })
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
       });
   });
 });

@@ -70,7 +70,7 @@ exports.all = () => {
   const url = '/instances';
   return chakram.get(url)
     .then(r => {
-      expect(r).to.have.status(200);
+      expect(r).to.have.statusCode(200);
       return r.body;
     })
     .catch(r => {
@@ -125,7 +125,7 @@ exports.create = (element, args) => {
         return chakram.post('/instances', instance);
       })
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
         console.log('Created %s element instance with ID: %s', element, r.body.id);
         chocolate.authReset(r.body.token);
         driver.close();
@@ -147,7 +147,7 @@ exports.create = (element, args) => {
 
     return chakram.post('/instances', instance)
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
         console.log('Created %s element instance with ID: %s', element, r.body.id);
         chocolate.authReset(r.body.token);
         return r;
@@ -163,7 +163,7 @@ exports.delete = (id) => {
   const url = '/instances/' + id;
   return chakram.delete(url)
     .then(r => {
-      expect(r).to.have.status(200);
+      expect(r).to.have.statusCode(200);
       console.log('Deleted element instance with ID: ' + id);
       chocolate.authReset();
       return r.body;
