@@ -37,11 +37,11 @@ describe('formula triggers', () => {
         return chakram.delete(util.format('/formulas/%s/triggers/%s', formulaId, r.body.id));
       })
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
         return chakram.delete(util.format('/formulas/%s', formulaId));
       })
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
       });
   });
 
@@ -64,11 +64,11 @@ describe('formula triggers', () => {
         return chakram.post(util.format('/formulas/%s/triggers', formulaId), t);
       })
       .then(r => {
-        expect(r).to.have.status(400);
+        expect(r).to.have.statusCode(400);
         return chakram.delete(util.format('/formulas/%s', formulaId));
       })
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
       });
   });
 

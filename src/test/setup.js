@@ -1,5 +1,6 @@
 'use strict';
 
+const chai = require('chai');
 const assert = require('assert');
 const chakram = require('chakram');
 const util = require('util');
@@ -8,6 +9,17 @@ const props = require('core/props');
 const tv4 = require('tv4');
 
 const customizeChakram = () => {
+  chakram.addMethod('statusCode', (r, status) => {
+    let responseStatus = r.response.statusCode;
+    let responseBody = r.response.body;
+
+    assert(
+      responseStatus === status,
+      'expected status code ' + responseStatus + ' to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody, null, 2),
+      'expected status code ' + responseStatus + ' not to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody, null, 2)
+    );
+  });
+
   chakram.addMethod("schemaAnd200", (r, schema) => {
     let responseStatus = r.response.statusCode;
     let responseBody = r.response.body;

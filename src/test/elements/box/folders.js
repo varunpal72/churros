@@ -9,7 +9,7 @@ common.for('crm', 'folders', () => {
     var uri = '/hubs/documents/folders/contents';
     return chakram.get(uri + '?path=/')
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
       });
   });
 });

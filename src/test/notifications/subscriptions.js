@@ -30,7 +30,7 @@ describe('subscriptions', () => {
         return chakram.delete(url + '/' + r.body.id);
       })
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
       });
   });
 
@@ -41,13 +41,13 @@ describe('subscriptions', () => {
     };
     return chakram.post(url, badSubscription)
       .then(r => {
-        expect(r).to.have.status(400);
+        expect(r).to.have.statusCode(400);
       });
   });
 
   it('should throw a 404 if the subscription ID does not exist', () => {
     return chakram.get(url + '/' + -1).then((r) => {
-      expect(r).to.have.status(404);
+      expect(r).to.have.statusCode(404);
     });
   });
 
@@ -57,7 +57,7 @@ describe('subscriptions', () => {
       badField: ''
     };
     return chakram.post(url, badSubscription).then((r) => {
-      expect(r).to.have.status(400);
+      expect(r).to.have.statusCode(400);
     });
   });
 });
