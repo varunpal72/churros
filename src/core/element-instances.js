@@ -89,7 +89,7 @@ exports.create = (element, args) => {
       }
     };
     const driver = new webdriver.Builder()
-      .forBrowser('phantomjs')
+      .forBrowser('firefox')
       .build();
     const oauthUrl = util.format('/elements/%s/oauth/url', element);
 
