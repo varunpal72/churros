@@ -1,17 +1,17 @@
 'use strict';
 
+const chocolate = require('core/chocolate');
 const util = require('util');
 const ei = require('core/element-instances');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const formulasUtil = require('./formulas.util');
 
 const schema = require('./assets/formula.schema');
 const triggerSchema = require('./assets/formula-trigger.schema');
 
 describe('formula triggers', () => {
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
-    const f = formulasUtil.gen({});
+    const f = chocolate.genFormula({});
 
     var formulaId;
     var url = '/formulas';
@@ -46,7 +46,7 @@ describe('formula triggers', () => {
   });
 
   it('should not allow an invalid cron for a "scheduled" trigger', () => {
-    const f = formulasUtil.gen({});
+    const f = chocolate.genFormula({});
 
     var formulaId;
     var url = '/formulas';

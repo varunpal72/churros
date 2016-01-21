@@ -50,7 +50,6 @@ $ churros test formulas --file formulas.triggers --file formulas.instances --tes
 ```
 
 
-
 > **PROTIP:** Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`
 
 > **PROTIP:** The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run

@@ -5,11 +5,16 @@ const util = require('util');
 
 var exports = module.exports = {};
 
-exports.random = () => {
+const random = () => {
   return Math.random().toString(36).substring(7);
-};
+}
+exports.random = random;
 
-exports.authReset= (token) => {
+exports.genFormula = (opts) => new Object({
+  name: (opts.name || 'churros-formula-name-' + random())
+});
+
+exports.authReset = (token) => {
   const props = require('core/props');
   const url = props.get('url');
   const us = props.get('user.secret');

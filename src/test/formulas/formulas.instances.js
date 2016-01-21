@@ -4,14 +4,13 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
 const chocolate = require('core/chocolate');
-const formulasUtil = require('./formulas.util');
 const ei = require('core/element-instances');
 
 const schema = require('./assets/formula.schema');
 
 describe('formula instances', () => {
   it('should not allow creating an instance of a formula with an invalid on success step', () => {
-    const f = formulasUtil.gen({});
+    const f = chocolate.genFormula({});
 
     var formulaId;
     var url = '/formulas';
