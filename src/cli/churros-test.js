@@ -9,7 +9,7 @@ const shell = require('shelljs');
 const collect = function collect(val, list) {
   list.push(val);
   return list;
-}
+};
 
 const runTests = function runTests(suite, options) {
   const config = require(process.env.HOME + '/.churros/sauce.json');
@@ -64,7 +64,7 @@ const runTests = function runTests(suite, options) {
 
   let cmd = util.format(rootDir + '/../../node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
   shell.exec(cmd);
-}
+};
 
 commander
   .command('suite', 'suite to test (formulas, notifications, elements/box, etc.)')

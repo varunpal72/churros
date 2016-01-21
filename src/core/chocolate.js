@@ -7,7 +7,7 @@ var exports = module.exports = {};
 
 const random = () => {
   return Math.random().toString(36).substring(7);
-}
+};
 exports.random = random;
 
 exports.genFormula = (opts) => new Object({

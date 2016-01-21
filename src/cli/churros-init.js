@@ -16,7 +16,7 @@ console.log('Initializating churros...');
 
 prompt.message = "   ";
 prompt.delimiter = "";
-prompt.override = optimist.argv // allows for properties to be sent as command-line args
+prompt.override = optimist.argv; // allows for properties to be sent as command-line args
 
 const prompts = {
   properties: {

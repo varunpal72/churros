@@ -5,20 +5,30 @@ const commander = require('commander');
 const util = require('util');
 const file = util.format('%s/%s', process.env.HOME, '.churros/sauce.json');
 
+const display = (r, indent, heading) => {
+  heading ? console.log(heading) : null;
+  Object.keys(r).forEach((k) => {
+    const value = typeof r[k] === 'object' ? '' : r[k];
+    console.log('%s%s: %s', indent, k, value);
+    if (typeof r[k] === 'object') display(r[k], indent + ' ');
+  });
+  console.log('');
+};
+
 const loadFile = () => {
   return new Promise((resolve, reject) => {
     const config = require(file);
     if (!config) reject(util.format('No config found in \'%s\'', file));
     resolve(config);
   });
-}
+};
 
 const property = (key, value) => {
   console.log('');
   loadFile()
     .then(r => {
-      if (typeof value != 'string') {
-        typeof r[key] == 'object' ? display(r[key], ' ', key + ':') : console.log('%s\n', r[key]);
+      if (typeof value !== 'string') {
+        typeof r[key] === 'object' ? display(r[key], ' ', key + ':') : console.log('%s\n', r[key]);
       } else {
         const keys = key.split(':');
         if (keys.length > 1) {
@@ -34,16 +44,6 @@ const property = (key, value) => {
       }
     })
     .catch(r => console.log(r));
-};
-
-const display = (r, indent, heading) => {
-  heading ? console.log(heading) : null;
-  Object.keys(r).forEach((k) => {
-    const value = typeof r[k] == 'object' ? '' : r[k];
-    console.log('%s%s: %s', indent, k, value);
-    if (typeof r[k] == 'object') display(r[k], indent + ' ');
-  });
-  console.log('');
 };
 
 commander

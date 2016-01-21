@@ -36,7 +36,7 @@ const elements = {
         })
         .thenCatch(() => {
           return false;
-        })
+        });
     }, 10000);
     driver.findElement(webdriver.By.name('login_email')).sendKeys(username);
     driver.findElement(webdriver.By.name("login_password")).clear();
