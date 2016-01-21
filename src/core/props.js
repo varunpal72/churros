@@ -25,6 +25,7 @@ exports.getForElement = (element, key) => {
 
   const value = elementProps[key];
   if (!value) missingPropForElement(element, key);
+  return value;
 };
 
 exports.set = (key, value) => {
