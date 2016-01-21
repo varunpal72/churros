@@ -1,7 +1,5 @@
 'use strict';
 
-const common = require('../common');
+const common = require('core/common');
 
-describe('tasks', () => {
-  common.for('ocr', 'tasks');
-});
+common.for('ocr', 'tasks');

@@ -3,7 +3,7 @@
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const auth = require('core/auth');
+const chocolate = require('core/chocolate');
 const webdriver = require('selenium-webdriver');
 const props = require('core/props');
 const url = require('url');
@@ -118,7 +118,7 @@ exports.create = (element, args) => {
       .then(r => {
         expect(r).to.have.status(200);
         console.log('Created %s element instance with ID: %s', element, r.body.id);
-        auth.setup(r.body.token);
+        chocolate.authReset(r.body.token);
         driver.close();
         return r;
       })
@@ -140,7 +140,7 @@ exports.create = (element, args) => {
       .then(r => {
         expect(r).to.have.status(200);
         console.log('Created %s element instance with ID: %s', element, r.body.id);
-        auth.setup(r.body.token);
+        chocolate.authReset(r.body.token);
         return r;
       })
       .catch(r => {
@@ -156,7 +156,7 @@ exports.delete = (id) => {
     .then(r => {
       expect(r).to.have.status(200);
       console.log('Deleted element instance with ID: ' + id);
-      auth.setup();
+      chocolate.authReset();
       return r.body;
     })
     .catch(r => {

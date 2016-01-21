@@ -4,13 +4,11 @@ const util = require('util');
 const chocolate = require('core/chocolate');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const common = require('../common');
+const common = require('core/common');
 const fs = require('fs');
 const schema = require('./assets/files.schema.json');
 
-describe('files', () => {
-  common.for('crm','files');
-
+common.for('crm', 'files', () => {
   it('should allow uploading and downloading a file', () => {
     const fullPath = util.format('/brady-%s.jpg', chocolate.random());
     var fileId = -1;

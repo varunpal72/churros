@@ -1,7 +1,5 @@
 'use strict';
 
-const common = require('../common');
+const common = require('core/common');
 
-describe('leads', () => {
-  common.for('marketing', 'leads');
-});
+common.for('marketing', 'leads');
