@@ -9,15 +9,18 @@ var exports = module.exports = {};
 exports.for = (hub, objectName, tests) => {
   describe(objectName, () => {
     let api = util.format('/hubs/%s/%s', hub, objectName);
-    if (tests) tests(api);
-  })
+    tests(api);
+  });
 };
 
-const create = (api, payload, schema) => {
-  const name = util.format('should allow creating an %s', api);
+const create = (api, payload, schema, validationCallback) => {
+  validationCallback = (validationCallback || ((r) => {
+    expect(r).to.have.schemaAnd200(schema);
+  }));
+
   return chakram.post(api, payload)
     .then(r => {
-      expect(r).to.have.schemaAnd200(schema);
+      validationCallback(r);
       return r;
     })
     .catch(r => {
@@ -27,8 +30,9 @@ const create = (api, payload, schema) => {
 };
 
 const retrieve = (api, id, schema, validationCallback) => {
-  validationCallback = (validationCallback || ((r) => { expect(r).to.have.schemaAnd200(schema); }));
-  const name = util.format('should allow retrieving an %s', api);
+  validationCallback = (validationCallback || ((r) => {
+    expect(r).to.have.schemaAnd200(schema);
+  }));
   return chakram.get(api + '/' + id)
     .then(r => {
       validationCallback(r);
@@ -41,7 +45,6 @@ const retrieve = (api, id, schema, validationCallback) => {
 };
 
 const update = (api, id, payload, schema, cb) => {
-  const name = util.format('it should support deleting a %s', api);
   cb = (cb || chakram.patch);
   return cb(api + '/' + id, payload)
     .then(r => {
@@ -55,7 +58,6 @@ const update = (api, id, payload, schema, cb) => {
 };
 
 const remove = (api, id) => {
-  const name = util.format('it should support deleting a %s', api);
   return chakram.delete(api + '/' + id)
     .then(r => {
       expect(r).to.have.statusCode(200);
@@ -73,7 +75,7 @@ const crud = (api, payload, schema, updateCallback) => {
       return retrieve(api, r.body.id, schema);
     })
     .then(r => {
-      return update(api, r.body.id, payload, schema, updateCallback)
+      return update(api, r.body.id, payload, schema, updateCallback);
     })
     .then(r => {
       return remove(api, r.body.id);
@@ -81,21 +83,30 @@ const crud = (api, payload, schema, updateCallback) => {
 };
 exports.crud = crud;
 
-const crudTest = (api, payload, schema, updateCallback) => {
+const testCrud = (api, payload, schema, updateCallback) => {
   const name = util.format('should allow creating, retrieving, updating and deleting a %s', api);
   it(name, () => {
     return crud(api, payload, schema, updateCallback);
   });
 };
-exports.crudTest = crudTest;
+exports.testCrud = testCrud;
 
-const notFoundTest = (api, invalidId) => {
+const test404 = (api, invalidId) => {
   const name = util.format('should throw a 404 when trying to retrieve a(n) %s that does not exist', api);
-  invalidId = (invalidId || -1);
   it(name, () => {
-    return retrieve(api, invalidId, null, (r) => {
+    return retrieve(api, (invalidId || -1), null, (r) => {
       expect(r).to.have.statusCode(404);
     });
   });
 };
-exports.notFoundTest = notFoundTest;
+exports.test404 = test404;
+
+const testBadPost400 = (api, payload) => {
+  const name = util.format('should throw a 400 when trying to create a(n) %s with an invalid JSON body', api);
+  it(name, () => {
+    return create(api, payload, null, (r) => {
+      expect(r).to.have.statusCode(400);
+    });
+  });
+};
+exports.testBadPost400 = testBadPost400;
