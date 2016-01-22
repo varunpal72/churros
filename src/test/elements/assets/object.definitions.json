@@ -1,4 +1,10 @@
 {
+  "accounts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "contacts": {
     "fields": [{
       "path": "id",

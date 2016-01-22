@@ -52,7 +52,6 @@ before((done) => {
   const user = argv.user;
   const password = argv.password;
   const url = argv.url;
-  console.log('Attempting to retrieve user/org secrets for %s', user);
 
   // override properties here on initialization
   props.set('user', user);
