@@ -98,6 +98,14 @@ const crud = (api, payload, schema, updateCallback) => {
 };
 exports.crud = crud;
 
+const testCrud = (api, payload, schema, updateCallback) => {
+  const name = util.format('should allow creating, retrieving, updating and deleting a %s', api);
+  it(name, () => {
+    return crud(api, payload, schema, updateCallback);
+  });
+};
+exports.testCrud = testCrud;
+
 const cruds = (api, payload, schema, updateCallback) => {
   let createdId = -1;
   return create(api, payload, schema)
@@ -117,13 +125,13 @@ const cruds = (api, payload, schema, updateCallback) => {
 };
 exports.cruds = cruds;
 
-const testCrud = (api, payload, schema, updateCallback) => {
-  const name = util.format('should allow creating, retrieving, updating and deleting a %s', api);
+const testCruds = (api, payload, schema, updateCallback) => {
+  const name = util.format('should all CRUDS for %s', api);
   it(name, () => {
-    return crud(api, payload, schema, updateCallback);
+    return cruds(api, payload, schema, updateCallback);
   });
 };
-exports.testCrud = testCrud;
+exports.testCruds = testCruds;
 
 const test404 = (api, invalidId) => {
   const name = util.format('should throw a 404 when trying to retrieve a(n) %s that does not exist', api);

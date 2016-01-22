@@ -1,0 +1,352 @@
+{
+    "accounts": {
+        "vendorName": "Account",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            },
+            {
+                "path": "name",
+                "vendorPath": "Name"
+            },
+            {
+                "path": "parentId",
+                "vendorPath": "ParentId"
+            },
+            {
+                "path": "type",
+                "vendorPath": "Type"
+            },
+            {
+                "path": "annualRevenue",
+                "vendorPath": "AnnualRevenue"
+            },
+            {
+                "path": "billingAddress.street1",
+                "vendorPath": "BillingStreet"
+            },
+            {
+                "path": "billingAddress.postalCode",
+                "vendorPath": "BillingPostalCode"
+            },
+            {
+                "path": "billingAddress.stateOrProvince",
+                "vendorPath": "BillingState"
+            },
+            {
+                "path": "billingAddress.city",
+                "vendorPath": "BillingCity"
+            },
+            {
+                "path": "billingAddress.country",
+                "vendorPath": "BillingCountry"
+            },
+            {
+                "path": "description",
+                "vendorPath": "Description"
+            },
+            {
+                "path": "phone",
+                "vendorPath": "Phone"
+            },
+            {
+                "path": "website",
+                "vendorPath": "Website"
+            },
+            {
+                "path": "numberOfEmployees",
+                "vendorPath": "NumberOfEmployees"
+            },
+            {
+                "path": "shippingAddress.street1",
+                "vendorPath": "ShippingStreet"
+            },
+            {
+                "path": "shippingAddress.postalCode",
+                "vendorPath": "ShippingPostalCode"
+            },
+            {
+                "path": "shippingAddress.stateOrProvince",
+                "vendorPath": "ShippingState"
+            },
+            {
+                "path": "shippingAddress.city",
+                "vendorPath": "ShippingCity"
+            },
+            {
+                "path": "shippingAddress.country",
+                "vendorPath": "ShippingCountry"
+            }
+        ]
+    },
+    "myLead": {
+        "vendorName": "Lead",
+        "fields": [
+            {
+                "path": "myId",
+                "vendorPath": "Id"
+            }
+        ]
+    },
+    "leads": {
+        "vendorName": "Lead",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            },
+            {
+                "path": "firstName",
+                "vendorPath": "FirstName"
+            },
+            {
+                "path": "lastName",
+                "vendorPath": "LastName"
+            },
+            {
+                "path": "company",
+                "vendorPath": "Company"
+            },
+            {
+                "path": "title",
+                "vendorPath": "Title"
+            },
+            {
+                "path": "source",
+                "vendorPath": "LeadSource"
+            },
+            {
+                "path": "status",
+                "vendorPath": "Status"
+            },
+            {
+                "path": "description",
+                "vendorPath": "Description"
+            },
+            {
+                "path": "address.street1",
+                "vendorPath": "Street"
+            },
+            {
+                "path": "address.postalCode",
+                "vendorPath": "PostalCode"
+            },
+            {
+                "path": "address.stateOrProvince",
+                "vendorPath": "State"
+            },
+            {
+                "path": "address.city",
+                "vendorPath": "City"
+            },
+            {
+                "path": "address.country",
+                "vendorPath": "Country"
+            },
+            {
+                "path": "email",
+                "vendorPath": "Email"
+            },
+            {
+                "path": "phone",
+                "vendorPath": "Phone"
+            },
+            {
+                "path": "mobile",
+                "vendorPath": "MobilePhone"
+            }
+        ]
+    },
+    "contacts": {
+        "vendorName": "Contact",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            },
+            {
+                "path": "firstName",
+                "vendorPath": "FirstName"
+            },
+            {
+                "path": "lastName",
+                "vendorPath": "LastName"
+            },
+            {
+                "path": "accountId",
+                "vendorPath": "AccountId"
+            },
+            {
+                "path": "title",
+                "vendorPath": "Title"
+            },
+            {
+                "path": "department",
+                "vendorPath": "Department"
+            },
+            {
+                "path": "address.street1",
+                "vendorPath": "MailingStreet"
+            },
+            {
+                "path": "address.postalCode",
+                "vendorPath": "MailingPostalCode"
+            },
+            {
+                "path": "address.stateOrProvince",
+                "vendorPath": "MailingState"
+            },
+            {
+                "path": "address.city",
+                "vendorPath": "MailingCity"
+            },
+            {
+                "path": "address.country",
+                "vendorPath": "MailingCountry"
+            },
+            {
+                "path": "description",
+                "vendorPath": "Description"
+            },
+            {
+                "path": "email",
+                "vendorPath": "Email"
+            },
+            {
+                "path": "phone",
+                "vendorPath": "Phone"
+            },
+            {
+                "path": "mobile",
+                "vendorPath": "MobilePhone"
+            }
+        ]
+    },
+    "opportunities": {
+        "vendorName": "Opportunity",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            },
+            {
+                "path": "name",
+                "vendorPath": "Name"
+            },
+            {
+                "path": "accountId",
+                "vendorPath": "AccountId"
+            },
+            {
+                "path": "type",
+                "vendorPath": "Type"
+            },
+            {
+                "path": "source",
+                "vendorPath": "LeadSource"
+            },
+            {
+                "path": "description",
+                "vendorPath": "Description"
+            },
+            {
+                "path": "amount",
+                "vendorPath": "Amount"
+            },
+            {
+                "path": "closeDate",
+                "vendorPath": "CloseDate"
+            },
+            {
+                "path": "stage",
+                "vendorPath": "StageName"
+            },
+            {
+                "path": "probability",
+                "vendorPath": "Probability"
+            }
+        ]
+    },
+    "products": {
+        "vendorName": "Product",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            },
+            {
+                "path": "name",
+                "vendorPath": "Name"
+            },
+            {
+                "path": "family",
+                "vendorPath": "Family"
+            },
+            {
+                "path": "description",
+                "vendorPath": "Description"
+            },
+            {
+                "path": "sku",
+                "vendorPath": "ProductCode"
+            }
+        ]
+    },
+    "users": {
+        "vendorName": "User",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            },
+            {
+                "path": "username",
+                "vendorPath": "Username"
+            },
+            {
+                "path": "email",
+                "vendorPath": "Email"
+            }
+        ]
+    },
+    "house": {
+        "vendorName": "House__c",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            },
+            {
+                "path": "name",
+                "vendorPath": "Name"
+            },
+            {
+                "path": "ownerId",
+                "vendorPath": "OwnerId"
+            },
+            {
+                "path": "value",
+                "vendorPath": "House_Value__c"
+            }
+        ]
+    },
+    "activities": {
+        "vendorName": "Event",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            }
+        ]
+    },
+    "tasks": {
+        "vendorName": "Task",
+        "fields": [
+            {
+                "path": "id",
+                "vendorPath": "Id"
+            }
+        ]
+    }
+}

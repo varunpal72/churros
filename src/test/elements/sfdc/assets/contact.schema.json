@@ -1,0 +1,15 @@
+{
+  "type": ["array", "object"],
+  "properties": {
+    "Id": {
+      "type": "string"
+    },
+    "FirstName": {
+      "type": "string"
+    },
+    "LastName": {
+      "type": "string"
+    }
+  },
+  "required": ["Id", "FirstName", "LastName"]
+}
