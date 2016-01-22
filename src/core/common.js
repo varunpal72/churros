@@ -9,7 +9,11 @@ var exports = module.exports = {};
 exports.for = (hub, objectName, tests) => {
   describe(objectName, () => {
     let api = util.format('/hubs/%s/%s', hub, objectName);
-    tests(api);
+    tests ?
+      tests(api) :
+      it('add some tests to me!!!', () => {
+        return true;
+      });
   });
 };
 
