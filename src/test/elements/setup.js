@@ -22,9 +22,9 @@ const terminate = (error) => {
   process.exit(1);
 };
 
-const element = argv.element;
 var instanceId;
 before(done => {
+  const element = argv.element;
   console.log('Attempting to provision a(n) %s instance', element);
   ei.create(element)
     .then(r => {
