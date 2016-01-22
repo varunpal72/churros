@@ -2,7 +2,6 @@
 
 const chocolate = require('core/chocolate');
 const util = require('util');
-const ei = require('core/element-instances');
 const chakram = require('chakram');
 const expect = chakram.expect;
 

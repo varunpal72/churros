@@ -32,7 +32,7 @@ describe('formula instances', () => {
         expect(r).to.have.statusCode(200);
         const fi = {
           name: 'churros-formula-instance-name'
-        }
+        };
         return chakram.post(util.format('/formulas/%s/instances', formulaId), fi);
       })
       .then(r => {
@@ -45,13 +45,13 @@ describe('formula instances', () => {
   });
 
   it('should allow creating a big azz formula and then an instance', () => {
-    return ei.create('box')
+    return ei.create('jira')
       .then(r => {
         const id = r.body.id;
 
         var bigAzzFi = require('./assets/big-formula-instance.json');
         Object.keys(bigAzzFi.configuration).forEach(key => {
-          bigAzzFi.configuration[key] = util.format(bigAzzFi.configuration[key], id)
+          bigAzzFi.configuration[key] = util.format(bigAzzFi.configuration[key], id);
         });
 
         var bigAzzF = require('./assets/big-formula.json');
