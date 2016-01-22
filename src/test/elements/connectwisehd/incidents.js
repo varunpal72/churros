@@ -1,5 +1,5 @@
 'use strict';
 
-const common = require('core/common');
+const tester = require('core/tester');
 
-common.for('helpdesk', 'incidents');
+tester.for('helpdesk', 'incidents');

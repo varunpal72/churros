@@ -1,6 +1,6 @@
 'use strict';
 
-const common = require('core/common');
+const tester = require('core/tester');
 const schema = require('./assets/contact.schema.json');
 
 const gen = (opts) => new Object({
@@ -8,6 +8,6 @@ const gen = (opts) => new Object({
   LastName: (opts.LastName || 'sauce')
 });
 
-common.for('crm', 'contacts', (api) => {
-  common.testCruds(api, gen({}), schema);
+tester.for('crm', 'contacts', (api) => {
+  tester.testCruds(api, gen({}), schema);
 });

@@ -3,7 +3,7 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const chocolate = require('core/chocolate');
-const common = require('core/common');
+const tester = require('core/tester');
 
 const schema = require('./assets/notification.schema.json');
 
@@ -19,7 +19,7 @@ describe('notifications', () => {
 
   it('should allow creating, retrieving and deleting a notification', () => {
     const n = notifyGen({});
-    return common.testCrud(url, n, schema);
+    return tester.testCrud(url, n, schema);
   });
 
   it('should return one notification when searching for this topic', () => {

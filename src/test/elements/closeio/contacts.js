@@ -4,7 +4,7 @@ const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const chocolate = require('core/chocolate');
-const common = require('core/common');
+const tester = require('core/tester');
 const schema = require('./assets/contact.schema');
 
 const gen = (opts) => {
@@ -17,7 +17,7 @@ const gen = (opts) => {
   });
 };
 
-common.for('crm', 'contacts', (api) => {
+tester.for('crm', 'contacts', (api) => {
   it(util.format('should allow CRUDS for %s', api), () => {
     return chakram.get('/hubs/crm/accounts')
       .then(r => {
@@ -26,13 +26,13 @@ common.for('crm', 'contacts', (api) => {
         const leadId = r.body[0].id;
 
         const payload = gen({ lead_id: leadId });
-        return common.cruds(api, payload, schema);
+        return tester.cruds(api, payload, schema);
       });
   });
 
-  common.testPaginate(api, schema);
-  common.testBadGet404(api);
-  common.testBadPatch404(api);
-  common.testBadPost400(api, {});
-  common.testBadPost400(api);
+  tester.testPaginate(api, schema);
+  tester.testBadGet404(api);
+  tester.testBadPatch404(api);
+  tester.testBadPost400(api, {});
+  tester.testBadPost400(api);
 });

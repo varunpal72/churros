@@ -2,9 +2,9 @@
 
 const chakram = require('chakram');
 const expect = chakram.expect;
-const common = require('core/common');
+const tester = require('core/tester');
 
-common.for('crm', 'folders', () => {
+tester.for('crm', 'folders', () => {
   it('should allow listing folder contents', () => {
     var uri = '/hubs/documents/folders/contents';
     return chakram.get(uri + '?path=/')

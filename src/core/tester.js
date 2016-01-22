@@ -11,16 +11,12 @@ exports.for = (hub, objectName, tests) => {
     let api = util.format('/hubs/%s/%s', hub, objectName);
     tests ?
       tests(api) :
-      it('add some tests to me!!!', () => {
-        return true;
-      });
+      it('add some tests to me!!!', () => true);
   });
 };
 
 const create = (api, payload, schema, validationCallback) => {
-  validationCallback = (validationCallback || ((r) => {
-    expect(r).to.have.schemaAnd200(schema);
-  }));
+  validationCallback = (validationCallback || ((r) => expect(r).to.have.schemaAnd200(schema)));
 
   return chakram.post(api, payload)
     .then(r => {
@@ -89,23 +85,15 @@ const find = (api, schema, validationCallback) => {
 
 const crud = (api, payload, schema, updateCallback) => {
   return create(api, payload, schema)
-    .then(r => {
-      return retrieve(api, r.body.id, schema);
-    })
-    .then(r => {
-      return update(api, r.body.id, payload, schema, updateCallback);
-    })
-    .then(r => {
-      return remove(api, r.body.id);
-    });
+    .then(r => retrieve(api, r.body.id, schema))
+    .then(r => update(api, r.body.id, payload, schema, updateCallback))
+    .then(r => remove(api, r.body.id));
 };
 exports.crud = crud;
 
 const testCrud = (api, payload, schema, updateCallback) => {
   const name = util.format('should allow CRUD for %s', api);
-  it(name, () => {
-    return crud(api, payload, schema, updateCallback);
-  });
+  it(name, () => crud(api, payload, schema, updateCallback));
 };
 exports.testCrud = testCrud;
 
@@ -116,41 +104,29 @@ const cruds = (api, payload, schema, updateCallback) => {
       createdId = r.body.id;
       return retrieve(api, createdId, schema);
     })
-    .then(r => {
-      return update(api, createdId, payload, schema, updateCallback);
-    })
-    .then(r => {
-      return find(api, schema);
-    })
-    .then(r => {
-      return remove(api, createdId);
-    });
+    .then(r => update(api, createdId, payload, schema, updateCallback))
+    .then(r => find(api, schema))
+    .then(r => remove(api, createdId));
 };
 exports.cruds = cruds;
 
 const testCruds = (api, payload, schema, updateCallback) => {
   const name = util.format('should allow CRUDS for %s', api);
-  it(name, () => {
-    return cruds(api, payload, schema, updateCallback);
-  });
+  it(name, () => cruds(api, payload, schema, updateCallback));
 };
 exports.testCruds = testCruds;
 
 const testPaginate = (api, schema, query) => {
   const name = util.format('should allow paginating %s', api);
   api = util.format('%s?page=%s&pageSize=%s', api, 1, 1);
-  it(name, () => {
-    return find(api, schema);
-  });
+  it(name, () => find(api, schema));
 };
 exports.testPaginate = testPaginate;
 
 const testBadGet404 = (api, invalidId) => {
   const name = util.format('should throw a 404 when trying to retrieve a(n) %s that does not exist', api);
   it(name, () => {
-    return retrieve(api, (invalidId || -1), null, (r) => {
-      expect(r).to.have.statusCode(404);
-    });
+    return retrieve(api, (invalidId || -1), null, (r) => expect(r).to.have.statusCode(404));
   });
 };
 exports.testBadGet404 = testBadGet404;
@@ -172,9 +148,7 @@ const testBadPost400 = (api, payload) => {
     name = util.format(name, 'empty');
 
   it(name, () => {
-    return create(api, payload, null, (r) => {
-      expect(r).to.have.statusCode(400);
-    });
+    return create(api, payload, null, (r) => expect(r).to.have.statusCode(400));
   });
 };
 exports.testBadPost400 = testBadPost400;

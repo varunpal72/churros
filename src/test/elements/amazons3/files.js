@@ -1,7 +1,7 @@
 'use strict';
 
-const common = require('core/common');
+const tester = require('core/tester');
 
 describe('files', () => {
-  common.for('documents', 'files');
+  tester.for('documents', 'files');
 });

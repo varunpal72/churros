@@ -1,6 +1,6 @@
 'use strict';
 
-const common = require('core/common');
+const tester = require('core/tester');
 
-common.for('social', 'users');
+tester.for('social', 'users');
 it('should blah', () => {return true;})

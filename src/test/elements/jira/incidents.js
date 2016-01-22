@@ -1,10 +1,10 @@
 'use strict';
 
-const common = require('core/common');
+const tester = require('core/tester');
 
-common.for('helpdesk', 'incidents', (api) => {
-  common.testBadGet404(api);
-  common.testBadPatch404(api);
-  common.testBadPost400(api, {});
-  common.testBadPost400(api);
+tester.for('helpdesk', 'incidents', (api) => {
+  tester.testBadGet404(api);
+  tester.testBadPatch404(api);
+  tester.testBadPost400(api, {});
+  tester.testBadPost400(api);
 });
