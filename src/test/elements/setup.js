@@ -18,11 +18,11 @@ const createAll = (urlTemplate, list) => {
 };
 
 const terminate = (error) => {
-  console.log('Well shucks...failed to finish setup...\n  Is your URL up and running?\n  Do you have the right username and password? %s', error);
+  console.log('Failed to setup element: %s', error);
   process.exit(1);
 };
 
-var instanceId;
+let instanceId;
 before(done => {
   const element = argv.element;
   console.log('Attempting to provision %s', element);

@@ -48,11 +48,14 @@ const retrieve = (api, id, schema, validationCallback) => {
     });
 };
 
-const update = (api, id, payload, schema, cb) => {
+const update = (api, id, payload, schema, cb, validationCallback) => {
   cb = (cb || chakram.patch);
+  validationCallback = (validationCallback || ((r) => {
+    expect(r).to.have.schemaAnd200(schema);
+  }));
   return cb(api + '/' + id, payload)
     .then(r => {
-      expect(r).to.have.schemaAnd200(schema);
+      validationCallback(r);
       return r;
     })
     .catch(r => {
@@ -133,7 +136,16 @@ const testCruds = (api, payload, schema, updateCallback) => {
 };
 exports.testCruds = testCruds;
 
-const test404 = (api, invalidId) => {
+const testPaginate = (api, schema, query) => {
+  const name = util.format('should allow paginating %s', api);
+  api = util.format('%s?page=%s&pageSize=%s', api, 1, 1);
+  it(name, () => {
+    return find(api, schema);
+  });
+};
+exports.testPaginate = testPaginate;
+
+const testBadGet404 = (api, invalidId) => {
   const name = util.format('should throw a 404 when trying to retrieve a(n) %s that does not exist', api);
   it(name, () => {
     return retrieve(api, (invalidId || -1), null, (r) => {
@@ -141,10 +153,24 @@ const test404 = (api, invalidId) => {
     });
   });
 };
-exports.test404 = test404;
+exports.testBadGet404 = testBadGet404;
+
+const testBadPatch404 = (api, payload, invalidId) => {
+  const name = util.format('should throw a 404 when trying to update a(n) %s that does not exist', api);
+  it(name, () => {
+    return update(api, (invalidId || -1), (payload || {}), null, chakram.patch, (r) => {
+      expect(r).to.have.statusCode(404);
+    });
+  });
+};
+exports.testBadPatch404 = testBadPatch404;
 
 const testBadPost400 = (api, payload) => {
-  const name = util.format('should throw a 400 when trying to create a(n) %s with an invalid JSON body', api);
+  let name = util.format('should throw a 400 when trying to create a(n) %s with an %s JSON body', api);
+  payload ?
+    name = util.format(name, 'invalid') :
+    name = util.format(name, 'empty');
+
   it(name, () => {
     return create(api, payload, null, (r) => {
       expect(r).to.have.statusCode(400);

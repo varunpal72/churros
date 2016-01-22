@@ -18,18 +18,21 @@ const gen = (opts) => {
 };
 
 common.for('crm', 'contacts', (api) => {
-  const name = util.format('should allow CRUDS for %s', api);
-  it(name, () => {
+  it(util.format('should allow CRUDS for %s', api), () => {
     return chakram.get('/hubs/crm/accounts')
       .then(r => {
         expect(r).to.have.status(200);
         expect(r.body).to.not.be.empty;
         const leadId = r.body[0].id;
 
-        return common.cruds(api, gen({ lead_id: leadId }), schema);
+        const payload = gen({ lead_id: leadId });
+        return common.cruds(api, payload, schema);
       });
   });
 
-  common.test404(api);
+  common.testPaginate(api, schema);
+  common.testBadGet404(api);
+  common.testBadPatch404(api);
   common.testBadPost400(api, {});
+  common.testBadPost400(api);
 });

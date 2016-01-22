@@ -56,9 +56,9 @@ commander
     console.log('');
     console.log('    $ churros props --list');
     console.log('    $ churros props url api.cloud-elements.com');
-    console.log('    $ churros props box:user frank@ricard.com');
-    console.log('    $ churros props box:user');
-    console.log('    $ churros props --delete box:user');
+    console.log('    $ churros props box:username frank@ricard.com');
+    console.log('    $ churros props box:username');
+    console.log('    $ churros props --delete box:username');
     console.log('');
   })
   .parse(process.argv);
