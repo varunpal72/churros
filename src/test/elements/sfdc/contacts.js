@@ -8,7 +8,6 @@ const gen = (opts) => new Object({
   LastName: (opts.LastName || 'sauce')
 });
 
-// common.for('crm', 'contacts', (api) => {
-//   common.testCruds(api, gen({}), schema);
-// });
-common.for('crm', 'contacts');
+common.for('crm', 'contacts', (api) => {
+  common.testCruds(api, gen({}), schema);
+});

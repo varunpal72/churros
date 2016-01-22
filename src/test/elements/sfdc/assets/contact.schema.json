@@ -1,7 +1,7 @@
 {
   "type": ["array", "object"],
   "properties": {
-    "Id": {
+    "id": {
       "type": "string"
     },
     "FirstName": {
@@ -11,5 +11,5 @@
       "type": "string"
     }
   },
-  "required": ["Id", "FirstName", "LastName"]
+  "required": ["id", "FirstName", "LastName"]
 }

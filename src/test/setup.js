@@ -1,10 +1,9 @@
 'use strict';
 
-const chai = require('chai');
 const assert = require('assert');
 const chakram = require('chakram');
 const util = require('util');
-const argv = require('optimist').demand('user').argv
+const argv = require('optimist').demand('user').argv;
 const props = require('core/props');
 const tv4 = require('tv4');
 
@@ -34,7 +33,7 @@ const customizeChakram = () => {
       return errorMsg;
     };
 
-    let is200 = responseStatus == 200;
+    let is200 = responseStatus === 200;
     let message = util.format('expected %s to be 200.  response body was \n%s', responseStatus, JSON.stringify(responseBody, null, 2));
     assert(is200, message);
 
@@ -53,6 +52,7 @@ before((done) => {
   const user = argv.user;
   const password = argv.password;
   const url = argv.url;
+  console.log('Attempting to retrieve user/org secrets for %s', user);
 
   // override properties here on initialization
   props.set('user', user);
@@ -60,10 +60,7 @@ before((done) => {
   props.set('url', url);
 
   const secUrl = url + '/elements/j_spring_security_check';
-  const form = {
-    j_username: user,
-    j_password: password
-  };
+  const form = { j_username: user, j_password: password };
 
   chakram.post(secUrl, null, {
       jar: true,

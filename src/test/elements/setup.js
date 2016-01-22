@@ -7,29 +7,41 @@ const ei = require('core/element-instances');
 const argv = require('optimist').demand('element').argv;
 const fs = require('fs');
 
-var instanceId = -1;
+const createAll = (urlTemplate, list) => {
+  let promises = [];
+  Object.keys(list).forEach(key => {
+    const payload = list[key];
+    const url = util.format(urlTemplate, key);
+    promises.push(chakram.post(url, payload));
+  });
+  return chakram.all(promises);
+};
 
+const element = argv.element;
+var instanceId = -1;
 before(done => {
-  const element = argv.element;
+  console.log('Attempting to provision a(n) %s instance', element);
   ei.create(element)
     .then(r => {
       expect(r).to.have.statusCode(200);
+      console.log('Setting up object definitions');
       instanceId = r.body.id;
-      const file = util.format('%s/%s/assets/transformations', __dirname, element);
-      if (fs.existsSync(file + '.json')) {
-        const transformUrl = util.format('/instances/%s/transformations/contacts', instanceId);
-        const payload = require(file)['contacts'];
-        console.log('posting to %s with %s', transformUrl, JSON.stringify(payload));
-        return chakram.post(transformUrl, payload);
+      const objectDefinitionsFile = util.format('%s/assets/object.definitions', __dirname);
+      if (fs.existsSync(objectDefinitionsFile + '.json')) {
+        const url = util.format('/instances/%s/objects/%s/definitions', instanceId);
+        return createAll(url, require(objectDefinitionsFile));
       }
-      return r;
     })
     .then(r => {
-      expect(r).to.have.statusCode(200);
-      done();
+      console.log('Setting up transformations');
+      const transformationsFile = util.format('%s/%s/assets/transformations', __dirname, element);
+      if (fs.existsSync(transformationsFile + '.json')) {
+        const url = util.format('/instances/%s/transformations/%s', instanceId);
+        return createAll(url, require(transformationsFile));
+      }
     })
+    .then(r => done())
     .catch(r => {
-      console.log('hi');
       console.log('Well shucks...failed to finish setup...\n  Is your URL up and running?\n  Do you have the right username and password? %s', r);
       process.exit(1);
     });

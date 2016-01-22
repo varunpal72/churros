@@ -89,7 +89,7 @@ exports.create = (element, args) => {
       }
     };
     const driver = new webdriver.Builder()
-      .forBrowser('phantomjs')
+      .forBrowser('firefox')
       .build();
     const oauthUrl = util.format('/elements/%s/oauth/url', element);
 
@@ -136,6 +136,7 @@ exports.create = (element, args) => {
       configuration: props.all(element)
     };
 
+    console.log('Attempting to create an instance of %s', element);
     return chakram.post('/instances', instance)
       .then(r => {
         expect(r).to.have.statusCode(200);
