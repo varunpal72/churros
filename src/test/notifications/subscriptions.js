@@ -1,63 +1,22 @@
 'use strict';
 
-const chakram = require('chakram');
-const expect = chakram.expect;
-const subscriptionSchema = require('./assets/subscription.schema');
+const tester = require('core/tester');
+const schema = require('./assets/subscription.schema');
 
-describe('subscriptions', () => {
-  const url = '/notifications/subscriptions';
+const gen = (opts) => new Object({
+  channel: ('webhook' || opts.channel),
+  topics: (['churros-topic'] || opts.topics),
+  config: ({
+    url: 'http://fake.churros.api.com'
+  } || opts.config)
+});
 
-  it('should allow creating, retrieving and deleting a subscription', () => {
-    const subscription = {
-      channel: 'webhook',
-      topics: ['churros-topic'],
-      config: {
-        url: 'http://fake.churros.url.com'
-      }
-    };
+tester.for(null, 'notifications/subscriptions', (api) => {
+  tester.testCrd(api, gen(), schema);
+  tester.testBadPost400(api);
+  tester.testBadGet404(api);
 
-    return chakram.post(url, subscription)
-      .then(r => {
-        expect(r).to.have.schemaAnd200(subscriptionSchema);
-
-        return chakram.get(url + '/' + r.body.id);
-      })
-      .then(r => {
-        expect(r).to.have.schemaAnd200(subscriptionSchema);
-        expect(r.body.topic).to.equal(subscription.topic);
-        expect(r.body.channel).to.equal(subscription.channel);
-
-        return chakram.delete(url + '/' + r.body.id);
-      })
-      .then(r => {
-        expect(r).to.have.statusCode(200);
-      });
-  });
-
-  it('should throw a 400 if an email subscription is missing an email address', () => {
-    const badSubscription = {
-      channel: 'email',
-      topics: ['churros-topic']
-    };
-    return chakram.post(url, badSubscription)
-      .then(r => {
-        expect(r).to.have.statusCode(400);
-      });
-  });
-
-  it('should throw a 404 if the subscription ID does not exist', () => {
-    return chakram.get(url + '/' + -1).then((r) => {
-      expect(r).to.have.statusCode(404);
-    });
-  });
-
-  it('should throw a 400 if you pass invalid fields when creating a subscription', () => {
-    const badSubscription = {
-      channel: 'email',
-      badField: ''
-    };
-    return chakram.post(url, badSubscription).then((r) => {
-      expect(r).to.have.statusCode(400);
-    });
-  });
+  const bad = gen();
+  bad.config.url = null;
+  tester.testBadPost400(api, bad);
 });
