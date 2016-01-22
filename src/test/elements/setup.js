@@ -25,7 +25,7 @@ const terminate = (error) => {
 var instanceId;
 before(done => {
   const element = argv.element;
-  console.log('Attempting to provision a(n) %s instance', element);
+  console.log('Attempting to provision %s', element);
   ei.create(element)
     .then(r => {
       expect(r).to.have.statusCode(200);
