@@ -99,7 +99,7 @@ const crud = (api, payload, schema, updateCallback) => {
 exports.crud = crud;
 
 const testCrud = (api, payload, schema, updateCallback) => {
-  const name = util.format('should allow creating, retrieving, updating and deleting a %s', api);
+  const name = util.format('should allow CRUD for %s', api);
   it(name, () => {
     return crud(api, payload, schema, updateCallback);
   });
@@ -126,7 +126,7 @@ const cruds = (api, payload, schema, updateCallback) => {
 exports.cruds = cruds;
 
 const testCruds = (api, payload, schema, updateCallback) => {
-  const name = util.format('should all CRUDS for %s', api);
+  const name = util.format('should allow CRUDS for %s', api);
   it(name, () => {
     return cruds(api, payload, schema, updateCallback);
   });
