@@ -1,7 +1,7 @@
 {
     "curly": false,
     "eqeqeq": true,
-    "esnext": true,
+    "esversion": 6,
     "indent": 2,
     "latedef": true,
     "unused": "vars",
