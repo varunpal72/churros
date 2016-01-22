@@ -18,12 +18,12 @@ exports.for = (hub, objectName, tests) => {
   });
 };
 
-const post = (api, payload, schema, validationCallback) => {
-  validationCallback = (validationCallback || ((r) => expect(r).to.have.schemaAnd200(schema)));
+const post = (api, payload, schema, validationCb) => {
+  validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
 
   return chakram.post(api, payload)
     .then(r => {
-      validationCallback(r);
+      validationCb(r);
       return r;
     })
     .catch(r => {
@@ -33,13 +33,13 @@ const post = (api, payload, schema, validationCallback) => {
 };
 exports.post = post;
 
-const get = (api, id, schema, validationCallback) => {
-  validationCallback = (validationCallback || ((r) => expect(r).to.have.schemaAnd200(schema)));
+const get = (api, id, schema, validationCb) => {
+  validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
 
   api = id ? util.format('%s/%s', api, id) : api;
   return chakram.get(api)
     .then(r => {
-      validationCallback(r);
+      validationCb(r);
       return r;
     })
     .catch(r => {
@@ -49,14 +49,14 @@ const get = (api, id, schema, validationCallback) => {
 };
 exports.get = get;
 
-const update = (api, id, payload, schema, cb, validationCallback) => {
+const update = (api, id, payload, schema, cb, validationCb) => {
   cb = (cb || chakram.patch);
-  validationCallback = (validationCallback || ((r) => expect(r).to.have.schemaAnd200(schema)));
+  validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
   api = id ? api + '/' + id : api;
 
   return cb(api, payload)
     .then(r => {
-      validationCallback(r);
+      validationCb(r);
       return r;
     })
     .catch(r => {
@@ -64,8 +64,8 @@ const update = (api, id, payload, schema, cb, validationCallback) => {
       console.log(r);
     });
 };
-exports.patch = (api, id, payload, schema, validationCallback) => update(api, id, payload, schema, chakram.patch, validationCallback);
-exports.put = (api, id, payload, schema, validationCallback) => update(api, id, payload, schema, chakram.put, validationCallback);
+exports.patch = (api, id, payload, schema, validationCb) => update(api, id, payload, schema, chakram.patch, validationCb);
+exports.put = (api, id, payload, schema, validationCb) => update(api, id, payload, schema, chakram.put, validationCb);
 
 const remove = (api, id) => {
   return chakram.delete(api + '/' + id)
@@ -80,13 +80,13 @@ const remove = (api, id) => {
 };
 exports.delete = remove;
 
-const find = (api, schema, validationCallback) => {
-  validationCallback = (validationCallback || ((r) => {
+const find = (api, schema, validationCb) => {
+  validationCb = (validationCb || ((r) => {
     expect(r).to.have.schemaAnd200(schema);
   }));
   return chakram.get(api)
     .then(r => {
-      validationCallback(r);
+      validationCb(r);
       return r;
     });
 };

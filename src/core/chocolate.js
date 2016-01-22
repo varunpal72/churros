@@ -5,14 +5,9 @@ const util = require('util');
 
 var exports = module.exports = {};
 
-const random = () => {
+exports.random = () => {
   return Math.random().toString(36).substring(7);
 };
-exports.random = random;
-
-exports.genFormula = (opts) => new Object({
-  name: (opts.name || 'churros-formula-name-' + random())
-});
 
 exports.authReset = (token) => {
   const props = require('core/props');
@@ -23,10 +18,14 @@ exports.authReset = (token) => {
   token ?
     chakram.setRequestDefaults({
       baseUrl: url + '/elements/api-v2',
-      headers: { Authorization: util.format('User %s, Organization %s, Element %s', us, os, token) }
-    }):
+      headers: {
+        Authorization: util.format('User %s, Organization %s, Element %s', us, os, token)
+      }
+    }) :
     chakram.setRequestDefaults({
       baseUrl: url + '/elements/api-v2',
-      headers: { Authorization: util.format('User %s, Organization %s', us, os) }
+      headers: {
+        Authorization: util.format('User %s, Organization %s', us, os)
+      }
     });
 };
