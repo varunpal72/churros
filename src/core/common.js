@@ -69,6 +69,17 @@ const remove = (api, id) => {
     });
 };
 
+const find = (api, schema, validationCallback) => {
+  validationCallback = (validationCallback || ((r) => {
+    expect(r).to.have.schemaAnd200(schema);
+  }));
+  return chakram.get(api)
+    .then(r => {
+      validationCallback(r);
+      return r;
+    });
+};
+
 const crud = (api, payload, schema, updateCallback) => {
   return create(api, payload, schema)
     .then(r => {
@@ -82,6 +93,25 @@ const crud = (api, payload, schema, updateCallback) => {
     });
 };
 exports.crud = crud;
+
+const cruds = (api, payload, schema, updateCallback) => {
+  let createdId = -1;
+  return create(api, payload, schema)
+    .then(r => {
+      createdId = r.body.id;
+      return retrieve(api, createdId, schema);
+    })
+    .then(r => {
+      return update(api, createdId, payload, schema, updateCallback);
+    })
+    .then(r => {
+      return find(api, schema);
+    })
+    .then(r => {
+      return remove(api, createdId);
+    });
+};
+exports.cruds = cruds;
 
 const testCrud = (api, payload, schema, updateCallback) => {
   const name = util.format('should allow creating, retrieving, updating and deleting a %s', api);

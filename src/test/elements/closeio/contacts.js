@@ -17,14 +17,14 @@ const gen = (opts) => {
 };
 
 common.for('crm', 'contacts', (api) => {
-  it('should allow creating, retrieve, updating and deleting a contact', () => {
+  it('should allow CRUDS for a contact', () => {
     return chakram.get('/hubs/crm/accounts')
       .then(r => {
         expect(r).to.have.status(200);
         expect(r.body).to.not.be.empty;
         const leadId = r.body[0].id;
 
-        return common.crud(api, gen({ lead_id: leadId }), schema);
+        return common.cruds(api, gen({ lead_id: leadId }), schema);
       });
   });
 

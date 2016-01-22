@@ -1,5 +1,5 @@
 {
-  "type": "object",
+  "type": ["array", "object"],
   "properties": {
     "id": {
       "type": "string"
