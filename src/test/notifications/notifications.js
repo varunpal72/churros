@@ -23,14 +23,14 @@ const subscriptionGen = (opts) => new Object({
 });
 
 tester.for(null, 'notifications', (api) => {
-  tester.testCrd(api, notifyGen({}), schema);
-  tester.testBadGet404(api);
-  tester.testBadPost400(api);
+  tester.test.crd(api, notifyGen({}), schema);
+  tester.test.badGet404(api);
+  tester.test.badPost400(api);
 
   // test with missing topic should be bad too
   const n = notifyGen({});
   n.topic = null;
-  tester.testBadPost400(api, n);
+  tester.test.badPost400(api, n);
 
   it('should return one notification when searching for this topic', () => {
     const n = notifyGen({
@@ -80,11 +80,11 @@ tester.for(null, 'notifications', (api) => {
   });
 
   const sApi = util.format('%s/%s', api, 'subscriptions');
-  tester.testCrd(sApi, subscriptionGen(), subscriptionSchema);
-  tester.testBadPost400(sApi);
-  tester.testBadGet404(sApi);
+  tester.test.crd(sApi, subscriptionGen(), subscriptionSchema);
+  tester.test.badPost400(sApi);
+  tester.test.badGet404(sApi);
 
   const bad = subscriptionGen();
   bad.config.url = null;
-  tester.testBadPost400(sApi, bad);
+  tester.test.badPost400(sApi, bad);
 });

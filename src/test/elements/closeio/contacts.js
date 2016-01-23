@@ -30,9 +30,9 @@ tester.for('crm', 'contacts', (api) => {
       });
   });
 
-  tester.testPaginate(api, schema);
-  tester.testBadGet404(api);
-  tester.testBadPatch404(api);
-  tester.testBadPost400(api, {});
-  tester.testBadPost400(api);
+  tester.test.paginate(api, schema);
+  tester.test.badGet404(api);
+  tester.test.badPatch404(api);
+  tester.test.badPost400(api, {});
+  tester.test.badPost400(api);
 });

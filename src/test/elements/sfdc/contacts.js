@@ -9,5 +9,5 @@ const gen = (opts) => new Object({
 });
 
 tester.for('crm', 'contacts', (api) => {
-  tester.testCruds(api, gen({}), schema);
+  tester.test.cruds(api, gen({}), schema);
 });
