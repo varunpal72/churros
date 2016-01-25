@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const chocolate = require('core/chocolate');
@@ -18,14 +17,16 @@ const gen = (opts) => {
 };
 
 tester.for('crm', 'contacts', (api) => {
-  it(util.format('should allow CRUDS for %s', api), () => {
+  it('should allow CRUDS for ' + api, () => {
     return chakram.get('/hubs/crm/accounts')
       .then(r => {
         expect(r).to.have.status(200);
         expect(r.body).to.not.be.empty;
         const leadId = r.body[0].id;
 
-        const payload = gen({ lead_id: leadId });
+        const payload = gen({
+          lead_id: leadId
+        });
         return tester.cruds(api, payload, schema);
       });
   });

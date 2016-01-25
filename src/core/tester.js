@@ -1,5 +1,6 @@
 'use strict';
 
+const fs = require('fs');
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
@@ -23,43 +24,41 @@ const logAndThrow = (msg, api, r) => {
   throw r;
 };
 
-const post = (api, payload, schema, validationCb) => {
-  validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
-
-  return chakram.post(api, payload)
-    .then(r => {
-      validationCb(r);
+const validator = (schemaOrValidationCb) => {
+  return typeof schemaOrValidationCb === 'function' ?
+    (r) => {
+      schemaOrValidationCb(r);
       return r;
-    })
+    } :
+    (r) => {
+      expect(r).to.have.schemaAnd200(schemaOrValidationCb);
+      return r;
+    };
+};
+
+const post = (api, payload, schema) => {
+  return chakram.post(api, payload)
+    .then(r => validator(schema)(r))
     .catch(r => logAndThrow('Failed to create %s', api, r));
 };
 exports.post = post;
 
-const get = (api, schema, validationCb) => {
-  validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
-
+const get = (api, schema) => {
   return chakram.get(api)
-    .then(r => {
-      validationCb(r);
-      return r;
-    })
+    .then(r => validator(schema)(r))
     .catch(r => logAndThrow('Failed to retrieve %s', api, r));
 };
 exports.get = get;
 
-const update = (api, payload, schema, cb, validationCb) => {
+const update = (api, payload, schema, cb) => {
   cb = (cb || chakram.patch);
-  validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
 
   return cb(api, payload)
-    .then(r => {
-      validationCb(r);
-      return r;
-    })
+    .then(r => validator(schema)(r))
     .catch(r => logAndThrow('Failed to update %s: %s', api, r));
 };
-exports.patch = (api, payload, schema, validationCb) => update(api, payload, schema, chakram.patch, validationCb);
-exports.put = (api, payload, schema, validationCb) => update(api, payload, schema, chakram.put, validationCb);
+exports.patch = (api, payload, schema) => update(api, payload, schema, chakram.patch);
+exports.put = (api, payload, schema) => update(api, payload, schema, chakram.put);
 
 const remove = (api) => {
   return chakram.delete(api)
@@ -71,17 +70,25 @@ const remove = (api) => {
 };
 exports.delete = remove;
 
-const find = (api, schema, validationCb) => {
-  validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
-
+const find = (api, schema) => {
   return chakram.get(api)
-    .then(r => {
-      validationCb(r);
-      return r;
-    })
+    .then(r => validator(schema)(r))
     .catch(r => logAndThrow('Failed to find %s', api, r));
 };
 exports.find = find;
+
+const postFile = (api, filePath, query, schema) => {
+  const options = {
+    formData: {
+      file: fs.createReadStream(filePath)
+    },
+    qs: query
+  };
+  return chakram.post(api, undefined, options)
+    .then(r => validator(schema)(r))
+    .catch(r => logAndThrow('Failed to upload file to %s', api, r));
+};
+exports.postFile = postFile;
 
 const crd = (api, payload, schema) => {
   return post(api, payload, schema)
@@ -90,22 +97,22 @@ const crd = (api, payload, schema) => {
 };
 exports.crd = crd;
 
-const crud = (api, payload, schema, updateCallback) => {
+const crud = (api, payload, schema, updateCb) => {
   return post(api, payload, schema)
     .then(r => get(api + '/' + r.body.id, schema))
-    .then(r => update(api + '/' + r.body.id, payload, schema, updateCallback))
+    .then(r => update(api + '/' + r.body.id, payload, schema, updateCb))
     .then(r => remove(api + '/' + r.body.id));
 };
 exports.crud = crud;
 
-const cruds = (api, payload, schema, updateCallback) => {
+const cruds = (api, payload, schema, updateCb) => {
   let createdId = -1;
   return post(api, payload, schema)
     .then(r => {
       createdId = r.body.id;
       return get(api + '/' + createdId, schema);
     })
-    .then(r => update(api + '/' + createdId, payload, schema, updateCallback))
+    .then(r => update(api + '/' + createdId, payload, schema, updateCb))
     .then(r => find(api, schema))
     .then(r => remove(api + '/' + createdId));
 };
@@ -116,14 +123,14 @@ const testCrd = (api, payload, schema) => {
   it(name, () => crd(api, payload, schema));
 };
 
-const testCrud = (api, payload, schema, updateCallback) => {
+const testCrud = (api, payload, schema, updateCb) => {
   const name = util.format('should allow CRUD for %s', api);
-  it(name, () => crud(api, payload, schema, updateCallback));
+  it(name, () => crud(api, payload, schema, updateCb));
 };
 
-const testCruds = (api, payload, schema, updateCallback) => {
+const testCruds = (api, payload, schema, updateCb) => {
   const name = util.format('should allow CRUDS for %s', api);
-  it(name, () => cruds(api, payload, schema, updateCallback));
+  it(name, () => cruds(api, payload, schema, updateCb));
 };
 
 const testPaginate = (api, schema, query) => {
@@ -133,16 +140,14 @@ const testPaginate = (api, schema, query) => {
 };
 
 const testBadGet404 = (api, invalidId) => {
-  const name = util.format('should throw a 404 when trying to retrieve a(n) %s that does not exist', api);
-  it(name, () => get(api + '/' + (invalidId || -1), null, (r) => expect(r).to.have.statusCode(404)));
+  const name = util.format('should throw a 404 when trying to retrieve a(n) %s with an ID that does not exist', api);
+  it(name, () => get(api + '/' + (invalidId || -1), (r) => expect(r).to.have.statusCode(404)));
 };
 
 const testBadPatch404 = (api, payload, invalidId) => {
-  const name = util.format('should throw a 404 when trying to update a(n) %s that does not exist', api);
+  const name = util.format('should throw a 404 when trying to update a(n) %s with an ID that does not exist', api);
   it(name, () => {
-    return update(api + '/' + (invalidId || -1), (payload || {}), null, chakram.patch, (r) => {
-      expect(r).to.have.statusCode(404);
-    });
+    return update(api + '/' + (invalidId || -1), (payload || {}), (r) => expect(r).to.have.statusCode(404), chakram.patch);
   });
 };
 
@@ -152,7 +157,7 @@ const testBadPost400 = (api, payload) => {
     name = util.format(name, 'invalid') :
     name = util.format(name, 'empty');
 
-  it(name, () => post(api, payload, null, (r) => expect(r).to.have.statusCode(400)));
+  it(name, () => post(api, payload, (r) => expect(r).to.have.statusCode(400)));
 };
 
 exports.test = {

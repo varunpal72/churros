@@ -1,15 +1,11 @@
 'use strict';
 
-const chakram = require('chakram');
-const expect = chakram.expect;
 const tester = require('core/tester');
+const folderSchema = require('./assets/folder.schema.json');
 
-tester.for('crm', 'folders', () => {
+tester.for('documents', 'folders', (api) => {
   it('should allow listing folder contents', () => {
-    var uri = '/hubs/documents/folders/contents';
-    return chakram.get(uri + '?path=/')
-      .then(r => {
-        expect(r).to.have.statusCode(200);
-      });
+    var uri = api + '/contents?path=/';
+    return tester.get(uri, folderSchema);
   });
 });
