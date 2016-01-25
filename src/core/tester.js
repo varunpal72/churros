@@ -18,6 +18,11 @@ exports.for = (hub, objectName, tests) => {
   });
 };
 
+const logAndThrow = (msg, api, r) => {
+  console.log(msg, api);
+  throw r;
+};
+
 const post = (api, payload, schema, validationCb) => {
   validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
 
@@ -26,81 +31,70 @@ const post = (api, payload, schema, validationCb) => {
       validationCb(r);
       return r;
     })
-    .catch(r => {
-      console.log('Failed to create %s with payload %s', api, JSON.stringify(payload));
-      console.log(r);
-    });
+    .catch(r => logAndThrow('Failed to create %s', api, r));
 };
 exports.post = post;
 
-const get = (api, id, schema, validationCb) => {
+const get = (api, schema, validationCb) => {
   validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
 
-  api = id ? util.format('%s/%s', api, id) : api;
   return chakram.get(api)
     .then(r => {
       validationCb(r);
       return r;
     })
-    .catch(r => {
-      console.log('Failed to retrieve %s with ID %s', api, id);
-      console.log(r);
-    });
+    .catch(r => logAndThrow('Failed to retrieve %s', api, r));
 };
 exports.get = get;
 
-const update = (api, id, payload, schema, cb, validationCb) => {
+const update = (api, payload, schema, cb, validationCb) => {
   cb = (cb || chakram.patch);
   validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
-  api = id ? api + '/' + id : api;
 
   return cb(api, payload)
     .then(r => {
       validationCb(r);
       return r;
     })
-    .catch(r => {
-      console.log('Failed to update %s with ID %s', api, id);
-      console.log(r);
-    });
+    .catch(r => logAndThrow('Failed to update %s: %s', api, r));
 };
-exports.patch = (api, id, payload, schema, validationCb) => update(api, id, payload, schema, chakram.patch, validationCb);
-exports.put = (api, id, payload, schema, validationCb) => update(api, id, payload, schema, chakram.put, validationCb);
+exports.patch = (api, payload, schema, validationCb) => update(api, payload, schema, chakram.patch, validationCb);
+exports.put = (api, payload, schema, validationCb) => update(api, payload, schema, chakram.put, validationCb);
 
-const remove = (api, id) => {
-  return chakram.delete(api + '/' + id)
+const remove = (api) => {
+  return chakram.delete(api)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return r;
     })
-    .catch(r => console.log('Failed to delete %s with ID %s: %s', api, id, r));
+    .catch(r => logAndThrow('Failed to delete %s', api, r));
 };
 exports.delete = remove;
 
 const find = (api, schema, validationCb) => {
-  validationCb = (validationCb || ((r) => {
-    expect(r).to.have.schemaAnd200(schema);
-  }));
+  validationCb = (validationCb || ((r) => expect(r).to.have.schemaAnd200(schema)));
+
   return chakram.get(api)
     .then(r => {
       validationCb(r);
       return r;
-    });
+    })
+    .catch(r => logAndThrow('Failed to find %s', api, r));
 };
 exports.find = find;
 
 const crd = (api, payload, schema) => {
   return post(api, payload, schema)
-    .then(r => get(api, r.body.id, schema))
-    .then(r => remove(api, r.body.id));
+    .then(r => get(api + '/' + r.body.id, schema))
+    .then(r => remove(api + '/' + r.body.id));
 };
 exports.crd = crd;
 
 const crud = (api, payload, schema, updateCallback) => {
   return post(api, payload, schema)
-    .then(r => get(api, r.body.id, schema))
-    .then(r => update(api, r.body.id, payload, schema, updateCallback))
-    .then(r => remove(api, r.body.id));
+    .then(r => get(api + '/' + r.body.id, schema))
+    .then(r => update(api + '/' + r.body.id, payload, schema, updateCallback))
+    .then(r => remove(api + '/' + r.body.id));
 };
 exports.crud = crud;
 
@@ -109,11 +103,11 @@ const cruds = (api, payload, schema, updateCallback) => {
   return post(api, payload, schema)
     .then(r => {
       createdId = r.body.id;
-      return get(api, createdId, schema);
+      return get(api + '/' + createdId, schema);
     })
-    .then(r => update(api, createdId, payload, schema, updateCallback))
+    .then(r => update(api + '/' + createdId, payload, schema, updateCallback))
     .then(r => find(api, schema))
-    .then(r => remove(api, createdId));
+    .then(r => remove(api + '/' + createdId));
 };
 exports.cruds = cruds;
 
@@ -140,13 +134,13 @@ const testPaginate = (api, schema, query) => {
 
 const testBadGet404 = (api, invalidId) => {
   const name = util.format('should throw a 404 when trying to retrieve a(n) %s that does not exist', api);
-  it(name, () => get(api, (invalidId || -1), null, (r) => expect(r).to.have.statusCode(404)));
+  it(name, () => get(api + '/' + (invalidId || -1), null, (r) => expect(r).to.have.statusCode(404)));
 };
 
 const testBadPatch404 = (api, payload, invalidId) => {
   const name = util.format('should throw a 404 when trying to update a(n) %s that does not exist', api);
   it(name, () => {
-    return update(api, (invalidId || -1), (payload || {}), null, chakram.patch, (r) => {
+    return update(api + '/' + (invalidId || -1), (payload || {}), null, chakram.patch, (r) => {
       expect(r).to.have.statusCode(404);
     });
   });
@@ -158,9 +152,7 @@ const testBadPost400 = (api, payload) => {
     name = util.format(name, 'invalid') :
     name = util.format(name, 'empty');
 
-  it(name, () => {
-    return post(api, payload, null, (r) => expect(r).to.have.statusCode(400));
-  });
+  it(name, () => post(api, payload, null, (r) => expect(r).to.have.statusCode(400)));
 };
 
 exports.test = {

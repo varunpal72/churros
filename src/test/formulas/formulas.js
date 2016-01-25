@@ -13,41 +13,38 @@ const genFormula = (opts) => new Object({
   name: (opts.name || 'churros-formula-name-' + chocolate.random())
 });
 
+const genTrigger = (opts) => new Object({
+  type: (opts.type || 'scheduled'),
+  properties: (opts.properties) || {
+    cron: '0 0/15 * 1/1 * ? *'
+  }
+});
+
 tester.for(null, 'formulas', (api) => {
   tester.test.crud(api, genFormula({}), schema, chakram.put);
 
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
     const f = genFormula({});
+    const t = genTrigger({});
 
     var formulaId;
-    var url = '/formulas';
-    return chakram.post(url, f)
+    return tester.post(api, f, schema)
       .then(r => {
-        expect(r).to.have.schemaAnd200(schema);
-
         formulaId = r.body.id;
-        const t = {
-          type: 'scheduled',
-          properties: {
-            cron: '0 0/15 * 1/1 * ? *'
-          }
-        };
-        return chakram.post(util.format('/formulas/%s/triggers', formulaId), t);
+        const url = util.format('%s/%s/triggers', api, formulaId);
+        return tester.post(url, t, triggerSchema);
       })
       .then(r => {
-        expect(r).to.have.schemaAnd200(triggerSchema);
-        return chakram.get(util.format('/formulas/%s/triggers/%s', formulaId, r.body.id));
+        const url = util.format('%s/%s/triggers/%s', api, formulaId, r.body.id);
+        return tester.get(url, triggerSchema);
       })
       .then(r => {
-        expect(r).to.have.schemaAnd200(triggerSchema);
-        return chakram.delete(util.format('/formulas/%s/triggers/%s', formulaId, r.body.id));
+        const url = util.format('/formulas/%s/triggers/%s', formulaId, r.body.id);
+        return tester.delete(url);
       })
       .then(r => {
-        expect(r).to.have.statusCode(200);
-        return chakram.delete(util.format('/formulas/%s', formulaId));
-      })
-      .then(r => {
-        expect(r).to.have.statusCode(200);
+        const url = util.format('/formulas/%s', formulaId);
+        return tester.delete(url);
       });
   });
 
@@ -55,8 +52,8 @@ tester.for(null, 'formulas', (api) => {
     const f = genFormula({});
 
     var formulaId;
-    var url = '/formulas';
-    return chakram.post(url, f)
+    var api = '/formulas';
+    return chakram.post(api, f)
       .then(r => {
         expect(r).to.have.schemaAnd200(schema);
 
@@ -82,8 +79,8 @@ tester.for(null, 'formulas', (api) => {
     const f = genFormula({});
 
     var formulaId;
-    var url = '/formulas';
-    return chakram.post(url, f)
+    var api = '/formulas';
+    return chakram.post(api, f)
       .then(r => {
         expect(r).to.have.schemaAnd200(schema);
 
@@ -126,8 +123,8 @@ tester.for(null, 'formulas', (api) => {
         var bigAzzF = require('./assets/big-formula.json');
         bigAzzF.name = chocolate.random();
         var formulaId;
-        var url = '/formulas';
-        return chakram.post(url, bigAzzF)
+        var api = '/formulas';
+        return chakram.post(api, bigAzzF)
           .then(r => {
             expect(r).to.have.schemaAnd200(schema);
 
