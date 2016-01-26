@@ -4,8 +4,8 @@ const config = require(process.env.HOME + '/.churros/sauce.json');
 
 var exports = module.exports = {};
 
-const missingPropForElement = (element, key) => {
-  console.log("Missing required property '%s' for element '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, element, element, element, key);
+const missingPropForRootKey = (rootKey, key) => {
+  console.log("Missing required property '%s' for '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, rootKey, rootKey, rootKey, key);
   process.exit(1);
 };
 
@@ -19,12 +19,12 @@ exports.get = (key) => {
   process.exit(1);
 };
 
-exports.getForElement = (element, key) => {
-  const elementProps = config[element];
-  if (!elementProps) missingPropForElement(element);
+exports.getForKey = (rootKey, key) => {
+  const elementProps = config[rootKey];
+  if (!elementProps) missingPropForRootKey(rootKey);
 
   const value = elementProps[key];
-  if (!value) missingPropForElement(element, key);
+  if (!value) missingPropForRootKey(rootKey, key);
   return value;
 };
 
@@ -32,8 +32,8 @@ exports.set = (key, value) => {
   config[key] = value;
 };
 
-exports.setForElement = (element, key, value) => {
-  let elementProps = config[element];
+exports.setForKey = (rootKey, key, value) => {
+  let elementProps = config[rootKey];
   if (!elementProps) elementProps = {};
   elementProps[key] = value;
 };

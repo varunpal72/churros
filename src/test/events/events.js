@@ -21,11 +21,11 @@ const loadPayload = (element) => {
 
 tester.for(null, 'events', (api) => {
   it('should handle receiving x number of events for an element instance', () => {
-    const element = props.getForElement('events', 'element');
+    const element = props.getForKey('events', 'element');
     const payload = loadPayload(element);
-    const load = props.getForElement('events', 'load');
-    const wait = props.getForElement('events', 'wait');
-    const port = props.getForElement('events', 'port');
+    const load = props.getForKey('events', 'load');
+    const wait = props.getForKey('events', 'wait');
+    const port = props.getForKey('events', 'port');
 
     let instanceId;
     return ei.create(element, gen({}))

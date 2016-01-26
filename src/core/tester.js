@@ -116,10 +116,8 @@ exports.crud = crud;
 const cruds = (api, payload, schema, updateCb) => {
   let createdId = -1;
   return post(api, payload, schema)
-    .then(r => {
-      createdId = r.body.id;
-      return get(api + '/' + createdId, schema);
-    })
+    .then(r => createdId = r.body.id)
+    .then(r => get(api + '/' + createdId, schema))
     .then(r => update(api + '/' + createdId, payload, schema, updateCb))
     .then(r => find(api, schema))
     .then(r => remove(api + '/' + createdId));

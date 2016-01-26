@@ -50,9 +50,9 @@ const setGlobalProps = (args) => {
   props.set('user', args.user);
   props.set('password', args.password);
   props.set('url', args.url);
-  props.setForElement('events', 'wait', args.wait);
-  props.setForElement('events', 'load', args.load);
-  props.setForElement('events', 'element', args.loadElement);
+  props.setForKey('events', 'wait', args.wait);
+  props.setForKey('events', 'load', args.load);
+  props.setForKey('events', 'element', args.loadElement);
 };
 
 const init = (args) => {

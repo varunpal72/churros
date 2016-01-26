@@ -93,17 +93,16 @@ commander
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
-    console.log('    $ churros test formulas');
-    console.log('    $ churros test formulas --file formulas.instances');
-    console.log('    $ churros test formulas --file formulas.instances --file formulas.triggers');
-    console.log('    $ churros test formulas --file formulas.instances --file formulas.triggers --test \'should not allow\'');
-    console.log('');
-    console.log('    $ churros test notifications');
-    console.log('');
+    console.log('    # Element Tests');
     console.log('    $ churros test elements/closeio');
+    console.log('    $ churros test elements/closeio --test \'contacts\'');
     console.log('');
-    console.log('    $ churros test events --for sfdc --load 50');
-    console.log('    $ churros test events --for sfdc --load 50 --wait 30000');
+    console.log('    # Platform Tests');
+    console.log('    $ churros test notifications');
+    console.log('    $ churros test formulas');
+    console.log('    $ churros test formulas --test \'should not allow\'');
+    console.log('    $ churros test events --element sfdc');
+    console.log('    $ churros test events --element sfdc --load 50 --wait 60');
     console.log('');
   })
   .parse(process.argv);

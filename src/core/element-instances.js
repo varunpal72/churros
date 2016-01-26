@@ -75,10 +75,10 @@ const genConfig = (props, args) => {
 const createOAuthElement = (element, args, cb) => {
   const callbackUrl = props.get('oauth.callback.url');
 
-  const apiKey = props.getForElement(element, 'oauth.api.key');
-  const apiSecret = props.getForElement(element, 'oauth.api.secret');
-  const username = props.getForElement(element, 'username');
-  const password = props.getForElement(element, 'password');
+  const apiKey = props.getForKey(element, 'oauth.api.key');
+  const apiSecret = props.getForKey(element, 'oauth.api.secret');
+  const username = props.getForKey(element, 'username');
+  const password = props.getForKey(element, 'password');
 
   const options = {
     qs: {
