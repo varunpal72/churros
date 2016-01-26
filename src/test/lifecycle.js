@@ -46,35 +46,41 @@ const customizeChakram = () => {
   });
 };
 
-before((done) => {
+const setGlobalProps = (args) => {
+  props.set('user', args.user);
+  props.set('password', args.password);
+  props.set('url', args.url);
+  props.setForKey('events', 'wait', args.wait);
+  props.setForKey('events', 'load', args.load);
+  props.setForKey('events', 'element', args.loadElement);
+};
+
+const init = (args) => {
   customizeChakram();
+  setGlobalProps(argv);
+};
 
-  const user = argv.user;
-  const password = argv.password;
-  const url = argv.url;
+before((done) => {
+  init(argv);
 
-  // override properties here on initialization
-  props.set('user', user);
-  props.set('password', password);
-  props.set('url', url);
-
-  const secUrl = url + '/elements/j_spring_security_check';
-  const form = { j_username: user, j_password: password };
+  const secUrl = props.get('url') + '/elements/j_spring_security_check';
+  const form = {
+    j_username: props.get('user'),
+    j_password: props.get('password')
+  };
 
   chakram.post(secUrl, null, {
       jar: true,
       form: form
     })
-    .then(r => {
-      return chakram.get(url + '/elements/api-v1/ui/getSecrets', {
-        jar: true
-      });
-    })
+    .then(r => chakram.get(props.get('url') + '/elements/api-v1/ui/getSecrets', {
+      jar: true
+    }))
     .then(r => {
       props.set('user.secret', r.body.user);
       props.set('org.secret', r.body.company);
       chakram.setRequestDefaults({
-        baseUrl: url + '/elements/api-v2',
+        baseUrl: props.get('url') + '/elements/api-v2',
         headers: {
           Authorization: util.format('User %s, Organization %s', r.body.user, r.body.company)
         }
@@ -82,7 +88,7 @@ before((done) => {
       done();
     })
     .catch(r => {
-      console.log('Well shucks...failed to finish setup...\n  Is %s up and running?\n  Do you have the write username and password?', url);
+      console.log('Well shucks...failed to finish initialization...\n  Is %s up and running?\n  Do you have the write username and password?', props.get('url'));
       process.exit(1);
     });
 });

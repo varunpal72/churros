@@ -1,5 +1,6 @@
 'use strict';
 
+const http = require('http');
 const fs = require('fs');
 const util = require('util');
 const chakram = require('chakram');
@@ -25,15 +26,22 @@ const logAndThrow = (msg, api, r) => {
 };
 
 const validator = (schemaOrValidationCb) => {
-  return typeof schemaOrValidationCb === 'function' ?
-    (r) => {
+  if (typeof schemaOrValidationCb === 'function') {
+    return (r) => {
       schemaOrValidationCb(r);
       return r;
-    } :
-    (r) => {
+    };
+  } else if (typeof schemaOrValidationCb === 'undefined') {
+    return (r) => {
+      expect(r).to.have.statusCode(200);
+      return r;
+    };
+  } else {
+    return (r) => {
       expect(r).to.have.schemaAnd200(schemaOrValidationCb);
       return r;
     };
+  }
 };
 
 const post = (api, payload, schema) => {
@@ -108,15 +116,51 @@ exports.crud = crud;
 const cruds = (api, payload, schema, updateCb) => {
   let createdId = -1;
   return post(api, payload, schema)
-    .then(r => {
-      createdId = r.body.id;
-      return get(api + '/' + createdId, schema);
-    })
+    .then(r => createdId = r.body.id)
+    .then(r => get(api + '/' + createdId, schema))
     .then(r => update(api + '/' + createdId, payload, schema, updateCb))
     .then(r => find(api, schema))
     .then(r => remove(api + '/' + createdId));
 };
 exports.cruds = cruds;
+
+const createEvents = (element, eiId, payload, numEvents) => {
+  numEvents = (numEvents || 1);
+
+  const api = '/events/' + element;
+  const options = {
+    headers: {
+      'Element-Instances': eiId
+    }
+  };
+
+  console.log('Attempting to send %s events to %s', numEvents, api);
+  let promises = [];
+  for (var i = 0; i < numEvents; i++) {
+    const response = chakram.post(api, payload, options);
+    promises.push(response);
+  }
+  return chakram.all(promises);
+};
+exports.createEvents = createEvents;
+
+const listenForEvents = (port, numEventsSent, waitSecs) => {
+  let receivedEvents = 0;
+  return new Promise((resolve, reject) => {
+    http.createServer((request, response) => {
+      response.end('{}');
+      receivedEvents++;
+      console.log('%s event(s) received', receivedEvents); // TODO - JJW - disable this logging unless in verbose mode after migrating to winston
+      if (receivedEvents === numEventsSent) resolve(request);
+    }).listen(port, "localhost", (err) => {
+      err ? reject(err) : console.log('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+    });
+
+    const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
+    setTimeout(() => reject(msg), waitSecs * 1000);
+  });
+};
+exports.listenForEvents = listenForEvents;
 
 const testCrd = (api, payload, schema) => {
   const name = util.format('should allow CRD for %s', api);
