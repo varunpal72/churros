@@ -151,8 +151,9 @@ const createElement = (element, args) => {
 };
 
 exports.create = (element, args) => {
-  const cb = elements[element];
+  console.log('Attempting to provision %s', element);
 
+  const cb = elements[element];
   return cb ?
     createOAuthElement(element, args, cb) :
     createElement(element, args);

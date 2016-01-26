@@ -18,14 +18,13 @@ const createAll = (urlTemplate, list) => {
 };
 
 const terminate = (error) => {
-  console.log('Failed to setup element: %s', error);
+  console.log('Failed to initialize element: %s', error);
   process.exit(1);
 };
 
 let instanceId;
 before(done => {
   const element = argv.element;
-  console.log('Attempting to provision %s', element);
   ei.create(element)
     .then(r => {
       expect(r).to.have.statusCode(200);

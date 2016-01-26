@@ -32,6 +32,12 @@ exports.set = (key, value) => {
   config[key] = value;
 };
 
+exports.setForElement = (element, key, value) => {
+  let elementProps = config[element];
+  if (!elementProps) elementProps = {};
+  elementProps[key] = value;
+};
+
 exports.all = (element) => {
   if (!config[element]) {
     console.log("No properties found for element '%s'\n   Note: Can setup properties for this element by calling 'churros props %s:my.config.key <value>'", element, element);

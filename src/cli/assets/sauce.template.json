@@ -1,8 +1,15 @@
 {
   "user": "",
   "password": "",
-  "url": "",
+  "url": "https://api.cloud-elements.com",
   "oauth.callback.url": "",
+  "events": {
+    "url": "",
+    "port": "8085",
+    "load": "5",
+    "wait": "30",
+    "element": "sfdc"
+  },
   "woocommerce": {
     "oauth.api.key": "",
     "oauth.api.secret": "",

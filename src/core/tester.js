@@ -136,6 +136,7 @@ const createEvents = (element, eiId, payload, numEvents) => {
     }
   };
 
+  console.log('Attempting to send %s events to %s', numEvents, api);
   let promises = [];
   for (var i = 0; i < numEvents; i++) {
     const response = chakram.post(api, payload, options);
@@ -145,21 +146,20 @@ const createEvents = (element, eiId, payload, numEvents) => {
 };
 exports.createEvents = createEvents;
 
-const listenForEvents = (eventsSent) => {
+const listenForEvents = (port, numEventsSent, waitSecs) => {
   let receivedEvents = 0;
   return new Promise((resolve, reject) => {
-    const server = http.createServer((req, res) => {
-      res.end('{}');
+    http.createServer((request, response) => {
+      response.end('{}');
       receivedEvents++;
-      // TODO - JJW disable this logging unless in verbose mode?
-      console.log('%s event(s) received', receivedEvents);
-      if (receivedEvents === eventsSent) resolve(req);
+      console.log('%s event(s) received', receivedEvents); // TODO - JJW - disable this logging unless in verbose mode after migrating to winston
+      if (receivedEvents === numEventsSent) resolve(request);
+    }).listen(port, "localhost", (err) => {
+      err ? reject(err) : console.log('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
     });
 
-    server.listen(8085, "localhost", (err) => {
-      if (err) reject(err);
-      console.log('Listening for %s incoming events', eventsSent);
-    });
+    const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
+    setTimeout(() => reject(msg), waitSecs * 1000);
   });
 };
 exports.listenForEvents = listenForEvents;
