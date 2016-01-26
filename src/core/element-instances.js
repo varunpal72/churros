@@ -66,97 +66,96 @@ const elements = {
 
 var exports = module.exports = {};
 
-exports.all = () => {
-  const url = '/instances';
-  return chakram.get(url)
+const genConfig = (props, args) => {
+  const config = props;
+  if (args) Object.keys(args).forEach(k => config[k] = args[k]);
+  return config;
+};
+
+const createOAuthElement = (element, args, cb) => {
+  const callbackUrl = props.get('oauth.callback.url');
+
+  const apiKey = props.getForElement(element, 'oauth.api.key');
+  const apiSecret = props.getForElement(element, 'oauth.api.secret');
+  const username = props.getForElement(element, 'username');
+  const password = props.getForElement(element, 'password');
+
+  const options = {
+    qs: {
+      apiKey: apiKey,
+      apiSecret: apiSecret,
+      callbackUrl: callbackUrl
+    }
+  };
+  const driver = new webdriver.Builder()
+    .forBrowser('phantomjs')
+    .build();
+  const oauthUrl = util.format('/elements/%s/oauth/url', element);
+
+  return chakram.get(oauthUrl, options)
+    .then(r => cb(r, username, password, driver))
+    .then(r => {
+      const query = url.parse(r, true).query;
+      const config = genConfig({
+        'oauth.api.key': apiKey,
+        'oauth.api.secret': apiSecret,
+        'oauth.callback.url': callbackUrl
+      }, args);
+
+      const instance = {
+        name: 'churros-instance',
+        element: {
+          key: element
+        },
+        configuration: config,
+        providerData: {
+          code: query.code
+        }
+      };
+      return chakram.post('/instances', instance);
+    })
     .then(r => {
       expect(r).to.have.statusCode(200);
-      return r.body;
+      console.log('Created %s element instance with ID: %s', element, r.body.id);
+      chocolate.authReset(r.body.token);
+      driver.close();
+      return r;
     })
     .catch(r => {
-      console.log('Failed to retrieve element instances: ' + r);
+      console.log('Failed to create an instance of %s: %s', element, r);
+      driver.close();
+      process.exit(1);
+    });
+};
+
+const createElement = (element, args) => {
+  const instance = {
+    name: 'churros-instance',
+    element: {
+      key: element
+    },
+    configuration: genConfig(props.all(element), args)
+  };
+
+  return chakram.post('/instances', instance)
+    .then(r => {
+      expect(r).to.have.statusCode(200);
+      console.log('Created %s element instance with ID: %s', element, r.body.id);
+      chocolate.authReset(r.body.token);
+      return r;
+    })
+    .catch(r => {
+      console.log('Failed to create an instance of %s: %s', element, r);
+      process.exit(1);
     });
 };
 
 exports.create = (element, args) => {
-  const callback = elements[element];
+  const cb = elements[element];
 
-  if (callback) {
-    // endpoint-specific properties
-    const callbackUrl = props.get('oauth.callback.url');
-
-    const apiKey = props.getForElement(element, 'oauth.api.key');
-    const apiSecret = props.getForElement(element, 'oauth.api.secret');
-    const username = props.getForElement(element, 'username');
-    const password = props.getForElement(element, 'password');
-
-    const options = {
-      qs: {
-        apiKey: apiKey,
-        apiSecret: apiSecret,
-        callbackUrl: callbackUrl
-      }
-    };
-    const driver = new webdriver.Builder()
-      .forBrowser('phantomjs')
-      .build();
-    const oauthUrl = util.format('/elements/%s/oauth/url', element);
-
-    return chakram.get(oauthUrl, options)
-      .then(r => {
-        return callback(r, username, password, driver);
-      })
-      .then(r => {
-        const query = url.parse(r, true).query;
-        const instance = {
-          name: 'churros-instance',
-          element: {
-            key: element
-          },
-          configuration: {
-            'oauth.api.key': apiKey,
-            'oauth.api.secret': apiSecret,
-            'oauth.callback.url': callbackUrl
-          },
-          providerData: {
-            code: query.code
-          }
-        };
-        return chakram.post('/instances', instance);
-      })
-      .then(r => {
-        expect(r).to.have.statusCode(200);
-        console.log('Created %s element instance with ID: %s', element, r.body.id);
-        chocolate.authReset(r.body.token);
-        driver.close();
-        return r;
-      })
-      .catch(r => {
-        console.log('Failed to create an instance of %s: %s', element, r);
-        driver.close();
-        process.exit(1);
-      });
-  } else {
-    const instance = {
-      name: 'churros-instance',
-      element: {
-        key: element
-      },
-      configuration: props.all(element)
-    };
-
-    return chakram.post('/instances', instance)
-      .then(r => {
-        expect(r).to.have.statusCode(200);
-        console.log('Created %s element instance with ID: %s', element, r.body.id);
-        chocolate.authReset(r.body.token);
-        return r;
-      })
-      .catch(r => {
-        console.log('Failed to create an instance of %s: %s', element, r);
-        process.exit(1);
-      });
-  }
+  return cb ?
+    createOAuthElement(element, args, cb) :
+    createElement(element, args);
 };
 
 exports.delete = (id) => {

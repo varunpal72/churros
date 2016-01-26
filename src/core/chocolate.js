@@ -5,9 +5,7 @@ const util = require('util');
 
 var exports = module.exports = {};
 
-exports.random = () => {
-  return Math.random().toString(36).substring(7);
-};
+exports.random = () => Math.random().toString(36).substring(7);
 
 exports.authReset = (token) => {
   const props = require('core/props');

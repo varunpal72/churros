@@ -1,5 +1,6 @@
 'use strict';
 
+const http = require('http');
 const fs = require('fs');
 const util = require('util');
 const chakram = require('chakram');
@@ -25,15 +26,22 @@ const logAndThrow = (msg, api, r) => {
 };
 
 const validator = (schemaOrValidationCb) => {
-  return typeof schemaOrValidationCb === 'function' ?
-    (r) => {
+  if (typeof schemaOrValidationCb === 'function') {
+    return (r) => {
       schemaOrValidationCb(r);
       return r;
-    } :
-    (r) => {
+    };
+  } else if (typeof schemaOrValidationCb === 'undefined') {
+    return (r) => {
+      expect(r).to.have.statusCode(200);
+      return r;
+    };
+  } else {
+    return (r) => {
       expect(r).to.have.schemaAnd200(schemaOrValidationCb);
       return r;
     };
+  }
 };
 
 const post = (api, payload, schema) => {
@@ -117,6 +125,44 @@ const cruds = (api, payload, schema, updateCb) => {
     .then(r => remove(api + '/' + createdId));
 };
 exports.cruds = cruds;
+
+const createEvents = (element, eiId, payload, numEvents) => {
+  numEvents = (numEvents || 1);
+
+  const api = '/events/' + element;
+  const options = {
+    headers: {
+      'Element-Instances': eiId
+    }
+  };
+
+  let promises = [];
+  for (var i = 0; i < numEvents; i++) {
+    const response = chakram.post(api, payload, options);
+    promises.push(response);
+  }
+  return chakram.all(promises);
+};
+exports.createEvents = createEvents;
+
+const listenForEvents = (eventsSent) => {
+  let receivedEvents = 0;
+  return new Promise((resolve, reject) => {
+    const server = http.createServer((req, res) => {
+      res.end('{}');
+      receivedEvents++;
+      // TODO - JJW disable this logging unless in verbose mode?
+      console.log('%s event(s) received', receivedEvents);
+      if (receivedEvents === eventsSent) resolve(req);
+    });
+
+    server.listen(8085, "localhost", (err) => {
+      if (err) reject(err);
+      console.log('Listening for %s incoming events', eventsSent);
+    });
+  });
+};
+exports.listenForEvents = listenForEvents;
 
 const testCrd = (api, payload, schema) => {
   const name = util.format('should allow CRD for %s', api);
