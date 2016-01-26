@@ -1,0 +1,16 @@
+{
+  "contacts": {
+    "vendorName": "Contact",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
+  },
+  "accounts": {
+    "vendorName": "Account",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
+  }
+}

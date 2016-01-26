@@ -16,7 +16,7 @@ console.log('Initializating churros...');
 
 prompt.message = "   ";
 prompt.delimiter = "";
-prompt.override = optimist.argv // allows for properties to be sent as command-line args
+prompt.override = optimist.argv; // allows for properties to be sent as command-line args
 
 const prompts = {
   properties: {
@@ -31,12 +31,7 @@ const prompts = {
     },
     url: {
       default: 'api.cloud-elements.com',
-      description: 'Enter the default URL to run churros against: ',
-      before: (url) => {
-        if (url.startsWith('localhost')) url = 'http://' + url;
-        if (!url.startsWith('http')) url = 'https://' + url;
-        return url;
-      }
+      description: 'Enter the default URL to run churros against: '
     }
   }
 };
@@ -57,10 +52,16 @@ prompt.get(prompts, (err, result) => {
     process.exit(1);
   }
 
+  const format = (url) => {
+    if (url.startsWith('localhost')) url = 'http://' + url;
+    if (!url.startsWith('http')) url = 'https://' + url;
+    return url;
+  };
+
   var properties = require(commander.file);
+  properties.url = format(result.url);
   properties.user = result.user;
   properties.password = result.password;
-  properties.url = result.url;
 
   fs.writeFile(file, JSON.stringify(properties, null, 2), (err) => {
     if (err) {

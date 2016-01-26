@@ -8,7 +8,7 @@
   },
   "scripts": {
     "postinstall": "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
-    "test": "mocha test/core --reporter spec --ui bdd && bats test/cli/"
+    "test": "test/tests.sh"
   },
   "bin": {
     "churros": "src/cli/churros.js"
@@ -23,7 +23,8 @@
     "optimist": "^0.6.1",
     "prompt": "^0.2.14",
     "selenium-webdriver": "^2.48.2",
-    "shelljs": "^0.5.3"
+    "shelljs": "^0.5.3",
+    "tv4": "^1.2.7"
   },
   "devDependencies": {
     "bats": "^0.4.2"

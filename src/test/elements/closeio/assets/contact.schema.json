@@ -1,0 +1,42 @@
+{
+  "type": ["array", "object"],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "organization_id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "lead_id": {
+      "type": "string"
+    },
+    "homeEmail": {
+      "type": "string"
+    },
+    "officeEmail": {
+      "type": "string"
+    },
+    "homePhone": {
+      "type": "string"
+    },
+    "officePhone": {
+      "type": "string"
+    },
+    "mobilePhone": {
+      "type": "string"
+    },
+    "homeUrl": {
+      "type": "string"
+    },
+    "officeUrl": {
+      "type": "string"
+    }
+  },
+  "required": ["id", "name"]
+}

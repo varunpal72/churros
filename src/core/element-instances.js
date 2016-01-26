@@ -3,7 +3,7 @@
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const auth = require('core/auth');
+const chocolate = require('core/chocolate');
 const webdriver = require('selenium-webdriver');
 const props = require('core/props');
 const url = require('url');
@@ -36,7 +36,7 @@ const elements = {
         })
         .thenCatch(() => {
           return false;
-        })
+        });
     }, 10000);
     driver.findElement(webdriver.By.name('login_email')).sendKeys(username);
     driver.findElement(webdriver.By.name("login_password")).clear();
@@ -52,6 +52,15 @@ const elements = {
     driver.findElement(webdriver.By.id('pass')).sendKeys(password);
     driver.findElement(webdriver.By.id('loginbutton')).click();
     return driver.getCurrentUrl();
+  },
+  instagram: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    driver.findElement(webdriver.By.id("id_username")).clear();
+    driver.findElement(webdriver.By.id("id_username")).sendKeys(username);
+    driver.findElement(webdriver.By.id("id_password")).clear();
+    driver.findElement(webdriver.By.id("id_password")).sendKeys(password);
+    driver.findElement(webdriver.By.className("button-green")).click();
+    return driver.getCurrentUrl();
   }
 };
 
@@ -61,7 +70,7 @@ exports.all = () => {
   const url = '/instances';
   return chakram.get(url)
     .then(r => {
-      expect(r).to.have.status(200);
+      expect(r).to.have.statusCode(200);
       return r.body;
     })
     .catch(r => {
@@ -116,9 +125,9 @@ exports.create = (element, args) => {
         return chakram.post('/instances', instance);
       })
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
         console.log('Created %s element instance with ID: %s', element, r.body.id);
-        auth.setup(r.body.token);
+        chocolate.authReset(r.body.token);
         driver.close();
         return r;
       })
@@ -138,9 +147,9 @@ exports.create = (element, args) => {
 
     return chakram.post('/instances', instance)
       .then(r => {
-        expect(r).to.have.status(200);
+        expect(r).to.have.statusCode(200);
         console.log('Created %s element instance with ID: %s', element, r.body.id);
-        auth.setup(r.body.token);
+        chocolate.authReset(r.body.token);
         return r;
       })
       .catch(r => {
@@ -154,9 +163,9 @@ exports.delete = (id) => {
   const url = '/instances/' + id;
   return chakram.delete(url)
     .then(r => {
-      expect(r).to.have.status(200);
+      expect(r).to.have.statusCode(200);
       console.log('Deleted element instance with ID: ' + id);
-      auth.setup();
+      chocolate.authReset();
       return r.body;
     })
     .catch(r => {

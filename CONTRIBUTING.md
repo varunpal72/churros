@@ -31,7 +31,7 @@ An example test that is pretty self-explanatory:
     const url = '/notifications';
     return chakram.get(url + '/' + -1)
       .then((r) => {
-        expect(r).to.have.status(404);
+        expect(r).to.have.statusCode(404);
       });
   });
   ```

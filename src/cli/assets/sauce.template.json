@@ -113,5 +113,138 @@
     "oauth.api.secret": "",
     "username": "",
     "password": ""
+  },
+  "dynamicscrmadfs": {
+    "user.password": "",
+    "user.username": "",
+    "dynamics.tenant": ""
+  },
+  "freshdesk": {
+    "subdomain": "",
+    "username": "",
+    "password": ""
+  },
+  "freshservice": {
+    "username": "",
+    "password": "",
+    "subdomain": ""
+  },
+  "greatplains": {
+    "greatplains.service.url": "",
+    "greatplains.domain": "",
+    "greatplains.user.name": "",
+    "greatplains.user.password": "",
+    "greatplains.company.name": ""
+  },
+  "hireright": {
+    "hireright.endpoint.url": "",
+    "hireright.password": "",
+    "hireright.username": "",
+    "hireright.account.id": "",
+    "hireright.company.login": "",
+    "hireright.user.ref.id": "",
+    "hireright.wsdl.location": ""
+  },
+  "jira": {
+    "username": "",
+    "password": "",
+    "base.url": ""
+  },
+  "mailjet": {
+    "mailjet.api.key": "",
+    "mailjet.api.secret": ""
+  },
+  "mailjetmarketing": {
+    "mailjet.api.key": "",
+    "mailjet.api.secret": ""
+  },
+  "netsuitecrm": {
+    "user.username": "",
+    "user.password": "",
+    "netsuite.accountId": ""
+  },
+  "netsuiteerp": {
+    "user.username": "",
+    "user.password": "",
+    "netsuite.accountId": ""
+  },
+  "netsuitefinance": {
+    "netsuite.accountId": "",
+    "user.password": "",
+    "user.username": ""
+  },
+  "netsuitehc": {
+    "user.username": "",
+    "user.password": "",
+    "netsuite.accountId": "",
+    "netsuite.sandbox": ""
+  },
+  "pardot": {
+    "apikey.user.key": "",
+    "apikey.user.name": "",
+    "apikey.user.password": ""
+  },
+  "pipedrive": {
+    "pipedrive.email": "",
+    "pipedrive.password": ""
+  },
+  "questbackefs": {
+    "efs.token": "",
+    "base.url": "",
+    "efs.handler": ""
+  },
+  "quickbooksonprem": {
+    "app.name": "",
+    "host.ip": ""
+  },
+  "readytalk": {
+    "username": "",
+    "password": ""
+  },
+  "sailthru": {
+    "sailthru.api.key": "",
+    "sailthru.api.secret": ""
+  },
+  "salescloud": {
+    "crm.salescloud.username": "",
+    "crm.salescloud.password": "",
+    "crm.salescloud.server.url": ""
+  },
+  "servicecloud": {
+    "helpdesk.servicecloud.username": "",
+    "helpdesk.servicecloud.password": "",
+    "helpdesk.servicecloud.endpointurl": "",
+    "helpdesk.servicecloud.fetchallvalues": ""
+  },
+  "servicenow": {
+    "username": "",
+    "password": "",
+    "servicenow.subdomain": ""
+  },
+  "stormpath": {
+    "api.key": "",
+    "api.secret": "",
+    "stormpath.application.name": ""
+  },
+  "vcloud": {
+    "infrastructure.vcloud.example_value": "",
+    "vcloud.server.url": "",
+    "vcloud.username": "",
+    "vcloud.password": "",
+    "vcloud.rabbitmq.server.host": "",
+    "vcloud.rabbitmq.server.port": "",
+    "vcloud.rabbitmq.server.username": "",
+    "vcloud.server.password": ""
+  },
+  "volusion": {
+    "volusion.store.url": "",
+    "volusion.login.email": "",
+    "volusion.encrypted.password": ""
+  },
+  "instagram": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": ""
   }
 }

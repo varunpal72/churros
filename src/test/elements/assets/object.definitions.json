@@ -1,0 +1,47 @@
+{
+  "accounts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "contacts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "firstName",
+      "type": "string"
+    }, {
+      "path": "lastName",
+      "type": "string"
+    }, {
+      "path": "accountId",
+      "type": "string"
+    }, {
+      "path": "title",
+      "type": "string"
+    }, {
+      "path": "department",
+      "type": "string"
+    }, {
+      "path": "address",
+      "type": "address"
+    }, {
+      "path": "description",
+      "type": "string"
+    }, {
+      "path": "phone",
+      "type": "string"
+    }, {
+      "path": "mobile",
+      "type": "string"
+    }, {
+      "path": "email",
+      "type": "string"
+    }, {
+      "path": "name",
+      "type": "string"
+    }]
+  }
+}

@@ -2,38 +2,24 @@
 
 const util = require('util');
 const chocolate = require('core/chocolate');
-const chakram = require('chakram');
-const expect = chakram.expect;
-const common = require('../common');
-const fs = require('fs');
-const schema = require('./assets/files.schema.json');
+const expect = require('chakram').expect;
+const tester = require('core/tester');
+const schema = require('./assets/file.schema.json');
 
-describe('files', () => {
-  common.for('crm','files');
-
+tester.for('documents', 'files', (api) => {
   it('should allow uploading and downloading a file', () => {
-    const fullPath = util.format('/brady-%s.jpg', chocolate.random());
-    var fileId = -1;
-    return chakram.post('/hubs/documents/files', undefined, {
-        formData: {
-          file: fs.createReadStream(__dirname + '/assets/brady.jpg')
-        },
-        qs: {
-          path: fullPath
-        }
-      })
+
+    let fileId = -1;
+    let query = {
+      path: util.format('/brady-%s.jpg', chocolate.random())
+    };
+    let path = __dirname + '/assets/brady.jpg';
+
+    return tester.postFile(api, path, query, schema)
       .then(r => {
-        expect(r).to.have.status(200);
-        expect(r).to.have.schema(schema);
         fileId = r.body.id;
-        return chakram.get('/hubs/documents/files/' + fileId);
+        return tester.get(api + '/' + fileId, (r) => expect(r).to.have.statusCode(200));
       })
-      .then(r => {
-        expect(r).to.have.status(200);
-        return chakram.delete('/hubs/documents/files/' + fileId);
-      })
-      .then(r => {
-        expect(r).to.have.status(200);
-      });
+      .then(r => tester.delete('/hubs/documents/files/' + fileId));
   });
 });
