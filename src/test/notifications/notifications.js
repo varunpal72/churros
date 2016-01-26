@@ -76,7 +76,7 @@ tester.for(null, 'notifications', (api) => {
   });
 
   it('should throw a 400 if missing search query', () => {
-    return tester.get(api, null, (r) => expect(r).to.have.statusCode(400));
+    return tester.get(api, (r) => expect(r).to.have.statusCode(400));
   });
 
   const sApi = util.format('%s/%s', api, 'subscriptions');
