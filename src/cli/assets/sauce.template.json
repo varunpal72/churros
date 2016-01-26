@@ -5,10 +5,10 @@
   "oauth.callback.url": "",
   "events": {
     "url": "",
+    "element": "",
     "port": "8085",
     "load": "5",
-    "wait": "30",
-    "element": "sfdc"
+    "wait": "30"
   },
   "woocommerce": {
     "oauth.api.key": "",
