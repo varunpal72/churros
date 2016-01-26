@@ -1,0 +1,9 @@
+{
+  "[OBJECT_NAME]": {
+    "vendorName": "[VENDOR_OBJECT_NAME]",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "[VENDOR_OBJECT_ID]"
+    }]
+  }
+}
