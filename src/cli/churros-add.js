@@ -145,30 +145,11 @@ const stubElementFiles = (r) =>
     res(r);
   });
 
-const showElementAdvice = (r) => {
-  console.log('Successfully stubbed out test suite for element %s', r.name);
+const complete = (r, link) => {
   console.log('');
-  console.log('Next Steps:');
-  console.log('');
-  console.log('  Run \'churros props %s:my.config.key my.value\' for each required config needed to provision\n', r.name);
-  console.log('  Update each resource\'s schema file in the elements/%s/assets directory to include all of the fields for that resource\n', r.name);
-  console.log('  Start building out tests for each resource\'s .js file, leveraging the common \'tester.test\' functions as much as possible\n');
-  console.log('  Run \'churros test elements/%s\' to run your tests!', r.name);
-  console.log('');
-  console.log('For more information, see the CONTRIBUTING.md here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md');
-  console.log('');
-};
-
-const showPlatformAdvice = (r) => {
-  console.log('Successfully stubbed out test suite for platform resource %s', r.name);
-  console.log('');
-  console.log('Next Steps:');
-  console.log('');
-  console.log('  Update the %s/assets/%s.schema.json schema file to include all of the fields for a(n) %s\n', r.name, r.name, r.name);
-  console.log('  Start building out the %s/%s.js file with tests, leveraging the common \'tester.test\' functions as much as possible\n', r.name, r.name);
-  console.log('  Run \'churros test %s\' to run your tests!', r.name);
-  console.log('');
-  console.log('For more information, see the CONTRIBUTING.md here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md');
+  console.log('Hooray...successfully stubbed out test suite for %s', r.name);
+  console.log('For information on next steps:');
+  console.log('      https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#%s', link);
   console.log('');
 };
 
@@ -178,13 +159,13 @@ const add = (type, options) => {
       .then(r => askQuestions(r))
       .then(r => askResourceQuestions(r))
       .then(r => stubElementFiles(r))
-      .then(r => showElementAdvice(r))
+      .then(r => complete(r, 'new-element-suite'))
       .catch(r => terminate(r));
   } else if (type === 'platform') {
     buildPlatformQuestions(type)
       .then(r => askQuestions(r))
       .then(r => stubPlatformFiles(r))
-      .then(r => showPlatformAdvice(r))
+      .then(r => complete(r, 'new-platform-suite'))
       .catch(r => terminate(r));
   } else {
     terminate('Invalid type: %s', type);
