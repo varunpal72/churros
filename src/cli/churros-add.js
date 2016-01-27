@@ -13,6 +13,10 @@ const buildRootPlatformDir = () => __dirname + '/../test';
 
 const buildRootElementDir = () => buildRootPlatformDir() + '/elements';
 
+const askQuestions = (questions) => new Promise((res, rej) => inquirer.prompt(questions, (answers) => res(answers)));
+
+const validateValue = (value) => value ? true : 'Must enter a value';
+
 const buildQuestion = (name, type, message, validate, isDefault) => {
   return {
     name: name,
@@ -23,45 +27,43 @@ const buildQuestion = (name, type, message, validate, isDefault) => {
   };
 };
 
-const validateName = (value) => {
-  if (!value) return 'Must enter a name';
-  return true;
-};
-
-const buildPlatformQuestions = () => {
-  return new Promise((res, rej) => {
+const buildPlatformQuestions = () =>
+  new Promise((res, rej) => {
     res([
-      buildQuestion('name', 'input', 'Platform resource name:', (value) => validateName(value))
+      buildQuestion('name', 'input', 'Platform resource name:', (value) => validateValue(value))
     ]);
   });
-};
 
-const buildElementQuestions = () => {
-  return new Promise((res, rej) => {
+const buildElementQuestions = () =>
+  new Promise((res, rej) => {
     res([
-      buildQuestion('name', 'input', 'Element name:', (value) => validateName(value)),
-      buildQuestion('hub', 'input', 'Hub name:', (value) => validateName(value)),
+      buildQuestion('name', 'input', 'Element name:', (value) => validateValue(value)),
+      buildQuestion('hub', 'input', 'Hub name:', (value) => validateValue(value)),
     ]);
   });
-};
 
-const buildResourceQuestions = () => {
-  return [
-    buildQuestion('resource', 'input', 'Resource name (CE name):', (value) => validateName(value)),
-    buildQuestion('vendor', 'input', 'Vendor resource name:', (value) => validateName(value)),
-    buildQuestion('id', 'input', 'Vendor ID field:', (value) => validateName(value)),
-  ];
-};
+const buildResourceQuestions = () => [
+  buildQuestion('name', 'input', 'Resource name (CE name):', (value) => validateValue(value)),
+  buildQuestion('vendorName', 'input', 'Vendor resource name:', (value) => validateValue(value)),
+  buildQuestion('vendorId', 'input', 'Vendor ID field:', (value) => validateValue(value)),
+  buildQuestion('more', 'confirm', 'Add more resources:')
+];
 
-const askQuestions = (questions) => new Promise((res, rej) => inquirer.prompt(questions, (answers) => res(answers)));
+const askResourceQuestions = (output) => {
+  output = output || [];
+  return new Promise((res, rej) => {
+    inquirer.prompt(buildResourceQuestions(), (answers) => {
+      output.push(answers)
+      return answers.more ? askResourceQuestions(output).then(r => res(r)) : res(output);
+    });
+  });
+};
 
 const stubPlatformFiles = (r) => {
-  console.log(r);
   return r;
 };
 
 const stubElementFiles = (r) => {
-  console.log(r);
   return r;
 };
 
@@ -75,7 +77,7 @@ const add = (type, options) => {
     buildElementQuestions(type)
       .then(r => askQuestions(r))
       .then(r => stubElementFiles(r))
-      .then(r => askQuestions(buildResourceQuestions()))
+      .then(r => askResourceQuestions())
       .then(r => stubResourceFiles(r))
       .catch(r => terminate(r));
   } else if (type === 'platform') {

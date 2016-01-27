@@ -1,6 +1,6 @@
 'use strict';
 
-const prompt = require('prompt');
+const inquirer = require('inquirer');
 const optimist = require('optimist');
 const fs = require('fs');
 const commander = require('commander');
@@ -12,32 +12,24 @@ commander
   .option('-f, --file </full/path/to/file>', 'props file to use for churros', __dirname + '/assets/sauce.template.json')
   .parse(process.argv);
 
-console.log('Initializating churros...');
+const validateValue = (value) => value ? true : 'Must enter a value';
 
-prompt.message = "   ";
-prompt.delimiter = "";
-prompt.override = optimist.argv; // allows for properties to be sent as command-line args
-
-const prompts = {
-  properties: {
-    user: {
-      required: true,
-      description: 'Enter the default CE user to run churros as: '
-    },
-    password: {
-      hidden: true,
-      required: true,
-      description: 'Enter the password for that user: '
-    },
-    url: {
-      default: 'api.cloud-elements.com',
-      description: 'Enter the default URL to run churros against: '
-    }
-  }
+const terminate = (msg, args) => {
+  console.log(msg, args ? args : '');
+  process.exit(1);
 };
 
-prompt.start();
-prompt.get(prompts, (err, result) => {
+const buildQuestion = (name, type, message, validate, defaultValue) => {
+  return {
+    name: name,
+    type: type,
+    message: message,
+    validate: validate,
+    default: defaultValue
+  };
+};
+
+const saveSauce = (answers) => {
   const propsDir = process.env.HOME + '/.churros/';
   const file = propsDir + 'sauce.json';
 
@@ -59,16 +51,26 @@ prompt.get(prompts, (err, result) => {
   };
 
   var properties = require(commander.file);
-  properties.url = format(result.url);
-  properties.user = result.user;
-  properties.password = result.password;
+  properties.url = format((answers.url || optimist.argv.url));
+  properties.user = answers.user || optimist.argv.user;
+  properties.password = answers.password || optimist.argv.password;
 
   fs.writeFile(file, JSON.stringify(properties, null, 2), (err) => {
-    if (err) {
-      console.log('Error while initializing churros');
-      return console.log(err);
-    }
-    console.log('Finished initializing churros');
-    process.exit(0);
+    err ? terminate('Error while initializing churros', err) : console.log('Finished initializing churros');
   });
-});
+};
+
+const questions = [];
+if (!optimist.argv.user) {
+  questions.push(buildQuestion('user', 'input', 'Default user to run tests:', (value) => validateValue(value)));
+}
+
+if (!optimist.argv.password) {
+  questions.push(buildQuestion('password', 'password', 'User\'s password:', (value) => validateValue(value)));
+}
+
+if (!optimist.argv.url) {
+  questions.push(buildQuestion('url', 'url', 'Cloud Elements URL', (value) => validateValue(value), 'api.cloud-elements.com'));
+}
+
+inquirer.prompt(questions, (answers) => saveSauce(answers));
