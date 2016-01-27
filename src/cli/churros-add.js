@@ -164,7 +164,7 @@ const showPlatformAdvice = (r) => {
   console.log('');
   console.log('Next Steps:');
   console.log('');
-  console.log('  Update the %s/assets/%s.schema.json schema file to include all of the fields for a(n) %s', r.name, r.name, r.name);
+  console.log('  Update the %s/assets/%s.schema.json schema file to include all of the fields for a(n) %s\n', r.name, r.name, r.name);
   console.log('  Start building out the %s/%s.js file with tests, leveraging the common \'tester.test\' functions as much as possible\n', r.name, r.name);
   console.log('  Run \'churros test %s\' to run your tests!', r.name);
   console.log('');
