@@ -76,13 +76,13 @@ There are some extra properties that are necessary to run the event tests.  `chu
 You will also need some way of exposing a local port out on the interwebs.  At Cloud Elements, we mainly use [ngrok](https://ngrok.com/) (with a few people using [localtunnel.me](https://localtunnel.me/) or SSH tunneling) but feel free to pick your favorite, as long as you have a publicly exposed URL setup in `churros props events:url` that is pointing to the port setup in `churros props events:port`.
 
 ```bash
-# Run the event tests, using the defaults in `churros props events`
+# Run the event tests, using the defaults in `churros props events`:
 $ churros test events
 
-# Run the event tests, using sfdc as the element to simulate events
+# Run the event tests, using sfdc as the element to simulate events:
 $ churros test events --element sfdc
 
-# Run the event tests, using sfdc as the element to simulate events, sending in 100 events and waiting 60 seconds to receive them in churros
+# Run the event tests, using sfdc as the element to simulate events, sending in 100 events and waiting 60 seconds to receive them in churros:
 $ churros test events --element sfdc --load 100 --wait 60
 ```
 

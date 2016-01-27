@@ -9,8 +9,8 @@ const tv4 = require('tv4');
 
 const customizeChakram = () => {
   chakram.addMethod('statusCode', (r, status) => {
-    let responseStatus = r.response.statusCode;
-    let responseBody = r.response.body;
+    const responseStatus = r.response.statusCode;
+    const responseBody = r.response.body;
 
     assert(
       responseStatus === status,
@@ -20,10 +20,10 @@ const customizeChakram = () => {
   });
 
   chakram.addMethod("schemaAnd200", (r, schema) => {
-    let responseStatus = r.response.statusCode;
-    let responseBody = r.response.body;
+    const responseStatus = r.response.statusCode;
+    const responseBody = r.response.body;
 
-    let composeErrorMessage = () => {
+    const composeErrorMessage = () => {
       let errorMsg = 'expected body to match JSON schema\n';
       if (tv4.error !== null) {
         errorMsg += util.format('error:%s\n', tv4.error.message);
@@ -33,11 +33,11 @@ const customizeChakram = () => {
       return errorMsg;
     };
 
-    let is200 = responseStatus === 200;
-    let message = util.format('expected %s to be 200.  response body was \n%s', responseStatus, JSON.stringify(responseBody, null, 2));
+    const is200 = responseStatus === 200;
+    const message = util.format('expected %s to be 200.  response body was \n%s', responseStatus, JSON.stringify(responseBody, null, 2));
     assert(is200, message);
 
-    let valid = tv4.validate(r.response.body, schema);
+    const valid = tv4.validate(r.response.body, schema);
     assert(
       valid,
       composeErrorMessage(),
@@ -69,13 +69,17 @@ before((done) => {
     j_password: props.get('password')
   };
 
-  chakram.post(secUrl, null, {
-      jar: true,
-      form: form
-    })
-    .then(r => chakram.get(props.get('url') + '/elements/api-v1/ui/getSecrets', {
-      jar: true
-    }))
+  const options = {
+    jar: true,
+    form: form
+  };
+
+  const secretOptions = {
+    jar: true
+  };
+
+  chakram.post(secUrl, null, options)
+    .then(r => chakram.get(props.get('url') + '/elements/api-v1/ui/getSecrets', secretOptions))
     .then(r => {
       props.set('user.secret', r.body.user);
       props.set('org.secret', r.body.company);
