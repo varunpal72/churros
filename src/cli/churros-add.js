@@ -3,6 +3,7 @@
 const commander = require('commander');
 const fs = require('fs');
 const inquirer = require('inquirer');
+const replaceStream = require('replacestream');
 
 const terminate = (msg, args) => {
   args ? console.error(msg, args) : console.error(msg);
@@ -49,60 +50,134 @@ const buildResourceQuestions = () => [
   buildQuestion('more', 'confirm', 'Add more resources:')
 ];
 
-const askResourceQuestions = (output) => {
-  output = output || [];
+const askResourceQuestions = (r, resources) => {
+  resources = resources || [];
   return new Promise((res, rej) => {
     inquirer.prompt(buildResourceQuestions(), (answers) => {
-      output.push(answers);
-      return answers.more ? askResourceQuestions(output).then(r => res(r)) : res(output);
+      resources.push(answers);
+      if (answers.more) askResourceQuestions(r, resources).then(resource => res(resource));
+      else {
+        r.resources = resources;
+        res(r);
+      }
     });
   });
 };
 
-const stubPlatformFiles = (r) => {
-  const rootDir = buildRootPlatformDir();
-  const suiteDir = rootDir + '/' + r.name;
-  if (fs.existsSync(suiteDir)) terminate('Platform suite %s already exists', r.name);
+const stubPlatformFiles = (r) =>
+  new Promise((res, rej) => {
+    const rootDir = buildRootPlatformDir();
+    const suiteDir = rootDir + '/' + r.name;
+    if (fs.existsSync(suiteDir)) terminate('Platform suite %s already exists', r.name);
 
-  // src/test/{suite}
-  fs.mkdirSync(suiteDir);
-  fs.writeFileSync(suiteDir + '/' + r.name + '.js', require('./assets/platform.suite.template.js'));
+    // main suite files
+    fs.mkdirSync(suiteDir);
+    const jsFile = suiteDir + '/' + r.name + '.js';
+    fs.createReadStream(__dirname + '/assets/platform.suite.template.js')
+      .pipe(replaceStream('%name', r.name))
+      .pipe(replaceStream('%user', process.env.USER))
+      .pipe(fs.createWriteStream(jsFile));
 
-  // src/test/{suite}/assets
-  const assetsDir = suiteDir + '/assets';
-  fs.mkdirSync(assetsDir);
-  fs.writeFileSync(assetsDir + '/' + r.name + '.schema.json', require('./assets/resource.schema.template.json'));
-};
+    // asset files
+    const assetsDir = suiteDir + '/assets';
+    fs.mkdirSync(assetsDir);
+    const schemaFile = assetsDir + '/' + r.name + '.schema.json';
+    fs.createReadStream(__dirname + '/assets/resource.schema.template.json')
+      .pipe(fs.createWriteStream(schemaFile));
 
-const stubElementFiles = (r) => {
-  return new Promise((res, rej) => {
-    console.log(r);
+    res(r);
+  });
+
+const stubElementFiles = (r) =>
+  new Promise((res, rej) => {
     const rootDir = buildRootElementDir();
     const suiteDir = rootDir + '/' + r.name;
     if (!fs.existsSync(suiteDir)) fs.mkdirSync(suiteDir);
 
     const assetsDir = suiteDir + '/assets';
     if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir);
+
+    const transformationsFile = assetsDir + '/transformations.json';
+    if (!fs.existsSync(transformationsFile)) fs.writeFileSync(transformationsFile, '{}');
+
+    r.resources.forEach(resource => {
+      const name = resource.name;
+      const vendorName = resource.vendorName;
+      const vendorId = resource.vendorId;
+
+      // resource .js file
+      const resourceJsFile = suiteDir + '/' + name + '.js';
+      if (!fs.existsSync(resourceJsFile)) {
+        fs.createReadStream(__dirname + '/assets/element.suite.template.js')
+          .pipe(replaceStream('%resource', name))
+          .pipe(replaceStream('%hub', r.hub))
+          .pipe(replaceStream('%user', process.env.USER))
+          .pipe(fs.createWriteStream(resourceJsFile));
+      } else {
+        console.log('test .js file already exists for %s so not modifying', name);
+      }
+
+      // schema file
+      const resourceSchemaFile = assetsDir + '/' + name + '.schema.json';
+      if (!fs.existsSync(resourceSchemaFile)) {
+        fs.createReadStream(__dirname + '/assets/resource.schema.template.json')
+          .pipe(fs.createWriteStream(resourceSchemaFile));
+      } else {
+        console.log('schema file already exists for %s so not modifying', name);
+      }
+
+      // transformation file
+      const currentTransformations = require(transformationsFile);
+      if (!currentTransformations[name]) {
+        currentTransformations[name] = {
+          vendorName: vendorName,
+          fields: [{
+            path: 'id',
+            vendorPath: vendorId
+          }]
+        };
+        fs.writeFileSync(transformationsFile, JSON.stringify(currentTransformations, null, 2));
+      } else {
+        console.log('transformation for %s already exists for %s', name, r.name);
+      }
+    });
+
     res(r);
-  })
+  });
+
+const showElementAdvice = (r) => {
+  r = { name: 'abbyy',
+  hub: 'ocr',
+  resources:
+   [ { name: 'tasks',
+       vendorName: 'tasks',
+       vendorId: 'id',
+       more: false } ] };
 };
 
-const stubResourceFiles = (r) => {
-  console.log(r);
+const showPlatformAdvice = (r) => {
+  r = { name: 'abbyy',
+  hub: 'ocr',
+  resources:
+   [ { name: 'tasks',
+       vendorName: 'tasks',
+       vendorId: 'id',
+       more: false } ] };
 };
 
 const add = (type, options) => {
   if (type === 'element') {
     buildElementQuestions(type)
       .then(r => askQuestions(r))
+      .then(r => askResourceQuestions(r))
       .then(r => stubElementFiles(r))
-      .then(r => askResourceQuestions())
-      .then(r => stubResourceFiles(r))
+      .then(r => showElementAdvice(r))
       .catch(r => terminate(r));
   } else if (type === 'platform') {
     buildPlatformQuestions(type)
       .then(r => askQuestions(r))
       .then(r => stubPlatformFiles(r))
+      .then(r => showPlatformAdvice(r))
       .catch(r => terminate(r));
   } else {
     terminate('Invalid type: %s', type);

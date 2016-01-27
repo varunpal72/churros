@@ -1,0 +1,11 @@
+{
+  "tasks": {
+    "vendorName": "tasks",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}

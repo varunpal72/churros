@@ -1,9 +1,0 @@
-{
-  "%resource": {
-    "vendorName": "%vendorResource",
-    "fields": [{
-      "path": "id",
-      "vendorPath": "%vendorId"
-    }]
-  }
-}
