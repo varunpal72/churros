@@ -32,7 +32,7 @@ const buildQuestion = (name, type, message, validate, defaultValue) => {
 const saveSauce = (answers) => {
   const propsDir = process.env.HOME + '/.churros/';
   const file = propsDir + 'sauce.json';
-  
+
   console.log('Saving default properties to ' + file);
 
   // directory doesn't exist? create it

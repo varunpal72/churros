@@ -1,9 +1,9 @@
 {
-  "[OBJECT_NAME]": {
-    "vendorName": "[VENDOR_OBJECT_NAME]",
+  "%resource": {
+    "vendorName": "%vendorResource",
     "fields": [{
       "path": "id",
-      "vendorPath": "[VENDOR_OBJECT_ID]"
+      "vendorPath": "%vendorId"
     }]
   }
 }

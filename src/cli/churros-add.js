@@ -60,16 +60,35 @@ const askResourceQuestions = (output) => {
 };
 
 const stubPlatformFiles = (r) => {
-  return r;
+  const rootDir = buildRootPlatformDir();
+  const suiteDir = rootDir + '/' + r.name;
+  if (fs.existsSync(suiteDir)) terminate('Platform suite %s already exists', r.name);
+
+  // src/test/{suite}
+  fs.mkdirSync(suiteDir);
+  fs.writeFileSync(suiteDir + '/' + r.name + '.js', require('./assets/platform.suite.template.js'));
+
+  // src/test/{suite}/assets
+  const assetsDir = suiteDir + '/assets';
+  fs.mkdirSync(assetsDir);
+  fs.writeFileSync(assetsDir + '/' + r.name + '.schema.json', require('./assets/resource.schema.template.json'));
 };
 
 const stubElementFiles = (r) => {
-  return r;
+  return new Promise((res, rej) => {
+    console.log(r);
+    const rootDir = buildRootElementDir();
+    const suiteDir = rootDir + '/' + r.name;
+    if (!fs.existsSync(suiteDir)) fs.mkdirSync(suiteDir);
+
+    const assetsDir = suiteDir + '/assets';
+    if (!fs.existsSync(assetsDir)) fs.mkdirSync(assetsDir);
+    res(r);
+  })
 };
 
 const stubResourceFiles = (r) => {
   console.log(r);
-  return r;
 };
 
 const add = (type, options) => {
