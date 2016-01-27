@@ -146,23 +146,30 @@ const stubElementFiles = (r) =>
   });
 
 const showElementAdvice = (r) => {
-  r = { name: 'abbyy',
-  hub: 'ocr',
-  resources:
-   [ { name: 'tasks',
-       vendorName: 'tasks',
-       vendorId: 'id',
-       more: false } ] };
+  console.log('Successfully stubbed out test suite for element %s', r.name);
+  console.log('');
+  console.log('Next Steps:');
+  console.log('');
+  console.log('  Run \'churros props %s:my.config.key my.value\' for each required config needed to provision\n', r.name);
+  console.log('  Update each resource\'s schema file in the elements/%s/assets directory to include all of the fields for that resource\n', r.name);
+  console.log('  Start building out tests for each resource\'s .js file, leveraging the common \'tester.test\' functions as much as possible\n');
+  console.log('  Run \'churros test elements/%s\' to run your tests!', r.name);
+  console.log('');
+  console.log('For more information, see the CONTRIBUTING.md here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md');
+  console.log('');
 };
 
 const showPlatformAdvice = (r) => {
-  r = { name: 'abbyy',
-  hub: 'ocr',
-  resources:
-   [ { name: 'tasks',
-       vendorName: 'tasks',
-       vendorId: 'id',
-       more: false } ] };
+  console.log('Successfully stubbed out test suite for platform resource %s', r.name);
+  console.log('');
+  console.log('Next Steps:');
+  console.log('');
+  console.log('  Update the %s/assets/%s.schema.json schema file to include all of the fields for a(n) %s', r.name, r.name, r.name);
+  console.log('  Start building out the %s/%s.js file with tests, leveraging the common \'tester.test\' functions as much as possible\n', r.name, r.name);
+  console.log('  Run \'churros test %s\' to run your tests!', r.name);
+  console.log('');
+  console.log('For more information, see the CONTRIBUTING.md here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md');
+  console.log('');
 };
 
 const add = (type, options) => {
