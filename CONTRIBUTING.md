@@ -49,9 +49,33 @@ Start building out tests in the `src/test/${resourceName}.js` file that was gene
 
 Whenever building out new test cases, it is good to leverage as much functionality from the pre-canned `tester.test` functions to ensure we're not duplicating code and to minimize how much code we have to maintain.  The functions provided here do a *lot* if not all of the work for you:
 
+### `tester.test`
+
+```javascript
+// POST a bad payload to an API and ensure we get a 400 response status code (Note: If you want to send an empty payload, exclude the payload parameter)
+tester.test.badPost400(api, payload)
+
+// PATCH an API with an invalid ID and ensure we get a 404 (Note: If no invalidId is passed then -1 is used)
+tester.test.badPatch404(api, payload, invalidId)
+
+// GET an API with an invalid ID and ensure we get a 404 (Note: If no invalidId is passed then -1 is used)
+tester.test.badGet404(api, invalidId)
+
+// Run a full CRUDS (create, retrieve, update, delete, search) cycle on the given API and ensure all API calls return a 200 and validate against the specified schema. (Note: Default update API calls is PATCH.  If this resource supports PUT, pass chakram.put as the last parameter)
+tester.test.cruds(api, payload, schema)
+
+// Same as tester.test.cruds except no search API call
+tester.test.crud(api, payload, schema)
+
+// Same as tester.test.crud except no update API call
+tester.test.crd(api, payload, schema)
+
+// DOCS COMING SOON
+tester.test.paginate
+```
 
 > __PROTIP:__ Each test should be self-contained and should *not* rely on anything from a previous test.
 
-> __PROTIP:__ Validate JSON payloads against JSON schemas as opposed to validating each field individually, etc.  Then we can use these JSON schemas for our developer docs as well.  These JSON schemas should live in `src/test/[SUITE_NAME]/assets`.
+> __PROTIP:__ Validate JSON payloads against JSON schemas as opposed to validating each field individually, etc.
 
->__PROTIP:__ If adding a tests for a new resource to an existing element suite, you can use `churros add ${elementName}` and it will help you stub out the necessary files, update the `transformations.json` file, etc. to help get you started.
+>__PROTIP:__ If adding a tests for a new resource to an existing element suite, you can use `churros add ${elementName}` and it will help you stub out the necessary files, update the `transformations.json` file, etc. to help get you started.  It *should not* overwrite any existing files :pray:.
