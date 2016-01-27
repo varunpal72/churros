@@ -8,40 +8,28 @@ const webdriver = require('selenium-webdriver');
 const props = require('core/props');
 const url = require('url');
 
+const sfdcs = (r, username, password, driver) => {
+  driver.get(r.body.oauthUrl);
+  driver.findElement(webdriver.By.id("username")).clear();
+  driver.findElement(webdriver.By.id("username")).sendKeys(username);
+  driver.findElement(webdriver.By.id("password")).clear();
+  driver.findElement(webdriver.By.id("password")).sendKeys(password);
+  driver.findElement(webdriver.By.id("Login")).click();
+  driver.get(driver.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
+  return driver.getCurrentUrl();
+};
+
 const elements = {
+  sfdc: (r, username, password, driver) => sfdcs(r, username, password, driver),
+  sfdcservicecloud: (r, username, password, driver) => sfdcs(r, username, password, driver),
+  sfdcmarketingcloud: (r, username, password, driver) => sfdcs(r, username, password, driver),
+  sfdcdocuments: (r, username, password, driver) => sfdcs(r, username, password, driver),
   box: (r, username, password, driver) => {
     driver.get(r.body.oauthUrl);
     driver.findElement(webdriver.By.name('login')).sendKeys(username);
     driver.findElement(webdriver.By.name('password')).sendKeys(password);
     driver.findElement(webdriver.By.name('login_submit')).click();
     driver.findElement(webdriver.By.name('consent_accept')).click();
-    return driver.getCurrentUrl();
-  },
-  sfdc: (r, username, password, driver) => {
-    driver.get(r.body.oauthUrl);
-    driver.findElement(webdriver.By.id("username")).clear();
-    driver.findElement(webdriver.By.id("username")).sendKeys(username);
-    driver.findElement(webdriver.By.id("password")).clear();
-    driver.findElement(webdriver.By.id("password")).sendKeys(password);
-    driver.findElement(webdriver.By.id("Login")).click();
-    driver.get(driver.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
-    return driver.getCurrentUrl();
-  },
-  dropbox: (r, username, password, driver) => {
-    driver.get(r.body.oauthUrl);
-    driver.wait(() => {
-      return driver.findElement(webdriver.By.name('login_email')).clear()
-        .then(() => {
-          return true;
-        })
-        .thenCatch(() => {
-          return false;
-        });
-    }, 10000);
-    driver.findElement(webdriver.By.name('login_email')).sendKeys(username);
-    driver.findElement(webdriver.By.name("login_password")).clear();
-    driver.findElement(webdriver.By.name("login_password")).sendKeys(password);
-    driver.findElement(webdriver.By.className("login-button")).click();
     return driver.getCurrentUrl();
   },
   facebooksocial: (r, username, password, driver) => {
@@ -60,6 +48,21 @@ const elements = {
     driver.findElement(webdriver.By.id("id_password")).clear();
     driver.findElement(webdriver.By.id("id_password")).sendKeys(password);
     driver.findElement(webdriver.By.className("button-green")).click();
+    return driver.getCurrentUrl();
+  },
+  zendesk: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    // TODO
+    return driver.getCurrentUrl();
+  },
+  dropbox: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    // TODO
+    return driver.getCurrentUrl();
+  },
+  shopify: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    // TODO
     return driver.getCurrentUrl();
   }
 };
