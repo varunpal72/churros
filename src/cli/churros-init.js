@@ -32,7 +32,7 @@ const buildQuestion = (name, type, message, validate, defaultValue) => {
 const saveSauce = (answers) => {
   const propsDir = process.env.HOME + '/.churros/';
   const file = propsDir + 'sauce.json';
-
+  
   console.log('Saving default properties to ' + file);
 
   // directory doesn't exist? create it
@@ -61,16 +61,8 @@ const saveSauce = (answers) => {
 };
 
 const questions = [];
-if (!optimist.argv.user) {
-  questions.push(buildQuestion('user', 'input', 'Default user to run tests:', (value) => validateValue(value)));
-}
-
-if (!optimist.argv.password) {
-  questions.push(buildQuestion('password', 'password', 'User\'s password:', (value) => validateValue(value)));
-}
-
-if (!optimist.argv.url) {
-  questions.push(buildQuestion('url', 'url', 'Cloud Elements URL', (value) => validateValue(value), 'api.cloud-elements.com'));
-}
+if (!optimist.argv.user) questions.push(buildQuestion('user', 'input', 'Default user to run tests:', (value) => validateValue(value)));
+if (!optimist.argv.password) questions.push(buildQuestion('password', 'password', 'User\'s password:', (value) => validateValue(value)));
+if (!optimist.argv.url) questions.push(buildQuestion('url', 'url', 'Cloud Elements URL', (value) => validateValue(value), 'api.cloud-elements.com'));
 
 inquirer.prompt(questions, (answers) => saveSauce(answers));

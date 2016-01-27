@@ -53,7 +53,7 @@ const askResourceQuestions = (output) => {
   output = output || [];
   return new Promise((res, rej) => {
     inquirer.prompt(buildResourceQuestions(), (answers) => {
-      output.push(answers)
+      output.push(answers);
       return answers.more ? askResourceQuestions(output).then(r => res(r)) : res(output);
     });
   });
