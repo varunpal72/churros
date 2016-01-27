@@ -1,42 +1,57 @@
 ## Branching Model
 
-[GitHub Flow](https://guides.github.com/introduction/flow/) branching workflow model.
+[GitHub Flow](https://guides.github.com/introduction/flow) branching workflow model.
 
 ## Creating Test Suites
 
-### New platform test suite:
+### New Element Suite:
 
-1. Create a new directory in `src/test`
+```bash
+# Use 'churros add element' and follow the prompts:
+$ churros add element
+```
+> __NOTE:__ For the rest of this section, `${elementName}` represents the name of the newly created element that was given during the above prompts and ${resourceName} represents one of the resources that was setup during the above prompts.
 
-1. Create a `.js` file in that directory where your tests will live
-> **PROTIP:** Name the file after the resource you're testing.  Break up tests for different resources by putting them in different files.  As an example, look at `src/test/formulas`.
+Then, setup all of the required properties needed to create an instance of this element:
+```bash
+$ churros props ${elementName}:my.required.config.key my.value
+```
 
-1. Begin writing tests in your file.  For guidance on writing tests, read [here](#creating-tests)
+At this point, you can actually run your generated element suite, although it won't include any real tests at this point:
+```bash
+$ churros test elements/${elementName}
+```
 
-### New element test suite:
+Update each resource's `src/test/elements/${elementName}/${resourceName}.js` JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
+> __NOTE:__ It is critical to be as accurate as possible in this schema file.  This file is critical to ensuring our interface does *not* change and this file is also what will document the models for this API.
 
-1. Create a new directory in `src/test/elements` with the name of the element
+Start building out tests in the `src/tests/elements/${elementName}/${resourceName}.js` file that was generated.  Leverage the `tester.test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
 
-1. Create a `setup.js` file in that directory.  This file will be responsible for creating an instance of this element and deleting that instance after all tests have ran.  For a good example, see `src/test/elements/box/setup.js`. [MORE INFORMATION COMING]
+### New Platform Suite:
 
-1. Next, create a `.js` file with the name of the resource you will be testing.
+```bash
+# Use 'churros add platform' and follow the prompts:
+$ churros add platform
+```
+> __NOTE:__ For the rest of this section, `${resourceName}` represents the name of the newly created platform resource that was given during the above prompts.
 
-1. Begin writing tests in your file.  For guidance on writing tests, read [here](#creating-tests)
+Out of the box, you should be able to run your generated platform suite, although it won't include any real tests at this point:
+```bash
+$ churros test ${resourceName}
+```
 
-## Creating Tests
-An example test that is pretty self-explanatory:
+Update the `/assets/${resourceName}.schema.json` generated JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
+> __NOTE:__ It is critical to be as accurate as possible in this schema file.  This file is critical to ensuring our interface does *not* change and this file is also what will document the models for this API.
 
-  ```javascript
-  it('should throw a 404 if the notification does not exist', () => {
-    const url = '/notifications';
-    return chakram.get(url + '/' + -1)
-      .then((r) => {
-        expect(r).to.have.statusCode(404);
-      });
-  });
-  ```
+Start building out tests in the `src/test/${resourceName}.js` file that was generated.  Leverage the `tester.test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
 
-[MORE INFORMATION COMING]
+## Adding Tests To An Existing Suite
 
-> **PROTIP:** Each test should be self-contained and should *not* rely on anything from a previous test
-> **PROTIP:** Validate JSON payloads against JSON schemas as opposed to validating each field individually, etc.  Then we can use these JSON schemas for our developer docs as well.  These JSON schemas should live in `src/test/[SUITE_NAME]/assets`
+Whenever building out new test cases, it is good to leverage as much functionality from the pre-canned `tester.test` functions to ensure we're not duplicating code and to minimize how much code we have to maintain.  The functions provided here do a *lot* if not all of the work for you:
+
+
+> __PROTIP:__ Each test should be self-contained and should *not* rely on anything from a previous test.
+
+> __PROTIP:__ Validate JSON payloads against JSON schemas as opposed to validating each field individually, etc.  Then we can use these JSON schemas for our developer docs as well.  These JSON schemas should live in `src/test/[SUITE_NAME]/assets`.
+
+>__PROTIP:__ If adding a tests for a new resource to an existing element suite, you can use `churros add ${elementName}` and it will help you stub out the necessary files, update the `transformations.json` file, etc. to help get you started.
