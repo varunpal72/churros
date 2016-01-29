@@ -18,15 +18,13 @@ const askQuestions = (questions) => new Promise((res, rej) => inquirer.prompt(qu
 
 const validateValue = (value) => value ? true : 'Must enter a value';
 
-const buildQuestion = (name, type, message, validate, isDefault) => {
-  return {
-    name: name,
-    type: type,
-    message: message,
-    validate: validate,
-    default: isDefault
-  };
-};
+const buildQuestion = (name, type, message, validate, isDefault) => new Object({
+  name: name,
+  type: type,
+  message: message,
+  validate: validate,
+  default: isDefault
+});
 
 const buildPlatformQuestions = () =>
   new Promise((res, rej) => {

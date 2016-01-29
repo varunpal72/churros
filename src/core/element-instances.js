@@ -19,7 +19,11 @@ const sfdcs = (r, username, password, driver) => {
   return driver.getCurrentUrl();
 };
 
-const elements = {
+const oauth1Elements = {
+
+};
+
+const oauth2Elements = {
   sfdc: (r, username, password, driver) => sfdcs(r, username, password, driver),
   sfdcservicecloud: (r, username, password, driver) => sfdcs(r, username, password, driver),
   sfdcmarketingcloud: (r, username, password, driver) => sfdcs(r, username, password, driver),
@@ -43,16 +47,19 @@ const elements = {
   },
   instagram: (r, username, password, driver) => {
     driver.get(r.body.oauthUrl);
-    driver.findElement(webdriver.By.id("id_username")).clear();
-    driver.findElement(webdriver.By.id("id_username")).sendKeys(username);
-    driver.findElement(webdriver.By.id("id_password")).clear();
-    driver.findElement(webdriver.By.id("id_password")).sendKeys(password);
-    driver.findElement(webdriver.By.className("button-green")).click();
+    driver.findElement(webdriver.By.id('id_username')).clear();
+    driver.findElement(webdriver.By.id('id_username')).sendKeys(username);
+    driver.findElement(webdriver.By.id('id_password')).clear();
+    driver.findElement(webdriver.By.id('id_password')).sendKeys(password);
+    driver.findElement(webdriver.By.className('button-green')).click();
     return driver.getCurrentUrl();
   },
   zendesk: (r, username, password, driver) => {
     driver.get(r.body.oauthUrl);
-    // TODO
+    const iframe = webdriver.By.tagName('iframe')[0];
+    driver.switchTo().frame(iframe);
+    driver.findElement(webdriver.By.id('user_email')).sendKeys(username);
+    driver.findElement(webdriver.By.id('user_password')).sendKeys(password);
     return driver.getCurrentUrl();
   },
   dropbox: (r, username, password, driver) => {
@@ -75,13 +82,16 @@ const genConfig = (props, args) => {
   return config;
 };
 
-const createOAuthElement = (element, args, cb) => {
+const createOAuth2Element = (element, args, cb) => {
+  // required props
   const callbackUrl = props.get('oauth.callback.url');
-
   const apiKey = props.getForKey(element, 'oauth.api.key');
   const apiSecret = props.getForKey(element, 'oauth.api.secret');
   const username = props.getForKey(element, 'username');
   const password = props.getForKey(element, 'password');
+
+  // optional props
+  const siteAddress = props.getOptionalForKey(element, 'oauth.site.address', false);
 
   const options = {
     qs: {
@@ -90,8 +100,10 @@ const createOAuthElement = (element, args, cb) => {
       callbackUrl: callbackUrl
     }
   };
+  if (siteAddress) options.qs.siteAddress = siteAddress;
+
   const driver = new webdriver.Builder()
-    .forBrowser('phantomjs')
+    .forBrowser('firefox')
     .build();
   const oauthUrl = util.format('/elements/%s/oauth/url', element);
 
@@ -131,6 +143,30 @@ const createOAuthElement = (element, args, cb) => {
     });
 };
 
+const createOAuth1Element = (element, args, cb) => {
+  console.log('oauth1 me broa')
+  const callbackUrl = props.get('oauth.callback.url');
+  const apiKey = props.getForKey(element, 'oauth.api.key');
+  const apiSecret = props.getForKey(element, 'oauth.api.secret');
+  const username = props.getForKey(element, 'username');
+  const password = props.getForKey(element, 'password');
+  const options = {
+    qs: {
+      apiKey: apiKey,
+      apiSecret: apiSecret,
+      callbackUrl: callbackUrl
+    }
+  };
+  const driver = new webdriver.Builder()
+    .forBrowser('firefox')
+    .build();
+  const oauthUrl = util.format('/elements/%s/oauth/token', element);
+
+  return chakram.get(oauthUrl, options)
+    .then(r => console.log(r))
+    .catch(r => console.log(r));
+};
+
 const createElement = (element, args) => {
   const instance = {
     name: 'churros-instance',
@@ -156,10 +192,11 @@ const createElement = (element, args) => {
 exports.create = (element, args) => {
   console.log('Attempting to provision %s', element);
 
-  const cb = elements[element];
-  return cb ?
-    createOAuthElement(element, args, cb) :
-    createElement(element, args);
+  const oauth1Cb = oauth2Elements[element];
+  const oauth2Cb = oauth2Elements[element];
+  if (oauth2Cb) createOAuth2Element(element, args, oauth2Cb);
+  else if (oauth1Cb) createOAuth1Element(element, args, oauth1Cb);
+  else return createElement(element, args);
 };
 
 exports.delete = (id) => {

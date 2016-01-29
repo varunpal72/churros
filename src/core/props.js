@@ -28,6 +28,15 @@ exports.getForKey = (rootKey, key) => {
   return value;
 };
 
+exports.getOptionalForKey = (rootKey, key) => {
+  const elementProps = config[rootKey];
+  if (!elementProps)  return null;
+
+  const value = elementProps[key];
+  if (!value) return null;
+  return value;
+};
+
 exports.set = (key, value) => {
   config[key] = value;
 };
