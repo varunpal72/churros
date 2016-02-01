@@ -1,5 +1,6 @@
 'use strict';
 
+const chocolate = require('core/chocolate');
 const http = require('http');
 const fs = require('fs');
 const util = require('util');
@@ -61,11 +62,6 @@ exports.for = (hub, objectName, tests) => {
   });
 };
 
-const logAndThrow = (msg, api, r) => {
-  console.log(msg, api);
-  throw r;
-};
-
 const validator = (schemaOrValidationCb) => {
   if (typeof schemaOrValidationCb === 'function') {
     return (r) => {
@@ -88,14 +84,14 @@ const validator = (schemaOrValidationCb) => {
 const post = (api, payload, schema) => {
   return chakram.post(api, payload)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to create %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to create %s', r, api));
 };
 exports.post = post;
 
 const get = (api, schema) => {
   return chakram.get(api)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to retrieve %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to retrieve %s', r, api));
 };
 exports.get = get;
 
@@ -104,7 +100,7 @@ const update = (api, payload, schema, cb) => {
 
   return cb(api, payload)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to update %s: %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to update %s', r, api));
 };
 exports.patch = (api, payload, schema) => update(api, payload, schema, chakram.patch);
 exports.put = (api, payload, schema) => update(api, payload, schema, chakram.put);
@@ -115,14 +111,14 @@ const remove = (api) => {
       expect(r).to.have.statusCode(200);
       return r;
     })
-    .catch(r => logAndThrow('Failed to delete %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to delete %s', r, api));
 };
 exports.delete = remove;
 
 const find = (api, schema) => {
   return chakram.get(api)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to find %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to find %s', r, api));
 };
 exports.find = find;
 
@@ -135,7 +131,7 @@ const postFile = (api, filePath, query, schema) => {
   };
   return chakram.post(api, undefined, options)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to upload file to %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to upload file to %s', r, api));
 };
 exports.postFile = postFile;
 

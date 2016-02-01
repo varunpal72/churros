@@ -15,16 +15,19 @@ const genConfig = (props, args) => {
   return config;
 };
 
-const parseOAuthProps = (element) => {
-  return new Promise((res, rej) => {
-    res({
+const parseProps = (element) => {
+  const args = {
+    username: props.getForKey(element, 'username'),
+    password: props.getForKey(element, 'password'),
+    options: {
       qs: {
         apiKey: props.getForKey(element, 'oauth.api.key'),
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
-        callbackUrl: props.getForKey(element, 'oauth.callback.url')
+        callbackUrl: props.get('oauth.callback.url')
       }
-    });
-  })
+    }
+  };
+  return new Promise((res, rej) => res(args));
 };
 
 const createInstance = (element, config, providerData) => {
@@ -48,31 +51,30 @@ const createInstance = (element, config, providerData) => {
     .catch(r => chocolate.logAndThrow('Failed to create an instance of %s', r, element));
 };
 
-const oauth = (element, options) => {
+const oauth = (element, args) => {
   const url = util.format('/elements/%s/oauth/url', element);
-  console.log(url);
-  console.log(options);
-  return chakram.get(url, options)
+  return chakram.get(url, args.options)
+    .then(r => require('core/oauth')(element, r, args.username, args.password))
     .then(r => {
-      require('core/oauth')(element)(r, config.username, config.password);
-
       const query = urlParser.parse(r, true).query;
       const providerData = {
+        code: query.code,
         oauth_token: query.oauth_token,
         oauth_verifier: query.oauth_verifier,
-        secret: oauthSecret
+        secret: args.secret
       };
+      return providerData;
     });
 };
 
-const oauth1 = (element, options) => {
+const oauth1 = (element, args) => {
   const oauthTokenUrl = util.format('/elements/%s/oauth/token', element);
-  return chakram.get(oauthTokenUrl, options)
+  return chakram.get(oauthTokenUrl, args.options)
     .then(r => {
       expect(r).to.have.status(200);
-      options.qs.requestToken = r.body.token;
-      options.secret = r.body.secret;
-      return options;
+      args.options.qs.requestToken = r.body.token;
+      args.secret = r.body.secret;
+      return args;
     });
 };
 
@@ -84,15 +86,16 @@ exports.create = (element, args) => {
 
   switch (type) {
   case 'oauth1':
-    return parseOAuthProps(element)
+    config['oauth.callback.url'] = props.get('oauth.callback.url');
+    return parseProps(element)
       .then(r => oauth1(element, r))
       .then(r => oauth(element, r))
-      .then(r => createInstance(element, r));
+      .then(r => createInstance(element, config, r));
   case 'oauth2':
-    return parseOAuthProps(element)
-      .then(r => oauth2(element, r))
+    config['oauth.callback.url'] = props.get('oauth.callback.url');
+    return parseProps(element)
       .then(r => oauth(element, r))
-      .then(r => createInstance(element, r));
+      .then(r => createInstance(element, config, r));
   default:
     return createInstance(element, config);
   }

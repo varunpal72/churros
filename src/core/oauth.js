@@ -2,11 +2,7 @@
 
 const webdriver = require('selenium-webdriver');
 
-module.exports = (element) => {
-  const driver = new webdriver.Builder()
-    .forBrowser('firefox')
-    .build();
-
+const find = (element, driver) => {
   switch (element) {
   case 'sfdc':
   case 'sfdcservicecloud':
@@ -88,4 +84,14 @@ module.exports = (element) => {
     console.log('No OAuth callback found for element %s.  Please implement that callback in core/oauth so %s can be provisioned', element, element);
     process.exit(1);
   }
+};
+
+module.exports = (element, r, username, password) => {
+  const driver = new webdriver.Builder()
+    .forBrowser('firefox')
+    .build();
+  const cb = find(element, driver);
+  const url = cb(r, username, password);
+  driver.close();
+  return url;
 };
