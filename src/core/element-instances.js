@@ -159,7 +159,7 @@ const createOAuth2Element = (element, args, cb) => {
 };
 
 const createOAuth1Element = (element, args, cb) => {
-  const driver = new webdriver.Builder().forBrowser('firefox').build();
+  const driver = new webdriver.Builder().forBrowser('phantomjs').build();
   const username = props.getForKey(element, 'username');
   const password = props.getForKey(element, 'password');
   const oauthUrl = util.format('/elements/%s/oauth/url', element);
@@ -199,7 +199,6 @@ const createOAuth1Element = (element, args, cb) => {
           secret: oauthSecret
         }
       };
-      console.log(JSON.stringify(instance));
       return chakram.post('/instances', instance);
     })
     .catch(r => console.log(r));
