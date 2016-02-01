@@ -27,7 +27,6 @@ const parseProps = (element) => {
       }
     }
   };
-  console.log(args);
   return new Promise((res, rej) => res(args));
 };
 
