@@ -12,12 +12,17 @@ $ churros add element
 ```
 > __NOTE:__ For the rest of this section, `${elementName}` represents the name of the newly created element that was given during the above prompts and ${resourceName} represents one of the resources that was setup during the above prompts.
 
-Then, setup all of the required properties needed to create an instance of this element:
+By default, `churros` assumes that this element supports the standard provisioning flow.  If this element needs to use the `oauth2` or `oauth1` provisioning flows, make sure to setup the `provisioning` property to indicate that:
+```bash
+$ churros props ${elementName}:provisiong [oauth2 | oauth1]
+```
+
+Next, setup all of the required properties needed to create an instance of this element:
 ```bash
 $ churros props ${elementName}:my.required.config.key my.value
 ```
 
-At this point, you can actually run your generated element suite, although it won't include any real tests at this point:
+At this point, you can actually run your generated element suite, and the element should provision fine, although it won't include any real tests at this point:
 ```bash
 $ churros test elements/${elementName}
 ```
