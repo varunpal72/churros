@@ -20,7 +20,14 @@ const sfdcs = (r, username, password, driver) => {
 };
 
 const oauth1Elements = {
-
+  etsy: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    driver.findElement(webdriver.By.id('username-existing')).sendKeys(username);
+    driver.findElement(webdriver.By.id('password-existing')).sendKeys(password);
+    driver.findElement(webdriver.By.id('signin_button')).click();
+    driver.findElement(webdriver.By.xpath('//*[@id="oauth-submit"]/span/input')).click();
+    return driver.getCurrentUrl();
+  }
 };
 
 const oauth2Elements = {
@@ -28,6 +35,14 @@ const oauth2Elements = {
   sfdcservicecloud: (r, username, password, driver) => sfdcs(r, username, password, driver),
   sfdcmarketingcloud: (r, username, password, driver) => sfdcs(r, username, password, driver),
   sfdcdocuments: (r, username, password, driver) => sfdcs(r, username, password, driver),
+  acton: (r, username, password, driver) => {
+    driver.get(r.body.oauthUrl);
+    driver.findElement(webdriver.By.id('authorizeLink')).click();
+    driver.findElement(webdriver.By.id('oauth_user_name')).sendKeys(username);
+    driver.findElement(webdriver.By.id('oauth_user_password')).sendKeys(password);
+    driver.findElement(webdriver.By.id('loginBtn')).click();
+    return driver.getCurrentUrl();
+  },
   box: (r, username, password, driver) => {
     driver.get(r.body.oauthUrl);
     driver.findElement(webdriver.By.name('login')).sendKeys(username);
@@ -103,7 +118,7 @@ const createOAuth2Element = (element, args, cb) => {
   if (siteAddress) options.qs.siteAddress = siteAddress;
 
   const driver = new webdriver.Builder()
-    .forBrowser('firefox')
+    .forBrowser('phantomjs')
     .build();
   const oauthUrl = util.format('/elements/%s/oauth/url', element);
 
@@ -144,26 +159,49 @@ const createOAuth2Element = (element, args, cb) => {
 };
 
 const createOAuth1Element = (element, args, cb) => {
-  console.log('oauth1 me broa')
-  const callbackUrl = props.get('oauth.callback.url');
-  const apiKey = props.getForKey(element, 'oauth.api.key');
-  const apiSecret = props.getForKey(element, 'oauth.api.secret');
+  const driver = new webdriver.Builder().forBrowser('firefox').build();
   const username = props.getForKey(element, 'username');
   const password = props.getForKey(element, 'password');
+  const oauthUrl = util.format('/elements/%s/oauth/url', element);
+  const oauthTokenUrl = util.format('/elements/%s/oauth/token', element);
+
   const options = {
     qs: {
-      apiKey: apiKey,
-      apiSecret: apiSecret,
-      callbackUrl: callbackUrl
+      apiKey: props.getForKey(element, 'oauth.api.key'),
+      apiSecret: props.getForKey(element, 'oauth.api.secret'),
+      callbackUrl: props.get('oauth.callback.url')
     }
   };
-  const driver = new webdriver.Builder()
-    .forBrowser('firefox')
-    .build();
-  const oauthUrl = util.format('/elements/%s/oauth/token', element);
 
-  return chakram.get(oauthUrl, options)
-    .then(r => console.log(r))
+  let oauthSecret;
+  return chakram.get(oauthTokenUrl, options)
+    .then(r => {
+      expect(r).to.have.status(200);
+      oauthSecret = r.body.secret;
+      const token = r.body.token;
+      options.qs.requestToken = token;
+      return chakram.get(oauthUrl, options);
+    })
+    .then(r => cb(r, username, password, driver))
+    .then(r => {
+      const query = url.parse(r, true).query;
+      const config = genConfig(props.all(element), args);
+
+      const instance = {
+        name: 'churros-instance',
+        element: {
+          key: element
+        },
+        configuration: config,
+        providerData: {
+          oauth_token: query.oauth_token,
+          oauth_verifier: query.oauth_verifier,
+          secret: oauthSecret
+        }
+      };
+      console.log(JSON.stringify(instance));
+      return chakram.post('/instances', instance);
+    })
     .catch(r => console.log(r));
 };
 
@@ -192,10 +230,11 @@ const createElement = (element, args) => {
 exports.create = (element, args) => {
   console.log('Attempting to provision %s', element);
 
-  const oauth1Cb = oauth2Elements[element];
   const oauth2Cb = oauth2Elements[element];
-  if (oauth2Cb) createOAuth2Element(element, args, oauth2Cb);
-  else if (oauth1Cb) createOAuth1Element(element, args, oauth1Cb);
+  const oauth1Cb = oauth1Elements[element];
+
+  if (oauth2Cb) return createOAuth2Element(element, args, oauth2Cb);
+  else if (oauth1Cb) return createOAuth1Element(element, args, oauth1Cb);
   else return createElement(element, args);
 };
 

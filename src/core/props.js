@@ -5,7 +5,7 @@ const config = require(process.env.HOME + '/.churros/sauce.json');
 var exports = module.exports = {};
 
 const missingPropForRootKey = (rootKey, key) => {
-  console.log("Missing required property '%s' for '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, rootKey, rootKey, rootKey, key);
+  console.log("Missing required property '%s' for '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, rootKey, rootKey, key);
   process.exit(1);
 };
 
