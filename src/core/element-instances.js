@@ -27,6 +27,7 @@ const parseProps = (element) => {
       }
     }
   };
+  console.log(args);
   return new Promise((res, rej) => res(args));
 };
 
@@ -79,21 +80,17 @@ const oauth1 = (element, args) => {
 };
 
 exports.create = (element, args) => {
-  console.log('Attempting to provision %s', element);
-
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
 
+  console.log('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
+
   switch (type) {
   case 'oauth1':
-    config['oauth.callback.url'] = props.get('oauth.callback.url');
-    return parseProps(element)
-      .then(r => oauth1(element, r))
-      .then(r => oauth(element, r))
-      .then(r => createInstance(element, config, r));
   case 'oauth2':
     config['oauth.callback.url'] = props.get('oauth.callback.url');
     return parseProps(element)
+      .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
       .then(r => oauth(element, r))
       .then(r => createInstance(element, config, r));
   default:

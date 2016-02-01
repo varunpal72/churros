@@ -1,14 +1,14 @@
 {
   "user": "",
   "password": "",
-  "url": "https://api.cloud-elements.com",
+  "url": "",
   "oauth.callback.url": "",
   "events": {
+    "load": "5",
+    "wait": "60",
     "url": "",
     "element": "",
-    "port": "8085",
-    "load": "5",
-    "wait": "30"
+    "port": "8085"
   },
   "woocommerce": {
     "oauth.api.key": "",
@@ -19,13 +19,36 @@
     "oauth.api.key": "",
     "oauth.api.secret": "",
     "username": "",
-    "password": ""
+    "password": "",
+    "provisioning": "oauth2"
   },
   "sfdc": {
     "oauth.api.key": "",
     "oauth.api.secret": "",
     "username": "",
-    "password": ""
+    "password": "",
+    "provisioning": "oauth2"
+  },
+  "sfdcservicecloud": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "provisioning": "oauth2"
+  },
+  "sfdcmarketingcloud": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "provisioning": "oauth2"
+  },
+  "sfdcdocuments": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "provisioning": "oauth2"
   },
   "sugarcrmv2": {
     "username": "",
@@ -83,7 +106,8 @@
     "oauth.api.key": "",
     "oauth.api.secret": "",
     "password": "",
-    "username": ""
+    "username": "",
+    "provisioning": "oauth2"
   },
   "connectwisecrm": {
     "helpdesk.connectwise.server.url": "",
@@ -119,7 +143,8 @@
     "oauth.api.key": "",
     "oauth.api.secret": "",
     "username": "",
-    "password": ""
+    "password": "",
+    "provisioning": "oauth2"
   },
   "dynamicscrmadfs": {
     "user.password": "",
@@ -252,6 +277,41 @@
     "oauth.api.key": "",
     "oauth.api.secret": "",
     "username": "",
+    "password": "",
+    "provisioning": "oauth2"
+  },
+  "zendesk": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "zendesk.subdomain": "",
+    "username": "",
+    "password": "",
+    "oauth.site.address": "",
+    "provisioning": "oauth2"
+  },
+  "shopify": {
+    "siteAddress": "",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "oauth.scope": "",
+    "username": "",
     "password": ""
+  },
+  "etsy": {
+    "password": "",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "oauth.request.url": "",
+    "shop.id": "",
+    "provisioning": "oauth1"
+  },
+  "acton": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "oauth.callback.url": "",
+    "password": "",
+    "username": "",
+    "provisioning": "oauth2"
   }
 }
