@@ -29,3 +29,9 @@ exports.authReset = (token) => {
       }
     });
 };
+
+exports.logAndThrow = (msg, error, args) => {
+  if (args) console.log(msg, args);
+  else console.log(msg);
+  throw error;
+};
