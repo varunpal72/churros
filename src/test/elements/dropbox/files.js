@@ -1,5 +1,5 @@
 'use strict';
 
-const tester = require('core/tester');
+const tester = require('core/tester')();
 
 tester.for('crm', 'files');

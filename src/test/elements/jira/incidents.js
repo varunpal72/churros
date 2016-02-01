@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester');
+const tester = require('core/tester')();
 
 tester.for('helpdesk', 'incidents', (api) => {
   tester.test.badGet404(api);

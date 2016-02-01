@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester');
+const tester = require('core/tester')();
 const schema = require('./assets/contact.schema.json');
 
 const gen = (opts) => new Object({

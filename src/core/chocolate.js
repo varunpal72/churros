@@ -7,6 +7,8 @@ var exports = module.exports = {};
 
 exports.random = () => Math.random().toString(36).substring(7);
 
+exports.randomInt = () => Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
+
 exports.authReset = (token) => {
   const props = require('core/props');
   const url = props.get('url');
