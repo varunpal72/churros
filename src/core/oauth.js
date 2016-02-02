@@ -76,15 +76,12 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('login-username')).sendKeys(username);
     browser.findElement(webdriver.By.id('login-passwd')).sendKeys(password);
     browser.findElement(webdriver.By.id('login-signin')).click();
-    browser.wait(() => {
-      try {
-        browser.findElement(webdriver.By.xpath('//*[@id=\'permissions\']/form/div/input[1]')).click();
-        return true;
-      } catch (e) {
-        return false;
-      }
-    }, 5000);
-    return browser.getCurrentUrl();
+    return browser.wait(() => {
+      return browser.findElement(webdriver.By.xpath('//*[@id=\'permissions\']/form/div/input[1]'))
+        .then(r => r.click())
+        .then(r => browser.getCurrentUrl())
+        .thenCatch(r => false);
+    }, 7000);
   case 'sfdc':
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':

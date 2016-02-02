@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester')();
+const tester = require('core/tester');
 const schema = require('./assets/incidents.schema');
 
 tester.for('helpdesk', 'incidents', (api) => {
