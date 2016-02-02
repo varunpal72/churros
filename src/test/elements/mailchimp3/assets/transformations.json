@@ -1,0 +1,11 @@
+{
+  "campaigns": {
+    "vendorName": "campaigns",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
