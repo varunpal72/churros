@@ -23,7 +23,8 @@ const parseProps = (element) => {
       qs: {
         apiKey: props.getForKey(element, 'oauth.api.key'),
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
-        callbackUrl: props.get('oauth.callback.url')
+        callbackUrl: props.get('oauth.callback.url'),
+        scope: props.getOptionalForKey(element, 'oauth.scope')
       }
     }
   };
@@ -57,6 +58,10 @@ const oauth = (element, args, config) => {
       const query = urlParser.parse(r, true).query;
       const providerData = {
         code: query.code,
+        apikey: query.apikey,
+        access_token: query.access_token,
+        refresh_token: query.refresh_token,
+        expires_in: query.expires_in,
         state: query.state,
         oauth_token: query.oauth_token,
         oauth_verifier: query.oauth_verifier,
@@ -70,7 +75,7 @@ const oauth1 = (element, args) => {
   const oauthTokenUrl = util.format('/elements/%s/oauth/token', element);
   return chakram.get(oauthTokenUrl, args.options)
     .then(r => {
-      expect(r).to.have.status(200);
+      expect(r).to.have.statusCode(200);
       args.options.qs.requestToken = r.body.token;
       args.secret = r.body.secret;
       return args;

@@ -122,9 +122,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('Email')).sendKeys(username);
     browser.findElement(webdriver.By.id('next')).click();
-    return browser.wait(() => {
+    const passwordCb = () => {
       return browser.findElement(webdriver.By.id('Passwd'))
-        .then(r => r.sendKeys(password))
+        .then(r => {
+          console.log(r);
+          r.sendKeys(password)
+          return true;
+        });
+    };
+    return browser.wait(() => {
+      return passwordCb()
         .then(r => browser.findElement(webdriver.By.name('signIn')))
         .then(r => r.click())
         .then(r => browser.findElement(webdriver.By.name('submit_approve_access')))
@@ -132,6 +139,15 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(browser.getCurrentUrl())
         .thenCatch(r => false);
     }, 15000);
+  case 'hubspot':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('username')).sendKeys(username);
+    browser.findElement(webdriver.By.id('password')).sendKeys(password);
+    browser.findElement(webdriver.By.id('loginBtn')).click();
+    try {
+      browser.findElement(webdriver.By.className('accept')).click();
+    } catch (e) {}
+    return browser.getCurrentUrl();
   case 'instagram':
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('id_username')).clear();
