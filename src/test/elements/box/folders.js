@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester')();
+const tester = require('core/tester');
 const folderSchema = require('./assets/folder.schema.json');
 
 tester.for('documents', 'folders', (api) => {
