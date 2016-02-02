@@ -140,6 +140,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .thenCatch(r => false);
     }, 15000);
   case 'hubspot':
+  case 'hubspotcrm':
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('username')).sendKeys(username);
     browser.findElement(webdriver.By.id('password')).sendKeys(password);
