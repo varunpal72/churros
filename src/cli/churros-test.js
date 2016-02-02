@@ -46,6 +46,8 @@ const runTests = function runTests(suite, options) {
     const elementSetup = util.format('%s/%s/%s', rootTestDir, 'elements', 'lifecycle');
     element = suite.split('/')[1]; // i.e 'elements/box' would get 'box' here
     mochaPaths.push(elementSetup);
+  } else {
+    suite = util.format('platform/%s', suite);
   }
 
   // validate the root suite path before continuing

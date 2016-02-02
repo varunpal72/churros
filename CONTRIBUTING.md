@@ -30,7 +30,7 @@ $ churros test elements/${elementName}
 Update each resource's `src/test/elements/${elementName}/${resourceName}.js` JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
 > __NOTE:__ It is critical to be as accurate as possible in this schema file.  This file is critical to ensuring our interface does *not* change and this file is also what will document the models for this API.
 
-Start building out tests in the `src/tests/elements/${elementName}/${resourceName}.js` file that was generated.  Leverage the `tester.test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
+Start building out tests in the `src/test/elements/${elementName}/${resourceName}.js` file that was generated.  Leverage the `tester.test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
 
 ### New Platform Suite:
 
@@ -48,7 +48,7 @@ $ churros test ${resourceName}
 Update the `/assets/${resourceName}.schema.json` generated JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
 > __NOTE:__ It is critical to be as accurate as possible in this schema file.  This file is critical to ensuring our interface does *not* change and this file is also what will document the models for this API.
 
-Start building out tests in the `src/test/${resourceName}.js` file that was generated.  Leverage the `tester.test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
+Start building out tests in the `src/test/platform/${resourceName}/${resourceName}.js` file that was generated.  Leverage the `tester.test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
 
 ## Adding Tests To An Existing Suite
 
