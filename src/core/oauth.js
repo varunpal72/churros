@@ -157,6 +157,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('id_password')).sendKeys(password);
     browser.findElement(webdriver.By.className('button-green')).click();
     return browser.getCurrentUrl();
+  case 'infusionsoftcrm':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('username')).sendKeys(username);
+    browser.findElement(webdriver.By.id('password')).sendKeys(password);
+    browser.findElement(webdriver.By.className('btn-primary')).click();
+    browser.findElement(webdriver.By.className('btn-primary')).click();
+    return browser.getCurrentUrl();
   case 'sfdc':
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':
