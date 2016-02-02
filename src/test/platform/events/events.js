@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester')();
+const tester = require('core/tester');
 const ei = require('core/element-instances');
 const util = require('util');
 const props = require('core/props');
