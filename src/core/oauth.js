@@ -4,6 +4,13 @@ const webdriver = require('selenium-webdriver');
 
 const manipulateDom = (element, driver, r, username, password) => {
   switch (element) {
+  case 'desk':
+    driver.get(r.body.oauthUrl);
+    driver.findElement(webdriver.By.id('user_session_email')).sendKeys(username);
+    driver.findElement(webdriver.By.id('user_session_password')).sendKeys(password);
+    driver.findElement(webdriver.By.id('user_session_submit')).click();
+    driver.findElement(webdriver.By.name('commit')).click();
+    return driver.getCurrentUrl();
   case 'sfdc':
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':

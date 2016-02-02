@@ -1,0 +1,11 @@
+{
+  "incidents": {
+    "vendorName": "cases",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
