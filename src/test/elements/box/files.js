@@ -3,7 +3,7 @@
 const util = require('util');
 const chocolate = require('core/chocolate');
 const expect = require('chakram').expect;
-const tester = require('core/tester')();
+const tester = require('core/tester');
 const schema = require('./assets/file.schema.json');
 
 tester.for('documents', 'files', (api) => {

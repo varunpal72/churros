@@ -1,7 +1,7 @@
 'use strict';
 
 const chocolate = require('core/chocolate');
-const tester = require('core/tester')();
+const tester = require('core/tester');
 const schema = require('./assets/account.schema');
 
 const gen = (opts) => {
