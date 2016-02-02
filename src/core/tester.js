@@ -152,6 +152,11 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
 };
 exports.listenForEvents = listenForEvents;
 
+const testCreate = (api, payload, schema) => {
+  const name = util.format('should allow creating a(n) %s', api);
+  it(name, () => post(api, payload, schema));
+};
+
 const testCrd = (api, payload, schema) => {
   const name = util.format('should allow CRD for %s', api);
   it(name, () => crd(api, payload, schema));
@@ -201,5 +206,6 @@ exports.test = {
   paginate: testPaginate,
   cruds: testCruds,
   crud: testCrud,
-  crd: testCrd
+  crd: testCrd,
+  create: testCreate
 };
