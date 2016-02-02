@@ -30,7 +30,7 @@ exports.getForKey = (rootKey, key) => {
 
 exports.getOptionalForKey = (rootKey, key) => {
   const elementProps = config[rootKey];
-  if (!elementProps)  return null;
+  if (!elementProps) return null;
 
   const value = elementProps[key];
   if (!value) return null;
@@ -54,8 +54,6 @@ exports.all = (element) => {
   }
 
   const response = {};
-  Object.keys(config[element]).forEach(c => {
-    response[c] = config[element][c];
-  });
+  Object.keys(config[element]).forEach(c => response[c] = config[element][c]);
   return response;
 };

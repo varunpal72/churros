@@ -124,9 +124,7 @@ exports.find = find;
 
 const postFile = (api, filePath, query, schema) => {
   const options = {
-    formData: {
-      file: fs.createReadStream(filePath)
-    },
+    formData: { file: fs.createReadStream(filePath) },
     qs: query
   };
   return chakram.post(api, undefined, options)
@@ -165,11 +163,7 @@ const createEvents = (element, eiId, payload, numEvents) => {
   numEvents = (numEvents || 1);
 
   const api = '/events/' + element;
-  const options = {
-    headers: {
-      'Element-Instances': eiId
-    }
-  };
+  const options = { headers: { 'Element-Instances': eiId } };
 
   console.log('Attempting to send %s events to %s', numEvents, api);
   let promises = [];

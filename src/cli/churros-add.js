@@ -28,9 +28,7 @@ const buildQuestion = (name, type, message, validate, isDefault) => new Object({
 
 const buildPlatformQuestions = () =>
   new Promise((res, rej) => {
-    res([
-      buildQuestion('name', 'input', 'Platform resource name:', (value) => validateValue(value))
-    ]);
+    res([buildQuestion('name', 'input', 'Platform resource name:', (value) => validateValue(value))]);
   });
 
 const buildElementQuestions = () =>
@@ -145,7 +143,8 @@ const stubElementFiles = (r) =>
 
 const complete = (r, link) => {
   console.log('');
-  console.log('Hooray...successfully stubbed out test suite for %s', r.name);
+  console.log('Successfully stubbed out test suite for %s', r.name);
+  console.log('');
   console.log('For information on next steps:');
   console.log('      https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#%s', link);
   console.log('');

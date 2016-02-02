@@ -33,9 +33,7 @@ const parseProps = (element) => {
 const createInstance = (element, config, providerData) => {
   const instance = {
     name: 'churros-instance',
-    element: {
-      key: element
-    },
+    element: { key: element },
     configuration: config
   };
 
