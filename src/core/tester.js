@@ -1,12 +1,54 @@
 'use strict';
 
+const chocolate = require('core/chocolate');
 const http = require('http');
 const fs = require('fs');
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
+const assert = require('assert');
+const tv4 = require('tv4');
 
-var exports = module.exports = {};
+var exports = module.exports = () => {
+  chakram.addMethod('statusCode', (r, status) => {
+    const responseStatus = r.response.statusCode;
+    const responseBody = r.response.body;
+
+    assert(
+      responseStatus === status,
+      'expected status code ' + responseStatus + ' to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody, null, 2),
+      'expected status code ' + responseStatus + ' not to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody, null, 2)
+    );
+  });
+
+  chakram.addMethod("schemaAnd200", (r, schema) => {
+    const responseStatus = r.response.statusCode;
+    const responseBody = r.response.body;
+
+    const composeErrorMessage = () => {
+      let errorMsg = 'expected body to match JSON schema\n';
+      if (tv4.error !== null) {
+        errorMsg += util.format('error:%s\n', tv4.error.message);
+        errorMsg += util.format('expected schema:\n%s\n', JSON.stringify(schema, null, 2));
+        errorMsg += util.format('response body:\n%s\n', JSON.stringify(responseBody, null, 2));
+      }
+      return errorMsg;
+    };
+
+    const is200 = responseStatus === 200;
+    const message = util.format('expected %s to be 200.  response body was \n%s', responseStatus, JSON.stringify(responseBody, null, 2));
+    assert(is200, message);
+
+    const valid = tv4.validate(r.response.body, schema);
+    assert(
+      valid,
+      composeErrorMessage(),
+      'expected body to not match JSON schema ' + JSON.stringify(schema)
+    );
+  });
+
+  return exports;
+};
 
 exports.for = (hub, objectName, tests) => {
   describe(objectName, () => {
@@ -18,11 +60,6 @@ exports.for = (hub, objectName, tests) => {
       tests(api) :
       it('add some tests to me!!!', () => true);
   });
-};
-
-const logAndThrow = (msg, api, r) => {
-  console.log(msg, api);
-  throw r;
 };
 
 const validator = (schemaOrValidationCb) => {
@@ -47,14 +84,14 @@ const validator = (schemaOrValidationCb) => {
 const post = (api, payload, schema) => {
   return chakram.post(api, payload)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to create %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to create %s', r, api));
 };
 exports.post = post;
 
 const get = (api, schema) => {
   return chakram.get(api)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to retrieve %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to retrieve %s', r, api));
 };
 exports.get = get;
 
@@ -63,7 +100,7 @@ const update = (api, payload, schema, cb) => {
 
   return cb(api, payload)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to update %s: %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to update %s', r, api));
 };
 exports.patch = (api, payload, schema) => update(api, payload, schema, chakram.patch);
 exports.put = (api, payload, schema) => update(api, payload, schema, chakram.put);
@@ -74,14 +111,14 @@ const remove = (api) => {
       expect(r).to.have.statusCode(200);
       return r;
     })
-    .catch(r => logAndThrow('Failed to delete %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to delete %s', r, api));
 };
 exports.delete = remove;
 
 const find = (api, schema) => {
   return chakram.get(api)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to find %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to find %s', r, api));
 };
 exports.find = find;
 
@@ -94,7 +131,7 @@ const postFile = (api, filePath, query, schema) => {
   };
   return chakram.post(api, undefined, options)
     .then(r => validator(schema)(r))
-    .catch(r => logAndThrow('Failed to upload file to %s', api, r));
+    .catch(r => chocolate.logAndThrow('Failed to upload file to %s', r, api));
 };
 exports.postFile = postFile;
 

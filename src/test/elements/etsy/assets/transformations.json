@@ -1,0 +1,11 @@
+{
+  "orders": {
+    "vendorName": "orders",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "order.receipt_id"
+      }
+    ]
+  }
+}

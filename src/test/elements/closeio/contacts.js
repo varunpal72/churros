@@ -3,7 +3,7 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const chocolate = require('core/chocolate');
-const tester = require('core/tester');
+const tester = require('core/tester')();
 const schema = require('./assets/contact.schema');
 
 const gen = (opts) => {

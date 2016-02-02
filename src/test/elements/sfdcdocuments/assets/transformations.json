@@ -1,0 +1,11 @@
+{
+  "files": {
+    "vendorName": "files",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
+  }
+}

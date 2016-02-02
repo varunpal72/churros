@@ -4,65 +4,8 @@ const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const chocolate = require('core/chocolate');
-const webdriver = require('selenium-webdriver');
 const props = require('core/props');
-const url = require('url');
-
-const elements = {
-  box: (r, username, password, driver) => {
-    driver.get(r.body.oauthUrl);
-    driver.findElement(webdriver.By.name('login')).sendKeys(username);
-    driver.findElement(webdriver.By.name('password')).sendKeys(password);
-    driver.findElement(webdriver.By.name('login_submit')).click();
-    driver.findElement(webdriver.By.name('consent_accept')).click();
-    return driver.getCurrentUrl();
-  },
-  sfdc: (r, username, password, driver) => {
-    driver.get(r.body.oauthUrl);
-    driver.findElement(webdriver.By.id("username")).clear();
-    driver.findElement(webdriver.By.id("username")).sendKeys(username);
-    driver.findElement(webdriver.By.id("password")).clear();
-    driver.findElement(webdriver.By.id("password")).sendKeys(password);
-    driver.findElement(webdriver.By.id("Login")).click();
-    driver.get(driver.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
-    return driver.getCurrentUrl();
-  },
-  dropbox: (r, username, password, driver) => {
-    driver.get(r.body.oauthUrl);
-    driver.wait(() => {
-      return driver.findElement(webdriver.By.name('login_email')).clear()
-        .then(() => {
-          return true;
-        })
-        .thenCatch(() => {
-          return false;
-        });
-    }, 10000);
-    driver.findElement(webdriver.By.name('login_email')).sendKeys(username);
-    driver.findElement(webdriver.By.name("login_password")).clear();
-    driver.findElement(webdriver.By.name("login_password")).sendKeys(password);
-    driver.findElement(webdriver.By.className("login-button")).click();
-    return driver.getCurrentUrl();
-  },
-  facebooksocial: (r, username, password, driver) => {
-    driver.get(r.body.oauthUrl);
-    driver.findElement(webdriver.By.id('email')).clear();
-    driver.findElement(webdriver.By.id('email')).sendKeys(username);
-    driver.findElement(webdriver.By.id('pass')).clear();
-    driver.findElement(webdriver.By.id('pass')).sendKeys(password);
-    driver.findElement(webdriver.By.id('loginbutton')).click();
-    return driver.getCurrentUrl();
-  },
-  instagram: (r, username, password, driver) => {
-    driver.get(r.body.oauthUrl);
-    driver.findElement(webdriver.By.id("id_username")).clear();
-    driver.findElement(webdriver.By.id("id_username")).sendKeys(username);
-    driver.findElement(webdriver.By.id("id_password")).clear();
-    driver.findElement(webdriver.By.id("id_password")).sendKeys(password);
-    driver.findElement(webdriver.By.className("button-green")).click();
-    return driver.getCurrentUrl();
-  }
-};
+const urlParser = require('url');
 
 var exports = module.exports = {};
 
@@ -72,70 +15,31 @@ const genConfig = (props, args) => {
   return config;
 };
 
-const createOAuthElement = (element, args, cb) => {
-  const callbackUrl = props.get('oauth.callback.url');
-
-  const apiKey = props.getForKey(element, 'oauth.api.key');
-  const apiSecret = props.getForKey(element, 'oauth.api.secret');
-  const username = props.getForKey(element, 'username');
-  const password = props.getForKey(element, 'password');
-
-  const options = {
-    qs: {
-      apiKey: apiKey,
-      apiSecret: apiSecret,
-      callbackUrl: callbackUrl
+const parseProps = (element) => {
+  const args = {
+    username: props.getForKey(element, 'username'),
+    password: props.getForKey(element, 'password'),
+    options: {
+      qs: {
+        apiKey: props.getForKey(element, 'oauth.api.key'),
+        apiSecret: props.getForKey(element, 'oauth.api.secret'),
+        callbackUrl: props.get('oauth.callback.url')
+      }
     }
   };
-  const driver = new webdriver.Builder()
-    .forBrowser('phantomjs')
-    .build();
-  const oauthUrl = util.format('/elements/%s/oauth/url', element);
-
-  return chakram.get(oauthUrl, options)
-    .then(r => cb(r, username, password, driver))
-    .then(r => {
-      const query = url.parse(r, true).query;
-      const config = genConfig({
-        'oauth.api.key': apiKey,
-        'oauth.api.secret': apiSecret,
-        'oauth.callback.url': callbackUrl
-      }, args);
-
-      const instance = {
-        name: 'churros-instance',
-        element: {
-          key: element
-        },
-        configuration: config,
-        providerData: {
-          code: query.code
-        }
-      };
-      return chakram.post('/instances', instance);
-    })
-    .then(r => {
-      expect(r).to.have.statusCode(200);
-      console.log('Created %s element instance with ID: %s', element, r.body.id);
-      chocolate.authReset(r.body.token);
-      driver.close();
-      return r;
-    })
-    .catch(r => {
-      console.log('Failed to create an instance of %s: %s', element, r);
-      driver.close();
-      process.exit(1);
-    });
+  return new Promise((res, rej) => res(args));
 };
 
-const createElement = (element, args) => {
+const createInstance = (element, config, providerData) => {
   const instance = {
     name: 'churros-instance',
     element: {
       key: element
     },
-    configuration: genConfig(props.all(element), args)
+    configuration: config
   };
+
+  if (providerData) instance.providerData = providerData;
 
   return chakram.post('/instances', instance)
     .then(r => {
@@ -144,31 +48,62 @@ const createElement = (element, args) => {
       chocolate.authReset(r.body.token);
       return r;
     })
-    .catch(r => {
-      console.log('Failed to create an instance of %s: %s', element, r);
-      process.exit(1);
+    .catch(r => chocolate.logAndThrow('Failed to create an instance of %s', r, element));
+};
+
+const oauth = (element, args) => {
+  const url = util.format('/elements/%s/oauth/url', element);
+  return chakram.get(url, args.options)
+    .then(r => require('core/oauth')(element, r, args.username, args.password))
+    .then(r => {
+      const query = urlParser.parse(r, true).query;
+      const providerData = {
+        code: query.code,
+        oauth_token: query.oauth_token,
+        oauth_verifier: query.oauth_verifier,
+        secret: args.secret
+      };
+      return providerData;
+    });
+};
+
+const oauth1 = (element, args) => {
+  const oauthTokenUrl = util.format('/elements/%s/oauth/token', element);
+  return chakram.get(oauthTokenUrl, args.options)
+    .then(r => {
+      expect(r).to.have.status(200);
+      args.options.qs.requestToken = r.body.token;
+      args.secret = r.body.secret;
+      return args;
     });
 };
 
 exports.create = (element, args) => {
-  console.log('Attempting to provision %s', element);
+  const type = props.getOptionalForKey(element, 'provisioning');
+  const config = genConfig(props.all(element), args);
 
-  const cb = elements[element];
-  return cb ?
-    createOAuthElement(element, args, cb) :
-    createElement(element, args);
+  console.log('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
+
+  switch (type) {
+  case 'oauth1':
+  case 'oauth2':
+    config['oauth.callback.url'] = props.get('oauth.callback.url');
+    return parseProps(element)
+      .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
+      .then(r => oauth(element, r))
+      .then(r => createInstance(element, config, r));
+  default:
+    return createInstance(element, config);
+  }
 };
 
 exports.delete = (id) => {
-  const url = '/instances/' + id;
-  return chakram.delete(url)
+  return chakram.delete('/instances/' + id)
     .then(r => {
       expect(r).to.have.statusCode(200);
       console.log('Deleted element instance with ID: ' + id);
       chocolate.authReset();
       return r.body;
     })
-    .catch(r => {
-      console.log('Failed to delete element instance: ' + r);
-    });
+    .catch(r => console.log('Failed to delete element instance: %s', r));
 };
