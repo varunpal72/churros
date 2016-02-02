@@ -1,0 +1,10 @@
+{
+  "IsCommited": true,
+  "CustomerKey": "Aaron Abbott",
+  "DocumentKey": "TestDocKey",
+  "DestinationAddress": {
+    "Region": "CO",
+    "Street1": "1500 Broadway",
+    "City": "Denver"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "taxes": {
+    "vendorName": "CalculateTax",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "DocumentKey"
+      }
+    ]
+  }
+}
