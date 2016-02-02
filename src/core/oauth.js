@@ -117,6 +117,21 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('pass')).sendKeys(password);
     browser.findElement(webdriver.By.name('submit')).click();
     return browser.getCurrentUrl();
+  case 'googledrive':
+    // TODO - not working yet ...
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('Email')).sendKeys(username);
+    browser.findElement(webdriver.By.id('next')).click();
+    return browser.wait(() => {
+      return browser.findElement(webdriver.By.id('Passwd'))
+        .then(r => r.sendKeys(password))
+        .then(r => browser.findElement(webdriver.By.name('signIn')))
+        .then(r => r.click())
+        .then(r => browser.findElement(webdriver.By.name('submit_approve_access')))
+        .then(r => r.click())
+        .then(browser.getCurrentUrl())
+        .thenCatch(r => false);
+    }, 15000);
   case 'instagram':
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('id_username')).clear();
