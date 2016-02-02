@@ -57,6 +57,7 @@ const oauth = (element, args, config) => {
       const query = urlParser.parse(r, true).query;
       const providerData = {
         code: query.code,
+        state: query.state,
         oauth_token: query.oauth_token,
         oauth_verifier: query.oauth_verifier,
         secret: args.secret

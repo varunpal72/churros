@@ -11,6 +11,20 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('user_session_submit')).click();
     browser.findElement(webdriver.By.name('commit')).click();
     return browser.getCurrentUrl();
+  case 'acton':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('authorizeLink')).click();
+    browser.findElement(webdriver.By.id('oauth_user_name')).sendKeys(username);
+    browser.findElement(webdriver.By.id('oauth_user_password')).sendKeys(password);
+    browser.findElement(webdriver.By.id('loginBtn')).click();
+    return browser.getCurrentUrl();
+  case 'box':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.name('login')).sendKeys(username);
+    browser.findElement(webdriver.By.name('password')).sendKeys(password);
+    browser.findElement(webdriver.By.name('login_submit')).click();
+    browser.findElement(webdriver.By.name('consent_accept')).click();
+    return browser.getCurrentUrl();
   case 'dropbox':
     // TODO - not working yet...
     browser.get(r.body.oauthUrl);
@@ -50,6 +64,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(findBtn())
         .thenCatch(() => false);
     }, 5000);
+  case 'facebooksocial':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('email')).clear();
+    browser.findElement(webdriver.By.id('email')).sendKeys(username);
+    browser.findElement(webdriver.By.id('pass')).clear();
+    browser.findElement(webdriver.By.id('pass')).sendKeys(password);
+    browser.findElement(webdriver.By.id('loginbutton')).click();
+    return browser.getCurrentUrl();
   case 'eloqua':
     // TODO - not working yet...
     browser.get(r.body.oauthUrl);
@@ -59,6 +81,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('password')).sendKeys(password);
     browser.findElement(webdriver.By.id('submitButton')).click();
     browser.findElement(webdriver.By.id('accept')).click();
+    return browser.getCurrentUrl();
+  case 'etsy':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('username-existing')).sendKeys(username);
+    browser.findElement(webdriver.By.id('password-existing')).sendKeys(password);
+    browser.findElement(webdriver.By.id('signin_button')).click();
+    browser.findElement(webdriver.By.xpath('//*[@id="oauth-submit"]/span/input')).click();
     return browser.getCurrentUrl();
   case 'evernote':
     browser.get(r.body.oauthUrl);
@@ -82,6 +111,20 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(r => browser.getCurrentUrl())
         .thenCatch(r => false);
     }, 7000);
+  case 'freshbooks':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('user')).sendKeys(username);
+    browser.findElement(webdriver.By.id('pass')).sendKeys(password);
+    browser.findElement(webdriver.By.name('submit')).click();
+    return browser.getCurrentUrl();
+  case 'instagram':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('id_username')).clear();
+    browser.findElement(webdriver.By.id('id_username')).sendKeys(username);
+    browser.findElement(webdriver.By.id('id_password')).clear();
+    browser.findElement(webdriver.By.id('id_password')).sendKeys(password);
+    browser.findElement(webdriver.By.className('button-green')).click();
+    return browser.getCurrentUrl();
   case 'sfdc':
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':
@@ -93,43 +136,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id("password")).sendKeys(password);
     browser.findElement(webdriver.By.id("Login")).click();
     browser.get(browser.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
-    return browser.getCurrentUrl();
-  case 'etsy':
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.id('username-existing')).sendKeys(username);
-    browser.findElement(webdriver.By.id('password-existing')).sendKeys(password);
-    browser.findElement(webdriver.By.id('signin_button')).click();
-    browser.findElement(webdriver.By.xpath('//*[@id="oauth-submit"]/span/input')).click();
-    return browser.getCurrentUrl();
-  case 'acton':
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.id('authorizeLink')).click();
-    browser.findElement(webdriver.By.id('oauth_user_name')).sendKeys(username);
-    browser.findElement(webdriver.By.id('oauth_user_password')).sendKeys(password);
-    browser.findElement(webdriver.By.id('loginBtn')).click();
-    return browser.getCurrentUrl();
-  case 'box':
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.name('login')).sendKeys(username);
-    browser.findElement(webdriver.By.name('password')).sendKeys(password);
-    browser.findElement(webdriver.By.name('login_submit')).click();
-    browser.findElement(webdriver.By.name('consent_accept')).click();
-    return browser.getCurrentUrl();
-  case 'facebooksocial':
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.id('email')).clear();
-    browser.findElement(webdriver.By.id('email')).sendKeys(username);
-    browser.findElement(webdriver.By.id('pass')).clear();
-    browser.findElement(webdriver.By.id('pass')).sendKeys(password);
-    browser.findElement(webdriver.By.id('loginbutton')).click();
-    return browser.getCurrentUrl();
-  case 'instagram':
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.id('id_username')).clear();
-    browser.findElement(webdriver.By.id('id_username')).sendKeys(username);
-    browser.findElement(webdriver.By.id('id_password')).clear();
-    browser.findElement(webdriver.By.id('id_password')).sendKeys(password);
-    browser.findElement(webdriver.By.className('button-green')).click();
     return browser.getCurrentUrl();
   case 'zendesk':
     browser.get(r.body.oauthUrl);
