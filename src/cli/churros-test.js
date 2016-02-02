@@ -6,7 +6,7 @@ const commander = require('commander');
 const util = require('util');
 const shell = require('shelljs');
 
-const collect = function collect(val, list) {
+const collect = (val, list) => {
   list.push(val);
   return list;
 };
@@ -26,7 +26,7 @@ const parse = (options, config) => {
   };
 };
 
-const runTests = function runTests(suite, options) {
+const runTests = (suite, options) => {
   const config = require(process.env.HOME + '/.churros/sauce.json');
 
   const file = options.file;

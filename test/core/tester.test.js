@@ -1,11 +1,13 @@
-const tester = require('core/tester')();
+const tester = require('core/tester');
 const nock = require('nock');
 const chakram = require('chakram');
 const chocolate = require('core/chocolate');
+const setup = require('core/setup');
 
 const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 
 before((done) => {
+  setup.initializeChakram();
   chakram.setRequestDefaults({
     baseUrl: baseUrl,
     headers: {
