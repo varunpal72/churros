@@ -158,6 +158,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.className('button-green')).click();
     return browser.getCurrentUrl();
   case 'infusionsoftcrm':
+  case 'infusionsoftmarketing':
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('username')).sendKeys(username);
     browser.findElement(webdriver.By.id('password')).sendKeys(password);
