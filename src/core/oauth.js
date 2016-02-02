@@ -126,7 +126,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.findElement(webdriver.By.id('Passwd'))
         .then(r => {
           console.log(r);
-          r.sendKeys(password)
+          r.sendKeys(password);
           return true;
         });
     };
@@ -156,7 +156,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('id_password')).clear();
     browser.findElement(webdriver.By.id('id_password')).sendKeys(password);
     browser.findElement(webdriver.By.className('button-green')).click();
-    return browser.getCurrentUrl();
+    // hacky...fragile and i've got a feeling it will break
+    return browser.wait(() => {
+      return browser.findElement(webdriver.By.name('allow'))
+        .then(r => r.click())
+        .then(r => browser.getCurrentUrl())
+        .thenCatch(r => browser.getCurrentUrl());
+    }, 7000);
   case 'infusionsoftcrm':
   case 'infusionsoftmarketing':
     browser.get(r.body.oauthUrl);
