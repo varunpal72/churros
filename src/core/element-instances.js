@@ -49,10 +49,10 @@ const createInstance = (element, config, providerData) => {
     .catch(r => chocolate.logAndThrow('Failed to create an instance of %s', r, element));
 };
 
-const oauth = (element, args) => {
+const oauth = (element, args, config) => {
   const url = util.format('/elements/%s/oauth/url', element);
   return chakram.get(url, args.options)
-    .then(r => require('core/oauth')(element, r, args.username, args.password))
+    .then(r => require('core/oauth')(element, r, args.username, args.password, config))
     .then(r => {
       const query = urlParser.parse(r, true).query;
       const providerData = {
@@ -88,7 +88,7 @@ exports.create = (element, args) => {
     config['oauth.callback.url'] = props.get('oauth.callback.url');
     return parseProps(element)
       .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
-      .then(r => oauth(element, r))
+      .then(r => oauth(element, r, config))
       .then(r => createInstance(element, config, r));
   default:
     return createInstance(element, config);

@@ -2,7 +2,7 @@
 
 const webdriver = require('selenium-webdriver');
 
-const manipulateDom = (element, browser, r, username, password) => {
+const manipulateDom = (element, browser, r, username, password, config) => {
   switch (element) {
   case 'desk':
     browser.get(r.body.oauthUrl);
@@ -12,6 +12,7 @@ const manipulateDom = (element, browser, r, username, password) => {
     browser.findElement(webdriver.By.name('commit')).click();
     return browser.getCurrentUrl();
   case 'dropbox':
+    // TODO - not working yet...
     browser.get(r.body.oauthUrl);
     const findLoginEmail = () => {
       return browser.findElements(webdriver.By.name('login_email'))
@@ -21,7 +22,7 @@ const manipulateDom = (element, browser, r, username, password) => {
               element.sendKeys(username);
               return true;
             }
-          })
+          });
         });
     };
     const findLoginPassword = () => {
@@ -49,6 +50,16 @@ const manipulateDom = (element, browser, r, username, password) => {
         .then(findBtn())
         .thenCatch(() => false);
     }, 5000);
+  case 'eloqua':
+    // TODO - not working yet...
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('login-button')).click();
+    browser.findElement(webdriver.By.id('sitename')).sendKeys(config['comany.name']);
+    browser.findElement(webdriver.By.id('username')).sendKeys(username);
+    browser.findElement(webdriver.By.id('password')).sendKeys(password);
+    browser.findElement(webdriver.By.id('submitButton')).click();
+    browser.findElement(webdriver.By.id('accept')).click();
+    return browser.getCurrentUrl();
   case 'sfdc':
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':
@@ -106,16 +117,16 @@ const manipulateDom = (element, browser, r, username, password) => {
     browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
     return browser.getCurrentUrl();
   default:
-    console.log('No OAuth callback found for element %s.  Please implement that callback in core/oauth so %s can be provisioned', element, element);
+    console.log('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
     process.exit(1);
   }
 };
 
-module.exports = (element, r, username, password) => {
+module.exports = (element, r, username, password, config) => {
   const browser = new webdriver.Builder()
     .forBrowser('firefox')
     .build();
-  const url = manipulateDom(element, browser, r, username, password);
+  const url = manipulateDom(element, browser, r, username, password, config);
   browser.close();
   return url;
 };
