@@ -27,13 +27,13 @@
         "supported",
         "methods"
       ]
-    },
-    "required": [
-      "id",
-      "key",
-      "name",
-      "description",
-      "events"
-    ]
-  }
+    }
+  },
+  "required": [
+    "id",
+    "key",
+    "name",
+    "description",
+    "events"
+  ]
 }
