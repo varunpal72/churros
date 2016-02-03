@@ -17,9 +17,7 @@ const notifyGen = (opts) => new Object({
 const subscriptionGen = (opts) => new Object({
   channel: ('webhook' || opts.channel),
   topics: (['churros-topic'] || opts.topics),
-  config: ({
-    url: 'http://fake.churros.api.com'
-  } || opts.config)
+  config: ({ url: 'http://fake.churros.api.com' } || opts.config)
 });
 
 tester.for(null, 'notifications', (api) => {
@@ -33,9 +31,7 @@ tester.for(null, 'notifications', (api) => {
   tester.test.badPost400(api, n);
 
   it('should return one notification when searching for this topic', () => {
-    const n = notifyGen({
-      topic: 'churros-topic-' + chocolate.random()
-    });
+    const n = notifyGen({ topic: 'churros-topic-' + chocolate.random() });
 
     return tester.post(api, n, schema)
       .then(r => {
@@ -75,9 +71,7 @@ tester.for(null, 'notifications', (api) => {
     });
   });
 
-  it('should throw a 400 if missing search query', () => {
-    return tester.get(api, (r) => expect(r).to.have.statusCode(400));
-  });
+  it('should throw a 400 if missing search query', () => tester.get(api, (r) => expect(r).to.have.statusCode(400)));
 
   const sApi = util.format('%s/%s', api, 'subscriptions');
   tester.test.crd(sApi, subscriptionGen(), subscriptionSchema);

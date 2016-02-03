@@ -185,9 +185,7 @@ const testBadGet404 = (api, invalidId) => {
 
 const testBadPatch404 = (api, payload, invalidId) => {
   const name = util.format('should throw a 404 when trying to update a(n) %s with an ID that does not exist', api);
-  it(name, () => {
-    return update(api + '/' + (invalidId || -1), (payload || {}), (r) => expect(r).to.have.statusCode(404), chakram.patch);
-  });
+  it(name, () => update(api + '/' + (invalidId || -1), (payload || {}), (r) => expect(r).to.have.statusCode(404), chakram.patch));
 };
 
 const testBadPost400 = (api, payload) => {
