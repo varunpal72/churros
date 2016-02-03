@@ -3,7 +3,6 @@
 const assert = require('assert');
 const tv4 = require('tv4');
 const chakram = require('chakram');
-const util = require('util');
 
 var exports = module.exports = {};
 
@@ -14,8 +13,8 @@ exports.initializeChakram = () => {
 
     assert(
       responseStatus === status,
-      'expected status code ' + responseStatus + ' to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody),
-      'expected status code ' + responseStatus + ' not to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody)
+      'expected status code ' + responseStatus + ' to equal ' + status + ' - ' + JSON.stringify(responseBody),
+      'expected status code ' + responseStatus + ' not to equal ' + status + ' - ' + JSON.stringify(responseBody)
     );
   });
 
@@ -25,8 +24,8 @@ exports.initializeChakram = () => {
 
     const is200 = responseStatus === 200;
     assert(is200,
-      'expected status code ' + responseStatus + ' to equal 200 - response body: ' + JSON.stringify(responseBody),
-      'expected status code ' + responseStatus + ' not to equal 200 - response body: ' + JSON.stringify(responseBody)
+      'expected status code ' + responseStatus + ' to equal 200 - ' + JSON.stringify(responseBody),
+      'expected status code ' + responseStatus + ' not to equal 200 - ' + JSON.stringify(responseBody)
     );
 
     const valid = tv4.validate(r.response.body, schema);
