@@ -14,6 +14,12 @@ tester.for(null, 'elements', (api) => {
     });
   });
 
+  it('should return 404 for invalid element ID', () => {
+    return tester.get(util.format('%s/999999999999/metadata', api), (r) => {
+      expect(r).to.have.statusCode(404);
+    });
+  });
+
   it('should return polling event metadata for polling element', () => {
     return tester.get('elements/netsuitecrm')
     .then(r => {
