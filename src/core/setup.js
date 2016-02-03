@@ -14,8 +14,8 @@ exports.initializeChakram = () => {
 
     assert(
       responseStatus === status,
-      'expected status code ' + responseStatus + ' to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody, null, 2),
-      'expected status code ' + responseStatus + ' not to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody, null, 2)
+      'expected status code ' + responseStatus + ' to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody),
+      'expected status code ' + responseStatus + ' not to equal ' + status + '\nresponse body:\n' + JSON.stringify(responseBody)
     );
   });
 
@@ -23,25 +23,19 @@ exports.initializeChakram = () => {
     const responseStatus = r.response.statusCode;
     const responseBody = r.response.body;
 
+    const is200 = responseStatus === 200;
+    assert(is200,
+      'expected status code ' + responseStatus + ' to equal 200 - response body: ' + JSON.stringify(responseBody),
+      'expected status code ' + responseStatus + ' not to equal 200 - response body: ' + JSON.stringify(responseBody)
+    );
+
+    const valid = tv4.validate(r.response.body, schema);
     const composeErrorMessage = () => {
-      let errorMsg = 'expected body to match JSON schema\n';
-      if (tv4.error !== null) {
-        errorMsg += util.format('error:%s\n', tv4.error.message);
-        errorMsg += util.format('expected schema:\n%s\n', JSON.stringify(schema, null, 2));
-        errorMsg += util.format('response body:\n%s\n', JSON.stringify(responseBody, null, 2));
-      }
+      let errorMsg = 'expected body to match JSON schema';
+      if (tv4.error !== null) errorMsg += ' - ' + tv4.error.message;
       return errorMsg;
     };
 
-    const is200 = responseStatus === 200;
-    const message = util.format('expected %s to be 200.  response body was \n%s', responseStatus, JSON.stringify(responseBody, null, 2));
-    assert(is200, message);
-
-    const valid = tv4.validate(r.response.body, schema);
-    assert(
-      valid,
-      composeErrorMessage(),
-      'expected body to not match JSON schema ' + JSON.stringify(schema)
-    );
+    assert(valid, composeErrorMessage());
   });
 };
