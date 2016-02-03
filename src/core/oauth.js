@@ -186,6 +186,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.className('to-login')).click();
     browser.findElement(webdriver.By.className('button')).click();
     return browser.getCurrentUrl();
+  case 'onedrivebusiness':
+    // TODO - not quite working yet ... (classic microsoft)
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
+    browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
+    browser.findElement(webdriver.By.id('cred_sign_in_button')).click();
+    return browser.getCurrentUrl();
   case 'sfdc':
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':

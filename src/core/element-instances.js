@@ -24,7 +24,8 @@ const parseProps = (element) => {
         apiKey: props.getForKey(element, 'oauth.api.key'),
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
         callbackUrl: props.get('oauth.callback.url'),
-        scope: props.getOptionalForKey(element, 'oauth.scope')
+        scope: props.getOptionalForKey(element, 'oauth.scope'),
+        siteAddress: props.getOptionalForKey(element, 'site.address')
       }
     }
   };
@@ -53,7 +54,10 @@ const createInstance = (element, config, providerData) => {
 const oauth = (element, args, config) => {
   const url = util.format('/elements/%s/oauth/url', element);
   return chakram.get(url, args.options)
-    .then(r => require('core/oauth')(element, r, args.username, args.password, config))
+    .then(r => {
+      expect(r).to.have.statusCode(200);
+      return require('core/oauth')(element, r, args.username, args.password, config);
+    })
     .then(r => {
       const query = urlParser.parse(r, true).query;
       const providerData = {
