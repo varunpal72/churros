@@ -23,7 +23,9 @@ const parseProps = (element) => {
       qs: {
         apiKey: props.getForKey(element, 'oauth.api.key'),
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
-        callbackUrl: props.get('oauth.callback.url')
+        callbackUrl: props.get('oauth.callback.url'),
+        scope: props.getOptionalForKey(element, 'oauth.scope'),
+        siteAddress: props.getOptionalForKey(element, 'site.address')
       }
     }
   };
@@ -33,9 +35,7 @@ const parseProps = (element) => {
 const createInstance = (element, config, providerData) => {
   const instance = {
     name: 'churros-instance',
-    element: {
-      key: element
-    },
+    element: { key: element },
     configuration: config
   };
 
@@ -51,17 +51,27 @@ const createInstance = (element, config, providerData) => {
     .catch(r => chocolate.logAndThrow('Failed to create an instance of %s', r, element));
 };
 
-const oauth = (element, args) => {
+const oauth = (element, args, config) => {
   const url = util.format('/elements/%s/oauth/url', element);
   return chakram.get(url, args.options)
-    .then(r => require('core/oauth')(element, r, args.username, args.password))
+    .then(r => {
+      expect(r).to.have.statusCode(200);
+      return require('core/oauth')(element, r, args.username, args.password, config);
+    })
     .then(r => {
       const query = urlParser.parse(r, true).query;
       const providerData = {
         code: query.code,
+        apikey: query.apikey,
+        access_token: query.access_token,
+        refresh_token: query.refresh_token,
+        expires_in: query.expires_in,
+        state: query.state,
         oauth_token: query.oauth_token,
         oauth_verifier: query.oauth_verifier,
-        secret: args.secret
+        secret: args.secret,
+        realmId: query.realmId,
+        dataSource: query.dataSource
       };
       return providerData;
     });
@@ -71,7 +81,7 @@ const oauth1 = (element, args) => {
   const oauthTokenUrl = util.format('/elements/%s/oauth/token', element);
   return chakram.get(oauthTokenUrl, args.options)
     .then(r => {
-      expect(r).to.have.status(200);
+      expect(r).to.have.statusCode(200);
       args.options.qs.requestToken = r.body.token;
       args.secret = r.body.secret;
       return args;
@@ -90,7 +100,7 @@ exports.create = (element, args) => {
     config['oauth.callback.url'] = props.get('oauth.callback.url');
     return parseProps(element)
       .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
-      .then(r => oauth(element, r))
+      .then(r => oauth(element, r, config))
       .then(r => createInstance(element, config, r));
   default:
     return createInstance(element, config);

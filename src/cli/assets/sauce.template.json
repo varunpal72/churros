@@ -287,7 +287,8 @@
     "username": "",
     "password": "",
     "oauth.site.address": "",
-    "provisioning": "oauth2"
+    "provisioning": "oauth2",
+    "site.address": ""
   },
   "shopify": {
     "siteAddress": "",
@@ -313,5 +314,158 @@
     "password": "",
     "username": "",
     "provisioning": "oauth2"
+  },
+  "taxify": {
+    "api.key": ""
+  },
+  "desk": {
+    "oauth.request.url": "",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "provisioning": "oauth2"
+  },
+  "eloqua": {
+    "provisioning": "oauth2",
+    "username": "",
+    "password": "",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "company.name": ""
+  },
+  "evernote": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "document.tagging": "",
+    "provisioning": "oauth1",
+    "evernote.sandbox": ""
+  },
+  "flickr": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "password": "",
+    "provisioning": "oauth1",
+    "username": "",
+    "oauth.request.url": ""
+  },
+  "freshbooks": {
+    "oauth.api.secret": "",
+    "username": "",
+    "oauth.api.key": "",
+    "password": "",
+    "provisioning": "oauth1"
+  },
+  "googledrive": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "provisioning": "oauth2"
+  },
+  "hubspot": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "oauth.scope": "",
+    "create.bulk.properties": ""
+  },
+  "hubspotcrm": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "oauth.scope": "",
+    "create.bulk.properties": ""
+  },
+  "infusionsoftcrm": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "infusionsoft.private.key": "",
+    "provisioning": "oauth2"
+  },
+  "infusionsoftmarketing": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "infusionsoft.private.key": "",
+    "provisioning": "oauth2"
+  },
+  "mailchimp3": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": ""
+  },
+  "marketo": {
+    "marketo.identity.url": "",
+    "base.url": "",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "provisioning": "oauth2",
+    "username": "",
+    "password": ""
+  },
+  "namely": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "subdomain": ""
+  },
+  "onedrivebusiness": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "document.tagging": "",
+    "onedrivebusiness.site.address": "",
+    "site.address": ""
+  },
+  "onedrivev2": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "provisioning": "oauth2",
+    "event.config.path": "",
+    "document.tagging": ""
+  },
+  "quickbooks": {
+    "provisioning": "oauth1",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": ""
+  },
+  "servicemax": {
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "provisioning": "oauth2"
+  },
+  "sharepoint": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "sharepoint.document.library": "",
+    "document.tagging": "",
+    "sharepoint.site.address": "",
+    "site.address": "",
+    "oauth.scope": ""
   }
 }

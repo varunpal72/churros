@@ -20,19 +20,9 @@ before((done) => {
   setGlobalProps(argv);
 
   const secUrl = props.get('url') + '/elements/j_spring_security_check';
-  const form = {
-    j_username: props.get('user'),
-    j_password: props.get('password')
-  };
-
-  const options = {
-    jar: true,
-    form: form
-  };
-
-  const secretOptions = {
-    jar: true
-  };
+  const form = { j_username: props.get('user'), j_password: props.get('password') };
+  const options = { jar: true, form: form };
+  const secretOptions = { jar: true };
 
   chakram.post(secUrl, null, options)
     .then(r => chakram.get(props.get('url') + '/elements/api-v1/ui/getSecrets', secretOptions))
@@ -41,9 +31,7 @@ before((done) => {
       props.set('org.secret', r.body.company);
       chakram.setRequestDefaults({
         baseUrl: props.get('url') + '/elements/api-v2',
-        headers: {
-          Authorization: util.format('User %s, Organization %s', r.body.user, r.body.company)
-        }
+        headers: { Authorization: util.format('User %s, Organization %s', r.body.user, r.body.company) }
       });
       done();
     })

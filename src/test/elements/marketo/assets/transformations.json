@@ -1,0 +1,11 @@
+{
+  "contacts": {
+    "vendorName": "leads",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "person.id"
+      }
+    ]
+  }
+}

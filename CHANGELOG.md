@@ -1,3 +1,8 @@
+## v0.2.0 <sub><sup>(TBD)</sup></sub>
+
+#### Highlights
+* Added a large amount of new elements to our provisioning library.  Most of the ones left were OAuth1 and OAuth2 elements, so lots of selenium work :disappointed:
+
 ## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
 
 #### Highlights

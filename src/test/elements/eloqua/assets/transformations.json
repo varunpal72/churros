@@ -1,0 +1,11 @@
+{
+  "accounts": {
+    "vendorName": "account",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}

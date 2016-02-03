@@ -18,15 +18,11 @@ exports.authReset = (token) => {
   token ?
     chakram.setRequestDefaults({
       baseUrl: url + '/elements/api-v2',
-      headers: {
-        Authorization: util.format('User %s, Organization %s, Element %s', us, os, token)
-      }
+      headers: { Authorization: util.format('User %s, Organization %s, Element %s', us, os, token) }
     }) :
     chakram.setRequestDefaults({
       baseUrl: url + '/elements/api-v2',
-      headers: {
-        Authorization: util.format('User %s, Organization %s', us, os)
-      }
+      headers: { Authorization: util.format('User %s, Organization %s', us, os) }
     });
 };
 
