@@ -186,13 +186,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.className('to-login')).click();
     browser.findElement(webdriver.By.className('button')).click();
     return browser.getCurrentUrl();
-  case 'onedrivebusiness':
-    // TODO - needs a new OAuth app created with our churros redirect URI (i think)
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
-    browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
-    browser.findElement(webdriver.By.id('cred_sign_in_button')).click();
-    return browser.getCurrentUrl();
   case 'onedrivev2':
     browser.get(r.body.oauthUrl);
     browser.isElementPresent(webdriver.By.id('i0116'));
@@ -235,6 +228,22 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           } else { webdriver.promise.rejected(err); }
         });
     browser.get(browser.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
+    return browser.getCurrentUrl();
+  case 'onedrivebusiness':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
+    browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
+    // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
+    // have hit our redirect URL...i think (it works :/)
+    browser.wait(() => {
+      browser.findElement(webdriver.By.id('cred_sign_in_button'))
+        .then((element) => element.click(),
+          (err) => {
+            if (err.state && err.state === 'no such element') { // ignore this
+            } else { webdriver.promise.rejected(err); }
+          });
+      return browser.getTitle().then((title) => !title);
+    }, 10000);
     return browser.getCurrentUrl();
   case 'sharepoint':
     browser.get(r.body.oauthUrl);
