@@ -69,7 +69,9 @@ const oauth = (element, args, config) => {
         state: query.state,
         oauth_token: query.oauth_token,
         oauth_verifier: query.oauth_verifier,
-        secret: args.secret
+        secret: args.secret,
+        realmId: query.realmId,
+        dataSource: query.dataSource
       };
       return providerData;
     });

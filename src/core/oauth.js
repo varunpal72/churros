@@ -187,12 +187,34 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.className('button')).click();
     return browser.getCurrentUrl();
   case 'onedrivebusiness':
-    // TODO - not quite working yet ... (classic microsoft)
+    // TODO - needs a new OAuth app created with our churros redirect URI (i think)
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
     browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
     browser.findElement(webdriver.By.id('cred_sign_in_button')).click();
     return browser.getCurrentUrl();
+  case 'onedrivev2':
+    // TODO - needs a new OAuth app created with our churros redirect URI
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+    browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
+    browser.findElement(webdriver.By.id('idSIButton9')).click();
+    try {
+      browser.findElement(webdriver.By.id('idBtn_Accept')).click();
+    } catch (e) {}
+    return browser.getCurrentUrl();
+  case 'quickbooks':
+    // TODO - not working quite yet...
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.name('Email')).sendKeys(username);
+    browser.findElement(webdriver.By.name('Password')).sendKeys(password);
+    browser.findElement(webdriver.By.id('ius-sign-in-submit-btn')).click();
+    try {
+      browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
+      browser.findElement(webdriver.By.id('authorizeBtn')).click();
+    } catch (e) {}
+    return browser.getCurrentUrl();
+  case 'servicemax':
   case 'sfdc':
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':

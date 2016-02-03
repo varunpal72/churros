@@ -1,0 +1,11 @@
+{
+  "serviceContracts": {
+    "vendorName": "SVMXC__Service_Contract__c",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
+  }
+}
