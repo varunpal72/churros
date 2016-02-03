@@ -230,7 +230,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       .then((element) => element.click(),
         (err) => {
           if (err.state && err.state === 'no such element') {
-            console.log('Element not found'); // ignore this
+            // ignore this
           } else {
             webdriver.promise.rejected(err);
           }
