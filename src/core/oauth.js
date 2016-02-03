@@ -227,12 +227,22 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id("Login")).click();
     browser.get(browser.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
     return browser.getCurrentUrl();
+  case 'sharepoint':
+    // TODO - needs a new OAuth app setup
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
+    browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(username);
+    browser.findElement(webdriver.By.id('cred_sign_in_button')).click();
+    // browser.findElement(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow')).click();
+    return browser.getCurrentUrl();
   case 'zendesk':
+    // TODO - not quite working yet ...
     browser.get(r.body.oauthUrl);
     const iframe = webdriver.By.tagName('iframe')[0];
     browser.switchTo().frame(iframe);
     browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
     browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
+    browser.findElement(webdriver.By.name('commit')).click();
     return browser.getCurrentUrl();
   default:
     console.log('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
