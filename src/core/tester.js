@@ -1,6 +1,6 @@
 'use strict';
 
-const chocolate = require('core/chocolate');
+const tools = require('core/tools');
 const http = require('http');
 const fs = require('fs');
 const util = require('util');
@@ -43,14 +43,14 @@ const validator = (schemaOrValidationCb) => {
 const post = (api, payload, schema) => {
   return chakram.post(api, payload)
     .then(r => validator(schema)(r))
-    .catch(r => chocolate.logAndThrow('Failed to create %s', r, api));
+    .catch(r => tools.logAndThrow('Failed to create %s', r, api));
 };
 exports.post = post;
 
 const get = (api, schema) => {
   return chakram.get(api)
     .then(r => validator(schema)(r))
-    .catch(r => chocolate.logAndThrow('Failed to retrieve %s', r, api));
+    .catch(r => tools.logAndThrow('Failed to retrieve %s', r, api));
 };
 exports.get = get;
 
@@ -59,7 +59,7 @@ const update = (api, payload, schema, cb) => {
 
   return cb(api, payload)
     .then(r => validator(schema)(r))
-    .catch(r => chocolate.logAndThrow('Failed to update %s', r, api));
+    .catch(r => tools.logAndThrow('Failed to update %s', r, api));
 };
 exports.patch = (api, payload, schema) => update(api, payload, schema, chakram.patch);
 exports.put = (api, payload, schema) => update(api, payload, schema, chakram.put);
@@ -70,14 +70,14 @@ const remove = (api) => {
       expect(r).to.have.statusCode(200);
       return r;
     })
-    .catch(r => chocolate.logAndThrow('Failed to delete %s', r, api));
+    .catch(r => tools.logAndThrow('Failed to delete %s', r, api));
 };
 exports.delete = remove;
 
 const find = (api, schema) => {
   return chakram.get(api)
     .then(r => validator(schema)(r))
-    .catch(r => chocolate.logAndThrow('Failed to find %s', r, api));
+    .catch(r => tools.logAndThrow('Failed to find %s', r, api));
 };
 exports.find = find;
 
@@ -88,7 +88,7 @@ const postFile = (api, filePath, query, schema) => {
   };
   return chakram.post(api, undefined, options)
     .then(r => validator(schema)(r))
-    .catch(r => chocolate.logAndThrow('Failed to upload file to %s', r, api));
+    .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
 exports.postFile = postFile;
 

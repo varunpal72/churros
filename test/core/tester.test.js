@@ -1,13 +1,12 @@
 const tester = require('core/tester');
 const nock = require('nock');
 const chakram = require('chakram');
-const chocolate = require('core/chocolate');
-const setup = require('core/setup');
+const tools = require('core/tools');
 
 const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 
 before((done) => {
-  setup.initializeChakram();
+  tools.initializeChakram();
   chakram.setRequestDefaults({
     baseUrl: baseUrl,
     headers: {
@@ -22,7 +21,7 @@ describe('tester', () => {
     nock(baseUrl)
       .post('/foo')
       .reply(200, (uri, requestBody) => {
-        requestBody.id = chocolate.randomInt();
+        requestBody.id = tools.randomInt();
         return requestBody;
       });
 
@@ -36,9 +35,7 @@ describe('tester', () => {
     nock(baseUrl)
       .get('/foo')
       .reply(200, () => {
-        return {
-          foo: 'bar'
-        };
+        return { foo: 'bar' };
       });
 
     return tester.get('/foo');

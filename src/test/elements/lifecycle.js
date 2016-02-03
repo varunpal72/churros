@@ -3,7 +3,7 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
-const ei = require('core/element-instances');
+const ei = require('core/provisioner');
 const argv = require('optimist').demand('element').argv;
 const fs = require('fs');
 

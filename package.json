@@ -12,6 +12,9 @@
     "postinstall": "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
     "test": "test/cli/tests.sh && istanbul cover _mocha test/core -- --reporter spec --ui bdd",
     "testnc": "test/cli/tests.sh && mocha test/core --reporter spec --ui bdd",
+    "testcli": "test/cli/tests.sh",
+    "testcore": "istanbul cover _mocha test/core -- --reporter spec --ui bdd",
+    "testcorenc": "mocha test/core --reporter spec --ui bdd",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "bin": {

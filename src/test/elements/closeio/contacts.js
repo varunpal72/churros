@@ -2,13 +2,13 @@
 
 const chakram = require('chakram');
 const expect = chakram.expect;
-const chocolate = require('core/chocolate');
+const tools = require('core/tools');
 const tester = require('core/tester');
 const schema = require('./assets/contact.schema');
 
 const gen = (opts) => {
   opts = opts ? opts : {};
-  const random = chocolate.random();
+  const random = tools.random();
   return new Object({
     lead_id: (opts.lead_id),
     name: (opts.name || 'mr. churros ' + random),

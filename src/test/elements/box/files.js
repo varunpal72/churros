@@ -1,7 +1,7 @@
 'use strict';
 
 const util = require('util');
-const chocolate = require('core/chocolate');
+const tools = require('core/tools');
 const expect = require('chakram').expect;
 const tester = require('core/tester');
 const schema = require('./assets/file.schema.json');
@@ -11,7 +11,7 @@ tester.for('documents', 'files', (api) => {
 
     let fileId = -1;
     let query = {
-      path: util.format('/brady-%s.jpg', chocolate.random())
+      path: util.format('/brady-%s.jpg', tools.random())
     };
     let path = __dirname + '/assets/brady.jpg';
 

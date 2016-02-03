@@ -3,8 +3,8 @@
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const chocolate = require('core/chocolate');
-const props = require('core/props');
+const tools = require('core/tools');
+const props = require('core/props')();
 const urlParser = require('url');
 
 var exports = module.exports = {};
@@ -45,10 +45,10 @@ const createInstance = (element, config, providerData) => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       console.log('Created %s element instance with ID: %s', element, r.body.id);
-      chocolate.authReset(r.body.token);
+      tools.authReset(props, r.body.token);
       return r;
     })
-    .catch(r => chocolate.logAndThrow('Failed to create an instance of %s', r, element));
+    .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
 };
 
 const oauth = (element, args, config) => {
@@ -112,7 +112,7 @@ exports.delete = (id) => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       console.log('Deleted element instance with ID: ' + id);
-      chocolate.authReset();
+      tools.authReset(props);
       return r.body;
     })
     .catch(r => console.log('Failed to delete element instance: %s', r));
