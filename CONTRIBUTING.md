@@ -42,11 +42,13 @@ $ churros add platform
 
 Out of the box, you should be able to run your generated platform suite, although it won't include any real tests at this point:
 ```bash
-$ churros test ${resourceName}
+$ churros test platform/${resourceName}
 ```
 
 Update the `/assets/${resourceName}.schema.json` generated JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
 > __NOTE:__ It is critical to be as accurate as possible in this schema file.  This file is critical to ensuring our interface does *not* change and this file is also what will document the models for this API.
+
+> __PROTIP:__ The `${resourceName}.schema.json` file follows the most up-to-date JSON schema spec. You can use tools like http://jsonschema.net/ to generate it for you.
 
 Start building out tests in the `src/test/platform/${resourceName}/${resourceName}.js` file that was generated.  Leverage the `tester.test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
 

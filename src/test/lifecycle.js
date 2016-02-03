@@ -36,7 +36,7 @@ before((done) => {
       done();
     })
     .catch(r => {
-      console.log('Well shucks...failed to finish initialization...\n  Is %s up and running?\n  Do you have the write username and password?', props.get('url'));
+      console.log('Well shucks...failed to finish initialization...\n  Is %s up and running?\n  Do you have the right username and password?', props.get('url'));
       process.exit(1);
     });
 });
