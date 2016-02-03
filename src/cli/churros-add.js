@@ -10,9 +10,9 @@ const terminate = (msg, args) => {
   process.exit(1);
 };
 
-const buildRootPlatformDir = () => __dirname + '/../test';
+const buildRootPlatformDir = () => __dirname + '/../test/platform';
 
-const buildRootElementDir = () => buildRootPlatformDir() + '/elements';
+const buildRootElementDir = () => __dirname + '/../test/elements';
 
 const askQuestions = (questions) => new Promise((res, rej) => inquirer.prompt(questions, (answers) => res(answers)));
 
