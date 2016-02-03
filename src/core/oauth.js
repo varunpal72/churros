@@ -173,14 +173,19 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     return browser.getCurrentUrl();
   case 'mailchimp3':
     browser.get(r.body.oauthUrl);
-    console.log(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('username')).sendKeys(username);
     browser.findElement(webdriver.By.id('password')).sendKeys(password);
     browser.findElement(webdriver.By.css('input.button.p0')).click();
     return browser.getCurrentUrl();
   case 'marketo':
-    // TODO ...
-    return 'https://foo.bar.com?code=7AB65CDDNC';
+    return 'https://foo.bar.com?code=7AB65CDDNC'; // good gracious, why does this work?...
+  case 'namely':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
+    browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
+    browser.findElement(webdriver.By.className('to-login')).click();
+    browser.findElement(webdriver.By.className('button')).click();
+    return browser.getCurrentUrl();
   case 'sfdc':
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':
