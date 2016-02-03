@@ -429,9 +429,12 @@
     "oauth.api.secret": "",
     "username": "",
     "password": "",
+    "sharepoint.document.library": "",
     "document.tagging": "",
-    "onedrivebusiness.site.address": "",
-    "site.address": ""
+    "sharepoint.site.address": "",
+    "site.address": "",
+    "oauth.scope": "",
+    "onedrivebusiness.site.address": ""
   },
   "onedrivev2": {
     "oauth.api.key": "",
@@ -440,7 +443,8 @@
     "password": "",
     "provisioning": "oauth2",
     "event.config.path": "",
-    "document.tagging": ""
+    "document.tagging": "",
+    "oauth.scope": ""
   },
   "quickbooks": {
     "provisioning": "oauth1",
