@@ -8,7 +8,9 @@
   },
   "scripts": {
     "postinstall": "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
-    "test": "test/tests.sh"
+    "test": "istanbul cover _mocha test/core -- --reporter spec --ui bdd && test/cli/tests.sh",
+    "testnc": "mocha test/core --reporter spec --ui bdd && test/cli/tests.sh",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "bin": {
     "churros": "src/cli/churros.js"
@@ -19,7 +21,9 @@
     "chai": "^3.4.1",
     "chakram": "^1.2.1",
     "commander": "^2.9.0",
+    "coveralls": "^2.11.6",
     "inquirer": "^0.11.4",
+    "istanbul": "^0.4.2",
     "mocha": "^2.3.4",
     "nock": "^7.0.2",
     "optimist": "^0.6.1",
