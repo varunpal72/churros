@@ -225,6 +225,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id("password")).clear();
     browser.findElement(webdriver.By.id("password")).sendKeys(password);
     browser.findElement(webdriver.By.id("Login")).click();
+
+    browser.findElement(webdriver.By.id('oaapprove'))
+      .then((element) => element.click(),
+        (err) => {
+          if (err.state && err.state === 'no such element') {
+            console.log('Element not found'); // ignore this
+          } else {
+            webdriver.promise.rejected(err);
+          }
+        });
     browser.get(browser.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
     return browser.getCurrentUrl();
   case 'sharepoint':
