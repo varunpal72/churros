@@ -194,14 +194,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('cred_sign_in_button')).click();
     return browser.getCurrentUrl();
   case 'onedrivev2':
-    // TODO - needs a new OAuth app created with our churros redirect URI
     browser.get(r.body.oauthUrl);
+    browser.isElementPresent(webdriver.By.id('i0116'));
     browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
     browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
     browser.findElement(webdriver.By.id('idSIButton9')).click();
-    try {
-      browser.findElement(webdriver.By.id('idBtn_Accept')).click();
-    } catch (e) {}
+    browser.findElement(webdriver.By.id('idBtn_Accept'))
+      .then((element) => element.click(),
+        (err) => {
+          if (err.state && err.state === 'no such element') { // ignore this
+          } else { webdriver.promise.rejected(err); }
+        });
     return browser.getCurrentUrl();
   case 'quickbooks':
     // TODO - not working quite yet...
@@ -228,11 +231,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('oaapprove'))
       .then((element) => element.click(),
         (err) => {
-          if (err.state && err.state === 'no such element') {
-            // ignore this
-          } else {
-            webdriver.promise.rejected(err);
-          }
+          if (err.state && err.state === 'no such element') { // ignore this
+          } else { webdriver.promise.rejected(err); }
         });
     browser.get(browser.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
     return browser.getCurrentUrl();
@@ -240,25 +240,12 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
     browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
-    // return browser.wait(() => {
     browser.wait(() => {
       browser.findElement(webdriver.By.id('cred_sign_in_button')).click(); // ... i'm serious, you have to just keep clicking.  wtf microsoft.
       return browser.isElementPresent(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow'));
     }, 10000);
-
     browser.findElement(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow')).click();
     return browser.getCurrentUrl();
-    // .then(r => {
-    //       console.log('found r: %s', r);
-    //       r.click();
-    //       return true;
-    //     })
-    //     .then(r => {
-    //       console.log(browser.getCurrentUrl());
-    //       return browser.getCurrentUrl();
-    //     })
-    //     .thenCatch(r => false);
-    // }, 7000);
   case 'zendesk':
     // TODO - not quite working yet ...
     browser.get(r.body.oauthUrl);
