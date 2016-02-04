@@ -1,10 +1,12 @@
 'use strict';
 
 const chakram = require('chakram');
+const expect = chakram.expect;
 const util = require('util');
 const argv = require('optimist').demand('user').argv;
 const props = require('core/props')();
 const tools = require('core/tools');
+const logger = require('core/logger');
 
 const setGlobalProps = (args) => {
   props.set('user', args.user);
@@ -18,6 +20,7 @@ const setGlobalProps = (args) => {
 before((done) => {
   tools.addCustomAssertions();
   setGlobalProps(argv);
+  if (argv.verbose === 'true') logger.level = 'silly';
 
   const secUrl = props.get('url') + '/elements/j_spring_security_check';
   const form = { j_username: props.get('user'), j_password: props.get('password') };
@@ -27,6 +30,7 @@ before((done) => {
   chakram.post(secUrl, null, options)
     .then(r => chakram.get(props.get('url') + '/elements/api-v1/ui/getSecrets', secretOptions))
     .then(r => {
+      expect(r).to.have.statusCode(200);
       props.set('user.secret', r.body.user);
       props.set('org.secret', r.body.company);
       chakram.setRequestDefaults({
@@ -36,7 +40,8 @@ before((done) => {
       done();
     })
     .catch(r => {
-      console.log('Well shucks...failed to finish initialization...\n  Is %s up and running?\n  Do you have the right username and password?', props.get('url'));
+      // if the lifecycle fails, then we want to exit with an error and not let anything else continue
+      logger.error('Well shucks...failed to finish initialization...\n  Is %s up and running?\n  Do you have the right username and password?\n', props.get('url'));
       process.exit(1);
     });
 });
