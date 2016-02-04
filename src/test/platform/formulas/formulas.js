@@ -1,8 +1,8 @@
 'use strict';
 
-const ei = require('core/element-instances');
+const provisioner = require('core/provisioner');
 const util = require('util');
-const chocolate = require('core/chocolate');
+const tools = require('core/tools');
 const tester = require('core/tester');
 const chakram = require('chakram');
 const expect = chakram.expect;
@@ -11,7 +11,7 @@ const triggerSchema = require('./assets/formula.trigger.schema');
 const instanceSchema = require('./assets/formula.instance.schema');
 
 const genFormula = (opts) => new Object({
-  name: (opts.name || 'churros-formula-name-' + chocolate.random())
+  name: (opts.name || 'churros-formula-name-' + tools.random())
 });
 
 const genTrigger = (opts) => new Object({
@@ -96,7 +96,7 @@ tester.for(null, 'formulas', (api) => {
   });
 
   it('should allow creating a big azz formula and then an instance', () => {
-    return ei.create('jira')
+    return provisioner.create('jira')
       .then(r => {
         const id = r.body.id;
 
@@ -104,7 +104,7 @@ tester.for(null, 'formulas', (api) => {
         Object.keys(fi.configuration).forEach(key => fi.configuration[key] = util.format(fi.configuration[key], id));
 
         let f = require('./assets/big-formula.json');
-        f.name = chocolate.random();
+        f.name = tools.random();
 
         let formulaId;
         return tester.post(api, f, schema)
@@ -114,7 +114,7 @@ tester.for(null, 'formulas', (api) => {
           })
           .then(r => tester.delete(util.format('/formulas/%s/instances/%s', formulaId, r.body.id)))
           .then(r => tester.delete(util.format('/formulas/%s', formulaId)))
-          .then(r => ei.delete(id));
+          .then(r => provisioner.delete(id));
       });
   });
 });

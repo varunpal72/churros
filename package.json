@@ -1,6 +1,8 @@
 {
   "name": "churros",
-  "version": "0.0.0",
+  "author": "jjwyse",
+  "license": "ISC",
+  "version": "0.2.0",
   "description": "Test suite for all things cloud elements",
   "repository": {
     "type": "git",
@@ -8,18 +10,23 @@
   },
   "scripts": {
     "postinstall": "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
-    "test": "test/tests.sh"
+    "test": "test/cli/tests.sh && istanbul cover _mocha test/core -- --reporter spec --ui bdd",
+    "testnc": "test/cli/tests.sh && mocha test/core --reporter spec --ui bdd",
+    "testcli": "test/cli/tests.sh",
+    "testcore": "istanbul cover _mocha test/core -- --reporter spec --ui bdd",
+    "testcorenc": "mocha test/core --reporter spec --ui bdd",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "bin": {
     "churros": "src/cli/churros.js"
   },
-  "author": "jjwyse",
-  "license": "ISC",
   "dependencies": {
     "chai": "^3.4.1",
     "chakram": "^1.2.1",
     "commander": "^2.9.0",
+    "coveralls": "^2.11.6",
     "inquirer": "^0.11.4",
+    "istanbul": "^0.4.2",
     "mocha": "^2.3.4",
     "nock": "^7.0.2",
     "optimist": "^0.6.1",

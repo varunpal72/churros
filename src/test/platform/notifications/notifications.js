@@ -2,7 +2,7 @@
 
 const util = require('util');
 const expect = require('chakram').expect;
-const chocolate = require('core/chocolate');
+const tools = require('core/tools');
 const tester = require('core/tester');
 const schema = require('./assets/notification.schema.json');
 const subscriptionSchema = require('./assets/subscription.schema.json');
@@ -31,7 +31,7 @@ tester.for(null, 'notifications', (api) => {
   tester.test.badPost400(api, n);
 
   it('should return one notification when searching for this topic', () => {
-    const n = notifyGen({ topic: 'churros-topic-' + chocolate.random() });
+    const n = notifyGen({ topic: 'churros-topic-' + tools.random() });
 
     return tester.post(api, n, schema)
       .then(r => {

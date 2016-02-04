@@ -1,9 +1,9 @@
 'use strict';
 
 const tester = require('core/tester');
-const ei = require('core/element-instances');
+const provisioner = require('core/provisioner');
 const util = require('util');
-const props = require('core/props');
+const props = require('core/props')();
 
 const gen = (opts) => new Object({
   'event.notification.enabled': opts['event.notification.enabled'] || true,
@@ -28,10 +28,10 @@ tester.for(null, 'events', (api) => {
     const port = props.getForKey('events', 'port');
 
     let instanceId;
-    return ei.create(element, gen({}))
+    return provisioner.create(element, gen({}))
       .then(r => instanceId = r.body.id)
       .then(r => tester.createEvents(element, instanceId, payload, load))
       .then(r => tester.listenForEvents(port, load, wait))
-      .then(r => ei.delete(instanceId));
+      .then(r => provisioner.delete(instanceId));
   });
 });

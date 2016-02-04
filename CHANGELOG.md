@@ -2,6 +2,9 @@
 
 #### Highlights
 * Added a large amount of new elements to our provisioning library.  Most of the ones left were OAuth1 and OAuth2 elements, so lots of selenium work :disappointed:
+* Leveraging `istanbul` and to generate unit test coverage statistics on each circleCI test run and publish them to `coveralls`.
+ * Due to the extremely low number that was generated from the above, wrote a lot more unit tests :smile:
+* Added platform tests for the new element metadata APIs
 
 ## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
 

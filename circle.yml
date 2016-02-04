@@ -4,4 +4,8 @@ machine:
 
 dependencies:
   post:
-      - npm link
+    - npm link
+
+test:
+  post:
+    - npm run coveralls

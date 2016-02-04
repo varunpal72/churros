@@ -3,8 +3,8 @@
 const chakram = require('chakram');
 const util = require('util');
 const argv = require('optimist').demand('user').argv;
-const props = require('core/props');
-const setup = require('core/setup');
+const props = require('core/props')();
+const tools = require('core/tools');
 
 const setGlobalProps = (args) => {
   props.set('user', args.user);
@@ -16,7 +16,7 @@ const setGlobalProps = (args) => {
 };
 
 before((done) => {
-  setup.initializeChakram();
+  tools.addCustomAssertions();
   setGlobalProps(argv);
 
   const secUrl = props.get('url') + '/elements/j_spring_security_check';

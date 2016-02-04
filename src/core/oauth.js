@@ -178,7 +178,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.css('input.button.p0')).click();
     return browser.getCurrentUrl();
   case 'marketo':
-    return 'https://foo.bar.com?code=7AB65CDDNC'; // good gracious, why does this work?...
+    return 'https://foo.bar.com?code=' + config.code; // good gracious, why does this work?...
   case 'namely':
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
@@ -221,13 +221,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id("password")).clear();
     browser.findElement(webdriver.By.id("password")).sendKeys(password);
     browser.findElement(webdriver.By.id("Login")).click();
+    browser.wait(() => {
+        return browser.isElementPresent(webdriver.By.id('oaapprove'));
+      }, 10000)
+      .thenCatch(r => true); // ignore
+
     browser.findElement(webdriver.By.id('oaapprove'))
       .then((element) => element.click(),
         (err) => {
           if (err.state && err.state === 'no such element') { // ignore this
           } else { webdriver.promise.rejected(err); }
         });
-    browser.get(browser.getCurrentUrl()); // have to actually go to it and then it redirects you to your callback
     return browser.getCurrentUrl();
   case 'onedrivebusiness':
     browser.get(r.body.oauthUrl);

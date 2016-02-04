@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 run_tests() {
-  mocha test/core --reporter spec --ui bdd && node_modules/.bin/bats test/cli/
+  node_modules/.bin/bats test/cli/
 }
 
 PROPS_FILE=$HOME/.churros/sauce.json
