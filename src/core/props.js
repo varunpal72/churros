@@ -18,7 +18,6 @@ var exports = module.exports = (config) => {
   if (!config) config = require(configFile);
 
   exports.get = (key) => {
-    logger.debug('Looking for required property %s', key);
     var value = config[key];
     if (value) return value;
 
@@ -29,7 +28,6 @@ var exports = module.exports = (config) => {
   };
 
   exports.getForKey = (rootKey, key) => {
-    logger.debug('Looking for required property %s:%s', rootKey, key);
     const elementProps = config[rootKey];
     if (!elementProps) missingPropForRootKey(rootKey);
 
