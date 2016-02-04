@@ -11,7 +11,7 @@ var exports = module.exports = {};
 exports.addCustomAssertions = () => {
   chakram.addMethod('statusCode', (r, status) => {
     if (!r || !r.response) {
-      logger.error('Unable to validate HTTP status code from response %s', {r: r});
+      logger.error('Unable to validate HTTP status code from response %s', { r: r });
       return;
     }
 
