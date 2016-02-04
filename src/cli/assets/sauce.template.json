@@ -413,7 +413,8 @@
     "oauth.api.secret": "",
     "provisioning": "oauth2",
     "username": "",
-    "password": ""
+    "password": "",
+    "code": ""
   },
   "namely": {
     "provisioning": "oauth2",

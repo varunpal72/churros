@@ -29,7 +29,13 @@ const parse = (options, config) => {
 };
 
 const runTests = (suite, options) => {
-  const config = require(process.env.HOME + '/.churros/sauce.json');
+  let config;
+  try {
+    config = require(process.env.HOME + '/.churros/sauce.json');
+  } catch (e) {
+    console.log('No properties found.  Make sure to run \'churros init\' first.');
+    process.exit(1);
+  }
 
   const file = options.file;
   const test = options.test;

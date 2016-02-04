@@ -170,10 +170,13 @@ const add = (type, options) => {
 };
 
 commander
-  .command('suite type', '[element || platform]')
+  .command('type', '[element || platform]')
   .action((type, options) => add(type, options))
   .on('--help', () => {
     console.log('  Examples:');
+    console.log('');
+    console.log('    $ churros add element');
+    console.log('    $ churros add platform');
     console.log('');
   })
   .parse(process.argv);

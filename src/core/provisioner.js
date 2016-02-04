@@ -7,6 +7,7 @@ const tools = require('core/tools');
 const props = require('core/props')();
 const urlParser = require('url');
 const logger = require('core/logger');
+const o = require('core/oauth');
 
 var exports = module.exports = {};
 
@@ -57,7 +58,7 @@ const oauth = (element, args, config) => {
   return chakram.get(url, args.options)
     .then(r => {
       expect(r).to.have.statusCode(200);
-      return require('core/oauth')(element, r, args.username, args.password, config);
+      return o(element, r, args.username, args.password, config);
     })
     .then(r => {
       const query = urlParser.parse(r, true).query;
