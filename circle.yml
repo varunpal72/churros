@@ -9,3 +9,8 @@ dependencies:
 test:
   post:
     - npm run coveralls
+
+general:
+  artifacts:
+    - "churros.log"
+    - "coverage"

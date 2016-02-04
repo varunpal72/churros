@@ -1,6 +1,7 @@
 'use strict';
 
 const webdriver = require('selenium-webdriver');
+const logger = require('core/logger');
 
 const manipulateDom = (element, browser, r, username, password, config) => {
   switch (element) {
@@ -53,7 +54,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     const findBtn = () => {
       return browser.findElement(webdriver.By.css('.login-button'))
         .then(r => {
-          console.log('clicking on %s', r);
           r.click();
           return true;
         });
@@ -125,7 +125,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     const passwordCb = () => {
       return browser.findElement(webdriver.By.id('Passwd'))
         .then(r => {
-          console.log(r);
           r.sendKeys(password);
           return true;
         });
@@ -269,7 +268,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.name('commit')).click();
     return browser.getCurrentUrl();
   default:
-    console.log('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
+    logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
     process.exit(1);
   }
 };

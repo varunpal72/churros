@@ -3,6 +3,7 @@
 const fs = require('fs');
 const tools = require('core/tools');
 const util = require('util');
+const logger = require('core/logger');
 
 const missingPropForRootKey = (rootKey, key) => {
   const msg = util.format("Missing required property '%s' for '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, rootKey, rootKey, key);
@@ -36,6 +37,7 @@ var exports = module.exports = (config) => {
   };
 
   exports.getOptionalForKey = (rootKey, key) => {
+    logger.debug('Looking for optional property %s:%s', rootKey, key);
     const elementProps = config[rootKey];
     if (!elementProps) return null;
 
@@ -55,6 +57,7 @@ var exports = module.exports = (config) => {
   };
 
   exports.all = (element) => {
+    logger.debug('Looking for props for %s', element);
     if (!config[element]) {
       const msg = util.format("No properties found for element '%s'\n   Note: Can setup properties for this element by calling 'churros props %s:my.config.key <value>'", element, element);
       throw new Error(msg);

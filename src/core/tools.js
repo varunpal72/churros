@@ -4,11 +4,17 @@ const assert = require('assert');
 const tv4 = require('tv4');
 const chakram = require('chakram');
 const util = require('util');
+const logger = require('core/logger');
 
 var exports = module.exports = {};
 
 exports.addCustomAssertions = () => {
   chakram.addMethod('statusCode', (r, status) => {
+    if (!r || !r.response) {
+      logger.error('Unable to validate HTTP status code from response %s', { r: r });
+      return;
+    }
+
     const responseStatus = r.response.statusCode;
     const responseBody = r.response.body;
 
@@ -61,7 +67,6 @@ exports.random = () => Math.random().toString(36).substring(7);
 exports.randomInt = () => Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
 
 exports.logAndThrow = (msg, error, arg) => {
-  if (arg) console.log(msg, arg);
-  else console.log(msg);
+  arg ? logger.error(msg, arg) : logger.error(msg);
   throw error;
 };

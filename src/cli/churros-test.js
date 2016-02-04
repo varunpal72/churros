@@ -15,6 +15,7 @@ const parse = (options, config) => {
   let url = options.url || config.url;
   if (url.startsWith('localhost')) url = 'http://' + url;
   if (!url.startsWith('http')) url = 'https://' + url;
+  options.verbose = options.verbose === undefined ? false : options.verbose; // hack...i can't figure out why it's not default to false
 
   return {
     url: url,
@@ -22,7 +23,8 @@ const parse = (options, config) => {
     password: options.password || config.password,
     wait: options.wait || config.events.wait,
     load: options.load || config.events.load,
-    loadElement: options.element || config.events.element
+    loadElement: options.element || config.events.element,
+    verbose: options.verbose
   };
 };
 
@@ -68,7 +70,7 @@ const runTests = (suite, options) => {
     });
   }
 
-  let args = util.format('--user %s --password %s --url %s --timeout 600000 --reporter spec --ui bdd', cliArgs.user, cliArgs.password, cliArgs.url);
+  let args = util.format('--user %s --password %s --url %s --verbose %s --timeout 600000 --reporter spec --ui bdd', cliArgs.user, cliArgs.password, cliArgs.url, cliArgs.verbose);
   if (test) args += util.format(" --grep '%s'", test);
   if (element) args += util.format(" --element %s", element);
   if (cliArgs.load) args += util.format(" --load %s", cliArgs.load);
@@ -90,6 +92,7 @@ commander
   .option('-u, --user <user>', 'overrides the default user setup during initialization', '')
   .option('-p, --password <password>', 'overrides the default password setup during initialization', '')
   .option('-r, --url <url>', 'overrides the default URL setup during initialization', '')
+  .option('-V, --verbose', 'logging verbose mode')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
@@ -98,11 +101,11 @@ commander
     console.log('    $ churros test elements/closeio --test \'contacts\'');
     console.log('');
     console.log('    # Platform Tests');
-    console.log('    $ churros test notifications');
-    console.log('    $ churros test formulas');
-    console.log('    $ churros test formulas --test \'should not allow\'');
-    console.log('    $ churros test events --element sfdc');
-    console.log('    $ churros test events --element sfdc --load 50 --wait 60');
+    console.log('    $ churros test platform/notifications');
+    console.log('    $ churros test platform/formulas');
+    console.log('    $ churros test platform/formulas --test \'should not allow\'');
+    console.log('    $ churros test platform/events --element sfdc');
+    console.log('    $ churros test platform/events --element sfdc --load 50 --wait 60');
     console.log('');
   })
   .parse(process.argv);

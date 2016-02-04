@@ -31,7 +31,7 @@ describe('tools', () => {
     throw Error('oops...');
   });
 
-  it('should support initializing our custom chakram expectations', () => {
+  it('should support initializing our custom chakram expectations and using them', () => {
     const mockResponse = {
       response: {
         statusCode: 200,
@@ -61,6 +61,8 @@ describe('tools', () => {
 
     expect(mockResponse).to.have.statusCode(200);
     expect(mockResponse).to.have.schemaAnd200(200);
+    expect(null).to.have.statusCode(200);
+    expect({ error: 'ERRCONNREFUSED' }).to.have.statusCode(200);
   });
 
   it('should support resetting the auth with an element token', () => {
