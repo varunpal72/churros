@@ -7,7 +7,7 @@ const util = require('util');
 
 var exports = module.exports = {};
 
-exports.initializeChakram = () => {
+exports.addCustomAssertions = () => {
   chakram.addMethod('statusCode', (r, status) => {
     const responseStatus = r.response.statusCode;
     const responseBody = r.response.body;

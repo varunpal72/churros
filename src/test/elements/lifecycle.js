@@ -3,7 +3,7 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
-const ei = require('core/provisioner');
+const provisioner = require('core/provisioner');
 const argv = require('optimist').demand('element').argv;
 const fs = require('fs');
 
@@ -25,7 +25,7 @@ const terminate = (error) => {
 let instanceId;
 before(done => {
   const element = argv.element;
-  ei.create(element)
+  provisioner.create(element)
     .then(r => {
       expect(r).to.have.statusCode(200);
       instanceId = r.body.id;
@@ -49,7 +49,7 @@ before(done => {
     .then(r => done())
     .catch(r => {
       if (instanceId) {
-        ei.delete(instanceId)
+        provisioner.delete(instanceId)
           .then(() => terminate(r))
           .catch(() => terminate(r));
       }
@@ -59,7 +59,7 @@ before(done => {
 
 after(done => {
   instanceId ?
-    ei.delete(instanceId)
+    provisioner.delete(instanceId)
     .then(() => done())
     .catch(r => console.log('Failed to delete element instance')) :
     done();

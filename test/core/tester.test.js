@@ -5,19 +5,17 @@ const tools = require('core/tools');
 
 const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 
-before((done) => {
-  tools.initializeChakram();
+const setup = () => {
+  tools.addCustomAssertions();
   chakram.setRequestDefaults({
     baseUrl: baseUrl,
-    headers: {
-      Authorization: 'User fake, Organization fake'
-    }
+    headers: { Authorization: 'User fake, Organization fake' }
   });
-  done();
-});
+};
 
 describe('tester', () => {
   it('should support post', () => {
+    setup();
     nock(baseUrl)
       .post('/foo')
       .reply(200, (uri, requestBody) => {
@@ -32,6 +30,7 @@ describe('tester', () => {
   });
 
   it('should support get', () => {
+    setup();
     nock(baseUrl)
       .get('/foo')
       .reply(200, () => {
@@ -39,5 +38,19 @@ describe('tester', () => {
       });
 
     return tester.get('/foo');
+  });
+
+  it('should support put', () => {
+    setup();
+    nock(baseUrl)
+      .put('/foo/123')
+      .reply(200, (uri, requestBody) => {
+        return requestBody;
+      });
+
+    const payload = {
+      foo: 'bar'
+    };
+    return tester.put('/foo/123', payload);
   });
 });

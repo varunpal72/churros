@@ -16,7 +16,7 @@ const setGlobalProps = (args) => {
 };
 
 before((done) => {
-  tools.initializeChakram();
+  tools.addCustomAssertions();
   setGlobalProps(argv);
 
   const secUrl = props.get('url') + '/elements/j_spring_security_check';
