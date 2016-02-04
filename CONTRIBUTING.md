@@ -115,6 +115,8 @@ tester.crd(api, payload schema)
 
 > __PROTIP:__ All of these functions return javascript promises.
 
+> __PROTIP:__ For examples on how to use these functions, please look at all of the unit tests in `tester.test.js`.
+
 A good example of leveraging these non `.test` namespaced functions can be found in the `closeio` tests, where it is *required* that a valid `lead_id` is passed when creating a contact:
 ```javascript
 // Define your own it(..) mocha BDD test case since we're not using a tester.test function which does this for you
