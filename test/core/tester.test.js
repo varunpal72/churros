@@ -177,6 +177,6 @@ describe('tester', () => {
 
   it('should support creating events', () => {
     setup();
-    return tester.createEvents('myelement', eiId, genPayload(), 10);
+    return tester.createEvents('myelement', eiId, genPayload(), 2);
   });
 });
