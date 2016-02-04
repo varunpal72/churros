@@ -5,6 +5,8 @@
 * Leveraging `istanbul` and to generate unit test coverage statistics on each circleCI test run and publish them to `coveralls`.
  * Due to the extremely low number that was generated from the above, wrote a lot more unit tests :smile:
 * Added platform tests for the new element metadata APIs
+* Leveraging `winston` for better logging
+* Support for `--verbose` mode when running `churros test`
 
 ## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
 

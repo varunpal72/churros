@@ -62,7 +62,7 @@ describe('tools', () => {
     expect(mockResponse).to.have.statusCode(200);
     expect(mockResponse).to.have.schemaAnd200(200);
     expect(null).to.have.statusCode(200);
-    expect({ response: null }).to.have.statusCode(200);
+    expect({ error: 'ERRCONNREFUSED' }).to.have.statusCode(200);
   });
 
   it('should support resetting the auth with an element token', () => {
