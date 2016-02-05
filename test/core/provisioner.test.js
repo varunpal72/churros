@@ -1,6 +1,6 @@
 /* MOCKING OUT THE core/oauth module here */
 const mockery = require('mockery');
-mockery.registerMock('core/oauth', () => 'http://snoopaloopredirecturl.com/redirecter');
+mockery.registerMock('core/oauth', () => 'http://snoopaloopredirecturl.com/redirecter?code=speakercity&oauth_verifier=josephbluepulaski');
 mockery.enable({
   warnOnReplace: false,
   warnOnUnregistered: false
@@ -50,6 +50,13 @@ beforeEach(() => {
     .reply(200, () => new Object({
       oauthUrl: 'http://frankthetanksoauthurl.com'
     }));
+
+  nock(baseUrl, headers())
+    .get('/elements/myoauth2element/oauth/url')
+    .query(true)
+    .reply(200, () => new Object({
+      oauthUrl: 'http://frankthetanksoauthurl.com'
+    }));
 });
 
 const setupProps = () => {
@@ -70,7 +77,9 @@ const setupProps = () => {
     'myoauth2element': {
       'provisioning': 'oauth2',
       'username': 'frank',
-      'password': 'ricard'
+      'password': 'ricard',
+      'oauth.api.key': 'he gon do one',
+      'oauth.api.secret': 'fill it up again'
     }
   });
 };
@@ -95,6 +104,7 @@ describe('provisioner', () => {
         expect(r.body.id).to.equal(123);
         expect(r.body.providerData).not.to.be.null;
         expect(r.body.providerData.secret).to.equal('secret');
+        expect(r.body.providerData.oauth_verifier).to.equal('josephbluepulaski');
       })
       .then(r => mockery.disable());
   });
@@ -111,7 +121,16 @@ describe('provisioner', () => {
   });
 
   it('should allow creating an oauth2 element instance', () => {
-
+    setupProps();
+    return provisioner.create('myoauth2element')
+      .then(r => {
+        expect(r).not.to.be.null;
+        expect(r.body).not.to.be.null;
+        expect(r.body.id).to.equal(123);
+        expect(r.body.providerData).not.to.be.null;
+        expect(r.body.providerData.code).to.equal('speakercity');
+      })
+      .then(r => mockery.disable());
   });
 
   it('should allow deleting an element instance', () => {

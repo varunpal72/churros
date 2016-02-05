@@ -113,8 +113,22 @@ describe('tester', () => {
   it('should support patch', () => tester.patch('/foo/123', genPayload({ id: 123 }), genSchema()));
   it('should support delete', () => tester.delete('/foo/123'));
   it('should support find', () => tester.find('/foo', genSchema()));
-  it('should support post file', () => {
+  it('should support crd', () => tester.crd('/foo', genPayload(), genSchema()));
+  it('should support crud', () => tester.crud('/foo', genPayload(), genSchema()));
+  it('should support cruds', () => tester.cruds('/foo', genPayload(), genSchema()));
+  it('should support creating events', () => tester.createEvents('myelement', eiId, genPayload(), 2));
+  it('should support listening for events', (done) => {
+    const port = 8085;
+    tester.listenForEvents(port, 1, 5)
+      .then(r => done())
+      .then(r => {
+        throw Error('Failed...');
+      });
+    chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
+    return chakram.post('http://localhost:' + port, { event: 'green hat' });
+  });
 
+  it('should support post file', () => {
     // should really NOT depend on the file system here :/
     const filePath = '.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
@@ -123,11 +137,6 @@ describe('tester', () => {
 
     return true;
   });
-
-  it('should support crd', () => tester.crd('/foo', genPayload(), genSchema()));
-  it('should support crud', () => tester.crud('/foo', genPayload(), genSchema()));
-  it('should support cruds', () => tester.cruds('/foo', genPayload(), genSchema()));
-  it('should support creating events', () => tester.createEvents('myelement', eiId, genPayload(), 2));
 
   tester.test.badPost400('/foo/bad', genPayload());
   tester.test.badPatch404('/foo', genPayload(), 456);
@@ -138,4 +147,12 @@ describe('tester', () => {
   tester.test.crd('/foo', genPayload(), genSchema());
   tester.test.create('/foo', genPayload(), genSchema());
   tester.test.paginate('/foo', genSchema(), {});
+
+  tester.for('fakehub', 'resource');
+  tester.for('fakehub', 'resource', (api) => {
+    it('should support the for with a hub passed in', () => expect(api).to.equal('/hubs/fakehub/resource'));
+  });
+  tester.for(null, 'platformresource', (api) => {
+    it('should support the for with a hub passed in', () => expect(api).to.equal('/platformresource'));
+  });
 });
