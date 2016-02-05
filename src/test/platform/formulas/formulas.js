@@ -10,30 +10,15 @@ const expect = chakram.expect;
 const schema = require('./assets/formula.schema');
 const triggerSchema = require('./assets/formula.trigger.schema');
 const instanceSchema = require('./assets/formula.instance.schema');
+const common = require('./assets/common');
 
-const genFormula = (opts) => new Object({
-  name: (opts.name || 'churros-formula-name-' + tools.random())
-});
-
-const genTrigger = (opts) => new Object({
-  type: (opts.type || 'scheduled'),
-  properties: (opts.properties) || {
-    cron: '0 0/15 * 1/1 * ? *'
-  },
-  onSuccess: (opts.onSuccess || null)
-});
-
-const genInstance = (opts) => new Object({
-  name: (opts.name || 'churros-formula-instance-name')
-});
-
-suite.forPlatform('formulas', genFormula({}), schema, (test) => {
+suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
 
   test.should.supportCrud(chakram.put);
 
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
-    const f = genFormula({});
-    const t = genTrigger({});
+    const f = common.genFormula({});
+    const t = common.genTrigger({});
 
     let formulaId;
     return cloud.post(test.api, f, schema)
@@ -57,14 +42,14 @@ suite.forPlatform('formulas', genFormula({}), schema, (test) => {
   });
 
   it('should not allow an invalid cron for a "scheduled" trigger', () => {
-    const f = genFormula({});
+    const f = common.genFormula({});
 
     let formulaId;
     return cloud.post(test.api, f, schema)
       .then(r => {
         formulaId = r.body.id;
 
-        const t = genTrigger({
+        const t = common.genTrigger({
           properties: {
             cron: '0 0/14 * 1/1 * ? *'
           }
@@ -77,20 +62,20 @@ suite.forPlatform('formulas', genFormula({}), schema, (test) => {
   });
 
   it('should not allow creating an instance of a formula with an invalid on success step', () => {
-    const f = genFormula({});
+    const f = common.genFormula({});
 
     let formulaId;
     return cloud.post(test.api, f, schema)
       .then(r => {
         formulaId = r.body.id;
-        const t = genTrigger({
+        const t = common.genTrigger({
           onSuccess: ['fake-step-name']
         });
         const tApi = util.format('%s/%s/triggers', test.api, formulaId);
         return cloud.post(tApi, t, triggerSchema);
       })
       .then(r => {
-        const fi = genInstance({});
+        const fi = common.genInstance({});
         const iApi = util.format('/formulas/%s/instances', formulaId);
         return cloud.post(iApi, fi, (r) => expect(r).to.have.statusCode(400));
       })

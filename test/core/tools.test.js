@@ -38,4 +38,15 @@ describe('tools', () => {
     throw Error('oops...');
   });
 
+  it('should support encoding a string to base64', () => {
+    const encoded = tools.base64Encode('ABCD');
+    expect(encoded).to.be.a('string');
+    expect(encoded).to.equal('QUJDRA==');
+  });
+
+  it('should support decoding a base64 value to a string', () => {
+    const encoded = tools.base64Decode('QUJDRA==');
+    expect(encoded).to.be.a('string');
+    expect(encoded).to.equal('ABCD');
+  });
 });

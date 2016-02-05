@@ -18,3 +18,6 @@ exports.logAndThrow = (msg, error, arg) => {
   arg ? logger.error(msg, arg) : logger.error(msg);
   throw error;
 };
+
+exports.base64Encode = s => new Buffer(s).toString('base64');
+exports.base64Decode = s => new Buffer(s, 'base64').toString('ascii');

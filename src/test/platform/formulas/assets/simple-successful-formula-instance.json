@@ -1,0 +1,13 @@
+{
+    "formula": {
+        "active": true,
+        "singleThreaded": false
+    },
+    "name": "simple-successful-inst",
+    "configuration": {
+        "notification.email": "",
+        "trigger-instance": "<replace-me>"
+    },
+    "debugMode": true,
+    "active": true
+}
