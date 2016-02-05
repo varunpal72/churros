@@ -29,6 +29,8 @@ $ churros init
 
 > **PROTIP:** May have to `sudo` the global install and `npm link` depending on your environment
 
+> **PROTIP:** You can pass a `--file` to `churros init` if you have an existing properties file that you want to initialize from (i.e. `churros init --file /absolute/path/to/existing/properties/file`)
+
 > **PROTIP:** `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
 ```bash
 npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
