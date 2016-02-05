@@ -6,7 +6,7 @@ const fs = require('fs');
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const logger = require('core/logger');
+const logger = require('winston');
 
 var exports = module.exports = {};
 

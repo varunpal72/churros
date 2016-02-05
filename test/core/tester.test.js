@@ -1,30 +1,24 @@
 'use strict';
 
+require('core/assertions');
 const tester = require('core/tester');
 const nock = require('nock');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const tools = require('core/tools');
 const fs = require('fs');
 
 const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 const auth = 'User fake, Organization fake';
 const eiId = 789;
 
-const headers = () => {
-  return {
-    reqheaders: { 'Authorization': (value) => value === auth }
-  };
-};
+const headers = () => new Object({ reqheaders: { 'Authorization': (value) => value === auth } });
 
-const eventHeaders = () => {
-  return {
-    reqheaders: {
-      'Authorization': (value) => value === auth,
-      'Element-Instances': (value) => value === eiId
-    }
-  };
-};
+const eventHeaders = () => new Object({
+  reqheaders: {
+    'Authorization': (value) => value === auth,
+    'Element-Instances': (value) => value === eiId
+  }
+});
 
 const genPayload = (opts) => {
   opts = opts || {};
@@ -44,7 +38,6 @@ const genSchema = () => new Object({
 });
 
 const setup = () => {
-  tools.addCustomAssertions();
   chakram.setRequestDefaults({
     baseUrl: baseUrl,
     headers: { Authorization: auth }
@@ -79,7 +72,10 @@ const setup = () => {
       return { message: 'No foo found with the given ID' };
     })
     .get('/foo')
-    .reply(200, (uri, requestBody) => [genPayload({ id: 123 }), genPayload({ id: 456 })]);
+    .reply(200, (uri, requestBody) => [genPayload({ id: 123 }), genPayload({ id: 456 })])
+    .get('/foo')
+    .query({ page: '1', pageSize: '1' })
+    .reply(200, () => genPayload({ id: 123 }));
 
   /** PATCH && PUT **/
   nock(baseUrl, headers())
@@ -87,6 +83,10 @@ const setup = () => {
     .reply(200, (uri, requestBody) => {
       requestBody.id = 123;
       return requestBody;
+    })
+    .patch('/foo/456')
+    .reply(404, (uri, requestBody) => {
+      return { message: 'No foo found with the given ID' };
     })
     .put('/foo/123')
     .reply(200, (uri, requestBody) => {
@@ -179,4 +179,14 @@ describe('tester', () => {
     setup();
     return tester.createEvents('myelement', eiId, genPayload(), 2);
   });
+
+  tester.test.badPost400('/foo/bad', genPayload());
+  tester.test.badPatch404('/foo', genPayload(), 456);
+  tester.test.badGet404('/foo', 456);
+  tester.test.cruds('/foo', genPayload(), genSchema());
+  tester.test.cruds('/foo', genPayload(), genSchema(), chakram.put);
+  tester.test.crud('/foo', genPayload(), genSchema());
+  tester.test.crd('/foo', genPayload(), genSchema());
+  tester.test.create('/foo', genPayload(), genSchema());
+  tester.test.paginate('/foo', genSchema(), {});
 });

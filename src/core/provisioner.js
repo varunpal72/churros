@@ -4,10 +4,11 @@ const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const tools = require('core/tools');
-const props = require('core/props')();
+const props = require('core/props');
 const urlParser = require('url');
-const logger = require('core/logger');
+const logger = require('winston');
 const o = require('core/oauth');
+const defaults = require('core/defaults');
 
 var exports = module.exports = {};
 
@@ -47,7 +48,7 @@ const createInstance = (element, config, providerData) => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.info('Created %s element instance with ID: %s', element, r.body.id);
-      tools.authReset(props, r.body.token);
+      defaults.token(r.body.token);
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
@@ -114,7 +115,7 @@ exports.delete = (id) => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.info('Deleted element instance with ID: ' + id);
-      tools.authReset(props);
+      defaults.reset();
       return r.body;
     })
     .catch(r => logger.error('Failed to delete element instance: %s', r));

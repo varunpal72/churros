@@ -3,8 +3,8 @@
 const tester = require('core/tester');
 const provisioner = require('core/provisioner');
 const util = require('util');
-const props = require('core/props')();
-const logger = require('core/logger');
+const props = require('core/props');
+const logger = require('winston');
 
 const gen = (opts) => new Object({
   'event.notification.enabled': opts['event.notification.enabled'] || true,
