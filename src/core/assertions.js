@@ -22,6 +22,12 @@ chakram.addMethod('statusCode', (r, status) => {
 });
 
 chakram.addMethod("schemaAnd200", (r, schema) => {
+  if (!r || !r.response) {
+    let msg = 'Unable to validate HTTP status code and schema from response: ';
+    msg += r ? JSON.stringify(r) : null;
+    throw Error(msg);
+  }
+
   const responseStatus = r.response.statusCode;
   const responseBody = r.response.body;
 

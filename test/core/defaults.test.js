@@ -1,5 +1,4 @@
 require('core/assertions');
-const expect = require('chakram').expect;
 const defaults = require('core/defaults');
 
 describe('chakram defaults', () => {
