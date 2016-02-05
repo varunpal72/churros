@@ -13,7 +13,7 @@ var exports = module.exports = (initConfig) => {
 
   const missingPropForRootKey = (rootKey, key) => {
     const msg = util.format("Missing required property '%s' for '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, rootKey, rootKey, key);
-    throw new Error(msg);
+    throw Error(msg);
   };
 
   exports.get = (key) => {
@@ -23,7 +23,7 @@ var exports = module.exports = (initConfig) => {
     // right now, if a property isn't found we just fail immediately.  long term, we want to add the ability to run in
     // '--prompt' mode, which will prompt the user for a value to use.
     const msg = util.format("No value found for required property '%s'\n   Note: Can set this property by calling 'churros props %s <value>'", key, key);
-    throw new Error(msg);
+    throw Error(msg);
   };
 
   exports.getForKey = (rootKey, key) => {
@@ -59,7 +59,7 @@ var exports = module.exports = (initConfig) => {
     logger.debug('Looking for props for %s', element);
     if (!config[element]) {
       const msg = util.format("No properties found for element '%s'\n   Note: Can setup properties for this element by calling 'churros props %s:my.config.key <value>'", element, element);
-      throw new Error(msg);
+      throw Error(msg);
     }
 
     const response = {};
