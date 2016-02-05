@@ -1,21 +1,20 @@
 'use strict';
 
-const fs = require('fs');
 const tools = require('core/tools');
 const util = require('util');
-const logger = require('core/logger');
+const logger = require('winston');
 
-const missingPropForRootKey = (rootKey, key) => {
-  const msg = util.format("Missing required property '%s' for '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, rootKey, rootKey, key);
-  throw new Error(msg);
-};
+let config = {};
 
-var exports = module.exports = (config) => {
-  const configFile = process.env.HOME + '/.churros/sauce.json';
+var exports = module.exports = (initConfig) => {
+  // if no config was passed in, then stop
+  if (!initConfig) tools.logAndThrow('Cannot initialize props with empty config.');
+  config = initConfig;
 
-  // if no config was passed in AND the sauce.json file does not exist, then stop
-  if (!config && !fs.existsSync(configFile)) tools.logAndThrow('No props file found.  Please run churros init to get started.');
-  if (!config) config = require(configFile);
+  const missingPropForRootKey = (rootKey, key) => {
+    const msg = util.format("Missing required property '%s' for '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, rootKey, rootKey, key);
+    throw new Error(msg);
+  };
 
   exports.get = (key) => {
     var value = config[key];

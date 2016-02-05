@@ -1,7 +1,7 @@
 'use strict';
 
 const webdriver = require('selenium-webdriver');
-const logger = require('core/logger');
+const logger = require('winston');
 
 const manipulateDom = (element, browser, r, username, password, config) => {
   switch (element) {

@@ -1,14 +1,16 @@
 'use strict';
 
 const winston = require('winston');
-winston
-  .remove(winston.transports.Console)
-  .add(winston.transports.Console, { level: 'info' })
-  .add(winston.transports.File, {
-    filename: __dirname + '/../../churros.log',
-    level: 'info'
-  });
 
-winston.info('Initializing...');
+module.exports = (level) => {
+  winston
+    .remove(winston.transports.Console)
+    .add(winston.transports.Console, { level: level })
+    .add(winston.transports.File, {
+      filename: __dirname + '/../../churros.log',
+      level: 'info'
+    });
 
-module.exports = winston;
+  winston.info('Initializing...');
+  return winston;
+};

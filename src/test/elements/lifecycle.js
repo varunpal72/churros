@@ -6,7 +6,7 @@ const util = require('util');
 const provisioner = require('core/provisioner');
 const argv = require('optimist').demand('element').argv;
 const fs = require('fs');
-const logger = require('core/logger');
+const logger = require('winston');
 
 const createAll = (urlTemplate, list) => {
   let promises = [];
