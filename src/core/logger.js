@@ -11,6 +11,6 @@ module.exports = (level) => {
       level: 'info'
     });
 
-  winston.info('Initializing...');
+  winston.info('Initializing loggers...');
   return winston;
 };

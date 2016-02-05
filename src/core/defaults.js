@@ -10,9 +10,8 @@ let orgSecret = null;
 
 const setDefaults = (b, u, o) => {
   logger.debug('modifying the chakram default request headers and base url');
-  // keep these around
   chakram.setRequestDefaults({
-    baseUrl: baseUrl + '/elements/api-v2',
+    baseUrl: b,
     headers: { Authorization: util.format('User %s, Organization %s', userSecret, orgSecret) }
   });
 };
@@ -35,7 +34,7 @@ exports.reset = () => {
 exports.token = (token) => {
   logger.debug('adding token to our default request headers');
   chakram.setRequestDefaults({
-    baseUrl: baseUrl + '/elements/api-v2',
+    baseUrl: baseUrl,
     headers: { Authorization: util.format('User %s, Organization %s, Element %s', userSecret, orgSecret, token) }
   });
 };

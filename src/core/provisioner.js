@@ -47,7 +47,7 @@ const createInstance = (element, config, providerData) => {
   return chakram.post('/instances', instance)
     .then(r => {
       expect(r).to.have.statusCode(200);
-      logger.info('Created %s element instance with ID: %s', element, r.body.id);
+      logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       defaults.token(r.body.token);
       return r;
     })
@@ -114,7 +114,7 @@ exports.delete = (id) => {
   return chakram.delete('/instances/' + id)
     .then(r => {
       expect(r).to.have.statusCode(200);
-      logger.info('Deleted element instance with ID: ' + id);
+      logger.debug('Deleted element instance with ID: ' + id);
       defaults.reset();
       return r.body;
     })
