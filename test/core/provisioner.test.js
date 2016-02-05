@@ -1,5 +1,5 @@
-const provisioner = require('core/provisioner');
-const expect = require('chakram').expect;
+// const provisioner = require('core/provisioner');
+// const expect = require('chakram').expect;
 
 describe('provisioner', () => {
   it('should allow creating an element instance');

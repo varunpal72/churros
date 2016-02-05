@@ -39,5 +39,23 @@ describe('custom assertions', () => {
       return true;
     }
     throw 'Fail';
-  })
+  });
+
+  it('custom schemaAnd200 should handle bad inputs gracefully', () => {
+    try {
+      expect({ error: 'ERRCONNREFUSED' }).to.have.schemaAnd200({});
+    } catch (e) {
+      return true;
+    }
+    throw 'Fail';
+  });
+
+  it('custom schemaAnd200 should handle null input gracefully', () => {
+    try {
+      expect(null).to.have.schemaAnd200({});
+    } catch (e) {
+      return true;
+    }
+    throw 'Fail';
+  });
 });
