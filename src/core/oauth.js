@@ -2,6 +2,7 @@
 
 const webdriver = require('selenium-webdriver');
 const logger = require('winston');
+const props = require('core/props');
 
 const manipulateDom = (element, browser, r, username, password, config) => {
   switch (element) {
@@ -222,7 +223,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id("Login")).click();
     browser.wait(() => {
         return browser.isElementPresent(webdriver.By.id('oaapprove'));
-      }, 10000)
+      }, 5000)
       .thenCatch(r => true); // ignore
 
     browser.findElement(webdriver.By.id('oaapprove'))
@@ -274,10 +275,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 };
 
 module.exports = (element, r, username, password, config) => {
+  const b = props.get('browser');
+  logger.debug('Using the %s browser', b);
+
   const browser = new webdriver.Builder()
-    .forBrowser('firefox')
+    .forBrowser(b)
     .build();
   const url = manipulateDom(element, browser, r, username, password, config);
   browser.close();
+
   return url;
 };

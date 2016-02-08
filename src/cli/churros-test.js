@@ -23,6 +23,7 @@ const parse = (options) => {
     wait: options.wait,
     load: options.load,
     loadElement: options.element,
+    browser: options.browser,
     verbose: options.verbose === undefined ? false : options.verbose // hack...i can't figure out why it's not default to fals
   };
 };
@@ -77,6 +78,7 @@ const runTests = (suite, options) => {
   if (cliArgs.wait) args += util.format(" --wait %s", cliArgs.wait);
   if (cliArgs.loadElement) args += util.format(" --loadElement %s", cliArgs.loadElement);
   if (cliArgs.verbose) args += util.format(" --verbose %s", cliArgs.verbose);
+  if (cliArgs.browser) args += util.format(" --browser %s", cliArgs.browser);
 
   let cmd = util.format(rootDir + '/../../node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
   shell.exec(cmd);
@@ -93,6 +95,7 @@ commander
   .option('-u, --user <user>', 'overrides the default user setup during initialization')
   .option('-p, --password <password>', 'overrides the default password setup during initialization')
   .option('-r, --url [url]', 'overrides the default URL setup during initialization')
+  .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'phantomjs')
   .option('-V, --verbose', 'logging verbose mode')
   .on('--help', () => {
     console.log('  Examples:');

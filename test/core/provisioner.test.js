@@ -71,8 +71,7 @@ const setupProps = () => {
       'username': 'frank',
       'password': 'ricard',
       'oauth.api.key': 'he gon do one',
-      'oauth.api.secret': 'fill it up again',
-      'oauth.request.url': 'through the quad, up to the gymnasium'
+      'oauth.api.secret': 'fill it up again'
     },
     'myoauth2element': {
       'provisioning': 'oauth2',

@@ -93,6 +93,10 @@ beforeEach(() => {
     .reply(200, (uri, requestBody) => {
       requestBody.id = 123;
       return requestBody;
+    })
+    .put('/foo/456')
+    .reply(404, (uri, requestBody) => {
+      return { message: 'No foo found with the given ID' };
     });
 
   /** DELETE **/
@@ -107,12 +111,23 @@ describe('tester', () => {
   it('should support post', () => tester.post('/foo', genPayload(), genSchema()));
   it('should support post with custom validation', () => tester.post('/foo/bad', {}, (r) => expect(r).to.have.statusCode(400)));
   it('should support post with no schema or custom validation', () => tester.post('/foo', genPayload()));
+
   it('should support get', () => tester.get('/foo/123', genSchema()));
   it('should support get with custom validation', () => tester.get('/foo/456', (r) => expect(r).to.have.statusCode(404)));
+  it('should support get with no schema or custom validation', () => tester.get('/foo/123'));
+
   it('should support put', () => tester.put('/foo/123', genPayload(), genSchema()));
+  it('should support put with custom validation', () => tester.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
+  it('should support put with no schema or custom validation', () => tester.put('/foo/123', genPayload()));
+
   it('should support patch', () => tester.patch('/foo/123', genPayload({ id: 123 }), genSchema()));
+  it('should support patch with custom validation', () => tester.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
+  it('should support patch with no schema or custom validation', () => tester.put('/foo/123', genPayload()));
+
   it('should support delete', () => tester.delete('/foo/123'));
+
   it('should support find', () => tester.find('/foo', genSchema()));
+
   it('should support crd', () => tester.crd('/foo', genPayload(), genSchema()));
   it('should support crud', () => tester.crud('/foo', genPayload(), genSchema()));
   it('should support cruds', () => tester.cruds('/foo', genPayload(), genSchema()));
