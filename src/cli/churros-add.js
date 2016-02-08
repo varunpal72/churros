@@ -122,8 +122,6 @@ const askConfigQuestions = (r, config) => {
           .filter(c => !config[c])
           .reduce((p, c) => delete config[c], {});
 
-        console.log('config: %s', JSON.stringify(config, null, 2));
-
         r.config = config;
         res(r);
       }
