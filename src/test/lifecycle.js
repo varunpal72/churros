@@ -18,6 +18,7 @@ try {
 config.user = (argv.user || config.user);
 config.password = (argv.password || config.password);
 config.url = (argv.url || config.url);
+config.browser = (argv.browser || 'phantomjs');
 
 if (!config.events) config.events = {};
 config.events.wait = (argv.wait || config.events.wait);

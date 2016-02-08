@@ -9,7 +9,7 @@
 ## Installation
 If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/getting-started/installing-node) first.
 
-> **PROTIP:** `node` version must  be >= `v4.0.0`
+> __PROTIP:__ `node` version must  be >= `v4.0.0`
 
 Install the node dependencies and initialize churros.
 
@@ -27,11 +27,11 @@ $ npm link
 $ churros init
 ```
 
-> **PROTIP:** May have to `sudo` the global install and `npm link` depending on your environment
+> __PROTIP:__ May have to `sudo` the global install and `npm link` depending on your environment
 
-> **PROTIP:** You can pass a `--file` to `churros init` if you have an existing properties file that you want to initialize from (i.e. `churros init --file /absolute/path/to/existing/properties/file`)
+> __PROTIP:__ You can pass a `--file` to `churros init` if you have an existing properties file that you want to initialize from (i.e. `churros init --file /absolute/path/to/existing/properties/file`)
 
-> **PROTIP:** `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
+> __PROTIP:__ `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
 ```bash
 npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
 ```
@@ -47,7 +47,7 @@ $ churros test elements/closeio
 $ churros test elements/closeio --test 'contacts'
 ```
 
-> **PROTIP:** The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
+> __PROTIP:__ The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
 
 #### Platform Tests
 
@@ -63,7 +63,7 @@ $ churros test platform/formulas --test 'should not allow'
 $ churros test platform/formulas --test 'should allow' --user frank --password ricard
 ```
 
-> **PROTIP:** Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`.
+> __PROTIP:__ Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`.
 
 > __PROTIP:__ Passing a `--verbose` to `churros test [suite]` will log all of the debug messages to the console while the tests are running.
 
@@ -91,9 +91,9 @@ $ churros test platform/events --element sfdc
 $ churros test platform/events --element sfdc --load 100 --wait 60
 ```
 
-> **PROTIP:** Passing a `--wait`, `--load` and/or `--element` to `churros test platform/events` overrides any default value that may be in your property file.
+> __PROTIP:__ Passing a `--wait`, `--load` and/or `--element` to `churros test platform/events` overrides any default value that may be in your property file.
 
-> **PROTIP:** Some elements are not currently supported as they need to have an `events/assets/_element_.event.json` file setup so `churros` knows how to simulate events from that system.  If you run the event tests with an element that is not supported you will see an error message like:
+> __PROTIP:__ Some elements are not currently supported as they need to have an `events/assets/_element_.event.json` file setup so `churros` knows how to simulate events from that system.  If you run the event tests with an element that is not supported you will see an error message like:
 ```bash
 $ churros test platform/events --element box
 $ No box.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events
