@@ -3,8 +3,12 @@
     "vendorName": "customer",
     "fields": [
       {
-        "path": "id",
-        "vendorPath": "id"
+        "path": "firstName",
+        "vendorPath": "first_name"
+      },
+      {
+        "path": "lastName",
+        "vendorPath": "last_name"
       }
     ]
   },

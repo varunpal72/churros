@@ -1,9 +1,59 @@
 {
-  "type": ["array", "object"],
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "",
+  "type": ["object", "array"],
   "properties": {
+    "starts_at": {
+      "id": "/starts_at",
+      "type": "string"
+    },
+    "usage_limit": {
+      "id": "/usage_limit",
+      "type": "integer"
+    },
+    "code": {
+      "id": "/code",
+      "type": "string"
+    },
+    "times_used": {
+      "id": "/times_used",
+      "type": "integer"
+    },
     "id": {
-      "type": "number"
+      "id": "/id",
+      "type": "integer"
+    },
+    "discount_type": {
+      "id": "/discount_type",
+      "type": "string"
+    },
+    "value": {
+      "id": "/value",
+      "type": "string"
+    },
+    "minimum_order_amount": {
+      "id": "/minimum_order_amount",
+      "type": "string"
+    },
+    "applies_once": {
+      "id": "/applies_once",
+      "type": "boolean"
+    },
+    "status": {
+      "id": "/status",
+      "type": "string"
     }
   },
-  "required": ["id"]
+  "required": [
+    "starts_at",
+    "usage_limit",
+    "code",
+    "times_used",
+    "id",
+    "discount_type",
+    "value",
+    "minimum_order_amount",
+    "applies_once",
+    "status"
+  ]
 }

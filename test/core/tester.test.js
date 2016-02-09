@@ -165,6 +165,11 @@ describe('tester', () => {
     return tester.crd('/foo', genPayload(), genSchema());
   });
 
+  it('should support crds', () => {
+    setup();
+    return tester.crds('/foo', genPayload(), genSchema());
+  });
+
   it('should support crud', () => {
     setup();
     return tester.crud('/foo', genPayload(), genSchema());

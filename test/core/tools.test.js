@@ -8,6 +8,13 @@ describe('tools', () => {
     expect(random).to.be.a('string');
   });
 
+  it('should support generating a random email address', () => {
+    const random = tools.randomEmail();
+    expect(random).to.be.a('string');
+    expect(random).to.include('@');
+    expect(random).to.include('.com');
+  });
+
   it('should support generating a random int', () => {
     const randomInt = tools.randomInt();
     expect(randomInt).to.be.a('number');
