@@ -27,7 +27,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.name('login_submit')).click();
     browser.findElement(webdriver.By.name('consent_accept')).click();
     return browser.getCurrentUrl();
-case 'shopify':
+  case 'shopify':
     browser.get(r.body.oauthUrl);
     browser.wait(webdriver.until.elementLocated(webdriver.By.name('login')), 1000);
     browser.findElement(webdriver.By.name('login')).clear();
@@ -36,10 +36,10 @@ case 'shopify':
     browser.findElement(webdriver.By.name('password')).sendKeys(password);
     browser.findElement(webdriver.By.name('commit')).click();
     logger.debug(browser.getTitle());
-    return browser.wait(webdriver.until.titleIs('https://httpbin.org/get'), 5000)
-    .then(() => {
-      return browser.getCurrentUrl();
-    });
+    browser.wait(() => {
+      return browser.getTitle().then((title) => !title);
+    }, 10000);
+    return browser.getCurrentUrl();
   case 'dropbox':
     // TODO - not working yet...
     browser.get(r.body.oauthUrl);
