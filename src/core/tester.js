@@ -103,10 +103,10 @@ exports.crd = crd;
 const crds = (api, payload, schema) => {
   let createdId = -1;
   return post(api, payload, schema)
-  .then(r => createdId = r.body.id)
-  .then(r => get(api + '/' + createdId, schema))
-  .then(r => find(api, schema))
-  .then(r => remove(api + '/' + createdId));
+    .then(r => createdId = r.body.id)
+    .then(r => get(api + '/' + createdId, schema))
+    .then(r => find(api, schema))
+    .then(r => remove(api + '/' + createdId));
 };
 exports.crds = crds;
 
@@ -146,6 +146,7 @@ const createEvents = (element, eiId, payload, numEvents) => {
 exports.createEvents = createEvents;
 
 const listenForEvents = (port, numEventsSent, waitSecs, validate) => {
+  validate = (typeof callback === 'function') ? validate : () => {};
   let receivedEvents = 0;
   let events = [];
   return new Promise((resolve, reject) => {
@@ -156,18 +157,13 @@ const listenForEvents = (port, numEventsSent, waitSecs, validate) => {
       logger.debug('%s event(s) received', receivedEvents);
       if (receivedEvents === numEventsSent) resolve(request);
     }).listen(port, "localhost", (err) => {
-      err ? reject(err) : logger.info('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+      err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
     });
 
     const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
     setTimeout(() => reject(msg), waitSecs * 1000);
   }).
-  then(r => {
-    for (var i = 0; i < events.length; i++) {
-      if (validate)
-        validate(events[i]);
-    }
-  });
+  then(r => events.forEach(e => validate(e)));
 };
 exports.listenForEvents = listenForEvents;
 

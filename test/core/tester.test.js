@@ -133,11 +133,10 @@ describe('tester', () => {
   it('should support crud', () => tester.crud('/foo', genPayload(), genSchema()));
   it('should support cruds', () => tester.cruds('/foo', genPayload(), genSchema()));
   it('should support creating events', () => tester.createEvents('myelement', eiId, genPayload(), 2));
-  it('should support listening for events', (done) => {
+
+  it('should support listening for events with custom validation', (done) => {
     const port = 8085;
-    tester.listenForEvents(port, 1, 5, (event) => {
-      expect(event).to.not.be.empty;
-    })
+    tester.listenForEvents(port, 1, 5, (event) => expect(event).to.not.be.empty)
       .then(r => done())
       .then(r => {
         throw Error('Failed...');

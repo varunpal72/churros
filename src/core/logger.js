@@ -8,9 +8,9 @@ module.exports = (level) => {
     .add(winston.transports.Console, { level: level })
     .add(winston.transports.File, {
       filename: __dirname + '/../../churros.log',
-      level: 'info'
+      level: 'debug'
     });
 
-  winston.info('Initializing loggers...');
+  winston.debug('Initializing loggers...');
   return winston;
 };
