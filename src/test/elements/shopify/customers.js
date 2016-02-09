@@ -5,8 +5,8 @@ const tools = require('core/tools');
 const schema = require('./assets/customers.schema');
 
 const customer = (custom) => new Object({
-  firstName: custom.firstName || 'Bill',
-  lastName: custom.lastName || 'Murray',
+  first_name: custom.firstName || 'Bill',
+  last_name: custom.lastName || 'Murray',
   email: custom.email || tools.randomEmail()
 });
 
