@@ -201,7 +201,17 @@
     }
   },
   "required": [
+    "total_spent",
+    "addresses",
+    "tax_exempt",
+    "created_at",
+    "verified_email",
+    "tags",
+    "orders_count",
+    "updated_at",
+    "accepts_marketing",
     "id",
+    "state",
     "email"
   ]
 }

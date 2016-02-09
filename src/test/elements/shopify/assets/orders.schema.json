@@ -517,13 +517,11 @@
     "total_price_usd",
     "order_number",
     "created_at",
-    "billing_address",
     "line_items",
     "taxes_included",
     "buyer_accepts_marketing",
     "confirmed",
     "total_weight",
-    "contact_email",
     "refunds",
     "total_discounts",
     "number",
@@ -533,7 +531,6 @@
     "processed_at",
     "currency",
     "id",
-    "shipping_address",
     "email",
     "source_name",
     "subtotal_price",
@@ -551,7 +548,6 @@
     "financial_status",
     "name",
     "discount_codes",
-    "gateway",
-    "customer"
+    "gateway"
   ]
 }
