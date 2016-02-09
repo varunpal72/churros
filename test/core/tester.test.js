@@ -129,6 +129,7 @@ describe('tester', () => {
   it('should support find', () => tester.find('/foo', genSchema()));
 
   it('should support crd', () => tester.crd('/foo', genPayload(), genSchema()));
+  it('should support crds', () => tester.crds('/foo', genPayload(), genSchema()));
   it('should support crud', () => tester.crud('/foo', genPayload(), genSchema()));
   it('should support cruds', () => tester.cruds('/foo', genPayload(), genSchema()));
   it('should support creating events', () => tester.createEvents('myelement', eiId, genPayload(), 2));
@@ -160,6 +161,7 @@ describe('tester', () => {
   tester.test.cruds('/foo', genPayload(), genSchema(), chakram.put);
   tester.test.crud('/foo', genPayload(), genSchema());
   tester.test.crd('/foo', genPayload(), genSchema());
+  tester.test.crds('/foo', genPayload(), genSchema());
   tester.test.create('/foo', genPayload(), genSchema());
   tester.test.paginate('/foo', genSchema(), {});
 

@@ -6,6 +6,12 @@ var exports = module.exports = {};
 
 exports.random = () => Math.random().toString(36).substring(7);
 
+exports.randomEmail = () => {
+  var address = exports.random();
+  var domain = 'churros';
+  return address + '@' + domain + '.com';
+};
+
 exports.randomInt = () => Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
 
 exports.logAndThrow = (msg, error, arg) => {

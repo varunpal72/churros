@@ -100,6 +100,16 @@ const crd = (api, payload, schema) => {
 };
 exports.crd = crd;
 
+const crds = (api, payload, schema) => {
+  let createdId = -1;
+  return post(api, payload, schema)
+  .then(r => createdId = r.body.id)
+  .then(r => get(api + '/' + createdId, schema))
+  .then(r => find(api, schema))
+  .then(r => remove(api + '/' + createdId));
+};
+exports.crds = crds;
+
 const crud = (api, payload, schema, updateCb) => {
   return post(api, payload, schema)
     .then(r => get(api + '/' + r.body.id, schema))
@@ -163,6 +173,11 @@ const testCrd = (api, payload, schema) => {
   it(name, () => crd(api, payload, schema));
 };
 
+const testCrds = (api, payload, schema) => {
+  const name = util.format('should allow CRDS for %s', api);
+  it(name, () => crd(api, payload, schema));
+};
+
 const testCrud = (api, payload, schema, updateCb) => {
   const name = util.format('should allow CRUD for %s', api);
   it(name, () => crud(api, payload, schema, updateCb));
@@ -206,5 +221,6 @@ exports.test = {
   cruds: testCruds,
   crud: testCrud,
   crd: testCrd,
+  crds: testCrds,
   create: testCreate
 };

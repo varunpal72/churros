@@ -1,0 +1,217 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "",
+  "type": ["array", "object"],
+  "properties": {
+    "total_spent": {
+      "id": "/total_spent",
+      "type": "string"
+    },
+    "addresses": {
+      "id": "/addresses",
+      "type": "array",
+      "items": {
+        "id": "/addresses/0",
+        "type": "object",
+        "properties": {
+          "zip": {
+            "id": "/addresses/0/zip",
+            "type": "string"
+          },
+          "country": {
+            "id": "/addresses/0/country",
+            "type": "string"
+          },
+          "address2": {
+            "id": "/addresses/0/address2",
+            "type": "string"
+          },
+          "city": {
+            "id": "/addresses/0/city",
+            "type": "string"
+          },
+          "address1": {
+            "id": "/addresses/0/address1",
+            "type": "string"
+          },
+          "last_name": {
+            "id": "/addresses/0/last_name",
+            "type": "string"
+          },
+          "province_code": {
+            "id": "/addresses/0/province_code",
+            "type": "string"
+          },
+          "country_code": {
+            "id": "/addresses/0/country_code",
+            "type": "string"
+          },
+          "default": {
+            "id": "/addresses/0/default",
+            "type": "boolean"
+          },
+          "province": {
+            "id": "/addresses/0/province",
+            "type": "string"
+          },
+          "phone": {
+            "id": "/addresses/0/phone",
+            "type": "string"
+          },
+          "name": {
+            "id": "/addresses/0/name",
+            "type": "string"
+          },
+          "country_name": {
+            "id": "/addresses/0/country_name",
+            "type": "string"
+          },
+          "id": {
+            "id": "/addresses/0/id",
+            "type": "integer"
+          },
+          "first_name": {
+            "id": "/addresses/0/first_name",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "last_order_name": {
+      "id": "/last_order_name",
+      "type": "string"
+    },
+    "last_order_id": {
+      "id": "/last_order_id",
+      "type": "integer"
+    },
+    "tax_exempt": {
+      "id": "/tax_exempt",
+      "type": "boolean"
+    },
+    "created_at": {
+      "id": "/created_at",
+      "type": "string"
+    },
+    "last_name": {
+      "id": "/last_name",
+      "type": "string"
+    },
+    "verified_email": {
+      "id": "/verified_email",
+      "type": "boolean"
+    },
+    "tags": {
+      "id": "/tags",
+      "type": "string"
+    },
+    "orders_count": {
+      "id": "/orders_count",
+      "type": "integer"
+    },
+    "default_address": {
+      "id": "/default_address",
+      "type": "object",
+      "properties": {
+        "zip": {
+          "id": "/default_address/zip",
+          "type": "string"
+        },
+        "country": {
+          "id": "/default_address/country",
+          "type": "string"
+        },
+        "address2": {
+          "id": "/default_address/address2",
+          "type": "string"
+        },
+        "city": {
+          "id": "/default_address/city",
+          "type": "string"
+        },
+        "address1": {
+          "id": "/default_address/address1",
+          "type": "string"
+        },
+        "last_name": {
+          "id": "/default_address/last_name",
+          "type": "string"
+        },
+        "province_code": {
+          "id": "/default_address/province_code",
+          "type": "string"
+        },
+        "country_code": {
+          "id": "/default_address/country_code",
+          "type": "string"
+        },
+        "default": {
+          "id": "/default_address/default",
+          "type": "boolean"
+        },
+        "province": {
+          "id": "/default_address/province",
+          "type": "string"
+        },
+        "phone": {
+          "id": "/default_address/phone",
+          "type": "string"
+        },
+        "name": {
+          "id": "/default_address/name",
+          "type": "string"
+        },
+        "country_name": {
+          "id": "/default_address/country_name",
+          "type": "string"
+        },
+        "id": {
+          "id": "/default_address/id",
+          "type": "integer"
+        },
+        "first_name": {
+          "id": "/default_address/first_name",
+          "type": "string"
+        }
+      }
+    },
+    "updated_at": {
+      "id": "/updated_at",
+      "type": "string"
+    },
+    "accepts_marketing": {
+      "id": "/accepts_marketing",
+      "type": "boolean"
+    },
+    "id": {
+      "id": "/id",
+      "type": "integer"
+    },
+    "state": {
+      "id": "/state",
+      "type": "string"
+    },
+    "first_name": {
+      "id": "/first_name",
+      "type": "string"
+    },
+    "email": {
+      "id": "/email",
+      "type": "string"
+    }
+  },
+  "required": [
+    "total_spent",
+    "addresses",
+    "tax_exempt",
+    "created_at",
+    "verified_email",
+    "tags",
+    "orders_count",
+    "updated_at",
+    "accepts_marketing",
+    "id",
+    "state",
+    "email"
+  ]
+}
