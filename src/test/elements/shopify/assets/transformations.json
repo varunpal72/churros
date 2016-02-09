@@ -38,5 +38,14 @@
         "vendorPath": "id"
       }
     ]
+  },
+  "shops": {
+    "vendorName": "shop",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
   }
 }
