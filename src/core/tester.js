@@ -164,7 +164,8 @@ const listenForEvents = (port, numEventsSent, waitSecs, validate) => {
   }).
   then(r => {
     for (var i = 0; i < events.length; i++) {
-      validate(events[i]);
+      if (validate)
+        validate(events[i]);
     }
   });
 };
