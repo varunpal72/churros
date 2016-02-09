@@ -74,6 +74,10 @@ tester.test.crd(api, payload, schema)
 // Attempts to call a POST to the given API with the given payload and validates the response matches the given schema
 tester.test.create(api, payload, schema)
 
+// Creates an object from the given payload, and then searches for that object using the CE where clause by the specified
+// field that is passed in.  For example, if 'id' is passed in then it will end up calling GET {api}?where=id='{idThatWasJustCreated}'
+tester.test.search(api, payload, field)
+
 // DOCS COMING SOON
 tester.test.paginate
 ```

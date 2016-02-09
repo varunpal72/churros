@@ -42,14 +42,16 @@ const validator = (schemaOrValidationCb) => {
 };
 
 const post = (api, payload, schema) => {
+  logger.debug('POST %s', api);
   return chakram.post(api, payload)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to create %s', r, api));
 };
 exports.post = post;
 
-const get = (api, schema) => {
-  return chakram.get(api)
+const get = (api, schema, params) => {
+  logger.debug('GET %s with params', api, params);
+  return chakram.get(api, params)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to retrieve %s', r, api));
 };
@@ -57,6 +59,7 @@ exports.get = get;
 
 const update = (api, payload, schema, cb) => {
   cb = (cb || chakram.patch);
+  logger.debug('%s %s', cb === chakram.patch ? 'PATCH' : 'PUT', api);
 
   return cb(api, payload)
     .then(r => validator(schema)(r))
@@ -66,6 +69,7 @@ exports.patch = (api, payload, schema) => update(api, payload, schema, chakram.p
 exports.put = (api, payload, schema) => update(api, payload, schema, chakram.put);
 
 const remove = (api) => {
+  logger.debug('DELETE %s', api);
   return chakram.delete(api)
     .then(r => {
       expect(r).to.have.statusCode(200);
@@ -76,6 +80,7 @@ const remove = (api) => {
 exports.delete = remove;
 
 const find = (api, schema) => {
+  logger.debug('GET %s', api);
   return chakram.get(api)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to find %s', r, api));
@@ -217,6 +222,24 @@ const testBadPost400 = (api, payload) => {
   it(name, () => post(api, payload, (r) => expect(r).to.have.statusCode(400)));
 };
 
+const testSearch = (api, payload, field) => {
+  const name = util.format('should support searching %s by %s', api, field);
+  it(name, () => {
+    let id;
+    return post(api, payload)
+      .then(r => {
+        id = r.body.id;
+        const clause = util.format("%s='%s'", field, r.body[field]); // have to escape where values with single quotes
+        const options = { qs: { where: clause } };
+        return get(api, (r) => {
+          expect(r).to.have.statusCode(200);
+          expect(r.body.length).to.equal(1);
+        }, options);
+      })
+      .then(r => remove(api + '/' + id));
+  });
+};
+
 exports.test = {
   badPost400: testBadPost400,
   badPatch404: testBadPatch404,
@@ -226,5 +249,6 @@ exports.test = {
   crud: testCrud,
   crd: testCrd,
   crds: testCrds,
-  create: testCreate
+  create: testCreate,
+  search: testSearch
 };

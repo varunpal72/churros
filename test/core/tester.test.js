@@ -76,7 +76,10 @@ beforeEach(() => {
     .reply(200, (uri, requestBody) => [genPayload({ id: 123 }), genPayload({ id: 456 })])
     .get('/foo')
     .query({ page: '1', pageSize: '1' })
-    .reply(200, () => genPayload({ id: 123 }));
+    .reply(200, () => genPayload({ id: 123 }))
+    .get('/foo')
+    .query({ where: 'id=\'123\'' })
+    .reply(200, () => [genPayload({ id: 123 })]);
 
   /** PATCH && PUT **/
   nock(baseUrl, headers())
@@ -165,6 +168,7 @@ describe('tester', () => {
   tester.test.crds('/foo', genPayload(), genSchema());
   tester.test.create('/foo', genPayload(), genSchema());
   tester.test.paginate('/foo', genSchema(), {});
+  tester.test.search('/foo', genPayload(), 'id');
 
   tester.for('fakehub', 'resource');
   tester.for('fakehub', 'resource', (api) => {
