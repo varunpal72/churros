@@ -1,11 +1,14 @@
 'use strict';
 
 const tester = require('core/tester');
+const tools = require('core/tools');
 const schema = require('./assets/products.schema');
 
-tester.for('ecommerce', 'products', (api) => {
-  // checkout functions available under tester.test which provide a lot of pre-canned tests
-  //   more information here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#adding-tests-to-an-existing-suite
+const products = (custom) => new Object({
+  title: custom.title || tools.random(),
+  product_type: custom.product_type || tools.random()
+});
 
-  it('brad should insert some tests here :)', () => true);
+tester.for('ecommerce', 'products', (api) => {
+  tester.test.cruds(api, products({}), schema);
 });

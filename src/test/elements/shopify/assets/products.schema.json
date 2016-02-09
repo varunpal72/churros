@@ -1,9 +1,183 @@
 {
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "id": "",
   "type": ["array", "object"],
   "properties": {
+    "images": {
+      "id": "/images",
+      "type": "array",
+      "items": []
+    },
+    "created_at": {
+      "id": "/created_at",
+      "type": "string"
+    },
+    "handle": {
+      "id": "/handle",
+      "type": "string"
+    },
+    "variants": {
+      "id": "/variants",
+      "type": "array",
+      "items": {
+        "id": "/variants/0",
+        "type": "object",
+        "properties": {
+          "inventory_quantity": {
+            "id": "/variants/0/inventory_quantity",
+            "type": "integer"
+          },
+          "fulfillment_service": {
+            "id": "/variants/0/fulfillment_service",
+            "type": "string"
+          },
+          "taxable": {
+            "id": "/variants/0/taxable",
+            "type": "boolean"
+          },
+          "requires_shipping": {
+            "id": "/variants/0/requires_shipping",
+            "type": "boolean"
+          },
+          "old_inventory_quantity": {
+            "id": "/variants/0/old_inventory_quantity",
+            "type": "integer"
+          },
+          "created_at": {
+            "id": "/variants/0/created_at",
+            "type": "string"
+          },
+          "weight": {
+            "id": "/variants/0/weight",
+            "type": "integer"
+          },
+          "title": {
+            "id": "/variants/0/title",
+            "type": "string"
+          },
+          "inventory_policy": {
+            "id": "/variants/0/inventory_policy",
+            "type": "string"
+          },
+          "updated_at": {
+            "id": "/variants/0/updated_at",
+            "type": "string"
+          },
+          "weight_unit": {
+            "id": "/variants/0/weight_unit",
+            "type": "string"
+          },
+          "price": {
+            "id": "/variants/0/price",
+            "type": "string"
+          },
+          "product_id": {
+            "id": "/variants/0/product_id",
+            "type": "integer"
+          },
+          "option1": {
+            "id": "/variants/0/option1",
+            "type": "string"
+          },
+          "id": {
+            "id": "/variants/0/id",
+            "type": "integer"
+          },
+          "position": {
+            "id": "/variants/0/position",
+            "type": "integer"
+          },
+          "sku": {
+            "id": "/variants/0/sku",
+            "type": "string"
+          },
+          "grams": {
+            "id": "/variants/0/grams",
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "title": {
+      "id": "/title",
+      "type": "string"
+    },
+    "tags": {
+      "id": "/tags",
+      "type": "string"
+    },
+    "published_scope": {
+      "id": "/published_scope",
+      "type": "string"
+    },
+    "product_type": {
+      "id": "/product_type",
+      "type": "string"
+    },
+    "updated_at": {
+      "id": "/updated_at",
+      "type": "string"
+    },
+    "vendor": {
+      "id": "/vendor",
+      "type": "string"
+    },
+    "options": {
+      "id": "/options",
+      "type": "array",
+      "items": {
+        "id": "/options/0",
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "id": "/options/0/product_id",
+            "type": "integer"
+          },
+          "values": {
+            "id": "/options/0/values",
+            "type": "array",
+            "items": {
+              "id": "/options/0/values/0",
+              "type": "string"
+            }
+          },
+          "name": {
+            "id": "/options/0/name",
+            "type": "string"
+          },
+          "id": {
+            "id": "/options/0/id",
+            "type": "integer"
+          },
+          "position": {
+            "id": "/options/0/position",
+            "type": "integer"
+          }
+        }
+      }
+    },
     "id": {
-      "type": "number"
+      "id": "/id",
+      "type": "integer"
+    },
+    "published_at": {
+      "id": "/published_at",
+      "type": "string"
     }
   },
-  "required": ["id"]
+  "required": [
+    "images",
+    "created_at",
+    "handle",
+    "variants",
+    "title",
+    "tags",
+    "published_scope",
+    "product_type",
+    "updated_at",
+    "vendor",
+    "options",
+    "id",
+    "published_at"
+  ]
 }
