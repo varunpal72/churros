@@ -29,15 +29,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     return browser.getCurrentUrl();
 case 'shopify':
     browser.get(r.body.oauthUrl);
+    browser.wait(webdriver.until.elementLocated(webdriver.By.name('login')), 1000);
     browser.findElement(webdriver.By.name('login')).clear();
     browser.findElement(webdriver.By.name('login')).sendKeys(username);
     browser.findElement(webdriver.By.name('password')).clear();
     browser.findElement(webdriver.By.name('password')).sendKeys(password);
     browser.findElement(webdriver.By.name('commit')).click();
-    browser.wait(() => {
-        return browser.getTitle().then((title) => !title);
-    }, 10000);
-    return browser.getCurrentUrl();
+    logger.debug(browser.getTitle());
+    return browser.wait(webdriver.until.titleIs('https://httpbin.org/get'), 5000)
+    .then(() => {
+      return browser.getCurrentUrl();
+    });
   case 'dropbox':
     // TODO - not working yet...
     browser.get(r.body.oauthUrl);
