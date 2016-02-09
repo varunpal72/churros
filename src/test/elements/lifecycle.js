@@ -6,6 +6,7 @@ const util = require('util');
 const provisioner = require('core/provisioner');
 const argv = require('optimist').demand('element').argv;
 const fs = require('fs');
+const logger = require('winston');
 
 const createAll = (urlTemplate, list) => {
   let promises = [];
@@ -18,7 +19,7 @@ const createAll = (urlTemplate, list) => {
 };
 
 const terminate = (error) => {
-  console.log('Failed to initialize element: %s', error);
+  logger.error('Failed to initialize element: %s', error);
   process.exit(1);
 };
 
@@ -32,7 +33,7 @@ before(done => {
       // object definitions file exists? create the object definitions on the instance
       const objectDefinitionsFile = util.format('%s/assets/object.definitions', __dirname);
       if (fs.existsSync(objectDefinitionsFile + '.json')) {
-        console.log('Setting up object definitions');
+        logger.debug('Setting up object definitions');
         const url = util.format('/instances/%s/objects/%s/definitions', instanceId);
         return createAll(url, require(objectDefinitionsFile));
       }
@@ -41,7 +42,7 @@ before(done => {
       // transformations file exists? create the transformations on the instance
       const transformationsFile = util.format('%s/%s/assets/transformations', __dirname, element);
       if (fs.existsSync(transformationsFile + '.json')) {
-        console.log('Setting up transformations');
+        logger.debug('Setting up transformations');
         const url = util.format('/instances/%s/transformations/%s', instanceId);
         return createAll(url, require(transformationsFile));
       }
@@ -61,6 +62,6 @@ after(done => {
   instanceId ?
     provisioner.delete(instanceId)
     .then(() => done())
-    .catch(r => console.log('Failed to delete element instance')) :
+    .catch(r => logger.error('Failed to delete element instance: %s', r)) :
     done();
 });

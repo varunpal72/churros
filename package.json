@@ -10,10 +10,10 @@
   },
   "scripts": {
     "postinstall": "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
-    "test": "test/cli/tests.sh && istanbul cover _mocha test/core -- --reporter spec --ui bdd",
+    "test": "test/cli/tests.sh && istanbul cover -x '**/src/core/oauth.js' _mocha test/core -- --reporter spec --ui bdd",
     "testnc": "test/cli/tests.sh && mocha test/core --reporter spec --ui bdd",
     "testcli": "test/cli/tests.sh",
-    "testcore": "istanbul cover _mocha test/core -- --reporter spec --ui bdd",
+    "testcore": "istanbul cover -x '**/src/core/oauth.js' _mocha test/core -- --reporter spec --ui bdd",
     "testcorenc": "mocha test/core --reporter spec --ui bdd",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
@@ -28,12 +28,14 @@
     "inquirer": "^0.11.4",
     "istanbul": "^0.4.2",
     "mocha": "^2.3.4",
+    "mockery": "^1.4.0",
     "nock": "^7.0.2",
     "optimist": "^0.6.1",
     "replacestream": "^4.0.0",
     "selenium-webdriver": "^2.48.2",
     "shelljs": "^0.5.3",
-    "tv4": "^1.2.7"
+    "tv4": "^1.2.7",
+    "winston": "^2.1.1"
   },
   "devDependencies": {
     "bats": "^0.4.2"

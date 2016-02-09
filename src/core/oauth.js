@@ -1,6 +1,8 @@
 'use strict';
 
 const webdriver = require('selenium-webdriver');
+const logger = require('winston');
+const props = require('core/props');
 
 const manipulateDom = (element, browser, r, username, password, config) => {
   switch (element) {
@@ -64,7 +66,6 @@ case 'shopify':
     const findBtn = () => {
       return browser.findElement(webdriver.By.css('.login-button'))
         .then(r => {
-          console.log('clicking on %s', r);
           r.click();
           return true;
         });
@@ -136,7 +137,6 @@ case 'shopify':
     const passwordCb = () => {
       return browser.findElement(webdriver.By.id('Passwd'))
         .then(r => {
-          console.log(r);
           r.sendKeys(password);
           return true;
         });
@@ -234,7 +234,7 @@ case 'shopify':
     browser.findElement(webdriver.By.id("Login")).click();
     browser.wait(() => {
         return browser.isElementPresent(webdriver.By.id('oaapprove'));
-      }, 10000)
+      }, 5000)
       .thenCatch(r => true); // ignore
 
     browser.findElement(webdriver.By.id('oaapprove'))
@@ -280,16 +280,20 @@ case 'shopify':
     browser.findElement(webdriver.By.name('commit')).click();
     return browser.getCurrentUrl();
   default:
-    console.log('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
+    logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
     process.exit(1);
   }
 };
 
 module.exports = (element, r, username, password, config) => {
+  const b = props.get('browser');
+  logger.debug('Using the %s browser', b);
+
   const browser = new webdriver.Builder()
-    .forBrowser('firefox')
+    .forBrowser(b)
     .build();
   const url = manipulateDom(element, browser, r, username, password, config);
   browser.close();
+
   return url;
 };

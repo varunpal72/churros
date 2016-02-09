@@ -6,6 +6,7 @@ const fs = require('fs');
 const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
+const logger = require('winston');
 
 var exports = module.exports = {};
 
@@ -134,7 +135,7 @@ const createEvents = (element, eiId, payload, numEvents) => {
   const api = '/events/' + element;
   const options = { headers: { 'Element-Instances': eiId } };
 
-  console.log('Attempting to send %s events to %s', numEvents, api);
+  logger.debug('Attempting to send %s events to %s', numEvents, api);
   let promises = [];
   for (var i = 0; i < numEvents; i++) {
     const response = chakram.post(api, payload, options);
@@ -150,10 +151,10 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
     http.createServer((request, response) => {
       response.end('{}');
       receivedEvents++;
-      console.log('%s event(s) received', receivedEvents); // TODO - JJW - disable this logging unless in verbose mode after migrating to winston
+      logger.debug('%s event(s) received', receivedEvents);
       if (receivedEvents === numEventsSent) resolve(request);
     }).listen(port, "localhost", (err) => {
-      err ? reject(err) : console.log('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+      err ? reject(err) : logger.info('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
     });
 
     const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);

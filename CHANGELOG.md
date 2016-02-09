@@ -5,6 +5,10 @@
 * Leveraging `istanbul` and to generate unit test coverage statistics on each circleCI test run and publish them to `coveralls`.
  * Due to the extremely low number that was generated from the above, wrote a lot more unit tests :smile:
 * Added platform tests for the new element metadata APIs
+* Leveraging `winston` for better logging
+* Support for `--verbose` mode when running `churros test`
+* Prompt for authentication type and properties when calling `churros add element`
+* Added optional `--browser <name>` support so, if you're debugging your OAuth element, you can now actually *see* the browser running your selenium commands.  (i.e. `churros test elements/foo --browser firefox`)
 
 ## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
 

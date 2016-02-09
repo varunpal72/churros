@@ -3,7 +3,8 @@
 const tester = require('core/tester');
 const provisioner = require('core/provisioner');
 const util = require('util');
-const props = require('core/props')();
+const props = require('core/props');
+const logger = require('winston');
 
 const gen = (opts) => new Object({
   'event.notification.enabled': opts['event.notification.enabled'] || true,
@@ -14,7 +15,7 @@ const loadPayload = (element) => {
   try {
     return require(util.format('./assets/%s.event.json', element));
   } catch (e) {
-    console.log('No %s.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events', element);
+    logger.error('No %s.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events', element);
     process.exit(1);
   }
 };

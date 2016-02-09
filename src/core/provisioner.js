@@ -4,8 +4,11 @@ const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const tools = require('core/tools');
-const props = require('core/props')();
+const props = require('core/props');
 const urlParser = require('url');
+const logger = require('winston');
+const o = require('core/oauth');
+const defaults = require('core/defaults');
 
 var exports = module.exports = {};
 
@@ -44,8 +47,8 @@ const createInstance = (element, config, providerData) => {
   return chakram.post('/instances', instance)
     .then(r => {
       expect(r).to.have.statusCode(200);
-      console.log('Created %s element instance with ID: %s', element, r.body.id);
-      tools.authReset(props, r.body.token);
+      logger.debug('Created %s element instance with ID: %s', element, r.body.id);
+      defaults.token(r.body.token);
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
@@ -56,7 +59,7 @@ const oauth = (element, args, config) => {
   return chakram.get(url, args.options)
     .then(r => {
       expect(r).to.have.statusCode(200);
-      return require('core/oauth')(element, r, args.username, args.password, config);
+      return o(element, r, args.username, args.password, config);
     })
     .then(r => {
       const query = urlParser.parse(r, true).query;
@@ -92,7 +95,7 @@ exports.create = (element, args) => {
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
 
-  console.log('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
+  logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
 
   switch (type) {
   case 'oauth1':
@@ -111,9 +114,9 @@ exports.delete = (id) => {
   return chakram.delete('/instances/' + id)
     .then(r => {
       expect(r).to.have.statusCode(200);
-      console.log('Deleted element instance with ID: ' + id);
-      tools.authReset(props);
+      logger.debug('Deleted element instance with ID: ' + id);
+      defaults.reset();
       return r.body;
     })
-    .catch(r => console.log('Failed to delete element instance: %s', r));
+    .catch(r => logger.error('Failed to delete element instance: %s', r));
 };
