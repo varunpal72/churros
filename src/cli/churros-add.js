@@ -173,6 +173,7 @@ const stubElementFiles = (answers) =>
         if (!sauceConfig[answers.name]) sauceConfig[answers.name] = {}; // init
         sauceConfig[answers.name][c] = value;
       });
+      if (answers.auth !== 'standard') sauceConfig[answers.name].provisioning = answers.auth; // leave standard blank for now
       fs.writeFileSync(saucePath, JSON.stringify(sauceConfig, null, 2));
     }
 
