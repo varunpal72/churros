@@ -135,7 +135,9 @@ describe('tester', () => {
   it('should support creating events', () => tester.createEvents('myelement', eiId, genPayload(), 2));
   it('should support listening for events', (done) => {
     const port = 8085;
-    tester.listenForEvents(port, 1, 5)
+    tester.listenForEvents(port, 1, 5, (event) => {
+      expect(event).to.not.be.empty;
+    })
       .then(r => done())
       .then(r => {
         throw Error('Failed...');
