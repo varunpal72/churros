@@ -118,5 +118,5 @@ exports.delete = (id) => {
       defaults.reset();
       return r.body;
     })
-    .catch(r => logger.error('Failed to delete element instance: %s', r));
+    .catch(r => logger.error('Failed to delete element instance with ID: %s', id, r));
 };

@@ -1,5 +1,6 @@
 'use strict';
 
+const expect = require('chakram').expect;
 const tester = require('core/tester');
 const provisioner = require('core/provisioner');
 const util = require('util');
@@ -8,7 +9,7 @@ const logger = require('winston');
 
 const gen = (opts) => new Object({
   'event.notification.enabled': opts['event.notification.enabled'] || true,
-  'event.notification.callback.url': opts['event.notification.callback.url'] || 'http://jjwyse.events.ngrok.io'
+  'event.notification.callback.url': opts['event.notification.callback.url'] || props.getForKey('events', 'url')
 });
 
 const loadPayload = (element) => {
@@ -32,7 +33,10 @@ tester.for(null, 'events', (api) => {
     return provisioner.create(element, gen({}))
       .then(r => instanceId = r.body.id)
       .then(r => tester.createEvents(element, instanceId, payload, load))
-      .then(r => tester.listenForEvents(port, load, wait))
+      .then(r => tester.listenForEvents(port, load, wait, (event) => {
+        expect(event.headers).to.not.be.empty;
+        //expect(event.headers['elements-webhook-signature']).to.not.be.empty;
+      }))
       .then(r => provisioner.delete(instanceId));
   });
 });
