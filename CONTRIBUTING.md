@@ -98,16 +98,18 @@ You can see how it's simply constructing the BDD name for the test case (`should
 ### Creating Your Own Custom Tests
 There are always cases where the common `tester.test` functions won't provide everything you need.  In this case, feel free to create your own custom `it(...)` `mocha` functions in your test module.  You can still use a lot of the functions in `tester` that aren't under the `.test` namespace.  Some of the common functions available are:
 ```javascript
-tester.post(api, payload, shema)
-tester.get(api, schema)
-tester.patch(api, payload, schema)
-tester.put(api, payload, schema)
-tester.delete(api)
-tester.postFile(api, filePath, schema)
-tester.cruds(api, payload schema)
-tester.crud(api, payload schema)
-tester.crd(api, payload schema)
+tester.post
+tester.get
+tester.patch
+tester.put
+tester.delete
+tester.postFile
+tester.cruds
+tester.crud
+tester.crd
 ```
+
+> __PROTIP:__ All of these functions allow you to pass in an optional `options` parameter.  Everything that the `requests` library supports [here](https://github.com/request/request#requestoptions-callback) is also supported by `churros`.
 
 > __PROTIP:__ All of these functions return javascript promises.
 
@@ -117,16 +119,14 @@ A good example of leveraging these non `.test` namespaced functions can be found
 ```javascript
 // Define your own it(..) mocha BDD test case since we're not using a tester.test function which does this for you
 it('should allow CRUDS for ' + api, () => {
-  // First: find all of the accounts
-  return tester.get('/hubs/crm/accounts')
-    .then(r => {
-      // Validates we have a legitimate account in our system
-      expect(r.body).to.not.be.empty;
-      // Generates the contact payload using the ID from one of our accounts
-      const payload = gen({ lead_id: r.body[0].id });
-      // Runs a full CRUDs cycle on a contact
-      return tester.cruds(api, payload, schema);
-    });
+  let accountId;
+  // First, create an account as I need a valid account ID to generate my contact JSON payload
+  return tester.post('/hubs/crm/accounts', genAccount())
+    .then(r => accountId = r.body.id)
+    // Runs a full CRUDs cycle on a contact
+    .then(r => tester.cruds(api, gen({ lead_id: accountId }), schema))
+    // Cleans up the created account
+    .then(r => tester.delete('/hubs/crm/accounts/' + accountId));
 });
 ```
 

@@ -1,7 +1,5 @@
 'use strict';
 
-const chakram = require('chakram');
-const expect = chakram.expect;
 const tools = require('core/tools');
 const tester = require('core/tester');
 const schema = require('./assets/contact.schema');
@@ -16,14 +14,17 @@ const gen = (opts) => {
   });
 };
 
+const genAccount = (opts) => new Object({
+  name: 'churros account name'
+});
+
 tester.for('crm', 'contacts', (api) => {
   it('should allow CRUDS for ' + api, () => {
-    return tester.get('/hubs/crm/accounts')
-      .then(r => {
-        expect(r.body).to.not.be.empty;
-        const payload = gen({ lead_id: r.body[0].id });
-        return tester.cruds(api, payload, schema);
-      });
+    let accountId;
+    return tester.post('/hubs/crm/accounts', genAccount())
+      .then(r => accountId = r.body.id)
+      .then(r => tester.cruds(api, gen({ lead_id: accountId }), schema))
+      .then(r => tester.delete('/hubs/crm/accounts/' + accountId));
   });
 
   tester.test.paginate(api, schema);

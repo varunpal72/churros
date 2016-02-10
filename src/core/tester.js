@@ -41,36 +41,36 @@ const validator = (schemaOrValidationCb) => {
   }
 };
 
-const post = (api, payload, schema, params) => {
-  logger.debug('POST %s', api);
-  return chakram.post(api, payload, params)
+const post = (api, payload, schema, options) => {
+  logger.debug('POST %s with options %s', api, options);
+  return chakram.post(api, payload, options)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to create %s', r, api));
 };
 exports.post = post;
 
-const get = (api, schema, params) => {
-  logger.debug('GET %s with params', api, params);
-  return chakram.get(api, params)
+const get = (api, schema, options) => {
+  logger.debug('GET %s with options %s', api, options);
+  return chakram.get(api, options)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to retrieve %s', r, api));
 };
 exports.get = get;
 
-const update = (api, payload, schema, cb, params) => {
+const update = (api, payload, schema, cb, options) => {
   cb = (cb || chakram.patch);
-  logger.debug('%s %s', cb === chakram.patch ? 'PATCH' : 'PUT', api);
+  logger.debug('%s %s with options %s', cb === chakram.patch ? 'PATCH' : 'PUT', api, options);
 
-  return cb(api, payload, params)
+  return cb(api, payload, options)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to update %s', r, api));
 };
-exports.patch = (api, payload, schema, params) => update(api, payload, schema, chakram.patch, params);
-exports.put = (api, payload, schema, params) => update(api, payload, schema, chakram.put, params);
+exports.patch = (api, payload, schema, options) => update(api, payload, schema, chakram.patch, options);
+exports.put = (api, payload, schema, options) => update(api, payload, schema, chakram.put, options);
 
-const remove = (api, params) => {
-  logger.debug('DELETE %s', api);
-  return chakram.delete(api, params)
+const remove = (api, options) => {
+  logger.debug('DELETE %s with options %s', api, options);
+  return chakram.delete(api, options)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return r;
@@ -79,19 +79,19 @@ const remove = (api, params) => {
 };
 exports.delete = remove;
 
-const find = (api, schema, params) => {
-  logger.debug('GET %s', api);
-  return chakram.get(api, params)
+const find = (api, schema, options) => {
+  logger.debug('GET %s with options %s', api, options);
+  return chakram.get(api, options)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to find %s', r, api));
 };
 exports.find = find;
 
-const postFile = (api, filePath, schema, params) => {
-  params = (params || {});
-  params.formData = { file: fs.createReadStream(filePath) };
+const postFile = (api, filePath, schema, options) => {
+  options = (options || {});
+  options.formData = { file: fs.createReadStream(filePath) };
 
-  return chakram.post(api, undefined, params)
+  return chakram.post(api, undefined, options)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
@@ -154,20 +154,21 @@ const listenForEvents = (port, numEventsSent, waitSecs, validate) => {
   let receivedEvents = 0;
   let events = [];
   return new Promise((resolve, reject) => {
-    http.createServer((request, response) => {
-      response.end('{}');
-      receivedEvents++;
-      events.push(request);
-      logger.debug('%s event(s) received', receivedEvents);
-      if (receivedEvents === numEventsSent) resolve(request);
-    }).listen(port, "localhost", (err) => {
-      err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
-    });
+      http.createServer((request, response) => {
+          response.end('{}');
+          receivedEvents++;
+          events.push(request);
+          logger.debug('%s event(s) received', receivedEvents);
+          if (receivedEvents === numEventsSent) resolve(request);
+        })
+        .listen(port, "localhost", (err) => {
+          err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+        });
 
-    const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
-    setTimeout(() => reject(msg), waitSecs * 1000);
-  }).
-  then(r => events.forEach(e => validate(e)));
+      const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
+      setTimeout(() => reject(msg), waitSecs * 1000);
+    })
+    .then(r => events.forEach(e => validate(e)));
 };
 exports.listenForEvents = listenForEvents;
 
@@ -198,8 +199,9 @@ const testCruds = (api, payload, schema, updateCb) => {
 
 const testPaginate = (api, schema, query) => {
   const name = util.format('should allow paginating %s', api);
-  api = util.format('%s?page=%s&pageSize=%s', api, 1, 1);
-  it(name, () => find(api, schema));
+  const options = { qs: { page: 1, pageSize: 1 } };
+
+  it(name, () => find(api, schema, options));
 };
 
 const testBadGet404 = (api, invalidId) => {

@@ -1,4 +1,4 @@
-# churros <sub><sup>| Cloud Elements API testing framework </sup></sub>
+# churros <sub><sup>| Cloud Elements API Testing Framework </sup></sub>
 
 --------------------------------------------------------------------------------
 
