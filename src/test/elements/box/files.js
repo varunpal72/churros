@@ -10,12 +10,10 @@ tester.for('documents', 'files', (api) => {
   it('should allow uploading and downloading a file', () => {
 
     let fileId = -1;
-    let query = {
-      path: util.format('/brady-%s.jpg', tools.random())
-    };
+    let query = { path: util.format('/brady-%s.jpg', tools.random()) };
     let path = __dirname + '/assets/brady.jpg';
 
-    return tester.postFile(api, path, query, schema)
+    return tester.postFile(api, path, schema, { qs: query })
       .then(r => {
         fileId = r.body.id;
         return tester.get(api + '/' + fileId, (r) => expect(r).to.have.statusCode(200));

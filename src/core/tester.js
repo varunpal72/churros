@@ -41,9 +41,9 @@ const validator = (schemaOrValidationCb) => {
   }
 };
 
-const post = (api, payload, schema) => {
+const post = (api, payload, schema, params) => {
   logger.debug('POST %s', api);
-  return chakram.post(api, payload)
+  return chakram.post(api, payload, params)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to create %s', r, api));
 };
@@ -57,20 +57,20 @@ const get = (api, schema, params) => {
 };
 exports.get = get;
 
-const update = (api, payload, schema, cb) => {
+const update = (api, payload, schema, cb, params) => {
   cb = (cb || chakram.patch);
   logger.debug('%s %s', cb === chakram.patch ? 'PATCH' : 'PUT', api);
 
-  return cb(api, payload)
+  return cb(api, payload, params)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to update %s', r, api));
 };
-exports.patch = (api, payload, schema) => update(api, payload, schema, chakram.patch);
-exports.put = (api, payload, schema) => update(api, payload, schema, chakram.put);
+exports.patch = (api, payload, schema, params) => update(api, payload, schema, chakram.patch, params);
+exports.put = (api, payload, schema, params) => update(api, payload, schema, chakram.put, params);
 
-const remove = (api) => {
+const remove = (api, params) => {
   logger.debug('DELETE %s', api);
-  return chakram.delete(api)
+  return chakram.delete(api, params)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return r;
@@ -79,20 +79,19 @@ const remove = (api) => {
 };
 exports.delete = remove;
 
-const find = (api, schema) => {
+const find = (api, schema, params) => {
   logger.debug('GET %s', api);
-  return chakram.get(api)
+  return chakram.get(api, params)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to find %s', r, api));
 };
 exports.find = find;
 
-const postFile = (api, filePath, query, schema) => {
-  const options = {
-    formData: { file: fs.createReadStream(filePath) },
-    qs: query
-  };
-  return chakram.post(api, undefined, options)
+const postFile = (api, filePath, schema, params) => {
+  params = (params || {});
+  params.formData = { file: fs.createReadStream(filePath) };
+
+  return chakram.post(api, undefined, params)
     .then(r => validator(schema)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };

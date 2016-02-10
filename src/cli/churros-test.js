@@ -95,7 +95,7 @@ commander
   .option('-u, --user <user>', 'overrides the default user setup during initialization')
   .option('-p, --password <password>', 'overrides the default password setup during initialization')
   .option('-r, --url [url]', 'overrides the default URL setup during initialization')
-  .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'phantomjs')
+  .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'firefox') // will change this to phantomjs as churros becomes more mature
   .option('-V, --verbose', 'logging verbose mode')
   .on('--help', () => {
     console.log('  Examples:');
