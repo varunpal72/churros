@@ -18,7 +18,7 @@
 * Continuing to add more elements to the elements catalog
 * Added support for `should.have.schemaAnd200` `chakram` assertion as I found that I was always doing both of those at the same time and also because the error message for each of those wasn't good enough so wanted to improve it
 * Added support for `should.have.statusCode` which is the *exact* same as `should.have.status` but gives more logging when the assertion fails to help debug the issue more easily.
-* Many common tests available under `core/tester` and can be found under the `tester.test.` namespace.  This library will continue to grow as we add more and more tests and find out the commonalities throughout more elements.
+* Many common tests available under `core/tester` and can be found under the `tester.it.` namespace.  This library will continue to grow as we add more and more tests and find out the commonalities throughout more elements.
 * Event tests that create an instance of an element with notifications enabled, register a local URL that is exposed (can use ngrok, localtunnel, ssh tunneling) and then listen on that URL for incoming events from the platform.  Also supports specifying how many events to send and how long to wait to receive the webhook notification.
 * `churros add` sub-command to help setup a new platform or element suite
 

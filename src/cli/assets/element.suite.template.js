@@ -4,7 +4,7 @@ const tester = require('core/tester');
 const schema = require('./assets/%resource.schema');
 
 tester.for('%hub', '%resource', (api) => {
-  // checkout functions available under tester.test which provide a lot of pre-canned tests
+  // checkout functions available under tester.it which provide a lot of pre-canned tests
   //   more information here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#adding-tests-to-an-existing-suite
 
   it('%user should insert some tests here :)', () => true);

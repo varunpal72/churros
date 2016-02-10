@@ -219,17 +219,17 @@ describe('tester', () => {
       });
   });
 
-  tester.test.badPost400('/foo/bad', genPayload());
-  tester.test.badPatch404('/foo', genPayload(), 456);
-  tester.test.badGet404('/foo', 456);
-  tester.test.cruds('/foo', genPayload(), genSchema());
-  tester.test.cruds('/foo', genPayload(), genSchema(), chakram.put);
-  tester.test.crud('/foo', genPayload(), genSchema());
-  tester.test.crd('/foo', genPayload(), genSchema());
-  tester.test.crds('/foo', genPayload(), genSchema());
-  tester.test.create('/foo', genPayload(), genSchema());
-  tester.test.paginate('/foo', genSchema(), {});
-  tester.test.search('/foo', genPayload(), 'id');
+  tester.it.badPost400('/foo/bad', genPayload());
+  tester.it.badPatch404('/foo', genPayload(), 456);
+  tester.it.badGet404('/foo', 456);
+  tester.it.cruds('/foo', genPayload(), genSchema());
+  tester.it.cruds('/foo', genPayload(), genSchema(), chakram.put);
+  tester.it.crud('/foo', genPayload(), genSchema());
+  tester.it.crd('/foo', genPayload(), genSchema());
+  tester.it.crds('/foo', genPayload(), genSchema());
+  tester.it.create('/foo', genPayload(), genSchema());
+  tester.it.paginate('/foo', genSchema(), {});
+  tester.it.search('/foo', genPayload(), 'id');
 
   tester.for('fakehub', 'resource');
   tester.for('fakehub', 'resource', (api) => {

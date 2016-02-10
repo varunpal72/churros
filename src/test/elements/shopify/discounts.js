@@ -12,5 +12,5 @@ const discount = (custom) => new Object({
 });
 
 tester.for('ecommerce', 'discounts', (api) => {
-  tester.test.crds(api, discount({}), schema);
+  tester.it.crds(api, discount({}), schema);
 });

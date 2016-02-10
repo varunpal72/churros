@@ -241,7 +241,7 @@ const testSearch = (api, payload, field) => {
   });
 };
 
-exports.test = {
+exports.it= {
   badPost400: testBadPost400,
   badPatch404: testBadPatch404,
   badGet404: testBadGet404,

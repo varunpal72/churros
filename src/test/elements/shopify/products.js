@@ -10,5 +10,5 @@ const products = (custom) => new Object({
 });
 
 tester.for('ecommerce', 'products', (api) => {
-  tester.test.cruds(api, products({}), schema);
+  tester.it.cruds(api, products({}), schema);
 });

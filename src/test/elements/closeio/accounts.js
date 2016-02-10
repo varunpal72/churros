@@ -13,5 +13,5 @@ const gen = (opts) => {
 };
 
 tester.for('crm', 'accounts', (api) => {
-  tester.test.cruds(api, gen(), schema);
+  tester.it.cruds(api, gen(), schema);
 });
