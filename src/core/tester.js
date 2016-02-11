@@ -274,16 +274,16 @@ const runTests = (api, payload, schema, tests) => {
   tests ? tests(suite) : it('add some tests to me!!!', () => true);
 };
 
-exports.forElement = (hub, objectName, payload, schema, tests) => {
-  describe(objectName, () => {
-    let api = util.format('/hubs/%s/%s', hub, objectName);
+exports.forElement = (hub, resource, payload, schema, tests) => {
+  describe(resource, () => {
+    let api = util.format('/hubs/%s/%s', hub, resource);
     runTests(api, payload, schema, tests);
   });
 };
 
-exports.forPlatform = (objectName, payload, schema, tests) => {
-  describe(objectName, () => {
-    let api = util.format('/%s', objectName);
+exports.forPlatform = (resource, payload, schema, tests) => {
+  describe(resource, () => {
+    let api = util.format('/%s', resource);
     runTests(api, payload, schema, tests);
   });
 };
