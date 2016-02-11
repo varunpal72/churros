@@ -5,19 +5,12 @@ const expect = require('chakram').expect;
 const tools = require('core/tools');
 const tester = require('core/tester');
 const schema = require('./assets/notification.schema.json');
-const subscriptionSchema = require('./assets/subscription.schema.json');
 
 const notifyGen = (opts) => new Object({
   severity: (opts.severity || 'low'),
   topic: (opts.topic || 'churros-topic'),
   message: (opts.message || 'this is a test message'),
   from: (opts.from || 'churros')
-});
-
-const subscriptionGen = (opts) => new Object({
-  channel: ('webhook' || opts.channel),
-  topics: (['churros-topic'] || opts.topics),
-  config: ({ url: 'http://fake.churros.api.com' } || opts.config)
 });
 
 tester.for(null, 'notifications', (api) => {
@@ -72,13 +65,4 @@ tester.for(null, 'notifications', (api) => {
   });
 
   it('should throw a 400 if missing search query', () => tester.get(api, (r) => expect(r).to.have.statusCode(400)));
-
-  const sApi = util.format('%s/%s', api, 'subscriptions');
-  tester.it.shouldSupportCrd(sApi, subscriptionGen(), subscriptionSchema);
-  tester.it.shouldReturn400OnPost(sApi);
-  tester.it.shouldReturn404OnGet(sApi);
-
-  const bad = subscriptionGen();
-  bad.config.url = null;
-  tester.it.shouldReturn400OnPost(sApi, bad);
 });

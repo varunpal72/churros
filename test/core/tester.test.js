@@ -219,23 +219,28 @@ describe('tester', () => {
       });
   });
 
-  tester.it.shouldReturn400OnPost.with('/foo/bad', genPayload());
-  tester.it.shouldReturn404OnPatch.with('/foo', genPayload(), 456);
-  tester.it.shouldReturn404OnGet.with('/foo', 456);
-  tester.it.shouldSupportCruds.with('/foo', genPayload(), genSchema());
-  tester.it.shouldSupportCruds.with('/foo', genPayload(), genSchema(), chakram.put);
-  tester.it.shouldSupportCrud.with('/foo', genPayload(), genSchema());
-  tester.it.shouldSupportCrd.with('/foo', genPayload(), genSchema());
-  tester.it.shouldSupportCrds.with('/foo', genPayload(), genSchema());
-  tester.it.shouldSupportPost.with('/foo', genPayload(), genSchema());
-  tester.it.shouldSupportPagination.with('/foo', genSchema(), {});
-  tester.it.shouldSupportCeqlSearch.with('/foo', genPayload(), 'id');
-
   tester.for('fakehub', 'resource');
   tester.for('fakehub', 'resource', (api) => {
     it('should support the for with a hub passed in', () => expect(api).to.equal('/hubs/fakehub/resource'));
   });
   tester.for(null, 'platformresource', (api) => {
     it('should support the for with a hub passed in', () => expect(api).to.equal('/platformresource'));
+  });
+
+  tester.for(null, 'foo', () => {
+    tester.it.shouldReturn404OnPatch(genPayload(), 456);
+    tester.it.shouldReturn404OnGet(456);
+    tester.it.shouldSupportCruds(genPayload(), genSchema());
+    tester.it.shouldSupportCruds(genPayload(), genSchema(), chakram.put);
+    tester.it.shouldSupportCrud(genPayload(), genSchema());
+    tester.it.shouldSupportCrd(genPayload(), genSchema());
+    tester.it.shouldSupportCrds(genPayload(), genSchema());
+    tester.it.shouldSupportPost(genPayload(), genSchema());
+    tester.it.shouldSupportPagination(genSchema(), {});
+    tester.it.shouldSupportCeqlSearch(genPayload(), 'id');
+  });
+
+  tester.for(null, 'foo/bad', () => {
+    tester.it.shouldReturn400OnPost(genPayload());
   });
 });

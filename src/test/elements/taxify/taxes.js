@@ -9,4 +9,5 @@ tester.for('finance', 'taxes', (api) => {
   tester.it.shouldSupportPost(payload, schema);
   tester.it.shouldReturn400OnPost(badPayload);
   tester.it.shouldReturn400OnPost();
+  tester.it.shouldReturn400OnPost();
 });

@@ -229,26 +229,12 @@ const itCeqlSearch = (api, payload, field) => {
   });
 };
 
-exports.it = {
-  shouldReturn400OnPost: { with: itPost400 },
-  shouldReturn404OnPatch: { with: itPatch404 },
-  shouldReturn404OnGet: { with: itGet404 },
-  shouldSupportPagination: { with: itPagination },
-  shouldSupportCeqlSearch: { with: itCeqlSearch },
-  shouldSupportCruds: { with: itCruds },
-  shouldSupportCrud: { with: itCrud },
-  shouldSupportCrd: { with: itCrd },
-  shouldSupportCrds: { with: itCrds },
-  shouldSupportPost: { with: itPost }
-};
-
 exports.for = (hub, objectName, tests) => {
   describe(objectName, () => {
-    let api = hub ?
-      util.format('/hubs/%s/%s', hub, objectName) :
-      util.format('/%s', objectName);
+    let api = hub ? util.format('/hubs/%s/%s', hub, objectName) : util.format('/%s', objectName);
 
     // currying common test functions for easy-of-use
+    exports.it = {};
     exports.it.shouldReturn400OnPost = (payload) => itPost400(api, payload);
     exports.it.shouldReturn400OnPost.with = itPost400;
     exports.it.shouldReturn404OnGet = (invalidId) => itGet404(api, invalidId);
@@ -259,6 +245,10 @@ exports.for = (hub, objectName, tests) => {
     exports.it.shouldReturn404OnGet.with = itGet404;
     exports.it.shouldSupportPagination = (schema, query) => itPagination(api, schema, query);
     exports.it.shouldSupportPagination.with = itPagination;
+    exports.it.shouldSupportCeqlSearch = (payload, field) => itCeqlSearch(api, payload, field);
+    exports.it.shouldSupportCeqlSearch.with = itCeqlSearch;
+    exports.it.shouldSupportPost = (payload, schema) => itPost(api, payload, schema);
+    exports.it.shouldSupportPost.with = itPost;
     exports.it.shouldSupportCruds = (payload, schema, updateCb) => itCruds(api, payload, schema, updateCb);
     exports.it.shouldSupportCruds.with = itCruds;
     exports.it.shouldSupportCrud = (payload, schema, updateCb) => itCrud(api, payload, schema, updateCb);
@@ -267,8 +257,6 @@ exports.for = (hub, objectName, tests) => {
     exports.it.shouldSupportCrd.with = itCrd;
     exports.it.shouldSupportCrds = (payload, schema) => itCrds(api, payload, schema);
     exports.it.shouldSupportCrds.with = itCrds;
-    exports.it.shouldSupportCeqlSearch = (payload, field) => itCeqlSearch(api, payload, field);
-    exports.it.shouldSupportCeqlSearch.with = itCeqlSearch;
 
     tests ?
       tests(api) :
