@@ -14,10 +14,8 @@ tester.for('documents', 'files', (api) => {
     let path = __dirname + '/assets/brady.jpg';
 
     return tester.postFile(api, path, schema, { qs: query })
-      .then(r => {
-        fileId = r.body.id;
-        return tester.get(api + '/' + fileId, (r) => expect(r).to.have.statusCode(200));
-      })
+      .then(r => fileId = r.body.id)
+      .then(r => tester.get(api + '/' + fileId, (r) => expect(r).to.have.statusCode(200)))
       .then(r => tester.delete('/hubs/documents/files/' + fileId));
   });
 });

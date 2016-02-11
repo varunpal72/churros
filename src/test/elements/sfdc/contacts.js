@@ -9,6 +9,6 @@ const gen = (opts) => new Object({
 });
 
 tester.for('crm', 'contacts', (api) => {
-  tester.it.cruds(api, gen({}), schema);
-  tester.it.search(api, gen({}), 'id');
+  tester.it.shouldSupportCruds(gen({}), schema);
+  tester.it.shouldSupportCeqlSearch(gen({}), 'id');
 });

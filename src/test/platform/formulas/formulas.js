@@ -27,7 +27,7 @@ const genInstance = (opts) => new Object({
 });
 
 tester.for(null, 'formulas', (api) => {
-  tester.it.crud(api, genFormula({}), schema, chakram.put);
+  tester.it.shouldSupportCrud(genFormula({}), schema, chakram.put);
 
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
     const f = genFormula({});

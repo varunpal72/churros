@@ -13,5 +13,5 @@ const gen = (opts) => {
 };
 
 tester.for('crm', 'accounts', (api) => {
-  tester.it.cruds(api, gen(), schema);
+  tester.it.shouldSupportCruds(gen(), schema);
 });

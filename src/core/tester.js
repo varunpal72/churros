@@ -10,18 +10,6 @@ const logger = require('winston');
 
 var exports = module.exports = {};
 
-exports.for = (hub, objectName, tests) => {
-  describe(objectName, () => {
-    let api = hub ?
-      util.format('/hubs/%s/%s', hub, objectName) :
-      util.format('/%s', objectName);
-
-    tests ?
-      tests(api) :
-      it('add some tests to me!!!', () => true);
-  });
-};
-
 const validator = (schemaOrValidationCb) => {
   if (typeof schemaOrValidationCb === 'function') {
     return (r) => {
@@ -172,49 +160,49 @@ const listenForEvents = (port, numEventsSent, waitSecs, validate) => {
 };
 exports.listenForEvents = listenForEvents;
 
-const testCreate = (api, payload, schema) => {
+const itPost = (api, payload, schema) => {
   const name = util.format('should allow creating a(n) %s', api);
   it(name, () => post(api, payload, schema));
 };
 
-const testCrd = (api, payload, schema) => {
+const itCrd = (api, payload, schema) => {
   const name = util.format('should allow CRD for %s', api);
   it(name, () => crd(api, payload, schema));
 };
 
-const testCrds = (api, payload, schema) => {
+const itCrds = (api, payload, schema) => {
   const name = util.format('should allow CRDS for %s', api);
   it(name, () => crd(api, payload, schema));
 };
 
-const testCrud = (api, payload, schema, updateCb) => {
+const itCrud = (api, payload, schema, updateCb) => {
   const name = util.format('should allow CRUD for %s', api);
   it(name, () => crud(api, payload, schema, updateCb));
 };
 
-const testCruds = (api, payload, schema, updateCb) => {
+const itCruds = (api, payload, schema, updateCb) => {
   const name = util.format('should allow CRUDS for %s', api);
   it(name, () => cruds(api, payload, schema, updateCb));
 };
 
-const testPaginate = (api, schema, query) => {
+const itPagination = (api, schema, query) => {
   const name = util.format('should allow paginating %s', api);
   const options = { qs: { page: 1, pageSize: 1 } };
 
   it(name, () => find(api, schema, options));
 };
 
-const testBadGet404 = (api, invalidId) => {
+const itGet404 = (api, invalidId) => {
   const name = util.format('should throw a 404 when trying to retrieve a(n) %s with an ID that does not exist', api);
   it(name, () => get(api + '/' + (invalidId || -1), (r) => expect(r).to.have.statusCode(404)));
 };
 
-const testBadPatch404 = (api, payload, invalidId) => {
+const itPatch404 = (api, payload, invalidId) => {
   const name = util.format('should throw a 404 when trying to update a(n) %s with an ID that does not exist', api);
   it(name, () => update(api + '/' + (invalidId || -1), (payload || {}), (r) => expect(r).to.have.statusCode(404), chakram.patch));
 };
 
-const testBadPost400 = (api, payload) => {
+const itPost400 = (api, payload) => {
   let name = util.format('should throw a 400 when trying to create a(n) %s with an %s JSON body', api);
   payload ?
     name = util.format(name, 'invalid') :
@@ -223,7 +211,7 @@ const testBadPost400 = (api, payload) => {
   it(name, () => post(api, payload, (r) => expect(r).to.have.statusCode(400)));
 };
 
-const testSearch = (api, payload, field) => {
+const itCeqlSearch = (api, payload, field) => {
   const name = util.format('should support searching %s by %s', api, field);
   it(name, () => {
     let id;
@@ -241,15 +229,49 @@ const testSearch = (api, payload, field) => {
   });
 };
 
-exports.it= {
-  badPost400: testBadPost400,
-  badPatch404: testBadPatch404,
-  badGet404: testBadGet404,
-  paginate: testPaginate,
-  cruds: testCruds,
-  crud: testCrud,
-  crd: testCrd,
-  crds: testCrds,
-  create: testCreate,
-  search: testSearch
+exports.it = {
+  shouldReturn400OnPost: { with: itPost400 },
+  shouldReturn404OnPatch: { with: itPatch404 },
+  shouldReturn404OnGet: { with: itGet404 },
+  shouldSupportPagination: { with: itPagination },
+  shouldSupportCeqlSearch: { with: itCeqlSearch },
+  shouldSupportCruds: { with: itCruds },
+  shouldSupportCrud: { with: itCrud },
+  shouldSupportCrd: { with: itCrd },
+  shouldSupportCrds: { with: itCrds },
+  shouldSupportPost: { with: itPost }
+};
+
+exports.for = (hub, objectName, tests) => {
+  describe(objectName, () => {
+    let api = hub ?
+      util.format('/hubs/%s/%s', hub, objectName) :
+      util.format('/%s', objectName);
+
+    // currying common test functions for easy-of-use
+    exports.it.shouldReturn400OnPost = (payload) => itPost400(api, payload);
+    exports.it.shouldReturn400OnPost.with = itPost400;
+    exports.it.shouldReturn404OnGet = (invalidId) => itGet404(api, invalidId);
+    exports.it.shouldReturn404OnGet.with = itGet404;
+    exports.it.shouldReturn404OnPatch = (payload, invalidId) => itPatch404(api, payload, invalidId);
+    exports.it.shouldReturn404OnPatch.with = itPatch404;
+    exports.it.shouldReturn404OnGet = (invalidId) => itGet404(api, invalidId);
+    exports.it.shouldReturn404OnGet.with = itGet404;
+    exports.it.shouldSupportPagination = (schema, query) => itPagination(api, schema, query);
+    exports.it.shouldSupportPagination.with = itPagination;
+    exports.it.shouldSupportCruds = (payload, schema, updateCb) => itCruds(api, payload, schema, updateCb);
+    exports.it.shouldSupportCruds.with = itCruds;
+    exports.it.shouldSupportCrud = (payload, schema, updateCb) => itCrud(api, payload, schema, updateCb);
+    exports.it.shouldSupportCrud.with = itCrud;
+    exports.it.shouldSupportCrd = (payload, schema) => itCrd(api, payload, schema);
+    exports.it.shouldSupportCrd.with = itCrd;
+    exports.it.shouldSupportCrds = (payload, schema) => itCrds(api, payload, schema);
+    exports.it.shouldSupportCrds.with = itCrds;
+    exports.it.shouldSupportCeqlSearch = (payload, field) => itCeqlSearch(api, payload, field);
+    exports.it.shouldSupportCeqlSearch.with = itCeqlSearch;
+
+    tests ?
+      tests(api) :
+      it('add some tests to me!!!', () => true);
+  });
 };

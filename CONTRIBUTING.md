@@ -54,40 +54,40 @@ Whenever building out new test cases, it is good to leverage as much functionali
 
 ```javascript
 // POST a bad payload to an API and ensure we get a 400 response status code (Note: If you want to send an empty payload, exclude the payload parameter)
-tester.it.badPost400(api, payload)
+tester.it.shouldReturn400OnPost(payload)
 
 // PATCH an API with an invalid ID and ensure we get a 404 (Note: If no invalidId is passed then -1 is used)
-tester.it.badPatch404(api, payload, invalidId)
+tester.it.shouldReturn404OnPatch(payload, invalidId)
 
 // GET an API with an invalid ID and ensure we get a 404 (Note: If no invalidId is passed then -1 is used)
-tester.it.badGet404(api, invalidId)
+tester.it.shouldReturn404OnGet(invalidId)
 
 // Run a full CRUDS (create, retrieve, update, delete, search) cycle on the given API and ensure all API calls return a 200 and validate against the specified schema. (Note: Default update API calls is PATCH.  If this resource supports PUT, pass chakram.put as the last parameter)
-tester.it.cruds(api, payload, schema)
+tester.it.shouldSupportCruds(payload, schema)
 
-// Same as tester.it.cruds except no search API call
-tester.it.crud(api, payload, schema)
+// Same as tester.it.shouldSupportCruds except no search API call
+tester.it.shouldSupportCrud(payload, schema)
 
-// Same as tester.it.crud except no update API call
-tester.it.crd(api, payload, schema)
+// Same as tester.it.shouldSupportCrud except no update API call
+tester.it.shouldSupportCrd(payload, schema)
 
 // Attempts to call a POST to the given API with the given payload and validates the response matches the given schema
-tester.it.create(api, payload, schema)
+tester.it.shouldSupportPost(payload, schema)
 
 // Creates an object from the given payload, and then searches for that object using the CE where clause by the specified
 // field that is passed in.  For example, if 'id' is passed in then it will end up calling GET {api}?where=id='{idThatWasJustCreated}'
-tester.it.search(api, payload, field)
+tester.it.shouldSupportCeqlSearch(payload, field)
 
 // DOCS COMING SOON
-tester.it.paginate
+tester.it.shouldSupportPagination
 ```
 
 > __PROPTIP:__ All of these functions create the `mocha` `it(...)` BDD function for you so you do *not* need to wrap these functions in an `it` block yourself.
 
 #### Adding a New Test to `tester.it`
-If something is missing from `tester.it` that seems like it could be a re-usable test in other suites, feel free to contribute to this library of tests.  All of the functions underneath `tester.it` are simply using the utility functions in the `tester` module and wrapping them in an `it(...)` `mocha` BDD function.  For example, here is the implementation for `tester.it.cruds`:
+If something is missing from `tester.it` that seems like it could be a re-usable test in other suites, feel free to contribute to this library of tests.  All of the functions underneath `tester.it` are simply using the utility functions in the `tester` module and wrapping them in an `it(...)` `mocha` BDD function.  For example, here is the implementation for `tester.it.shouldSupportCruds`:
 ```javascript
-const testCruds = (api, payload, schema, updateCb) => {
+const itCruds = (api, payload, schema, updateCb) => {
   const name = util.format('should allow CRUDS for %s', api);
   it(name, () => cruds(api, payload, schema, updateCb));
 };

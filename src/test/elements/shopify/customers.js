@@ -11,5 +11,5 @@ const customer = (custom) => new Object({
 });
 
 tester.for('ecommerce', 'customers', (api) => {
-  tester.it.cruds(api, customer({}), schema);
+  tester.it.shouldSupportCruds(customer({}), schema);
 });

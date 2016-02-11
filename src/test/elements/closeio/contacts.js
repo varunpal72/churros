@@ -27,9 +27,9 @@ tester.for('crm', 'contacts', (api) => {
       .then(r => tester.delete('/hubs/crm/accounts/' + accountId));
   });
 
-  tester.it.paginate(api, schema);
-  tester.it.badGet404(api);
-  tester.it.badPatch404(api);
-  tester.it.badPost400(api, {});
-  tester.it.badPost400(api);
+  tester.it.shouldSupportPagination(schema);
+  tester.it.shouldReturn404OnGet();
+  tester.it.shouldReturn404OnPatch();
+  tester.it.shouldReturn400OnPost({});
+  tester.it.shouldReturn400OnPost();
 });

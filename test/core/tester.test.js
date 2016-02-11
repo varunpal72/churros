@@ -219,17 +219,17 @@ describe('tester', () => {
       });
   });
 
-  tester.it.badPost400('/foo/bad', genPayload());
-  tester.it.badPatch404('/foo', genPayload(), 456);
-  tester.it.badGet404('/foo', 456);
-  tester.it.cruds('/foo', genPayload(), genSchema());
-  tester.it.cruds('/foo', genPayload(), genSchema(), chakram.put);
-  tester.it.crud('/foo', genPayload(), genSchema());
-  tester.it.crd('/foo', genPayload(), genSchema());
-  tester.it.crds('/foo', genPayload(), genSchema());
-  tester.it.create('/foo', genPayload(), genSchema());
-  tester.it.paginate('/foo', genSchema(), {});
-  tester.it.search('/foo', genPayload(), 'id');
+  tester.it.shouldReturn400OnPost.with('/foo/bad', genPayload());
+  tester.it.shouldReturn404OnPatch.with('/foo', genPayload(), 456);
+  tester.it.shouldReturn404OnGet.with('/foo', 456);
+  tester.it.shouldSupportCruds.with('/foo', genPayload(), genSchema());
+  tester.it.shouldSupportCruds.with('/foo', genPayload(), genSchema(), chakram.put);
+  tester.it.shouldSupportCrud.with('/foo', genPayload(), genSchema());
+  tester.it.shouldSupportCrd.with('/foo', genPayload(), genSchema());
+  tester.it.shouldSupportCrds.with('/foo', genPayload(), genSchema());
+  tester.it.shouldSupportPost.with('/foo', genPayload(), genSchema());
+  tester.it.shouldSupportPagination.with('/foo', genSchema(), {});
+  tester.it.shouldSupportCeqlSearch.with('/foo', genPayload(), 'id');
 
   tester.for('fakehub', 'resource');
   tester.for('fakehub', 'resource', (api) => {

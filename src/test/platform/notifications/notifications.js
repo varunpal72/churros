@@ -21,21 +21,21 @@ const subscriptionGen = (opts) => new Object({
 });
 
 tester.for(null, 'notifications', (api) => {
-  tester.it.crd(api, notifyGen({}), schema);
-  tester.it.badGet404(api);
-  tester.it.badPost400(api);
+  tester.it.shouldSupportCrd(notifyGen({}), schema);
+  tester.it.shouldReturn404OnGet();
+  tester.it.shouldReturn400OnPost();
 
   // test with missing topic should be bad too
   const n = notifyGen({});
   n.topic = null;
-  tester.it.badPost400(api, n);
+  tester.it.shouldReturn400OnPost(n);
 
   it('should return one notification when searching for this topic', () => {
     const n = notifyGen({ topic: 'churros-topic-' + tools.random() });
 
     return tester.post(api, n, schema)
       .then(r => {
-        const options = { qs: { 'topics[]': n.topic } }
+        const options = { qs: { 'topics[]': n.topic } };
         return tester.find(api, (r) => {
           expect(r).to.have.schemaAnd200(schema);
           expect(r.body).to.not.be.empty;
@@ -74,11 +74,11 @@ tester.for(null, 'notifications', (api) => {
   it('should throw a 400 if missing search query', () => tester.get(api, (r) => expect(r).to.have.statusCode(400)));
 
   const sApi = util.format('%s/%s', api, 'subscriptions');
-  tester.it.crd(sApi, subscriptionGen(), subscriptionSchema);
-  tester.it.badPost400(sApi);
-  tester.it.badGet404(sApi);
+  tester.it.shouldSupportCrd(sApi, subscriptionGen(), subscriptionSchema);
+  tester.it.shouldReturn400OnPost(sApi);
+  tester.it.shouldReturn404OnGet(sApi);
 
   const bad = subscriptionGen();
   bad.config.url = null;
-  tester.it.badPost400(sApi, bad);
+  tester.it.shouldReturn400OnPost(sApi, bad);
 });
