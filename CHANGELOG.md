@@ -1,4 +1,4 @@
-## v0.2.0 <sub><sup>(TBD)</sup></sub>
+## v0.2.0 <sub><sup>(2016-02-12)</sup></sub>
 
 #### Highlights
 * Added a large amount of new elements to our provisioning library.  Most of the ones left were OAuth1 and OAuth2 elements, so lots of selenium work :disappointed:
@@ -9,6 +9,7 @@
 * Support for `--verbose` mode when running `churros test`
 * Prompt for authentication type and properties when calling `churros add element`
 * Added optional `--browser <name>` support so, if you're debugging your OAuth element, you can now actually *see* the browser running your selenium commands.  (i.e. `churros test elements/foo --browser firefox`)
+* Drastically changed the way you interact with tests inside what was formally known as `tester.for`, and is now: `suite.forElement` or `suite.forPlatform`
 
 ## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
 
