@@ -103,10 +103,10 @@ cloud.get
 cloud.patch
 cloud.put
 cloud.delete
-tester.postFile
-tester.cruds
-tester.crud
-tester.crd
+cloud.postFile
+cloud.cruds
+cloud.crud
+cloud.crd
 ```
 
 > __PROTIP:__ All of these functions allow you to pass in an optional `options` parameter.  Everything that the `requests` library supports [here](https://github.com/request/request#requestoptions-callback) is also supported by `churros`.
@@ -124,7 +124,7 @@ it('should allow CRUDS for ' + api, () => {
   return cloud.post('/hubs/crm/accounts', genAccount())
     .then(r => accountId = r.body.id)
     // Runs a full CRUDs cycle on a contact
-    .then(r => tester.cruds(api, gen({ lead_id: accountId }), schema))
+    .then(r => cloud.cruds(api, gen({ lead_id: accountId }), schema))
     // Cleans up the created account
     .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
 });

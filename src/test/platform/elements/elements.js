@@ -3,6 +3,7 @@
 const util = require('util');
 const expect = require('chakram').expect;
 const tester = require('core/tester');
+const cloud = require('core/cloud');
 const metadataSchema = require('./assets/element.metadata.schema.json');
 
 tester.forPlatform('elements', metadataSchema, null, (test) => {

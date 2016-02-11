@@ -4,6 +4,7 @@ const provisioner = require('core/provisioner');
 const util = require('util');
 const tools = require('core/tools');
 const tester = require('core/tester');
+const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const schema = require('./assets/formula.schema');

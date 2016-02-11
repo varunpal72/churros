@@ -2,6 +2,7 @@
 
 const tools = require('core/tools');
 const tester = require('core/tester');
+const cloud = require('core/cloud');
 const schema = require('./assets/contact.schema');
 
 const gen = (opts) => {
@@ -19,7 +20,7 @@ tester.forElement('crm', 'contacts', gen(), schema, (test) => {
     let accountId;
     return cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' })
       .then(r => accountId = r.body.id)
-      .then(r => tester.cruds(test.api, gen({ lead_id: accountId }), schema))
+      .then(r => cloud.cruds(test.api, gen({ lead_id: accountId }), schema))
       .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
 
