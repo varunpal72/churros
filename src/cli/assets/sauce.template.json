@@ -291,6 +291,8 @@
     "site.address": ""
   },
   "shopify": {
+    "provisioning": "oauth2",
+    "site.address": "",
     "siteAddress": "",
     "oauth.api.key": "",
     "oauth.api.secret": "",

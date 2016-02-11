@@ -1,9 +1,8 @@
 'use strict';
 
-const chakram = require('chakram');
-const expect = chakram.expect;
 const tools = require('core/tools');
-const tester = require('core/tester');
+const suite = require('core/suite');
+const cloud = require('core/cloud');
 const schema = require('./assets/contact.schema');
 
 const gen = (opts) => {
@@ -16,19 +15,18 @@ const gen = (opts) => {
   });
 };
 
-tester.for('crm', 'contacts', (api) => {
-  it('should allow CRUDS for ' + api, () => {
-    return tester.get('/hubs/crm/accounts')
-      .then(r => {
-        expect(r.body).to.not.be.empty;
-        const payload = gen({ lead_id: r.body[0].id });
-        return tester.cruds(api, payload, schema);
-      });
+suite.forElement('crm', 'contacts', gen(), schema, (test) => {
+  it('test.should allow CRUDS for ' + test.api, () => {
+    let accountId;
+    return cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' })
+      .then(r => accountId = r.body.id)
+      .then(r => cloud.cruds(test.api, gen({ lead_id: accountId }), schema))
+      .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
 
-  tester.test.paginate(api, schema);
-  tester.test.badGet404(api);
-  tester.test.badPatch404(api);
-  tester.test.badPost400(api, {});
-  tester.test.badPost400(api);
+  test.should.supportPagination();
+  test.should.return404OnGet();
+  test.should.return404OnPatch();
+  test.should.return400OnPost();
+  test.withJson({}).should.return400OnPost();
 });

@@ -1,7 +1,8 @@
 'use strict';
 
 const expect = require('chakram').expect;
-const tester = require('core/tester');
+const suite = require('core/suite');
+const cloud = require('core/cloud');
 const provisioner = require('core/provisioner');
 const util = require('util');
 const props = require('core/props');
@@ -21,7 +22,7 @@ const loadPayload = (element) => {
   }
 };
 
-tester.for(null, 'events', (api) => {
+suite.forPlatform('events', null, null, (test) => {
   it('should handle receiving x number of events for an element instance', () => {
     const element = props.getForKey('events', 'element');
     const payload = loadPayload(element);
@@ -32,8 +33,8 @@ tester.for(null, 'events', (api) => {
     let instanceId;
     return provisioner.create(element, gen({}))
       .then(r => instanceId = r.body.id)
-      .then(r => tester.createEvents(element, instanceId, payload, load))
-      .then(r => tester.listenForEvents(port, load, wait, (event) => {
+      .then(r => cloud.createEvents(element, instanceId, payload, load))
+      .then(r => cloud.listenForEvents(port, load, wait, (event) => {
         expect(event.headers).to.not.be.empty;
         //expect(event.headers['elements-webhook-signature']).to.not.be.empty;
       }))

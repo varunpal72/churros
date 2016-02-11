@@ -18,7 +18,7 @@ try {
 config.user = (argv.user || config.user);
 config.password = (argv.password || config.password);
 config.url = (argv.url || config.url);
-config.browser = (argv.browser || 'phantomjs');
+config.browser = (argv.browser || 'firefox'); // long term, want to change this to phantom...this is helpful for debugging now in the early stages of churros
 
 if (!config.events) config.events = {};
 config.events.wait = (argv.wait || config.events.wait);

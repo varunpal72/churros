@@ -33,8 +33,17 @@ beforeEach(() => {
       requestBody.id = 123;
       return requestBody;
     })
+    .post('/instances', {
+      name: 'churros-instance',
+      element: { key: 'badelement' }
+    })
+    .reply(404, (uri, requestBody) => {
+      return { message: 'No element found with key badelement' };
+    })
     .delete('/instances/123')
-    .reply(200);
+    .reply(200)
+    .delete('/instances/456')
+    .reply(404);
 
   nock(baseUrl, headers())
     .get('/elements/myoauth1element/oauth/token')
@@ -63,6 +72,10 @@ const setupProps = () => {
   props({
     'oauth.callback.url': 'http://myfakecallbackurl',
     'myelement': {
+      'username': 'frank',
+      'password': 'ricard'
+    },
+    'badelement': {
       'username': 'frank',
       'password': 'ricard'
     },
@@ -132,8 +145,26 @@ describe('provisioner', () => {
       .then(r => mockery.disable());
   });
 
+  it('should throw an error if creating an element instance does not return a 200', () => {
+    setupProps();
+    return provisioner.create('badelement')
+      .then(r => {
+        throw Error('Where my error at?');
+      })
+      .catch(r => true);
+  });
+
   it('should allow deleting an element instance', () => {
     setupProps();
     return provisioner.delete(123);
+  });
+
+  it('should throw an error if deleting an element instance does not return a 200', () => {
+    setupProps();
+    return provisioner.delete(456)
+      .then(r => {
+        throw Error('Where my error at?');
+      })
+      .catch(r => true);
   });
 });

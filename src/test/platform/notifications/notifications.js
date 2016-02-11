@@ -3,82 +3,67 @@
 const util = require('util');
 const expect = require('chakram').expect;
 const tools = require('core/tools');
-const tester = require('core/tester');
+const suite = require('core/suite');
+const cloud = require('core/cloud');
 const schema = require('./assets/notification.schema.json');
-const subscriptionSchema = require('./assets/subscription.schema.json');
 
-const notifyGen = (opts) => new Object({
+const genNotif = (opts) => new Object({
   severity: (opts.severity || 'low'),
   topic: (opts.topic || 'churros-topic'),
   message: (opts.message || 'this is a test message'),
   from: (opts.from || 'churros')
 });
 
-const subscriptionGen = (opts) => new Object({
-  channel: ('webhook' || opts.channel),
-  topics: (['churros-topic'] || opts.topics),
-  config: ({ url: 'http://fake.churros.api.com' } || opts.config)
-});
-
-tester.for(null, 'notifications', (api) => {
-  tester.test.crd(api, notifyGen({}), schema);
-  tester.test.badGet404(api);
-  tester.test.badPost400(api);
+suite.forPlatform('notifications', genNotif({}), schema, (test) => {
+  test.should.supportCrd();
+  test.should.return404OnGet();
+  test.withJson({}).should.return400OnPost();
 
   // test with missing topic should be bad too
-  const n = notifyGen({});
+  const n = genNotif({});
   n.topic = null;
-  tester.test.badPost400(api, n);
+  test.withJson(n).should.return400OnPost();
 
   it('should return one notification when searching for this topic', () => {
-    const n = notifyGen({ topic: 'churros-topic-' + tools.random() });
+    const n = genNotif({ topic: 'churros-topic-' + tools.random() });
 
-    return tester.post(api, n, schema)
+    return cloud.post(test.api, n, schema)
       .then(r => {
-        const url = util.format('%s?topics[]=%s', api, n.topic);
-        return tester.find(url, schema, (r) => {
-          expect(r).to.have.statusCode(200);
+        const options = { qs: { 'topics[]': n.topic } };
+        return cloud.find(test.api, (r) => {
+          expect(r).to.have.schemaAnd200(schema);
           expect(r.body).to.not.be.empty;
           expect(r.body.length).to.equal(1);
-        });
+        }, options);
       })
-      .then(r => tester.delete(api + '/' + r.body[0].id));
+      .then(r => cloud.delete(test.api + '/' + r.body[0].id));
   });
 
   it('should allow acknowledging a notification', () => {
-    const n = notifyGen({});
+    const n = genNotif({});
 
-    return tester.post(api, n, schema, (r) => {
+    return cloud.post(test.api, n, (r) => {
         expect(r).to.have.schemaAnd200(schema);
         expect(r.body.acknowledged).to.equal(false);
       })
       .then(r => {
-        const url = util.format('%s/%s/acknowledge', api, r.body.id);
-        return tester.put(url, schema, (r) => {
+        const url = util.format('%s/%s/acknowledge', test.api, r.body.id);
+        return cloud.put(url, schema, (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.acknowledged).to.equal(true);
         });
       })
-      .then(r => tester.delete(api + '/' + r.body.id));
+      .then(r => cloud.delete(test.api + '/' + r.body.id));
   });
 
   it('should return an empty array if no notifications are found with the given topic', () => {
-    const url = util.format('%s?topics[]=fake-topic-name-with-no-notifications', api);
-    return tester.get(url, (r) => {
+    const options = { qs: { 'topics[]': 'fake-topic-name-with-no-notifications' } };
+    return cloud.get(test.api, (r) => {
       expect(r).to.have.statusCode(200);
       expect(r.body).to.be.empty;
-    });
+    }, options);
   });
 
-  it('should throw a 400 if missing search query', () => tester.get(api, (r) => expect(r).to.have.statusCode(400)));
-
-  const sApi = util.format('%s/%s', api, 'subscriptions');
-  tester.test.crd(sApi, subscriptionGen(), subscriptionSchema);
-  tester.test.badPost400(sApi);
-  tester.test.badGet404(sApi);
-
-  const bad = subscriptionGen();
-  bad.config.url = null;
-  tester.test.badPost400(sApi, bad);
+  it('should throw a 400 if missing search query', () => cloud.get(test.api, (r) => expect(r).to.have.statusCode(400)));
 });
