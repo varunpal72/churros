@@ -17,10 +17,10 @@ const gen = (opts) => {
 tester.forElement('crm', 'contacts', gen(), schema, (test) => {
   it('test.should allow CRUDS for ' + test.api, () => {
     let accountId;
-    return tester.post('/hubs/crm/accounts', { name: 'churros tmp account' })
+    return cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' })
       .then(r => accountId = r.body.id)
       .then(r => tester.cruds(test.api, gen({ lead_id: accountId }), schema))
-      .then(r => tester.delete('/hubs/crm/accounts/' + accountId));
+      .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
 
   test.should.supportPagination();

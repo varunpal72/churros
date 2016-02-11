@@ -5,7 +5,6 @@ const tester = require('core/tester');
 const nock = require('nock');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const fs = require('fs');
 
 const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 const auth = 'User fake, Organization fake';
@@ -119,106 +118,6 @@ beforeEach(() => {
 });
 
 describe('tester', () => {
-  it('should support post', () => tester.post('/foo', genPayload(), genSchema()));
-  it('should support post with custom validation', () => tester.post('/foo/bad', {}, (r) => expect(r).to.have.statusCode(400)));
-  it('should support post with no schema or custom validation', () => tester.post('/foo', genPayload()));
-  it('should throw an error if post validation fails', () => {
-    return tester.post('/foo/bad', {}, (r) => expect(r).to.have.statusCode(200))
-      .then(r => {
-        throw Error('Where my error at?');
-      })
-      .catch(r => true);
-  });
-
-  it('should support get', () => tester.get('/foo/123', genSchema()));
-  it('should support get with custom validation', () => tester.get('/foo/456', (r) => expect(r).to.have.statusCode(404)));
-  it('should support get with no schema or custom validation', () => tester.get('/foo/123'));
-  it('should throw an error if get validation fails', () => {
-    return tester.get('/foo/456', (r) => expect(r).to.have.statusCode(200))
-      .then(r => {
-        throw Error('Where my error at?');
-      })
-      .catch(r => true);
-  });
-
-  it('should support put', () => tester.put('/foo/123', genPayload(), genSchema()));
-  it('should support put with custom validation', () => tester.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
-  it('should support put with no schema or custom validation', () => tester.put('/foo/123', genPayload()));
-  it('should throw an error if put validation fails', () => {
-    return tester.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(200))
-      .then(r => {
-        throw Error('Where my error at?');
-      })
-      .catch(r => true);
-  });
-
-  it('should support patch', () => tester.patch('/foo/123', genPayload({ id: 123 }), genSchema()));
-  it('should support patch with custom validation', () => tester.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
-  it('should support patch with no schema or custom validation', () => tester.put('/foo/123', genPayload()));
-  it('should throw an error if patch validation fails', () => {
-    return tester.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(200))
-      .then(r => {
-        throw Error('Where my error at?');
-      })
-      .catch(r => true);
-  });
-
-  it('should support delete', () => tester.delete('/foo/123'));
-  it('should throw an error if delete validation fails', () => {
-    return tester.delete('/foo/456')
-      .then(r => {
-        throw Error('Where my error at?');
-      })
-      .catch(r => true);
-  });
-
-  it('should support find', () => tester.find('/foo', genSchema()));
-  it('should throw an error if find validation fails', () => {
-    return tester.find('/foo/bad', (r) => expect(r).to.have.statusCode(200))
-      .then(r => {
-        throw Error('Where my error at?');
-      })
-      .catch(r => true);
-  });
-
-  it('should support crd', () => tester.crd('/foo', genPayload(), genSchema()));
-  it('should support crds', () => tester.crds('/foo', genPayload(), genSchema()));
-  it('should support crud', () => tester.crud('/foo', genPayload(), genSchema()));
-  it('should support cruds', () => tester.cruds('/foo', genPayload(), genSchema()));
-  it('should support creating events', () => tester.createEvents('myelement', eiId, genPayload(), 2));
-
-  it('should support listening for events with custom validation', (done) => {
-    const port = 8085;
-    tester.listenForEvents(port, 1, 5, (event) => expect(event).to.not.be.empty)
-      .then(r => done())
-      .then(r => {
-        throw Error('Failed...');
-      });
-    chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
-    return chakram.post('http://localhost:' + port, { event: 'green hat' });
-  });
-
-  it('should support post file', () => {
-    // should really NOT depend on the file system here :/
-    const filePath = '.tmp';
-    fs.closeSync(fs.openSync(filePath, 'w'));
-    return tester.postFile('/foo/file', filePath, genSchema())
-      .then(r => fs.unlink(filePath));
-  });
-
-  it('should throw an error if post file validation fails', () => {
-    const filePath = '.tmp';
-    fs.closeSync(fs.openSync(filePath, 'w'));
-    return tester.postFile('/foo/bad/file', filePath, genSchema())
-      .then(r => {
-        throw Error('Where my error at?');
-      })
-      .catch(r => {
-        fs.unlink(filePath);
-        return true;
-      });
-  });
-
   tester.forElement('fakehub', 'resource', null, null, (test) => {
     it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
   });

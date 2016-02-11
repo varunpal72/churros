@@ -98,11 +98,11 @@ You can see how it's simply constructing the BDD name for the test case (`should
 ### Creating Your Own Custom Tests
 There are always cases where the common `tester.it` functions won't provide everything you need.  In this case, feel free to create your own custom `it(...)` `mocha` functions in your test module.  You can still use a lot of the functions in `tester` that aren't under the `.it` namespace.  Some of the common functions available are:
 ```javascript
-tester.post
-tester.get
-tester.patch
-tester.put
-tester.delete
+cloud.post
+cloud.get
+cloud.patch
+cloud.put
+cloud.delete
 tester.postFile
 tester.cruds
 tester.crud
@@ -121,12 +121,12 @@ A good example of leveraging these non `.it` namespaced functions can be found i
 it('should allow CRUDS for ' + api, () => {
   let accountId;
   // First, create an account as I need a valid account ID to generate my contact JSON payload
-  return tester.post('/hubs/crm/accounts', genAccount())
+  return cloud.post('/hubs/crm/accounts', genAccount())
     .then(r => accountId = r.body.id)
     // Runs a full CRUDs cycle on a contact
     .then(r => tester.cruds(api, gen({ lead_id: accountId }), schema))
     // Cleans up the created account
-    .then(r => tester.delete('/hubs/crm/accounts/' + accountId));
+    .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
 });
 ```
 

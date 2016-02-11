@@ -8,18 +8,18 @@ const metadataSchema = require('./assets/element.metadata.schema.json');
 tester.forPlatform('elements', metadataSchema, null, (test) => {
 
   it('should return element metadata', () => {
-    return tester.get('elements/sfdc')
-      .then(r => tester.get(util.format('%s/%s/metadata', test.api, r.body.id), metadataSchema));
+    return cloud.get('elements/sfdc')
+      .then(r => cloud.get(util.format('%s/%s/metadata', test.api, r.body.id), metadataSchema));
   });
 
   it('should return 404 for invalid element ID', () => {
-    return tester.get(util.format('%s/999999999999/metadata', test.api), (r) => expect(r).to.have.statusCode(404));
+    return cloud.get(util.format('%s/999999999999/metadata', test.api), (r) => expect(r).to.have.statusCode(404));
   });
 
   it('should return polling event metadata for polling element', () => {
-    return tester.get('elements/netsuitecrm')
+    return cloud.get('elements/netsuitecrm')
       .then(r => {
-        return tester.get(util.format('%s/%s/metadata', test.api, r.body.id), (r) => {
+        return cloud.get(util.format('%s/%s/metadata', test.api, r.body.id), (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.events.supported).to.equal(true);
@@ -30,9 +30,9 @@ tester.forPlatform('elements', metadataSchema, null, (test) => {
   });
 
   it('should return webhook event metadata for webhook element', () => {
-    return tester.get('elements/dropbox')
+    return cloud.get('elements/dropbox')
       .then(r => {
-        return tester.get(util.format('%s/%s/metadata', test.api, r.body.id), (r) => {
+        return cloud.get(util.format('%s/%s/metadata', test.api, r.body.id), (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.events.supported).to.equal(true);

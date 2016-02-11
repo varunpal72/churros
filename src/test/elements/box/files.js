@@ -14,7 +14,7 @@ tester.forElement('documents', 'files', null, schema, (test) => {
 
     return tester.postFile(test.api, path, schema, { qs: query })
       .then(r => fileId = r.body.id)
-      .then(r => tester.get(test.api + '/' + fileId, (r) => expect(r).to.have.statusCode(200)))
-      .then(r => tester.delete('/hubs/documents/files/' + fileId));
+      .then(r => cloud.get(test.api + '/' + fileId, (r) => expect(r).to.have.statusCode(200)))
+      .then(r => cloud.delete('/hubs/documents/files/' + fileId));
   });
 });

@@ -35,23 +35,23 @@ tester.forPlatform('formulas', genFormula({}), schema, (test) => {
     const t = genTrigger({});
 
     let formulaId;
-    return tester.post(test.api, f, schema)
+    return cloud.post(test.api, f, schema)
       .then(r => {
         formulaId = r.body.id;
         const url = util.format('%s/%s/triggers', test.api, formulaId);
-        return tester.post(url, t, triggerSchema);
+        return cloud.post(url, t, triggerSchema);
       })
       .then(r => {
         const url = util.format('%s/%s/triggers/%s', test.api, formulaId, r.body.id);
-        return tester.get(url, triggerSchema);
+        return cloud.get(url, triggerSchema);
       })
       .then(r => {
         const url = util.format('/formulas/%s/triggers/%s', formulaId, r.body.id);
-        return tester.delete(url);
+        return cloud.delete(url);
       })
       .then(r => {
         const url = util.format('/formulas/%s', formulaId);
-        return tester.delete(url);
+        return cloud.delete(url);
       });
   });
 
@@ -59,7 +59,7 @@ tester.forPlatform('formulas', genFormula({}), schema, (test) => {
     const f = genFormula({});
 
     let formulaId;
-    return tester.post(test.api, f, schema)
+    return cloud.post(test.api, f, schema)
       .then(r => {
         formulaId = r.body.id;
 
@@ -70,30 +70,30 @@ tester.forPlatform('formulas', genFormula({}), schema, (test) => {
         });
         const tApi = util.format('%s/%s/triggers', test.api, formulaId);
 
-        return tester.post(tApi, t, (r) => expect(r).to.have.statusCode(400));
+        return cloud.post(tApi, t, (r) => expect(r).to.have.statusCode(400));
       })
-      .then(r => tester.delete(test.api + '/' + formulaId));
+      .then(r => cloud.delete(test.api + '/' + formulaId));
   });
 
   it('should not allow creating an instance of a formula with an invalid on success step', () => {
     const f = genFormula({});
 
     let formulaId;
-    return tester.post(test.api, f, schema)
+    return cloud.post(test.api, f, schema)
       .then(r => {
         formulaId = r.body.id;
         const t = genTrigger({
           onSuccess: ['fake-step-name']
         });
         const tApi = util.format('%s/%s/triggers', test.api, formulaId);
-        return tester.post(tApi, t, triggerSchema);
+        return cloud.post(tApi, t, triggerSchema);
       })
       .then(r => {
         const fi = genInstance({});
         const iApi = util.format('/formulas/%s/instances', formulaId);
-        return tester.post(iApi, fi, (r) => expect(r).to.have.statusCode(400));
+        return cloud.post(iApi, fi, (r) => expect(r).to.have.statusCode(400));
       })
-      .then(r => tester.delete(util.format('/formulas/%s', formulaId)));
+      .then(r => cloud.delete(util.format('/formulas/%s', formulaId)));
   });
 
   it('should allow creating a big azz formula and then an instance', () => {
@@ -108,13 +108,13 @@ tester.forPlatform('formulas', genFormula({}), schema, (test) => {
         f.name = tools.random();
 
         let formulaId;
-        return tester.post(test.api, f, schema)
+        return cloud.post(test.api, f, schema)
           .then(r => {
             formulaId = r.body.id;
-            return tester.post(util.format('/formulas/%s/instances', formulaId), fi, instanceSchema);
+            return cloud.post(util.format('/formulas/%s/instances', formulaId), fi, instanceSchema);
           })
-          .then(r => tester.delete(util.format('/formulas/%s/instances/%s', formulaId, r.body.id)))
-          .then(r => tester.delete(util.format('/formulas/%s', formulaId)))
+          .then(r => cloud.delete(util.format('/formulas/%s/instances/%s', formulaId, r.body.id)))
+          .then(r => cloud.delete(util.format('/formulas/%s', formulaId)))
           .then(r => provisioner.delete(id));
       });
   });
