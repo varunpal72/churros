@@ -5,21 +5,21 @@ const expect = require('chakram').expect;
 const tester = require('core/tester');
 const metadataSchema = require('./assets/element.metadata.schema.json');
 
-tester.forPlatform('elements', metadataSchema, null, (suite) => {
+tester.forPlatform('elements', metadataSchema, null, (test) => {
 
   it('should return element metadata', () => {
     return tester.get('elements/sfdc')
-      .then(r => tester.get(util.format('%s/%s/metadata', suite.api, r.body.id), metadataSchema));
+      .then(r => tester.get(util.format('%s/%s/metadata', test.api, r.body.id), metadataSchema));
   });
 
   it('should return 404 for invalid element ID', () => {
-    return tester.get(util.format('%s/999999999999/metadata', suite.api), (r) => expect(r).to.have.statusCode(404));
+    return tester.get(util.format('%s/999999999999/metadata', test.api), (r) => expect(r).to.have.statusCode(404));
   });
 
   it('should return polling event metadata for polling element', () => {
     return tester.get('elements/netsuitecrm')
       .then(r => {
-        return tester.get(util.format('%s/%s/metadata', suite.api, r.body.id), (r) => {
+        return tester.get(util.format('%s/%s/metadata', test.api, r.body.id), (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.events.supported).to.equal(true);
@@ -32,7 +32,7 @@ tester.forPlatform('elements', metadataSchema, null, (suite) => {
   it('should return webhook event metadata for webhook element', () => {
     return tester.get('elements/dropbox')
       .then(r => {
-        return tester.get(util.format('%s/%s/metadata', suite.api, r.body.id), (r) => {
+        return tester.get(util.format('%s/%s/metadata', test.api, r.body.id), (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.events.supported).to.equal(true);

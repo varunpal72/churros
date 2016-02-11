@@ -221,28 +221,29 @@ describe('tester', () => {
 
   tester.forElement('fakehub', 'resource');
 
-  tester.forElement('fakehub', 'resource', null, null, (suite) => {
-    it('should support the for with a hub passed in', () => expect(suite.api).to.equal('/hubs/fakehub/resource'));
+  tester.forElement('fakehub', 'resource', null, null, (test) => {
+    it('should support the for with a hub passed in', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
   });
 
-  tester.forPlatform('platformresource', null, null, (suite) => {
-    it('should support the for with a hub passed in', () => expect(suite.api).to.equal('/platformresource'));
+  tester.forPlatform('platformresource', null, null, (test) => {
+    it('should support the for with a hub passed in', () => expect(test.api).to.equal('/platformresource'));
   });
 
-  tester.forPlatform('foo', genPayload(), genSchema(), (suite) => {
-    suite.should.return404OnPatch(456);
-    suite.should.return404OnGet(456);
-    suite.should.return200OnPost();
-    suite.should.supportCruds();
-    suite.should.supportCruds(chakram.put);
-    suite.should.supportCrud();
-    suite.should.supportCrd();
-    suite.should.supportCrds();
-    suite.should.supportPagination({});
-    suite.should.supportCeqlSearch('id');
+  tester.forPlatform('foo', genPayload(), genSchema(), (test) => {
+    test.should.return404OnPatch(456);
+    test.should.return404OnGet(456);
+    test.should.return200OnPost();
+    test.should.return200OnPost();
+    test.should.supportCruds();
+    test.should.supportCruds(chakram.put);
+    test.should.supportCrud();
+    test.should.supportCrd();
+    test.should.supportCrds();
+    test.should.supportPagination({});
+    test.should.supportCeqlSearch('id');
   });
 
-  tester.forPlatform('foo/bad', genPayload(), null, (suite) => {
-    suite.should.return400OnPost();
+  tester.forPlatform('foo/bad', genPayload(), null, (test) => {
+    test.should.return400OnPost();
   });
 });

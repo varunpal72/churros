@@ -10,6 +10,6 @@ const customer = (custom) => new Object({
   email: custom.email || tools.randomEmail()
 });
 
-tester.forElement('ecommerce', 'customers', customer({}), schema, (suite) => {
-  suite.should.supportCruds();
+tester.forElement('ecommerce', 'customers', customer({}), schema, (test) => {
+  test.should.supportCruds();
 });

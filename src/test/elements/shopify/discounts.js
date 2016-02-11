@@ -11,6 +11,6 @@ const discount = (custom) => new Object({
   value: custom.value || 100
 });
 
-tester.forElement('ecommerce', 'discounts', discount({}), schema, (suite) => {
-  suite.should.supportCrds();
+tester.forElement('ecommerce', 'discounts', discount({}), schema, (test) => {
+  test.should.supportCrds();
 });

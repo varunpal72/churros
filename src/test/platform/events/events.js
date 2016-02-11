@@ -21,7 +21,7 @@ const loadPayload = (element) => {
   }
 };
 
-tester.forPlatform('events', null, null, (suite) => {
+tester.forPlatform('events', null, null, (test) => {
   it('should handle receiving x number of events for an element instance', () => {
     const element = props.getForKey('events', 'element');
     const payload = loadPayload(element);

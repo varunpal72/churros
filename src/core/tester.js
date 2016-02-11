@@ -261,9 +261,8 @@ const runTests = (api, payload, schema, tests) => {
     };
   };
 
-  const suite = {
+  const test = {
     api: api,
-    schema: schema,
     should: should(api, schema, payload),
     withApi: (myApi) => using(myApi, schema, payload),
     withSchema: (mySchema) => using(api, mySchema, payload),
@@ -271,7 +270,7 @@ const runTests = (api, payload, schema, tests) => {
     withOptions: (myOptions) => using(api, schema, payload, myOptions)
   };
 
-  tests ? tests(suite) : it('add some tests to me!!!', () => true);
+  tests ? tests(test) : it('add some tests to me!!!', () => true);
 };
 
 exports.forElement = (hub, resource, payload, schema, tests) => {

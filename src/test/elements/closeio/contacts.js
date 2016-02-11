@@ -14,18 +14,18 @@ const gen = (opts) => {
   });
 };
 
-tester.forElement('crm', 'contacts', gen(), schema, (suite) => {
-  it('suite.should allow CRUDS for ' + suite.api, () => {
+tester.forElement('crm', 'contacts', gen(), schema, (test) => {
+  it('test.should allow CRUDS for ' + test.api, () => {
     let accountId;
     return tester.post('/hubs/crm/accounts', { name: 'churros tmp account' })
       .then(r => accountId = r.body.id)
-      .then(r => tester.cruds(suite.api, gen({ lead_id: accountId }), schema))
+      .then(r => tester.cruds(test.api, gen({ lead_id: accountId }), schema))
       .then(r => tester.delete('/hubs/crm/accounts/' + accountId));
   });
 
-  suite.should.supportPagination();
-  suite.should.return404OnGet();
-  suite.should.return404OnPatch();
-  suite.should.return400OnPost();
-  suite.withJson({}).should.return400OnPost();
+  test.should.supportPagination();
+  test.should.return404OnGet();
+  test.should.return404OnPatch();
+  test.should.return400OnPost();
+  test.withJson({}).should.return400OnPost();
 });

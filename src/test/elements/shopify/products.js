@@ -9,6 +9,6 @@ const products = (custom) => new Object({
   product_type: custom.product_type || tools.random()
 });
 
-tester.forElement('ecommerce', 'products', products({}), schema, (suite) => {
-  suite.should.supportCruds();
+tester.forElement('ecommerce', 'products', products({}), schema, (test) => {
+  test.should.supportCruds();
 });

@@ -11,6 +11,6 @@ const order = (custom) => new Object({
   }]
 });
 
-tester.forElement('ecommerce', 'orders', order({}), schema, (suite) => {
-  suite.should.supportCruds();
+tester.forElement('ecommerce', 'orders', order({}), schema, (test) => {
+  test.should.supportCruds();
 });
