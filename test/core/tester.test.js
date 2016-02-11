@@ -225,11 +225,11 @@ describe('tester', () => {
     it('should support the for with a hub passed in', () => expect(suite.api).to.equal('/hubs/fakehub/resource'));
   });
 
-  tester.forElement(null, 'platformresource', null, null, (suite) => {
+  tester.forPlatform('platformresource', null, null, (suite) => {
     it('should support the for with a hub passed in', () => expect(suite.api).to.equal('/platformresource'));
   });
 
-  tester.forElement(null, 'foo', genPayload(), genSchema(), (suite) => {
+  tester.forPlatform('foo', genPayload(), genSchema(), (suite) => {
     suite.should.return404OnPatch(456);
     suite.should.return404OnGet(456);
     suite.should.return200OnPost();
@@ -242,7 +242,7 @@ describe('tester', () => {
     suite.should.supportCeqlSearch('id');
   });
 
-  tester.forElement(null, 'foo/bad', genPayload(), null, (suite) => {
+  tester.forPlatform('foo/bad', genPayload(), null, (suite) => {
     suite.should.return400OnPost();
   });
 });
