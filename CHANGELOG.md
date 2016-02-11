@@ -10,6 +10,7 @@
 * Prompt for authentication type and properties when calling `churros add element`
 * Added optional `--browser <name>` support so, if you're debugging your OAuth element, you can now actually *see* the browser running your selenium commands.  (i.e. `churros test elements/foo --browser firefox`)
 * Drastically changed the way you interact with tests inside what was formally known as `tester.for`, and is now: `suite.forElement` or `suite.forPlatform`
+* 100% unit test coverage for everything in `src/core` :100:
 
 ## v0.1.0 <sub><sup>(2016-1-29)</sup></sub>
 
