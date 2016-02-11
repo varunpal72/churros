@@ -227,16 +227,16 @@ describe('tester', () => {
     it('should support the for with a hub passed in', () => expect(api).to.equal('/platformresource'));
   });
 
-  tester.for(null, 'foo', () => {
+  tester.for(null, 'foo', genSchema(), () => {
     tester.it.shouldReturn404OnPatch(genPayload(), 456);
     tester.it.shouldReturn404OnGet(456);
-    tester.it.shouldSupportCruds(genPayload(), genSchema());
-    tester.it.shouldSupportCruds(genPayload(), genSchema(), chakram.put);
-    tester.it.shouldSupportCrud(genPayload(), genSchema());
-    tester.it.shouldSupportCrd(genPayload(), genSchema());
-    tester.it.shouldSupportCrds(genPayload(), genSchema());
-    tester.it.shouldSupportPost(genPayload(), genSchema());
-    tester.it.shouldSupportPagination(genSchema(), {});
+    tester.it.shouldSupportCruds(genPayload());
+    tester.it.shouldSupportCruds(genPayload(), chakram.put);
+    tester.it.shouldSupportCrud(genPayload());
+    tester.it.shouldSupportCrd(genPayload());
+    tester.it.shouldSupportCrds(genPayload());
+    tester.it.shouldSupportPost(genPayload());
+    tester.it.shouldSupportPagination({});
     tester.it.shouldSupportCeqlSearch(genPayload(), 'id');
   });
 

@@ -6,7 +6,7 @@ const expect = require('chakram').expect;
 const tester = require('core/tester');
 const schema = require('./assets/file.schema.json');
 
-tester.for('documents', 'files', (api) => {
+tester.for('documents', 'files', schema, (api) => {
   it('should allow uploading and downloading a file', () => {
 
     let fileId = -1;
