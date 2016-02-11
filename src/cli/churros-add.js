@@ -146,6 +146,11 @@ const stubPlatformFiles = (r) =>
     // asset files
     const assetsDir = suiteDir + '/assets';
     fs.mkdirSync(assetsDir);
+
+    const resourceFile = assetsDir + '/' + r.name + '.json';
+    fs.createReadStream(__dirname + '/assets/resource.template.json')
+      .pipe(fs.createWriteStream(resourceFile));
+
     const schemaFile = assetsDir + '/' + r.name + '.schema.json';
     fs.createReadStream(__dirname + '/assets/resource.schema.template.json')
       .pipe(fs.createWriteStream(schemaFile));
@@ -194,6 +199,11 @@ const stubElementFiles = (answers) =>
         console.log('test .js file already exists for %s so not modifying', name);
       }
 
+      // resource file
+      const resourceFile = assetsDir + '/' + name + '.json';
+      fs.createReadStream(__dirname + '/assets/resource.template.json')
+        .pipe(fs.createWriteStream(resourceFile));
+
       // schema file
       const resourceSchemaFile = assetsDir + '/' + name + '.schema.json';
       if (!fs.existsSync(resourceSchemaFile)) {
@@ -202,7 +212,6 @@ const stubElementFiles = (answers) =>
       } else {
         console.log('schema file already exists for %s so not modifying', name);
       }
-
       // transformation file
       const currentTransformations = require(transformationsFile);
       if (!currentTransformations[name]) {

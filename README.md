@@ -93,7 +93,7 @@ $ churros test platform/events --element sfdc --load 100 --wait 60
 
 > __PROTIP:__ Passing a `--wait`, `--load` and/or `--element` to `churros test platform/events` overrides any default value that may be in your property file.
 
-> __PROTIP:__ Some elements are not currently supported as they need to have an `events/assets/_element_.event.json` file setup so `churros` knows how to simulate events from that system.  If you run the event tests with an element that is not supported you will see an error message like:
+> __PROTIP:__ Some elements are not currently supported as they need to have an `events/assets/{element}.event.json` file setup so `churros` knows how to simulate events from that system.  If you run the event tests with an element that is not supported you will see an error message like:
 ```bash
 $ churros test platform/events --element box
 $ No box.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events
