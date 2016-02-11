@@ -14,22 +14,18 @@ const gen = (opts) => {
   });
 };
 
-const genAccount = (opts) => new Object({
-  name: 'churros account name'
-});
-
-tester.for('crm', 'contacts', schema, (api) => {
-  it('should allow CRUDS for ' + api, () => {
+tester.forElement('crm', 'contacts', gen(), schema, (suite) => {
+  it('suite.should allow CRUDS for ' + suite.api, () => {
     let accountId;
-    return tester.post('/hubs/crm/accounts', genAccount())
+    return tester.post('/hubs/crm/accounts', { name: 'churros tmp account' })
       .then(r => accountId = r.body.id)
-      .then(r => tester.cruds(api, gen({ lead_id: accountId }), schema))
+      .then(r => tester.cruds(suite.api, gen({ lead_id: accountId }), schema))
       .then(r => tester.delete('/hubs/crm/accounts/' + accountId));
   });
 
-  tester.it.shouldSupportPagination();
-  tester.it.shouldReturn404OnGet();
-  tester.it.shouldReturn404OnPatch();
-  tester.it.shouldReturn400OnPost({});
-  tester.it.shouldReturn400OnPost();
+  suite.should.supportPagination();
+  suite.should.return404OnGet();
+  suite.should.return404OnPatch();
+  suite.should.return400OnPost();
+  suite.withJson({}).should.return400OnPost();
 });

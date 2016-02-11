@@ -161,8 +161,13 @@ const listenForEvents = (port, numEventsSent, waitSecs, validate) => {
 exports.listenForEvents = listenForEvents;
 
 const itPost = (api, payload, schema) => {
-  const name = util.format('should allow creating a(n) %s', api);
+  const name = util.format('should allow POST for %s', api);
   it(name, () => post(api, payload, schema));
+};
+
+const itGet = (api, schema, options) => {
+  const name = util.format('should allow GET for %s', api);
+  it(name, () => get(api, schema, options));
 };
 
 const itCrd = (api, payload, schema) => {
@@ -185,7 +190,7 @@ const itCruds = (api, payload, schema, updateCb) => {
   it(name, () => cruds(api, payload, schema, updateCb));
 };
 
-const itPagination = (api, schema, query) => {
+const itPagination = (api, schema) => {
   const name = util.format('should allow paginating %s', api);
   const options = { qs: { page: 1, pageSize: 1 } };
 
@@ -229,35 +234,56 @@ const itCeqlSearch = (api, payload, field) => {
   });
 };
 
-exports.for = (hub, objectName, schema, tests) => {
+const runTests = (api, payload, schema, tests) => {
+  const should = (api, schema, payload, options) => {
+    return {
+      return400OnPost: () => itPost400(api, payload),
+      return404OnPatch: (invalidId) => itPatch404(api, payload, invalidId),
+      return404OnGet: (invalidId) => itGet404(api, invalidId),
+      return200OnPost: () => itPost(api, payload, schema),
+      return200OnGet: () => itGet(api, schema, options),
+      supportPagination: () => itPagination(api, schema),
+      supportCeqlSearch: (field) => itCeqlSearch(api, payload, field),
+      supportCruds: (updateCb) => itCruds(api, payload, schema, updateCb),
+      supportCrud: (updateCb) => itCrud(api, payload, schema, updateCb),
+      supportCrd: () => itCrd(api, payload, schema),
+      supportCrds: () => itCrds(api, payload, schema),
+    };
+  };
+
+  const using = (myApi, mySchema, myPayload, myOptions) => {
+    return {
+      should: should(myApi, mySchema, myPayload, myOptions),
+      withApi: (myApi) => using(myApi, mySchema, myPayload, myOptions),
+      withSchema: (mySchema) => using(myApi, mySchema, myPayload, myOptions),
+      withJson: (myPayload) => using(myApi, mySchema, myPayload, myOptions),
+      withOptions: (myOptions) => using(api, schema, payload, myOptions)
+    };
+  };
+
+  const suite = {
+    api: api,
+    schema: schema,
+    should: should(api, schema, payload),
+    withApi: (myApi) => using(myApi, schema, payload),
+    withSchema: (mySchema) => using(api, mySchema, payload),
+    withJson: (myPayload) => using(api, schema, myPayload),
+    withOptions: (myOptions) => using(api, schema, payload, myOptions)
+  };
+
+  tests ? tests(suite) : it('add some tests to me!!!', () => true);
+};
+
+exports.forElement = (hub, objectName, payload, schema, tests) => {
   describe(objectName, () => {
-    let api = hub ? util.format('/hubs/%s/%s', hub, objectName) : util.format('/%s', objectName);
+    let api = util.format('/hubs/%s/%s', hub, objectName);
+    runTests(api, payload, schema, tests);
+  });
+};
 
-    // currying common test functions for easy-of-use
-    exports.it = {};
-    exports.it.shouldReturn400OnPost = (payload) => itPost400(api, payload);
-    exports.it.shouldReturn400OnPost.with = itPost400;
-    exports.it.shouldReturn404OnGet = (invalidId) => itGet404(api, invalidId);
-    exports.it.shouldReturn404OnGet.with = itGet404;
-    exports.it.shouldReturn404OnPatch = (payload, invalidId) => itPatch404(api, payload, invalidId);
-    exports.it.shouldReturn404OnPatch.with = itPatch404;
-    exports.it.shouldReturn404OnGet = (invalidId) => itGet404(api, invalidId);
-    exports.it.shouldReturn404OnGet.with = itGet404;
-    exports.it.shouldSupportPagination = (query) => itPagination(api, schema, query);
-    exports.it.shouldSupportPagination.with = itPagination;
-    exports.it.shouldSupportCeqlSearch = (payload, field) => itCeqlSearch(api, payload, field);
-    exports.it.shouldSupportCeqlSearch.with = itCeqlSearch;
-    exports.it.shouldSupportPost = (payload) => itPost(api, payload, schema);
-    exports.it.shouldSupportPost.with = itPost;
-    exports.it.shouldSupportCruds = (payload, updateCb) => itCruds(api, payload, schema, updateCb);
-    exports.it.shouldSupportCruds.with = itCruds;
-    exports.it.shouldSupportCrud = (payload, updateCb) => itCrud(api, payload, schema, updateCb);
-    exports.it.shouldSupportCrud.with = itCrud;
-    exports.it.shouldSupportCrd = (payload) => itCrd(api, payload, schema);
-    exports.it.shouldSupportCrd.with = itCrd;
-    exports.it.shouldSupportCrds = (payload) => itCrds(api, payload, schema);
-    exports.it.shouldSupportCrds.with = itCrds;
-
-    tests ? tests(api) : it('add some tests to me!!!', () => true);
+exports.forPlatform = (objectName, payload, schema, tests) => {
+  describe(objectName, () => {
+    let api = util.format('/%s', objectName);
+    runTests(api, payload, schema, tests);
   });
 };

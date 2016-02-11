@@ -5,9 +5,8 @@ const schema = require('./assets/taxes.schema');
 const payload = require('./assets/taxes.create');
 const badPayload = require('./assets/taxes.bad.create');
 
-tester.for('finance', 'taxes', schema, (api) => {
-  tester.it.shouldSupportPost(payload);
-  tester.it.shouldReturn400OnPost(badPayload);
-  tester.it.shouldReturn400OnPost();
-  tester.it.shouldReturn400OnPost({});
+tester.forElement('finance', 'taxes', payload, schema, (suite) => {
+  suite.should.return200OnPost();
+  suite.withJson(badPayload).should.return400OnPost();
+  suite.withJson({}).should.return400OnPost();
 });

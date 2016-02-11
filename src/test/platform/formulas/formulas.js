@@ -26,22 +26,23 @@ const genInstance = (opts) => new Object({
   name: (opts.name || 'churros-formula-instance-name')
 });
 
-tester.for(null, 'formulas', schema, (api) => {
-  tester.it.shouldSupportCrud(genFormula({}), chakram.put);
+tester.forPlatform('formulas', genFormula({}), schema, (suite) => {
+
+  suite.should.supportCrud(chakram.put);
 
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
     const f = genFormula({});
     const t = genTrigger({});
 
     let formulaId;
-    return tester.post(api, f, schema)
+    return tester.post(suite.api, f, schema)
       .then(r => {
         formulaId = r.body.id;
-        const url = util.format('%s/%s/triggers', api, formulaId);
+        const url = util.format('%s/%s/triggers', suite.api, formulaId);
         return tester.post(url, t, triggerSchema);
       })
       .then(r => {
-        const url = util.format('%s/%s/triggers/%s', api, formulaId, r.body.id);
+        const url = util.format('%s/%s/triggers/%s', suite.api, formulaId, r.body.id);
         return tester.get(url, triggerSchema);
       })
       .then(r => {
@@ -58,7 +59,7 @@ tester.for(null, 'formulas', schema, (api) => {
     const f = genFormula({});
 
     let formulaId;
-    return tester.post(api, f, schema)
+    return tester.post(suite.api, f, schema)
       .then(r => {
         formulaId = r.body.id;
 
@@ -67,24 +68,24 @@ tester.for(null, 'formulas', schema, (api) => {
             cron: '0 0/14 * 1/1 * ? *'
           }
         });
-        const tApi = util.format('%s/%s/triggers', api, formulaId);
+        const tApi = util.format('%s/%s/triggers', suite.api, formulaId);
 
         return tester.post(tApi, t, (r) => expect(r).to.have.statusCode(400));
       })
-      .then(r => tester.delete(api + '/' + formulaId));
+      .then(r => tester.delete(suite.api + '/' + formulaId));
   });
 
   it('should not allow creating an instance of a formula with an invalid on success step', () => {
     const f = genFormula({});
 
     let formulaId;
-    return tester.post(api, f, schema)
+    return tester.post(suite.api, f, schema)
       .then(r => {
         formulaId = r.body.id;
         const t = genTrigger({
           onSuccess: ['fake-step-name']
         });
-        const tApi = util.format('%s/%s/triggers', api, formulaId);
+        const tApi = util.format('%s/%s/triggers', suite.api, formulaId);
         return tester.post(tApi, t, triggerSchema);
       })
       .then(r => {
@@ -107,7 +108,7 @@ tester.for(null, 'formulas', schema, (api) => {
         f.name = tools.random();
 
         let formulaId;
-        return tester.post(api, f, schema)
+        return tester.post(suite.api, f, schema)
           .then(r => {
             formulaId = r.body.id;
             return tester.post(util.format('/formulas/%s/instances', formulaId), fi, instanceSchema);

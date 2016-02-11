@@ -3,6 +3,6 @@
 const tester = require('core/tester');
 const schema = require('./assets/shops.schema');
 
-tester.for('ecommerce', 'shops', schema, (api) => {
-  it('should allow GET for /hubs/ecommerce/shops', () => tester.find(api, schema));
+tester.forElement('ecommerce', 'shops', null, schema, (suite) => {
+  suite.should.return200OnGet();
 });

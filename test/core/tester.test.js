@@ -219,28 +219,30 @@ describe('tester', () => {
       });
   });
 
-  tester.for('fakehub', 'resource');
-  tester.for('fakehub', 'resource', (api) => {
-    it('should support the for with a hub passed in', () => expect(api).to.equal('/hubs/fakehub/resource'));
-  });
-  tester.for(null, 'platformresource', (api) => {
-    it('should support the for with a hub passed in', () => expect(api).to.equal('/platformresource'));
+  tester.forElement('fakehub', 'resource');
+
+  tester.forElement('fakehub', 'resource', null, null, (suite) => {
+    it('should support the for with a hub passed in', () => expect(suite.api).to.equal('/hubs/fakehub/resource'));
   });
 
-  tester.for(null, 'foo', genSchema(), () => {
-    tester.it.shouldReturn404OnPatch(genPayload(), 456);
-    tester.it.shouldReturn404OnGet(456);
-    tester.it.shouldSupportCruds(genPayload());
-    tester.it.shouldSupportCruds(genPayload(), chakram.put);
-    tester.it.shouldSupportCrud(genPayload());
-    tester.it.shouldSupportCrd(genPayload());
-    tester.it.shouldSupportCrds(genPayload());
-    tester.it.shouldSupportPost(genPayload());
-    tester.it.shouldSupportPagination({});
-    tester.it.shouldSupportCeqlSearch(genPayload(), 'id');
+  tester.forElement(null, 'platformresource', null, null, (suite) => {
+    it('should support the for with a hub passed in', () => expect(suite.api).to.equal('/platformresource'));
   });
 
-  tester.for(null, 'foo/bad', () => {
-    tester.it.shouldReturn400OnPost(genPayload());
+  tester.forElement(null, 'foo', genPayload(), genSchema(), (suite) => {
+    suite.should.return404OnPatch(456);
+    suite.should.return404OnGet(456);
+    suite.should.return200OnPost();
+    suite.should.supportCruds();
+    suite.should.supportCruds(chakram.put);
+    suite.should.supportCrud();
+    suite.should.supportCrd();
+    suite.should.supportCrds();
+    suite.should.supportPagination({});
+    suite.should.supportCeqlSearch('id');
+  });
+
+  tester.forElement(null, 'foo/bad', genPayload(), null, (suite) => {
+    suite.should.return400OnPost();
   });
 });

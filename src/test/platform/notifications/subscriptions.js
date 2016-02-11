@@ -3,18 +3,18 @@
 const tester = require('core/tester');
 const schema = require('./assets/subscription.schema.json');
 
-const subscriptionGen = (opts) => new Object({
+const genSub = (opts) => new Object({
   channel: ('webhook' || opts.channel),
   topics: (['churros-topic'] || opts.topics),
   config: ({ url: 'http://fake.churros.api.com' } || opts.config)
 });
 
-tester.for(null, 'notifications/subscriptions', schema, (api) => {
-  tester.it.shouldSupportCrd(subscriptionGen());
-  tester.it.shouldReturn400OnPost();
-  tester.it.shouldReturn404OnGet();
+tester.forPlatform('notifications/subscriptions', genSub({}), schema, (suite) => {
+  suite.should.supportCrd();
+  suite.withJson({}).should.return400OnPost();
+  suite.should.return404OnGet();
 
-  const bad = subscriptionGen();
+  const bad = genSub();
   bad.config.url = null;
-  tester.it.shouldReturn400OnPost(bad);
+  suite.withJson(bad).should.return400OnPost(bad);
 });
