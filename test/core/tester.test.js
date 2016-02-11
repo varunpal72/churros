@@ -219,31 +219,33 @@ describe('tester', () => {
       });
   });
 
-  tester.forElement('fakehub', 'resource');
-
   tester.forElement('fakehub', 'resource', null, null, (test) => {
-    it('should support the for with a hub passed in', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
+    it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
   });
 
   tester.forPlatform('platformresource', null, null, (test) => {
-    it('should support the for with a hub passed in', () => expect(test.api).to.equal('/platformresource'));
+    it('should support suite for platform', () => expect(test.api).to.equal('/platformresource'));
   });
 
   tester.forPlatform('foo', genPayload(), genSchema(), (test) => {
     test.should.return404OnPatch(456);
     test.should.return404OnGet(456);
+
+    // NOTE: all of these are equivalent
     test.should.return200OnPost();
+    test.withApi('/foo').should.return200OnPost();
+    test.withJson(genPayload()).should.return200OnPost();
+    test.withSchema(genSchema()).should.return200OnPost();
+    test.withApi('/foo').withJson(genPayload()).withSchema(genSchema()).should.return200OnPost();
+
     test.should.return200OnPost();
     test.should.supportCruds();
     test.should.supportCruds(chakram.put);
     test.should.supportCrud();
     test.should.supportCrd();
     test.should.supportCrds();
-    test.should.supportPagination({});
+    test.should.supportPagination();
     test.should.supportCeqlSearch('id');
-  });
-
-  tester.forPlatform('foo/bad', genPayload(), null, (test) => {
-    test.should.return400OnPost();
+    test.withApi('/foo/bad').should.return400OnPost();
   });
 });
