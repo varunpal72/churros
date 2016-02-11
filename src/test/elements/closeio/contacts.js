@@ -1,7 +1,7 @@
 'use strict';
 
 const tools = require('core/tools');
-const tester = require('core/tester');
+const suite = require('core/suite');
 const cloud = require('core/cloud');
 const schema = require('./assets/contact.schema');
 
@@ -15,7 +15,7 @@ const gen = (opts) => {
   });
 };
 
-tester.forElement('crm', 'contacts', gen(), schema, (test) => {
+suite.forElement('crm', 'contacts', gen(), schema, (test) => {
   it('test.should allow CRUDS for ' + test.api, () => {
     let accountId;
     return cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' })

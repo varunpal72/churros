@@ -3,7 +3,7 @@
 const util = require('util');
 const expect = require('chakram').expect;
 const tools = require('core/tools');
-const tester = require('core/tester');
+const suite = require('core/suite');
 const cloud = require('core/cloud');
 const schema = require('./assets/notification.schema.json');
 
@@ -14,7 +14,7 @@ const genNotif = (opts) => new Object({
   from: (opts.from || 'churros')
 });
 
-tester.forPlatform('notifications', genNotif({}), schema, (test) => {
+suite.forPlatform('notifications', genNotif({}), schema, (test) => {
   test.should.supportCrd();
   test.should.return404OnGet();
   test.withJson({}).should.return400OnPost();

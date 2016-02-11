@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester');
+const suite = require('core/suite');
 const schema = require('./assets/subscription.schema.json');
 
 const genSub = (opts) => new Object({
@@ -9,7 +9,7 @@ const genSub = (opts) => new Object({
   config: ({ url: 'http://fake.churros.api.com' } || opts.config)
 });
 
-tester.forPlatform('notifications/subscriptions', genSub({}), schema, (test) => {
+suite.forPlatform('notifications/subscriptions', genSub({}), schema, (test) => {
   test.should.supportCrd();
   test.withJson({}).should.return400OnPost();
   test.should.return404OnGet();

@@ -2,11 +2,11 @@
 
 const util = require('util');
 const expect = require('chakram').expect;
-const tester = require('core/tester');
+const suite = require('core/suite');
 const cloud = require('core/cloud');
 const metadataSchema = require('./assets/element.metadata.schema.json');
 
-tester.forPlatform('elements', metadataSchema, null, (test) => {
+suite.forPlatform('elements', metadataSchema, null, (test) => {
 
   it('should return element metadata', () => {
     return cloud.get('elements/sfdc')

@@ -1,7 +1,7 @@
 'use strict';
 
 const expect = require('chakram').expect;
-const tester = require('core/tester');
+const suite = require('core/suite');
 const cloud = require('core/cloud');
 const provisioner = require('core/provisioner');
 const util = require('util');
@@ -22,7 +22,7 @@ const loadPayload = (element) => {
   }
 };
 
-tester.forPlatform('events', null, null, (test) => {
+suite.forPlatform('events', null, null, (test) => {
   it('should handle receiving x number of events for an element instance', () => {
     const element = props.getForKey('events', 'element');
     const payload = loadPayload(element);

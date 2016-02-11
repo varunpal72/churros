@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester');
+const suite = require('core/suite');
 const tools = require('core/tools');
 const schema = require('./assets/discounts.schema');
 
@@ -11,6 +11,6 @@ const discount = (custom) => new Object({
   value: custom.value || 100
 });
 
-tester.forElement('ecommerce', 'discounts', discount({}), schema, (test) => {
+suite.forElement('ecommerce', 'discounts', discount({}), schema, (test) => {
   test.should.supportCrds();
 });

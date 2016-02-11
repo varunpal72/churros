@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester');
+const suite = require('core/suite');
 const schema = require('./assets/contact.schema.json');
 
 const gen = (opts) => new Object({
@@ -8,7 +8,7 @@ const gen = (opts) => new Object({
   LastName: (opts.LastName || 'sauce')
 });
 
-tester.forElement('crm', 'contacts', gen({}), schema, (test) => {
+suite.forElement('crm', 'contacts', gen({}), schema, (test) => {
   test.should.supportCruds();
   test.should.supportCeqlSearch('id');
 });

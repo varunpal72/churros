@@ -1,7 +1,7 @@
 'use strict';
 
 require('core/assertions');
-const tester = require('core/tester');
+const suite = require('core/suite');
 const nock = require('nock');
 const chakram = require('chakram');
 const expect = chakram.expect;
@@ -117,16 +117,16 @@ beforeEach(() => {
     });
 });
 
-describe('tester', () => {
-  tester.forElement('fakehub', 'resource', null, null, (test) => {
+describe('suite', () => {
+  suite.forElement('fakehub', 'resource', null, null, (test) => {
     it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
   });
 
-  tester.forPlatform('platformresource', null, null, (test) => {
+  suite.forPlatform('platformresource', null, null, (test) => {
     it('should support suite for platform', () => expect(test.api).to.equal('/platformresource'));
   });
 
-  tester.forPlatform('foo', genPayload(), genSchema(), (test) => {
+  suite.forPlatform('foo', genPayload(), genSchema(), (test) => {
     test.should.return404OnPatch(456);
     test.should.return404OnGet(456);
 

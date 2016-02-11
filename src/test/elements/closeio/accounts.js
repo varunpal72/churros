@@ -1,9 +1,9 @@
 'use strict';
 
-const tester = require('core/tester');
+const suite = require('core/suite');
 const schema = require('./assets/account.schema');
 const account = require('./assets/account');
 
-tester.forElement('crm', 'accounts', account, schema, (test) => {
+suite.forElement('crm', 'accounts', account, schema, (test) => {
   test.should.supportCruds();
 });

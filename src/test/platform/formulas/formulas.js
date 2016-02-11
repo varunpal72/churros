@@ -3,7 +3,7 @@
 const provisioner = require('core/provisioner');
 const util = require('util');
 const tools = require('core/tools');
-const tester = require('core/tester');
+const suite = require('core/suite');
 const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
@@ -27,7 +27,7 @@ const genInstance = (opts) => new Object({
   name: (opts.name || 'churros-formula-instance-name')
 });
 
-tester.forPlatform('formulas', genFormula({}), schema, (test) => {
+suite.forPlatform('formulas', genFormula({}), schema, (test) => {
 
   test.should.supportCrud(chakram.put);
 

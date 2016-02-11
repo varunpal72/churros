@@ -1,6 +1,6 @@
 'use strict';
 
-const tester = require('core/tester');
+const suite = require('core/suite');
 const tools = require('core/tools');
 const schema = require('./assets/orders.schema');
 
@@ -11,6 +11,6 @@ const order = (custom) => new Object({
   }]
 });
 
-tester.forElement('ecommerce', 'orders', order({}), schema, (test) => {
+suite.forElement('ecommerce', 'orders', order({}), schema, (test) => {
   test.should.supportCruds();
 });
