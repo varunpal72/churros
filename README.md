@@ -18,7 +18,7 @@ Install the node dependencies and initialize churros.
 $ npm install
 
 # Need phantomjs to be installed globally or somehow available on your $PATH:
-$ npm install --global phantomjs
+$ npm install --global phantomjs-prebuilt
 
 # Puts churros CLI on your $PATH:
 $ npm link
@@ -39,6 +39,8 @@ npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros
 ## Examples
 
 #### Element Tests
+To run the tests for any element, you must have the necessary properties setup for that element.  *ALL* properties for the elements below must be populated.  To see what properties are required, you can call `churros props {element}`.  You can also run `churros help props` for more info.
+
 ```bash
 # Run the entire suite for the closeio element
 $ churros test elements/closeio
@@ -47,10 +49,10 @@ $ churros test elements/closeio
 $ churros test elements/closeio --test 'contacts'
 
 # Run the entire suite for the sfdc element
-$ churros test elements/closeio
+$ churros test elements/sfdc
 
 # Run the entire suite for the sfdc element and during provisioning use the phantomjs browser
-$ churros test elements/closeio --browser phantomjs
+$ churros test elements/sfdc --browser phantomjs
 ```
 
 > __PROTIP:__ The `--test` value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
@@ -98,8 +100,8 @@ $ churros test platform/events
 # Run the event tests, using sfdc as the element to simulate events:
 $ churros test platform/events --element sfdc
 
-# Run the event tests, using sfdc as the element to simulate events, sending in 100 events and waiting 60 seconds to receive them in churros:
-$ churros test platform/events --element sfdc --load 100 --wait 60
+# Run the event tests, using sfdc as the element to simulate events, sending in 25 events and waiting 60 seconds to receive them in churros:
+$ churros test platform/events --element sfdc --load 25 --wait 60 --verbose
 ```
 
 > __PROTIP:__ Passing a `--wait`, `--load` and/or `--element` to `churros test platform/events` overrides any default value that may be in your property file.
@@ -109,7 +111,6 @@ $ churros test platform/events --element sfdc --load 100 --wait 60
 $ churros test platform/events --element box
 $ No box.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events
 ```
-
 
 ## Changelog
 See [CHANGELOG.md](CHANGELOG.md)
