@@ -14,6 +14,6 @@ const order = (custom) => new Object({
   ]
 });
 
-tester.for('ecommerce', 'orders', (api) => {
-  tester.it.shouldSupportCruds(order({}), schema);
+tester.for('ecommerce', 'orders', schema, (api) => {
+  tester.it.shouldSupportCruds(order({}));
 });

@@ -21,7 +21,7 @@ const loadPayload = (element) => {
   }
 };
 
-tester.for(null, 'events', (api) => {
+tester.for(null, 'events', null, (api) => {
   it('should handle receiving x number of events for an element instance', () => {
     const element = props.getForKey('events', 'element');
     const payload = loadPayload(element);

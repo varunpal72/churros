@@ -9,6 +9,6 @@ const products = (custom) => new Object({
   product_type: custom.product_type || tools.random()
 });
 
-tester.for('ecommerce', 'products', (api) => {
-  tester.it.shouldSupportCruds(products({}), schema);
+tester.for('ecommerce', 'products', schema, (api) => {
+  tester.it.shouldSupportCruds(products({}));
 });

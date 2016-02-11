@@ -1,11 +1,10 @@
 'use strict';
 
 const tester = require('core/tester');
-const folderSchema = require('./assets/folder.schema.json');
+const schema = require('./assets/folder.schema.json');
 
-tester.for('documents', 'folders', (api) => {
+tester.for('documents', 'folders', schema, (api) => {
   it('should allow listing folder contents', () => {
-    var uri = api + '/contents?path=/';
-    return tester.get(uri, folderSchema);
+    return tester.get(api + '/contents', schema, { qs: { path: '/' } });
   });
 });

@@ -26,8 +26,8 @@ const genInstance = (opts) => new Object({
   name: (opts.name || 'churros-formula-instance-name')
 });
 
-tester.for(null, 'formulas', (api) => {
-  tester.it.shouldSupportCrud(genFormula({}), schema, chakram.put);
+tester.for(null, 'formulas', schema, (api) => {
+  tester.it.shouldSupportCrud(genFormula({}), chakram.put);
 
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
     const f = genFormula({});

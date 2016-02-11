@@ -8,7 +8,7 @@ const gen = (opts) => new Object({
   LastName: (opts.LastName || 'sauce')
 });
 
-tester.for('crm', 'contacts', (api) => {
-  tester.it.shouldSupportCruds(gen({}), schema);
+tester.for('crm', 'contacts', schema, (api) => {
+  tester.it.shouldSupportCruds(gen({}));
   tester.it.shouldSupportCeqlSearch(gen({}), 'id');
 });

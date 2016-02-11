@@ -13,8 +13,8 @@ const notifyGen = (opts) => new Object({
   from: (opts.from || 'churros')
 });
 
-tester.for(null, 'notifications', (api) => {
-  tester.it.shouldSupportCrd(notifyGen({}), schema);
+tester.for(null, 'notifications', schema, (api) => {
+  tester.it.shouldSupportCrd(notifyGen({}));
   tester.it.shouldReturn404OnGet();
   tester.it.shouldReturn400OnPost();
 

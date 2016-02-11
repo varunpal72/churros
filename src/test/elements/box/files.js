@@ -8,7 +8,6 @@ const schema = require('./assets/file.schema.json');
 
 tester.for('documents', 'files', schema, (api) => {
   it('should allow uploading and downloading a file', () => {
-
     let fileId = -1;
     let query = { path: util.format('/brady-%s.jpg', tools.random()) };
     let path = __dirname + '/assets/brady.jpg';

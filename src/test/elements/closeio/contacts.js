@@ -18,7 +18,7 @@ const genAccount = (opts) => new Object({
   name: 'churros account name'
 });
 
-tester.for('crm', 'contacts', (api) => {
+tester.for('crm', 'contacts', schema, (api) => {
   it('should allow CRUDS for ' + api, () => {
     let accountId;
     return tester.post('/hubs/crm/accounts', genAccount())
@@ -27,7 +27,7 @@ tester.for('crm', 'contacts', (api) => {
       .then(r => tester.delete('/hubs/crm/accounts/' + accountId));
   });
 
-  tester.it.shouldSupportPagination(schema);
+  tester.it.shouldSupportPagination();
   tester.it.shouldReturn404OnGet();
   tester.it.shouldReturn404OnPatch();
   tester.it.shouldReturn400OnPost({});

@@ -5,7 +5,7 @@ const expect = require('chakram').expect;
 const tester = require('core/tester');
 const metadataSchema = require('./assets/element.metadata.schema.json');
 
-tester.for(null, 'elements', (api) => {
+tester.for(null, 'elements', metadataSchema, (api) => {
 
   it('should return element metadata', () => {
     return tester.get('elements/sfdc')

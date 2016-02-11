@@ -3,7 +3,7 @@
 const tester = require('core/tester');
 const schema = require('./assets/customers.schema');
 
-tester.for('ecommerce', 'query', (api) => {
+tester.for('ecommerce', 'query', schema, (api) => {
 
   it('should allow a query for all fields', () => {
     var apiWithQuery = api;

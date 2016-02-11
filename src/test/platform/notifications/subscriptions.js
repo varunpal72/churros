@@ -9,8 +9,8 @@ const subscriptionGen = (opts) => new Object({
   config: ({ url: 'http://fake.churros.api.com' } || opts.config)
 });
 
-tester.for(null, 'notifications/subscriptions', (api) => {
-  tester.it.shouldSupportCrd(subscriptionGen(), schema);
+tester.for(null, 'notifications/subscriptions', schema, (api) => {
+  tester.it.shouldSupportCrd(subscriptionGen());
   tester.it.shouldReturn400OnPost();
   tester.it.shouldReturn404OnGet();
 
