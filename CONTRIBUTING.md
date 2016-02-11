@@ -1,7 +1,3 @@
-## Branching Model
-
-[GitHub Flow](https://guides.github.com/introduction/flow) branching workflow model.
-
 ## Creating Test Suites
 
 ### New Element Suite:
@@ -19,10 +15,12 @@ Assuming you setup the properties correctly, then at this point, you can actuall
 $ churros test elements/${elementName}
 ```
 
-Update each resource's `src/test/elements/${elementName}/${resourceName}.js` JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
+Update each resource's `src/test/elements/${elementName}/assets/${resourceName}.schema.json` JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
 > __NOTE:__ It is critical to be as accurate as possible in this schema file.  This file is critical to ensuring our interface does *not* change and this file is also what will document the models for this API.
 
-Start building out tests in the `src/test/elements/${elementName}/${resourceName}.js` file that was generated.  Leverage the `suite.it` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
+Update each resource's `src/test/elements/${elementName}/assets/${resourceName}.json` JSON file.  This file is what is used to go about creating and updating this specific ${resourceName}.  If your payload is small, or you prefer to just generate the JSON payload in javascript, feel free.  It's not *required* that you use this separate file paradigm.
+
+Start building out tests in the `src/test/elements/${elementName}/${resourceName}.js` file that was generated.  Leverage the `test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
 
 ### New Platform Suite:
 
@@ -37,87 +35,75 @@ Out of the box, you should be able to run your generated platform suite, althoug
 $ churros test platform/${resourceName}
 ```
 
-Update the `/assets/${resourceName}.schema.json` generated JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
+Update the `src/test/platform/${resourceName}/assets/${resourceName}.schema.json` generated JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
 > __NOTE:__ It is critical to be as accurate as possible in this schema file.  This file is critical to ensuring our interface does *not* change and this file is also what will document the models for this API.
 
 > __PROTIP:__ The `${resourceName}.schema.json` file follows the most up-to-date JSON schema spec. You can use tools like http://jsonschema.net/ to help generate it.
 
-Start building out tests in the `src/test/platform/${resourceName}/${resourceName}.js` file that was generated.  Leverage the `suite.it` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
+Update each resource's `src/test/platform/${resourceName}/assets/${resourceName}.json` JSON file.  This file is what is used to go about creating and updating this specific ${resourceName}.  If your payload is small, or you prefer to just generate the JSON payload in javascript, feel free.  It's not *required* that you use this separate file paradigm.
+
+Start building out tests in the `src/test/platform/${resourceName}/${resourceName}.js` file that was generated.  Leverage the `test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
 
 ## Adding Tests To An Existing Suite
 
-Whenever building out new test cases, it is good to leverage as much functionality from the pre-canned `suite.it` functions to ensure we're not duplicating code and to minimize how much code we have to maintain.  The functions provided here do a *lot* if not all of the work for you:
+Whenever building out new test cases, it is good to leverage as much functionality from the pre-canned `test` functions to ensure we're not duplicating code and so you don't have to re-invent the wheel each time.  The functions provided here do a *lot* if not all of the work for you:
 
 >__PROTIP:__ If adding a tests for a new resource to an existing element suite, you can use `churros add ${elementName}` and it will help you stub out the necessary files, update the `transformations.json` file, etc. to help get you started.  It *should not* overwrite any existing files :pray:.
 
-### `suite.it`
+### `test`
 
+For examples on what is available in the `test` object that is passed in at the top of your test file, look at the unit tests in `suite.test.js`.  Here are some basic examples of how to use it:
 ```javascript
-// POST a bad payload to an API and ensure we get a 400 response status code (Note: If you want to send an empty payload, exclude the payload parameter)
-suite.it.shouldReturn400OnPost(payload)
+// The payload and schema passed in here are what will be used if not overridden for a given test.
+suite.forPlatform('foo', payload, schema, (test) => {
+  // NOTE: these first five are all equivalent
+  test.should.return200OnPost(); // using the default api, payload and schema
+  test.withApi('/foo').should.return200OnPost(); // customizing the api, but using default payload and schema
+  test.withJson(payload).should.return200OnPost(); // get it by now?
+  test.withSchema(schema).should.return200OnPost(); // now?
+  test.withApi('/foo').withJson(payload).withSchema(schema).should.return200OnPost(); // customize them all
 
-// PATCH an API with an invalid ID and ensure we get a 404 (Note: If no invalidId is passed then -1 is used)
-suite.it.shouldReturn404OnPatch(payload, invalidId)
-
-// GET an API with an invalid ID and ensure we get a 404 (Note: If no invalidId is passed then -1 is used)
-suite.it.shouldReturn404OnGet(invalidId)
-
-// Run a full CRUDS (create, retrieve, update, delete, search) cycle on the given API and ensure all API calls return a 200 and validate against the specified schema. (Note: Default update API calls is PATCH.  If this resource supports PUT, pass chakram.put as the last parameter)
-suite.it.shouldSupportCruds(payload, schema)
-
-// Same as suite.it.shouldSupportCruds except no search API call
-suite.it.shouldSupportCrud(payload, schema)
-
-// Same as suite.it.shouldSupportCrud except no update API call
-suite.it.shouldSupportCrd(payload, schema)
-
-// Attempts to call a POST to the given API with the given payload and validates the response matches the given schema
-suite.it.shouldSupportPost(payload, schema)
-
-// Creates an object from the given payload, and then searches for that object using the CE where clause by the specified
-// field that is passed in.  For example, if 'id' is passed in then it will end up calling GET {api}?where=id='{idThatWasJustCreated}'
-suite.it.shouldSupportCeqlSearch(payload, field)
-
-// DOCS COMING SOON
-suite.it.shouldSupportPagination
+  test.should.return404OnPatch(456);
+  test.should.return404OnGet(456);
+  test.should.return200OnPost();
+  test.should.supportCruds();
+  test.should.supportCruds(chakram.put);
+  test.should.supportCrud();
+  test.should.supportCrd();
+  test.should.supportCrds();
+  test.should.supportPagination();
+  test.should.supportCeqlSearch('id');
+  test.withApi('/foo/bad').should.return400OnPost();
+});
 ```
 
 > __PROPTIP:__ All of these functions create the `mocha` `it(...)` BDD function for you so you do *not* need to wrap these functions in an `it` block yourself.
 
-#### Adding a New Test to `suite.it`
-If something is missing from `suite.it` that seems like it could be a re-usable test in other suites, feel free to contribute to this library of tests.  All of the functions underneath `suite.it` are simply using the utility functions in the `suite` module and wrapping them in an `it(...)` `mocha` BDD function.  For example, here is the implementation for `suite.it.shouldSupportCruds`:
+#### Adding a New Test to `test`
+If something is missing from `test` that seems like it could be a re-usable test in other suites, feel free to contribute to this library of tests.  All of the functions underneath `test` are simply using the utility functions in the `cloud` module and wrapping them in an `it(...)` `mocha` BDD function.  For example, here is the implementation for `test.should.supportCruds`:
 ```javascript
+const cloud = require('core/cloud');
+
 const itCruds = (api, payload, schema, updateCb) => {
   const name = util.format('should allow CRUDS for %s', api);
-  it(name, () => cruds(api, payload, schema, updateCb));
+  it(name, () => cloud.cruds(api, payload, schema, updateCb));
 };
 ```
 
 You can see how it's simply constructing the BDD name for the test case (`should allow CRUDS for {api}`) and then calling our `cruds` function which is defined above in the module.  The goal of this class is to simply create a lot of lower-level functions and then compose them together in building common test cases.
 
 ### Creating Your Own Custom Tests
-There are always cases where the common `suite.it` functions won't provide everything you need.  In this case, feel free to create your own custom `it(...)` `mocha` functions in your test module.  You can still use a lot of the functions in `suite` that aren't under the `.it` namespace.  Some of the common functions available are:
-```javascript
-cloud.post
-cloud.get
-cloud.patch
-cloud.put
-cloud.delete
-cloud.postFile
-cloud.cruds
-cloud.crud
-cloud.crd
-```
+There are commonly cases where the common `test` functions won't provide everything you need.  In this case, feel free to create your own custom `it(...)` `mocha` functions in your test module.  In this case, it's easiest to use the functions in the `cloud` module.  Most of these functions just mimic your standard HTTP verbs, or your commonalities in CE (pagination, CEQL searching, etc.).  Check out `cloud.test.js` for examples of what's available and how to use `cloud`.
 
 > __PROTIP:__ All of these functions allow you to pass in an optional `options` parameter.  Everything that the `requests` library supports [here](https://github.com/request/request#requestoptions-callback) is also supported by `churros`.
 
 > __PROTIP:__ All of these functions return javascript promises.
 
-> __PROTIP:__ For examples on how to use these functions, please look at all of the unit tests in `suite.it.js`.
+> __PROTIP:__ For examples on how to use these functions, please look at all of the unit tests in `cloud.test.js`.
 
-A good example of leveraging these non `.it` namespaced functions can be found in the `closeio` tests, where it is *required* that a valid `lead_id` is passed when creating a contact:
+A good example of leveraging the `cloud` functions in a test can be found in the `closeio` tests, where it is *required* that a valid `lead_id` is passed when creating a `contact`:
 ```javascript
-// Define your own it(..) mocha BDD test case since we're not using a suite.it function which does this for you
+// Define your own it(..) mocha BDD test case since we're not using a function from test, which does this for you
 it('should allow CRUDS for ' + api, () => {
   let accountId;
   // First, create an account as I need a valid account ID to generate my contact JSON payload
@@ -132,4 +118,16 @@ it('should allow CRUDS for ' + api, () => {
 
 > __PROTIP:__ Each test should be self-contained and should *not* rely on anything from a previous test.
 
-> __PROTIP:__ Validate JSON payloads against JSON schemas as opposed to validating each field individually, etc.
+> __PROTIP:__ Validate JSON payloads against JSON schemas as opposed to validating each field individually, etc.  These JSON schemas are then what we will use to feed our developer docs so when we use them to validate our APIs, we are not only testing our APIs but also testing our documentation.
+
+## Branching Model
+
+[GitHub Flow](https://guides.github.com/introduction/flow) branching workflow model.
+
+## Core Changes
+
+Whenever adding any new code to the `src/core` directory, ensure that these changes are unit-tested in `test/core`.
+
+## Pull Requests
+
+All PRs submitted to the `churros` repository will have *all* of the unit tests run before they're able to be merged into `master`.  When creating a PR, please refrain from assigning it to someone else to review until all GitHub status checks have been completed and you have that nice little :white_check_mark:. 

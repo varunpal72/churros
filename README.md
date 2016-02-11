@@ -40,14 +40,22 @@ npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros
 
 #### Element Tests
 ```bash
-# Run the entire suite for an the closeio element
+# Run the entire suite for the closeio element
 $ churros test elements/closeio
 
 # Run just the tests for the closeio contacts resource
 $ churros test elements/closeio --test 'contacts'
+
+# Run the entire suite for the sfdc element
+$ churros test elements/closeio
+
+# Run the entire suite for the sfdc element and during provisioning use the phantomjs browser
+$ churros test elements/closeio --browser phantomjs
 ```
 
-> __PROTIP:__ The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
+> __PROTIP:__ The `--test` value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
+
+> __PROTIP:__ The `--browser` value defaults to `firefox`, however if you want to use a headless browser, you can pass `--browser phantomjs` as seen above
 
 #### Platform Tests
 
@@ -65,13 +73,16 @@ $ churros test platform/formulas --test 'should allow' --user frank --password r
 
 > __PROTIP:__ Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`.
 
-> __PROTIP:__ Passing a `--verbose` to `churros test [suite]` will log all of the debug messages to the console while the tests are running.
-
 #### Notifications
 ```bash
 # Run the entire notifications suite:
 $ churros test platform/notifications
+
+# Run the entire notifications suite with verbose logging on:
+$ churros test platform/notifications --verbose
 ```
+
+> __PROTIP:__ Passing a `--verbose` to `churros test [suite]` will log all of the debug messages to the console while the tests are running.
 
 #### Events
 These tests create an instance of an element with event notifications enabled and the event notification callback URL as a locally exposed URL.  `churros` then simulates `x` number of events into our platform and ensures that our local callback receives `x` number of callbacks.
