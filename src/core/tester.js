@@ -258,8 +258,6 @@ exports.for = (hub, objectName, tests) => {
     exports.it.shouldSupportCrds = (payload, schema) => itCrds(api, payload, schema);
     exports.it.shouldSupportCrds.with = itCrds;
 
-    tests ?
-      tests(api) :
-      it('add some tests to me!!!', () => true);
+    tests ? tests(api) : it('add some tests to me!!!', () => true);
   });
 };
