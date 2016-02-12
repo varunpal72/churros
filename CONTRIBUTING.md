@@ -130,4 +130,18 @@ Whenever adding any new code to the `src/core` directory, ensure that these chan
 
 ## Pull Requests
 
-All PRs submitted to the `churros` repository will have *all* of the unit tests run before they're able to be merged into `master`.  When creating a PR, please refrain from assigning it to someone else to review until all GitHub status checks have been completed and you have that nice little :white_check_mark:. 
+All PRs submitted to the `churros` repository will have *all* of the unit tests run before they're able to be merged into `master`.  When creating a PR, please refrain from assigning it to someone else until all GitHub status checks have been completed and you have that nice little :white_check_mark:.
+
+> __NOTE:__ PR messages should be formatted in the following way:
+
+```markdown
+## Highlights
+* bullet separated list of highlights
+* another highlight
+
+## Closes
+Closes #${issueNumber}
+Closes #${anotherIssueNumberIfThisClosesMoreThanJustOne}
+```
+
+> __NOTE:__ When all tests have passed then you can assign the PR out.  Make sure the label at this point is `in review`.
