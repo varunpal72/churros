@@ -197,6 +197,15 @@ describe('cloud', () => {
     chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
     return chakram.post('http://localhost:' + port, { event: 'green hat' });
   });
+  it('should throw an error if event validation fails', (done) => {
+    const port = 8085;
+    cloud.listenForEvents(port, 1, 5, (event) => {
+      throw Error('Where my error at?')
+    })
+      .catch(r => true);
+    chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
+    return chakram.post('http://localhost:' + port, { event: 'green hat' });
+  });
 
   it('should support post file', () => {
     // should really NOT depend on the file system here :/

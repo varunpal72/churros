@@ -7,10 +7,13 @@ const provisioner = require('core/provisioner');
 const util = require('util');
 const props = require('core/props');
 const logger = require('winston');
+const crypto = require('cryptojs')
 
+const signatureKey = 'abcd1234efgh5678';
 const gen = (opts) => new Object({
   'event.notification.enabled': opts['event.notification.enabled'] || true,
-  'event.notification.callback.url': opts['event.notification.callback.url'] || props.getForKey('events', 'url')
+  'event.notification.callback.url': opts['event.notification.callback.url'] || props.getForKey('events', 'url'),
+  'event.notification.signature.key': signatureKey
 });
 
 const loadPayload = (element) => {
@@ -35,8 +38,18 @@ suite.forPlatform('events', null, null, (test) => {
       .then(r => instanceId = r.body.id)
       .then(r => cloud.createEvents(element, instanceId, payload, load))
       .then(r => cloud.listenForEvents(port, load, wait, (event) => {
+        throw "garbage";
+        logger.info(event.headers);
+        logger.info(event.body);
         expect(event.headers).to.not.be.empty;
-        //expect(event.headers['elements-webhook-signature']).to.not.be.empty;
+        expect(event.body).to.not.be.empty;
+        expect(event.headers['elements-webhook-id']).to.not.be.empty;
+        expect(event.headers['elements-webhook-signature']).to.not.be.empty;
+        var signature = event.headers['elements-webhook-signature'];
+        logger.info(signature);
+        var hash = 'sha1=' + crypto.HmacSHA1(event.body, signatureKey);
+        logger.info(hash);
+        expect(signature).to.equal(hash);
       }))
       .then(r => provisioner.delete(instanceId));
   });

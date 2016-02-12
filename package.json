@@ -35,7 +35,8 @@
     "selenium-webdriver": "^2.48.2",
     "shelljs": "^0.5.3",
     "tv4": "^1.2.7",
-    "winston": "^2.1.1"
+    "winston": "^2.1.1",
+    "cryptojs": "^2.5.3"
   },
   "devDependencies": {
     "bats": "^0.4.2"
