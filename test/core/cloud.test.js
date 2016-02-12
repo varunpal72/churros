@@ -1,6 +1,7 @@
 'use strict';
 
 require('core/assertions');
+require('core/logger')('debug');
 const cloud = require('core/cloud');
 const nock = require('nock');
 const chakram = require('chakram');
@@ -187,24 +188,28 @@ describe('cloud', () => {
   it('should support cruds', () => cloud.cruds('/foo', genPayload(), genSchema()));
   it('should support creating events', () => cloud.createEvents('myelement', eiId, genPayload(), 2));
 
-  it('should support listening for events with custom validation', (done) => {
-    const port = 8085;
-    cloud.listenForEvents(port, 1, 5, (event) => expect(event).to.not.be.empty)
-      .then(r => done())
-      .then(r => {
-        throw Error('Failed...');
-      });
-    chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
-    return chakram.post('http://localhost:' + port, { event: 'green hat' });
+  it('should support listening for events with custom validation', () => {
+    return new Promise((res, rej) => {
+      const port = 8085;
+      cloud.listenForEvents(port, 1, 5)
+        .then(r => r.forEach(e => expect(e).to.not.be.empty))
+        .then(r => res(r))
+        .catch(r => rej('How embarrassing, I failed validating events: ' + r));
+      chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
+      return chakram.post('http://localhost:' + port, { event: 'green hat' });
+    });
   });
-  it('should throw an error if event validation fails', (done) => {
-    const port = 8085;
-    cloud.listenForEvents(port, 1, 5, (event) => {
-      throw Error('Where my error at?')
-    })
-      .catch(r => true);
-    chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
-    return chakram.post('http://localhost:' + port, { event: 'green hat' });
+
+  it('should throw an error if event validation fails', () => {
+    return new Promise((res, rej) => {
+      const port = 8089;
+      cloud.listenForEvents(port, 1, 5)
+        .then(r => r.forEach(e => expect(e).to.be.empty))
+        .then(r => rej('How embarrassing, I should have failed validating events: ' + r))
+        .catch(r => res(r));
+      chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
+      return chakram.post('http://localhost:' + port, { event: 'green hat' });
+    });
   });
 
   it('should support post file', () => {
