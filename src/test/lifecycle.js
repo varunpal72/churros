@@ -41,7 +41,7 @@ before((done) => {
     })
     .then(r => {
       expect(r).to.have.statusCode(200);
-      defaults(url + '/elements/api-v2', r.body.user, r.body.company);
+      defaults(url + '/elements/api-v2', r.body.user, r.body.company, props.get('user'));
       done();
     })
     .catch(r => {

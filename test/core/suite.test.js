@@ -127,16 +127,22 @@ describe('suite', () => {
   });
 
   suite.forPlatform('foo', genPayload(), genSchema(), (test) => {
-    test.should.return404OnPatch(456);
-    test.should.return404OnGet(456);
-
-    // NOTE: all of these are equivalent
+    // *****************************************
+    // NOTE: all of these are equivalent just as examples
+    // *****************************************
     test.should.return200OnPost();
     test.withApi('/foo').should.return200OnPost();
     test.withJson(genPayload()).should.return200OnPost();
     test.withSchema(genSchema()).should.return200OnPost();
     test.withApi('/foo').withJson(genPayload()).withSchema(genSchema()).should.return200OnPost();
+    test.withJson(genPayload()).withSchema(genSchema()).withApi('/foo').should.return200OnPost();
+    test.withOptions({}).should.return200OnPost();
+    test.withApi('/foo').withOptions({}).should.return200OnPost();
+    // *****************************************
 
+    test.should.return404OnPatch(456);
+    test.should.return404OnGet(456);
+    test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
     test.should.return200OnPost();
     test.should.supportCruds();
     test.should.supportCruds(chakram.put);

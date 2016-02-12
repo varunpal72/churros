@@ -18,7 +18,7 @@ Install the node dependencies and initialize churros.
 $ npm install
 
 # Need phantomjs to be installed globally or somehow available on your $PATH:
-$ npm install --global phantomjs
+$ npm install --global phantomjs-prebuilt
 
 # Puts churros CLI on your $PATH:
 $ npm link
@@ -36,18 +36,31 @@ $ churros init
 npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
 ```
 
+## `churros` CLI
+It is worth taking some time to familiarize yourself with the `churros` CLI.  This CLI can run tests, help setup new test suites, and add/view properties that are needed in order to run certain suites.  Run `churros help` and dig through some of the different sub-commands that are currently available.  To see some examples of the most common command, `churros test`, continue on below.
+
 ## Examples
 
 #### Element Tests
+To run the tests for any element, you must have the necessary properties setup for that element.  *ALL* properties for the elements below must be populated.  To see what properties are required, you can call `churros props {element}`.  You can also run `churros help props` for more info.
+
 ```bash
-# Run the entire suite for an the closeio element
+# Run the entire suite for the closeio element
 $ churros test elements/closeio
 
 # Run just the tests for the closeio contacts resource
 $ churros test elements/closeio --test 'contacts'
+
+# Run the entire suite for the sfdc element
+$ churros test elements/sfdc
+
+# Run the entire suite for the sfdc element and during provisioning use the phantomjs browser
+$ churros test elements/sfdc --browser phantomjs
 ```
 
-> __PROTIP:__ The --test value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
+> __PROTIP:__ The `--test` value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
+
+> __PROTIP:__ The `--browser` value defaults to `firefox`, however if you want to use a headless browser, you can pass `--browser phantomjs` as seen above
 
 #### Platform Tests
 
@@ -65,13 +78,16 @@ $ churros test platform/formulas --test 'should allow' --user frank --password r
 
 > __PROTIP:__ Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`.
 
-> __PROTIP:__ Passing a `--verbose` to `churros test [suite]` will log all of the debug messages to the console while the tests are running.
-
 #### Notifications
 ```bash
 # Run the entire notifications suite:
 $ churros test platform/notifications
+
+# Run the entire notifications suite with verbose logging on:
+$ churros test platform/notifications --verbose
 ```
+
+> __PROTIP:__ Passing a `--verbose` to `churros test [suite]` will log all of the debug messages to the console while the tests are running.
 
 #### Events
 These tests create an instance of an element with event notifications enabled and the event notification callback URL as a locally exposed URL.  `churros` then simulates `x` number of events into our platform and ensures that our local callback receives `x` number of callbacks.
@@ -87,8 +103,8 @@ $ churros test platform/events
 # Run the event tests, using sfdc as the element to simulate events:
 $ churros test platform/events --element sfdc
 
-# Run the event tests, using sfdc as the element to simulate events, sending in 100 events and waiting 60 seconds to receive them in churros:
-$ churros test platform/events --element sfdc --load 100 --wait 60
+# Run the event tests, using sfdc as the element to simulate events, sending in 25 events and waiting 60 seconds to receive them in churros:
+$ churros test platform/events --element sfdc --load 25 --wait 60 --verbose
 ```
 
 > __PROTIP:__ Passing a `--wait`, `--load` and/or `--element` to `churros test platform/events` overrides any default value that may be in your property file.
@@ -98,7 +114,6 @@ $ churros test platform/events --element sfdc --load 100 --wait 60
 $ churros test platform/events --element box
 $ No box.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events
 ```
-
 
 ## Changelog
 See [CHANGELOG.md](CHANGELOG.md)

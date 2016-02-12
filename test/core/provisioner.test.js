@@ -24,7 +24,7 @@ const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 in multiple before blocks breaks things. I prefer them to be self-contained as opposed to a global
 before or something like that ... */
 beforeEach(() => {
-  defaults(baseUrl, 'fake', 'fake');
+  defaults(baseUrl, 'fake', 'fake', 'churrosUnitTester');
 
   /** Has to be in before each with current approach: https://github.com/pgte/nock#specifying-hostname **/
   nock(baseUrl, headers())
@@ -70,6 +70,7 @@ beforeEach(() => {
 
 const setupProps = () => {
   props({
+    'user': 'franky',
     'oauth.callback.url': 'http://myfakecallbackurl',
     'myelement': {
       'username': 'frank',
