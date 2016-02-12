@@ -143,6 +143,14 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
   let events = [];
   return new Promise((resolve, reject) => {
     http.createServer((request, response) => {
+        var fullBody = '';
+        request.on('data', function(chunk) {
+          fullBody += chunk.toString();
+        });
+        request.on('end', function() {
+          request.body = fullBody;
+        });
+
         response.end('{}');
         receivedEvents++;
         events.push(request);
