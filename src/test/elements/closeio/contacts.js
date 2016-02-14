@@ -16,14 +16,14 @@ const gen = (opts) => {
 };
 
 suite.forElement('crm', 'contacts', gen(), schema, (test) => {
-  it('test.should allow CRUDS for ' + test.api, () => {
+  it('should allow CRUDS for ' + test.api, () => {
     let accountId;
     return cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' })
       .then(r => accountId = r.body.id)
       .then(r => cloud.cruds(test.api, gen({ lead_id: accountId }), schema))
       .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
-
+  
   test.should.supportPagination();
   test.should.return404OnGet();
   test.should.return404OnPatch();
