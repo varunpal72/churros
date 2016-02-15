@@ -138,25 +138,31 @@ const createEvents = (element, eiId, payload, numEvents) => {
 };
 exports.createEvents = createEvents;
 
-const listenForEvents = (port, numEventsSent, waitSecs, validate) => {
-  validate = (typeof callback === 'function') ? validate : () => {};
+const listenForEvents = (port, numEventsSent, waitSecs) => {
   let receivedEvents = 0;
   let events = [];
   return new Promise((resolve, reject) => {
-      http.createServer((request, response) => {
-          response.end('{}');
-          receivedEvents++;
-          events.push(request);
-          logger.debug('%s event(s) received', receivedEvents);
-          if (receivedEvents === numEventsSent) resolve(request);
-        })
-        .listen(port, "localhost", (err) => {
-          err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+    http.createServer((request, response) => {
+        var fullBody = '';
+        request.on('data', function(chunk) {
+          fullBody += chunk.toString();
+        });
+        request.on('end', function() {
+          request.body = fullBody;
         });
 
-      const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
-      setTimeout(() => reject(msg), waitSecs * 1000);
-    })
-    .then(r => events.forEach(e => validate(e)));
+        response.end('{}');
+        receivedEvents++;
+        events.push(request);
+        logger.debug('%s event(s) received', receivedEvents);
+        if (receivedEvents === numEventsSent) resolve(events);
+      })
+      .listen(port, "localhost", (err) => {
+        err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+      });
+
+    const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
+    setTimeout(() => reject(msg), waitSecs * 1000);
+  });
 };
 exports.listenForEvents = listenForEvents;
