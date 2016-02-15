@@ -54,7 +54,7 @@ suite.forPlatform('elements', metadataSchema, null, (test) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.configuration).to.not.be.empty;
-          expect(r.body.configuration['oauth.api.key']).to.equal("********");
+          expect(r.body.configuration['oauth.api.secret']).to.equal("********");
         })
         .then(r => provisioner.delete(id));
       });
