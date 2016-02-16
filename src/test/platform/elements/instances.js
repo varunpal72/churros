@@ -10,15 +10,15 @@ const instanceSchema = require('./assets/element.instance.schema.json');
 suite.forPlatform('elements/instances', instanceSchema, null, (test) => {
 
   it('should return element instances', () => {
-    return provisioner.create('box')
+    return provisioner.create('freshdesk')
       .then(r => {
         const id = r.body.id;
-        return cloud.get(util.format('/elements/box/instances/%s', id), instanceSchema)
+        return cloud.get(util.format('/elements/freshdesk/instances/%s', id), instanceSchema)
         .then(r => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.configuration).to.not.be.empty;
-          expect(r.body.configuration['oauth.api.secret']).to.equal("********");
+          expect(r.body.configuration['password']).to.equal("********");
         })
         .then(r => provisioner.delete(id));
       });
