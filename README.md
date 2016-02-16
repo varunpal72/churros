@@ -2,8 +2,10 @@
 
 --------------------------------------------------------------------------------
 
-[![version](http://img.shields.io/badge/version-v0.2.0-blue.svg)](#) [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/) [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/) [![Circle CI](https://circleci.com/gh/cloud-elements/churros.svg?style=shield&circle-token=06ba43ddb954fcb3687b5e41fbdf607f1846bbc0)](https://circleci.com/gh/cloud-elements/churros)
-[![Coverage Status](https://coveralls.io/repos/github/cloud-elements/churros/badge.svg?branch=master&t=9nr0dk)](https://coveralls.io/github/cloud-elements/churros?branch=master)
+[![version](http://img.shields.io/badge/version-v0.2.0-blue.svg)](#) [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/) [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
+[![Circle CI](https://circleci.com/gh/cloud-elements/churros.svg?style=shield)](https://circleci.com/gh/cloud-elements/churros)
+[![Coverage Status](https://coveralls.io/repos/github/cloud-elements/churros/badge.svg?branch=master)](https://coveralls.io/github/cloud-elements/churros?branch=master)
+
 
 ## Overview
 Integration testing framework for CE APIs, written in Javascript.  Provides testing for all things Cloud Elements, from platform resources (`elements`, `notifications`, etc.) to all of the current elements in our catalog (`sfdc`, `dropbox`, etc.).  This framework has up-to-date JSON schemas for the numerous resources we support, example JSON requests, example JSON transformations and much more.  These tests are run against our platform many times a day, guaranteeing that they represent what our platform supports *today*.
