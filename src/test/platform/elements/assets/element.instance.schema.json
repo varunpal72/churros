@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "token": {
+      "type": "string"
+    },
+    "valid": {
+      "type": "boolean"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "configuration": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "token",
+    "valid",
+    "tags"
+  ]
+}
