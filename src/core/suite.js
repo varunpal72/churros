@@ -46,12 +46,14 @@ const itPagination = (api, schema) => {
 
 const itGet404 = (api, invalidId) => {
   const name = util.format('should throw a 404 when trying to retrieve a(n) %s with an ID that does not exist', api);
-  it(name, () => cloud.get(api + '/' + (invalidId || -1), (r) => expect(r).to.have.statusCode(404)));
+  if (invalidId) api = api + '/' + invalidId;
+  it(name, () => cloud.get(api, (r) => expect(r).to.have.statusCode(404)));
 };
 
 const itPatch404 = (api, payload, invalidId) => {
   const name = util.format('should throw a 404 when trying to update a(n) %s with an ID that does not exist', api);
-  it(name, () => cloud.update(api + '/' + (invalidId || -1), (payload || {}), (r) => expect(r).to.have.statusCode(404), chakram.patch));
+  if (invalidId) api = api + '/' + invalidId;
+  it(name, () => cloud.update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakram.patch));
 };
 
 const itPost400 = (api, payload) => {

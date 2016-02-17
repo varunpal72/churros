@@ -23,10 +23,10 @@ suite.forElement('crm', 'contacts', gen(), schema, (test) => {
       .then(r => cloud.cruds(test.api, gen({ lead_id: accountId }), schema))
       .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
-  
+
   test.should.supportPagination();
-  test.should.return404OnGet();
-  test.should.return404OnPatch();
+  test.should.return404OnGet(-1);
+  test.should.return404OnPatch(-1);
   test.should.return400OnPost();
   test.withJson({}).should.return400OnPost();
 });

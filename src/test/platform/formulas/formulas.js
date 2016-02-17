@@ -116,4 +116,6 @@ suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
       }))
       .then(r => cloud.delete(test.api + '/' + formulaId));
   });
+
+  test.withApi(test.api + '/-1/export').should.return404OnGet();
 });
