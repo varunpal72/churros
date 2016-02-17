@@ -104,4 +104,16 @@ suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
           .then(r => provisioner.delete(id));
       });
   });
+
+  it('should allow exporting a formula', () => {
+    const f = common.genFormula({});
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + formulaId + '/export', (r) => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body.name).to.equal(f.name);
+      }))
+      .then(r => cloud.delete(test.api + '/' + formulaId));
+  });
 });
