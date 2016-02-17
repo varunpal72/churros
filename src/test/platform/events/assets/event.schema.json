@@ -1,0 +1,24 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "string"
+      },
+      "eventDate": {
+        "type": "string"
+      },
+      "status": {
+        "enum": ["NEW", "RECEIVED", "DISPATCHED", "CONSUMED", "NOTIFIED"]
+      },
+      "providerData": {
+        "type": "string"
+      },
+      "notifiedData": {
+        "type": "array"
+      }
+    },
+    "required": ["id", "eventDate", "status", "providerData"]
+  }
+}

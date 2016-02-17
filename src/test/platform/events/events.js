@@ -8,6 +8,7 @@ const util = require('util');
 const props = require('core/props');
 const logger = require('winston');
 const crypto = require('crypto');
+const eventSchema = require('./assets/event.schema.json');
 
 const signatureKey = 'abcd1234efgh5678';
 const gen = (opts) => new Object({
@@ -49,6 +50,7 @@ suite.forPlatform('events', null, null, (test) => {
           var hash = 'sha1=' + crypto.createHmac('sha1', signatureKey).update(event.body).digest('base64');
           expect(signature).to.equal(hash);
         })))
+      .then(r => cloud.get(util.format('instances/%s/events', instanceId), eventSchema))
       .then(r => provisioner.delete(instanceId));
   });
 });
