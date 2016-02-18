@@ -126,7 +126,7 @@ $ No box.event.json file found in the events/assets directory.  Please create th
 See [CHANGELOG.md](CHANGELOG.md)
 
 ## Contributing
-See [CONTRIBUTING.md](CONTRIBUTING.md)
+See [CONTRIBUTING.md](.github/CONTRIBUTING.md)
 
 ## License
 See [LICENSE.md](LICENSE.md)
