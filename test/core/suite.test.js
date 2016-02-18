@@ -140,8 +140,15 @@ describe('suite', () => {
     test.withApi('/foo').withOptions({}).should.return200OnPost();
     // *****************************************
 
+    // *****************************************
+    // NOTE: all of these are equivalent just as examples
+    // *****************************************
     test.should.return404OnPatch(456);
     test.should.return404OnGet(456);
+    test.withApi(test.api + '/456').should.return404OnPatch();
+    test.withApi(test.api + '/456').should.return404OnGet();
+    // *****************************************
+
     test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
     test.should.return200OnPost();
     test.should.supportCruds();

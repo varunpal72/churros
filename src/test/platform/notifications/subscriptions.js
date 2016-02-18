@@ -12,7 +12,7 @@ const genSub = (opts) => new Object({
 suite.forPlatform('notifications/subscriptions', genSub({}), schema, (test) => {
   test.should.supportCrd();
   test.withJson({}).should.return400OnPost();
-  test.should.return404OnGet();
+  test.should.return404OnGet(-1);
 
   const bad = genSub();
   bad.config.url = null;

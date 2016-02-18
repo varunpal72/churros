@@ -16,7 +16,7 @@ const genNotif = (opts) => new Object({
 
 suite.forPlatform('notifications', genNotif({}), schema, (test) => {
   test.should.supportCrd();
-  test.should.return404OnGet();
+  test.should.return404OnGet(-1);
   test.withJson({}).should.return400OnPost();
 
   // test with missing topic should be bad too
