@@ -1,3 +1,7 @@
+## v0.3.0 <sub><sup>(TBD)</sup></sub>
+#### Highlights
+* Re-factored the schema validation code, and removed the expectation that all element tests would validate against schemas after revealing that, well, it's just not really worth it.
+
 ## v0.2.0 <sub><sup>(2016-02-12)</sup></sub>
 
 #### Highlights

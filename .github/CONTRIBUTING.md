@@ -57,8 +57,8 @@ suite.forPlatform('foo', payload, schema, (test) => {
   test.should.return200OnPost(); // using the default api, payload and schema
   test.withApi('/foo').should.return200OnPost(); // customizing the api, but using default payload and schema
   test.withJson(payload).should.return200OnPost(); // get it by now?
-  test.withSchema(schema).should.return200OnPost(); // now?
-  test.withApi('/foo').withJson(payload).withSchema(schema).should.return200OnPost(); // customize them all
+  test.withValidation(schema).should.return200OnPost(); // now?
+  test.withApi('/foo').withJson(payload).withValidation(schema).should.return200OnPost(); // customize them all
 
   test.should.return404OnPatch(456);
   test.should.return404OnGet(456);

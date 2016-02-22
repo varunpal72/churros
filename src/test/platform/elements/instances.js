@@ -19,8 +19,8 @@ suite.forPlatform('elements/instances', instanceSchema, null, (test) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.configuration).to.not.be.empty;
-          expect(r.body.configuration['password']).to.equal("********");
-          expect(r.body.configuration['username']).to.equal(props.getForKey('freshdesk', 'username'));
+          expect(r.body.configuration.password).to.equal("********");
+          expect(r.body.configuration.username).to.equal(props.getForKey('freshdesk', 'username'));
         })
         .then(r => provisioner.delete(id));
       });

@@ -10,52 +10,57 @@ const logger = require('winston');
 
 var exports = module.exports = {};
 
-const validator = (schemaOrValidationCb) => {
-  if (typeof schemaOrValidationCb === 'function') {
+const validator = (validationCb) => {
+  if (typeof validationCb === 'function') {
     return (r) => {
-      schemaOrValidationCb(r);
+      validationCb(r);
       return r;
     };
-  } else if (typeof schemaOrValidationCb === 'undefined' || (typeof schemaOrValidationCb === 'object' && schemaOrValidationCb === null)) {
+  } else if (typeof validationCb === 'undefined' || (typeof validationCb === 'object' && validationCb === null)) {
     return (r) => {
       expect(r).to.have.statusCode(200);
       return r;
     };
   } else {
+    // assuming this is an actual schema at this point...if it's not, this will fail miserably
     return (r) => {
-      expect(r).to.have.schemaAnd200(schemaOrValidationCb);
+      expect(r).to.have.schemaAnd200(validationCb);
       return r;
     };
   }
 };
 
-const post = (api, payload, schema, options) => {
+const post = (api, payload, validationCb, options) => {
   logger.debug('POST %s with options %s', api, options);
   return chakram.post(api, payload, options)
-    .then(r => validator(schema)(r))
+    .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to create %s', r, api));
 };
-exports.post = post;
+exports.post = (api, payload, validationCb) => post(api, payload, validationCb, null);
 
-const get = (api, schema, options) => {
+const get = (api, validationCb, options) => {
   logger.debug('GET %s with options %s', api, options);
   return chakram.get(api, options)
-    .then(r => validator(schema)(r))
+    .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to retrieve %s', r, api));
 };
-exports.get = get;
+exports.get = (api, validationCb) => get(api, validationCb, null);
 
-const update = (api, payload, schema, cb, options) => {
-  cb = (cb || chakram.patch);
-  logger.debug('%s %s with options %s', cb === chakram.patch ? 'PATCH' : 'PUT', api, options);
+const update = (api, payload, validationCb, chakramCb, options) => {
+  chakramCb = (chakramCb || chakram.patch);
+  logger.debug('%s %s with options %s', chakramCb === chakram.patch ? 'PATCH' : 'PUT', api, options);
 
-  return cb(api, payload, options)
-    .then(r => validator(schema)(r))
+  return chakramCb(api, payload, options)
+    .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to update %s', r, api));
 };
-exports.update = update;
-exports.patch = (api, payload, schema, options) => update(api, payload, schema, chakram.patch, options);
-exports.put = (api, payload, schema, options) => update(api, payload, schema, chakram.put, options);
+exports.update = (api, payload, validationCb, chakramCb) => update(api, payload, validationCb, chakramCb, null);
+
+const patch = (api, payload, validationCb, options) => update(api, payload, validationCb, chakram.patch, options);
+exports.patch = (api, payload, validationCb) => patch(api, payload, validationCb, null);
+
+const put = (api, payload, validationCb, options) => update(api, payload, validationCb, chakram.put, options);
+exports.put = (api, payload, validationCb) => put(api, payload, validationCb, null);
 
 const remove = (api, options) => {
   logger.debug('DELETE %s with options %s', api, options);
@@ -66,15 +71,7 @@ const remove = (api, options) => {
     })
     .catch(r => tools.logAndThrow('Failed to delete %s', r, api));
 };
-exports.delete = remove;
-
-const find = (api, schema, options) => {
-  logger.debug('GET %s with options %s', api, options);
-  return chakram.get(api, options)
-    .then(r => validator(schema)(r))
-    .catch(r => tools.logAndThrow('Failed to find %s', r, api));
-};
-exports.find = find;
+exports.delete = (api) => remove(api, null);
 
 const postFile = (api, filePath, options) => {
   options = (options || {});
@@ -86,38 +83,52 @@ const postFile = (api, filePath, options) => {
 };
 exports.postFile = postFile;
 
-const crd = (api, payload, schema) => {
-  return post(api, payload, schema)
-    .then(r => get(api + '/' + r.body.id, schema))
+/*
+ * Gives you access to adding HTTP request options to any of the HTTP-related APIs
+ */
+exports.withOptions = (options) => {
+  return {
+    post: (api, payload, validationCb) => post(api, payload, validationCb, options),
+    postFile: (api, filePath) => postFile(api, filePath, options),
+    put: (api, payload, validationCb) => put(api, payload, validationCb, options),
+    patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
+    get: (api, payload, validationCb) => get(api, validationCb, options),
+    delete: (api, payload, validationCb) => remove(api, options)
+  };
+};
+
+const crd = (api, payload, validationCb) => {
+  return post(api, payload, validationCb)
+    .then(r => get(api + '/' + r.body.id, validationCb))
     .then(r => remove(api + '/' + r.body.id));
 };
 exports.crd = crd;
 
-const crds = (api, payload, schema) => {
+const crds = (api, payload, validationCb) => {
   let createdId = -1;
-  return post(api, payload, schema)
+  return post(api, payload, validationCb)
     .then(r => createdId = r.body.id)
-    .then(r => get(api + '/' + createdId, schema))
-    .then(r => find(api, schema))
+    .then(r => get(api + '/' + createdId, validationCb))
+    .then(r => get(api, validationCb))
     .then(r => remove(api + '/' + createdId));
 };
 exports.crds = crds;
 
-const crud = (api, payload, schema, updateCb) => {
-  return post(api, payload, schema)
-    .then(r => get(api + '/' + r.body.id, schema))
-    .then(r => update(api + '/' + r.body.id, payload, schema, updateCb))
+const crud = (api, payload, validationCb, updateCb) => {
+  return post(api, payload, validationCb)
+    .then(r => get(api + '/' + r.body.id, validationCb))
+    .then(r => update(api + '/' + r.body.id, payload, validationCb, updateCb))
     .then(r => remove(api + '/' + r.body.id));
 };
 exports.crud = crud;
 
-const cruds = (api, payload, schema, updateCb) => {
+const cruds = (api, payload, validationCb, updateCb) => {
   let createdId = -1;
-  return post(api, payload, schema)
+  return post(api, payload, validationCb)
     .then(r => createdId = r.body.id)
-    .then(r => get(api + '/' + createdId, schema))
-    .then(r => update(api + '/' + createdId, payload, schema, updateCb))
-    .then(r => find(api, schema))
+    .then(r => get(api + '/' + createdId, validationCb))
+    .then(r => update(api + '/' + createdId, payload, validationCb, updateCb))
+    .then(r => get(api, validationCb))
     .then(r => remove(api + '/' + createdId));
 };
 exports.cruds = cruds;

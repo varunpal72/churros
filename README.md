@@ -122,6 +122,9 @@ $ churros test platform/events --element box
 $ No box.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events
 ```
 
+## Known Limitations
+* Currently, `churros` tests can *not* be run if you have authenticated into CE using SSO (GitHub, Google, etc.).
+
 ## Changelog
 See [CHANGELOG.md](CHANGELOG.md)
 
