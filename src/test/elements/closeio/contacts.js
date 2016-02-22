@@ -3,7 +3,6 @@
 const tools = require('core/tools');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const schema = require('./assets/contact.schema');
 
 const gen = (opts) => {
   opts = opts ? opts : {};
@@ -15,12 +14,12 @@ const gen = (opts) => {
   });
 };
 
-suite.forElement('crm', 'contacts', gen(), schema, (test) => {
+suite.forElement('crm', 'contacts', gen(), (test) => {
   it('should allow CRUDS for ' + test.api, () => {
     let accountId;
     return cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' })
       .then(r => accountId = r.body.id)
-      .then(r => cloud.cruds(test.api, gen({ lead_id: accountId }), schema))
+      .then(r => cloud.cruds(test.api, gen({ lead_id: accountId })))
       .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
 
