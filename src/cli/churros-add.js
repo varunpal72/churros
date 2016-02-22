@@ -204,14 +204,6 @@ const stubElementFiles = (answers) =>
       fs.createReadStream(__dirname + '/assets/resource.template.json')
         .pipe(fs.createWriteStream(resourceFile));
 
-      // schema file
-      const resourceSchemaFile = assetsDir + '/' + name + '.schema.json';
-      if (!fs.existsSync(resourceSchemaFile)) {
-        fs.createReadStream(__dirname + '/assets/resource.schema.template.json')
-          .pipe(fs.createWriteStream(resourceSchemaFile));
-      } else {
-        console.log('schema file already exists for %s so not modifying', name);
-      }
       // transformation file
       const currentTransformations = require(transformationsFile);
       if (!currentTransformations[name]) {

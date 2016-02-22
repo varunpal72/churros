@@ -30,11 +30,11 @@ suite.forPlatform('notifications', genNotif({}), schema, (test) => {
     return cloud.post(test.api, n, schema)
       .then(r => {
         const options = { qs: { 'topics[]': n.topic } };
-        return cloud.find(test.api, (r) => {
+        return cloud.withOptions(options).get(test.api, (r) => {
           expect(r).to.have.schemaAnd200(schema);
           expect(r.body).to.not.be.empty;
           expect(r.body.length).to.equal(1);
-        }, options);
+        });
       })
       .then(r => cloud.delete(test.api + '/' + r.body[0].id));
   });
@@ -59,10 +59,10 @@ suite.forPlatform('notifications', genNotif({}), schema, (test) => {
 
   it('should return an empty array if no notifications are found with the given topic', () => {
     const options = { qs: { 'topics[]': 'fake-topic-name-with-no-notifications' } };
-    return cloud.get(test.api, (r) => {
+    return cloud.withOptions(options).get(test.api, (r) => {
       expect(r).to.have.statusCode(200);
       expect(r.body).to.be.empty;
-    }, options);
+    });
   });
 
   it('should throw a 400 if missing search query', () => cloud.get(test.api, (r) => expect(r).to.have.statusCode(400)));

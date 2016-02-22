@@ -1,7 +1,7 @@
 'use strict';
 
 require('core/assertions');
-require('core/logger')('debug');
+require('core/logger')('error');
 const cloud = require('core/cloud');
 const nock = require('nock');
 const chakram = require('chakram');
@@ -121,8 +121,9 @@ beforeEach(() => {
 
 describe('cloud', () => {
   it('should support post', () => cloud.post('/foo', genPayload(), genSchema()));
+  it('should support post with options', () => cloud.withOptions({ json: true }).post('/foo', genPayload(), genSchema()));
   it('should support post with custom validation', () => cloud.post('/foo/bad', {}, (r) => expect(r).to.have.statusCode(400)));
-  it('should support post with no schema or custom validation', () => cloud.post('/foo', genPayload()));
+  it('should support post with no custom validation', () => cloud.post('/foo', genPayload()));
   it('should throw an error if post validation fails', () => {
     return cloud.post('/foo/bad', {}, (r) => expect(r).to.have.statusCode(200))
       .then(r => {
@@ -132,8 +133,9 @@ describe('cloud', () => {
   });
 
   it('should support get', () => cloud.get('/foo/123', genSchema()));
+  it('should support get with options', () => cloud.withOptions({ json: true }).get('/foo/123', genSchema()));
   it('should support get with custom validation', () => cloud.get('/foo/456', (r) => expect(r).to.have.statusCode(404)));
-  it('should support get with no schema or custom validation', () => cloud.get('/foo/123'));
+  it('should support get with no custom validation', () => cloud.get('/foo/123'));
   it('should throw an error if get validation fails', () => {
     return cloud.get('/foo/456', (r) => expect(r).to.have.statusCode(200))
       .then(r => {
@@ -143,8 +145,9 @@ describe('cloud', () => {
   });
 
   it('should support put', () => cloud.put('/foo/123', genPayload(), genSchema()));
+  it('should support put with options', () => cloud.withOptions({ json: true }).put('/foo/123', genPayload(), genSchema()));
   it('should support put with custom validation', () => cloud.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
-  it('should support put with no schema or custom validation', () => cloud.put('/foo/123', genPayload()));
+  it('should support put with no custom validation', () => cloud.put('/foo/123', genPayload()));
   it('should throw an error if put validation fails', () => {
     return cloud.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(200))
       .then(r => {
@@ -154,8 +157,9 @@ describe('cloud', () => {
   });
 
   it('should support patch', () => cloud.patch('/foo/123', genPayload({ id: 123 }), genSchema()));
+  it('should support patch with options', () => cloud.withOptions({ json: true }).patch('/foo/123', genPayload({ id: 123 }), genSchema()));
   it('should support patch with custom validation', () => cloud.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
-  it('should support patch with no schema or custom validation', () => cloud.put('/foo/123', genPayload()));
+  it('should support patch with no custom validation', () => cloud.put('/foo/123', genPayload()));
   it('should throw an error if patch validation fails', () => {
     return cloud.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(200))
       .then(r => {
@@ -165,6 +169,7 @@ describe('cloud', () => {
   });
 
   it('should support delete', () => cloud.delete('/foo/123'));
+  it('should support delete with options', () => cloud.withOptions({ json: true }).delete('/foo/123'));
   it('should throw an error if delete validation fails', () => {
     return cloud.delete('/foo/456')
       .then(r => {
@@ -173,9 +178,9 @@ describe('cloud', () => {
       .catch(r => true);
   });
 
-  it('should support find', () => cloud.find('/foo', genSchema()));
+  it('should support find', () => cloud.get('/foo', genSchema()));
   it('should throw an error if find validation fails', () => {
-    return cloud.find('/foo/bad', (r) => expect(r).to.have.statusCode(200))
+    return cloud.get('/foo/bad', (r) => expect(r).to.have.statusCode(200))
       .then(r => {
         throw Error('Where my error at?');
       })
@@ -216,14 +221,22 @@ describe('cloud', () => {
     // should really NOT depend on the file system here :/
     const filePath = '.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
-    return cloud.postFile('/foo/file', filePath, genSchema())
+    return cloud.postFile('/foo/file', filePath)
+      .then(r => fs.unlink(filePath));
+  });
+
+  it('should support post file with options', () => {
+    // should really NOT depend on the file system here :/
+    const filePath = '.tmp';
+    fs.closeSync(fs.openSync(filePath, 'w'));
+    return cloud.withOptions({ json: false }).postFile('/foo/file', filePath)
       .then(r => fs.unlink(filePath));
   });
 
   it('should throw an error if post file validation fails', () => {
     const filePath = '.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
-    return cloud.postFile('/foo/bad/file', filePath, genSchema())
+    return cloud.postFile('/foo/bad/file', filePath)
       .then(r => {
         throw Error('Where my error at?');
       })
