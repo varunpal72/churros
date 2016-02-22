@@ -16,7 +16,7 @@ const validator = (schemaOrValidationCb) => {
       schemaOrValidationCb(r);
       return r;
     };
-  } else if (typeof schemaOrValidationCb === 'undefined') {
+  } else if (typeof schemaOrValidationCb === 'undefined' || (typeof schemaOrValidationCb === 'object' && schemaOrValidationCb === null)) {
     return (r) => {
       expect(r).to.have.statusCode(200);
       return r;
@@ -76,12 +76,12 @@ const find = (api, schema, options) => {
 };
 exports.find = find;
 
-const postFile = (api, filePath, schema, options) => {
+const postFile = (api, filePath, options) => {
   options = (options || {});
   options.formData = { file: fs.createReadStream(filePath) };
 
   return chakram.post(api, undefined, options)
-    .then(r => validator(schema)(r))
+    .then(r => validator(undefined)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
 exports.postFile = postFile;
@@ -144,10 +144,10 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
   return new Promise((resolve, reject) => {
     http.createServer((request, response) => {
         var fullBody = '';
-        request.on('data', function(chunk) {
+        request.on('data', function (chunk) {
           fullBody += chunk.toString();
         });
-        request.on('end', function() {
+        request.on('end', function () {
           request.body = fullBody;
         });
 

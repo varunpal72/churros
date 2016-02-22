@@ -216,14 +216,14 @@ describe('cloud', () => {
     // should really NOT depend on the file system here :/
     const filePath = '.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
-    return cloud.postFile('/foo/file', filePath, genSchema())
+    return cloud.postFile('/foo/file', filePath)
       .then(r => fs.unlink(filePath));
   });
 
   it('should throw an error if post file validation fails', () => {
     const filePath = '.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
-    return cloud.postFile('/foo/bad/file', filePath, genSchema())
+    return cloud.postFile('/foo/bad/file', filePath)
       .then(r => {
         throw Error('Where my error at?');
       })

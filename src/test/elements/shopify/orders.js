@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const schema = require('./assets/orders.schema');
 
 const order = (custom) => new Object({
   line_items: custom.line_items || [{
@@ -11,6 +10,6 @@ const order = (custom) => new Object({
   }]
 });
 
-suite.forElement('ecommerce', 'orders', order({}), schema, (test) => {
+suite.forElement('ecommerce', 'orders', order({}), (test) => {
   test.should.supportCruds();
 });

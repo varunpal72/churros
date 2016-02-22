@@ -119,10 +119,10 @@ const runTests = (api, payload, schema, tests) => {
   tests ? tests(test) : it('add some tests to me!!!', () => true);
 };
 
-exports.forElement = (hub, resource, payload, schema, tests) => {
+exports.forElement = (hub, resource, payload, tests) => {
   describe(resource, () => {
     let api = util.format('/hubs/%s/%s', hub, resource);
-    runTests(api, payload, schema, tests);
+    runTests(api, payload, null, tests);
   });
 };
 
