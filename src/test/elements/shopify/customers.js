@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const schema = require('./assets/customers.schema');
 
 const customer = (custom) => new Object({
   first_name: custom.firstName || 'Bill',
@@ -10,6 +9,6 @@ const customer = (custom) => new Object({
   email: custom.email || tools.randomEmail()
 });
 
-suite.forElement('ecommerce', 'customers', customer({}), schema, (test) => {
+suite.forElement('ecommerce', 'customers', customer({}), (test) => {
   test.should.supportCruds();
 });

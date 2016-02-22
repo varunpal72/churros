@@ -118,7 +118,7 @@ beforeEach(() => {
 });
 
 describe('suite', () => {
-  suite.forElement('fakehub', 'resource', null, null, (test) => {
+  suite.forElement('fakehub', 'resource', null, (test) => {
     it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
   });
 
@@ -133,9 +133,9 @@ describe('suite', () => {
     test.should.return200OnPost();
     test.withApi('/foo').should.return200OnPost();
     test.withJson(genPayload()).should.return200OnPost();
-    test.withSchema(genSchema()).should.return200OnPost();
-    test.withApi('/foo').withJson(genPayload()).withSchema(genSchema()).should.return200OnPost();
-    test.withJson(genPayload()).withSchema(genSchema()).withApi('/foo').should.return200OnPost();
+    test.withValidation(genSchema()).should.return200OnPost();
+    test.withApi('/foo').withJson(genPayload()).withValidation(genSchema()).should.return200OnPost();
+    test.withJson(genPayload()).withValidation(genSchema()).withApi('/foo').should.return200OnPost();
     test.withOptions({}).should.return200OnPost();
     test.withApi('/foo').withOptions({}).should.return200OnPost();
     // *****************************************

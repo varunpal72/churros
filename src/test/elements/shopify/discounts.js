@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const schema = require('./assets/discounts.schema');
 
 const discount = (custom) => new Object({
   code: custom.code || tools.random(),
@@ -11,6 +10,6 @@ const discount = (custom) => new Object({
   value: custom.value || 100
 });
 
-suite.forElement('ecommerce', 'discounts', discount({}), schema, (test) => {
+suite.forElement('ecommerce', 'discounts', discount({}), (test) => {
   test.should.supportCrds();
 });

@@ -15,9 +15,6 @@ Assuming you setup the properties correctly, then at this point, you can actuall
 $ churros test elements/${elementName}
 ```
 
-Update each resource's `src/test/elements/${elementName}/assets/${resourceName}.schema.json` JSON schema file to include all of the fields that make up this resource, which fields are required, etc.
-> __NOTE:__ It is critical to be as accurate as possible in this schema file.  This file is critical to ensuring our interface does *not* change and this file is also what will document the models for this API.
-
 Update each resource's `src/test/elements/${elementName}/assets/${resourceName}.json` JSON file.  This file is what is used to go about creating and updating this specific ${resourceName}.  If your payload is small, or you prefer to just generate the JSON payload in javascript, feel free.  It's not *required* that you use this separate file paradigm.
 
 Start building out tests in the `src/test/elements/${elementName}/${resourceName}.js` file that was generated.  Leverage the `test` pre-canned tests as much as possible.  For more information on those read [here](#adding-tests-to-an-existing-suite).
@@ -60,8 +57,8 @@ suite.forPlatform('foo', payload, schema, (test) => {
   test.should.return200OnPost(); // using the default api, payload and schema
   test.withApi('/foo').should.return200OnPost(); // customizing the api, but using default payload and schema
   test.withJson(payload).should.return200OnPost(); // get it by now?
-  test.withSchema(schema).should.return200OnPost(); // now?
-  test.withApi('/foo').withJson(payload).withSchema(schema).should.return200OnPost(); // customize them all
+  test.withValidation(schema).should.return200OnPost(); // now?
+  test.withApi('/foo').withJson(payload).withValidation(schema).should.return200OnPost(); // customize them all
 
   test.should.return404OnPatch(456);
   test.should.return404OnGet(456);

@@ -5,15 +5,14 @@ const tools = require('core/tools');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const schema = require('./assets/file.schema.json');
 
-suite.forElement('documents', 'files', null, schema, (test) => {
+suite.forElement('documents', 'files', null, (test) => {
   it('should allow uploading and downloading a file', () => {
     let fileId = -1;
     let query = { path: util.format('/brady-%s.jpg', tools.random()) };
     let path = __dirname + '/assets/brady.jpg';
 
-    return cloud.postFile(test.api, path, schema, { qs: query })
+    return cloud.postFile(test.api, path, { qs: query })
       .then(r => fileId = r.body.id)
       .then(r => cloud.get(test.api + '/' + fileId, (r) => expect(r).to.have.statusCode(200)))
       .then(r => cloud.delete('/hubs/documents/files/' + fileId));
