@@ -118,7 +118,7 @@ beforeEach(() => {
 });
 
 describe('suite', () => {
-  suite.forElement('fakehub', 'resource', null, null, (test) => {
+  suite.forElement('fakehub', 'resource', null, (test) => {
     it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
   });
 
