@@ -92,8 +92,8 @@ exports.withOptions = (options) => {
     postFile: (api, filePath) => postFile(api, filePath, options),
     put: (api, payload, validationCb) => put(api, payload, validationCb, options),
     patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
-    get: (api, payload, validationCb) => get(api, validationCb, options),
-    delete: (api, payload, validationCb) => remove(api, options)
+    get: (api, validationCb) => get(api, validationCb, options),
+    delete: (api, validationCb) => remove(api, options)
   };
 };
 
