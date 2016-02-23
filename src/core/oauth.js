@@ -196,7 +196,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('login')).sendKeys(password);
     browser.findElement(webdriver.By.className('form-button')).click();
     browser.wait(() => {
-      browser.findElement(webdriver.By.xpath("//a[contains(@title, 'authorize')]"))
+      browser.findElement(webdriver.By.xpath("/html/body/div/div/div/div[1]/form[1]/button/span/span"))
         .then((element) => element.click(),
           (err) => {
             if (err.state && err.state === 'no such element') { // ignore this
@@ -204,6 +204,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           });
       return browser.getTitle().then((title) => !title);
     }, 10000);
+    return browser.getCurrentUrl();
   case 'marketo':
     return 'https://foo.bar.com?code=' + config.code; // good gracious, why does this work?...
   case 'namely':
