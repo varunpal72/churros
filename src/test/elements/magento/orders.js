@@ -7,5 +7,7 @@ suite.forElement('ecommerce', 'orders', payload, (test) => {
   // checkout functions available under test.should which provide a lot of pre-canned tests
   //   more information here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#adding-tests-to-an-existing-suite
 
-  it('natedoyle should insert some tests here :)', () => true);
+  test.should.return200OnGet();
+  // test.should.supportCeqlSearch('id');
+  test.should.supportPagination();
 });
