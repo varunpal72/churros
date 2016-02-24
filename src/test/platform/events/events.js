@@ -51,7 +51,6 @@ suite.forPlatform('events', null, null, (test) => {
           expect(signature).to.equal(hash);
         })))
       .then(r => cloud.get(util.format('instances/%s/events', instanceId), eventSchema))
-      .then(r => cloud.shutdownEventListener(port))
       .then(r => provisioner.delete(instanceId));
   });
 
