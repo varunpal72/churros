@@ -156,6 +156,7 @@ describe('suite', () => {
     test.should.supportCrud();
     test.should.supportCrd();
     test.should.supportCrds();
+    test.should.supportSr();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
     test.withApi('/foo/bad').should.return400OnPost();
