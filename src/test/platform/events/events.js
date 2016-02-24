@@ -55,32 +55,4 @@ suite.forPlatform('events', null, null, (test) => {
       .then(r => provisioner.delete(instanceId));
   });
 
-  it('should retry webhook delivery on failure', () => {
-    const load = 1;
-    const wait = props.getForKey('events', 'wait');
-    const port = props.getForKey('events', 'port');
-
-    let instanceId;
-    return provisioner.create(element, gen({}))
-      .then(r => instanceId = r.body.id)
-      .then(r => {cloud.createEvents(element, instanceId, payload, load)})
-      // wait 4 seconds for webhook failure and retry
-      .then(r => setTimeout(() => {
-          return cloud.get(util.format('instances/%s/events', instanceId), (events) => {
-            // event should be CONSUMED, not NOTIFIED
-            //events.forEach(event => expect(event.status).to.equal('CONSUMED'));
-          })
-        }, 4000))
-      .then(r => {cloud.listenForEvents(port, load, wait)})
-      .then(r => cloud.get(util.format('instances/%s/events', instanceId), (events) => {
-        // event should be CONSUMED, not NOTIFIED
-        events.forEach(event => expect(event.status).to.equal('NOTIFIED'));
-      }))
-      .then(r => provisioner.delete(instanceId));
-  });
-
-  it('should queue webhook delivery on failure', () => {
-
-  });
-
 });

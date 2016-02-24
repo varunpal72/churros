@@ -149,78 +149,64 @@ const createEvents = (element, eiId, payload, numEvents) => {
 };
 exports.createEvents = createEvents;
 
-function EventListener() {
+function createServer(cb) {
+  const sx = {};
+  const sv = http.createServer(cb);
+  sv.on('connection', s => {
+    const k = `${s.remoteAddress}:${s.remotePort}`;
+    sx[k] = s;
+    s.once('close', () => delete sx[k]);
+  });
+
+  sv.destroy = f => {
+    sv.close(f);
+    for (let s in sx) {
+      sx[s].destroy();
+      sx[s].unref();
+    }
+    sv.unref();
+    return true;
+  };
+  return sv;
+};
+
+const listenForEvents = (port, numEventsSent, waitSecs) => {
   var server;
   var receivedEvents = 0;
   var events = [];
-
-  function createServer(cb) {
-    const sx = {};
-    const sv = http.createServer(cb);
-    sv.on('connection', s => {
-      const k = `${s.remoteAddress}:${s.remotePort}`;
-      sx[k] = s;
-      s.once('close', () => delete sx[k]);
-    });
-
-    sv.destroy = f => {
-      return new Promise ((resolve, reject) => {
-        sv.on('close', s => {
-          logger.debug("OK, I'm closed");
-          resolve();
-        });
-        sv.close(f);
-        for (let s in sx) {
-          sx[s].destroy();
-          sx[s].unref();
-        }
-        sv.unref();
-        return true;
+  return new Promise((resolve, reject) => {
+    server = createServer((request, response) => {
+      var fullBody = '';
+      request.on('data', function(chunk) {
+        fullBody += chunk.toString();
       });
-    };
-    return sv;
-  };
+      request.on('end', function() {
+        request.body = fullBody;
+      });
 
-  function listen(port, numEventsSent, waitSecs) {
-    return new Promise((resolve, reject) => {
-      server = createServer(function handleEvent(request, response) {
-        var fullBody = '';
-        request.on('data', function (chunk) {
-          fullBody += chunk.toString();
-        });
-        request.on('end', function () {
-          request.body = fullBody;
-        });
-
-        response.end('{}');
-        receivedEvents++;
-        events.push(request);
-        logger.debug('%s event(s) received', receivedEvents);
-        if (receivedEvents === numEventsSent){
-          resolve(events);
-        }
-      })
-          .listen(port, "localhost", (err) => {
-            err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
-          });
-
-      const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
-      setTimeout(function onTimeout() {
-        reject(msg);
-      }, waitSecs * 1000);
+      response.end('{}');
+      receivedEvents++;
+      events.push(request);
+      logger.debug('%s event(s) received', receivedEvents);
+      if (receivedEvents === numEventsSent) {
+        resolve(events);
+        server.destroy();
+      }
+    })
+    .listen(port, "localhost", (err) => {
+      if (err) {
+        reject(err);
+        server.destroy();
+      } else {
+        logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+      }
     });
-  }
 
-  function shutdown() {
-      logger.debug("Shutting down event listener");
-      server.destroy()
-        .then(logger.debug("Event listener shut down"));
-  }
-
-  return {
-    listen: listen,
-    shutdown: shutdown
-  }
-}
-
-exports.EventListener = EventListener;
+    const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
+    setTimeout(() => {
+      reject(msg);
+      server.destroy();
+    }, waitSecs * 1000);
+  });
+};
+exports.listenForEvents = listenForEvents;
