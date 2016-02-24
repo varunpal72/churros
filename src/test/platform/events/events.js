@@ -27,9 +27,9 @@ const loadPayload = (element) => {
 };
 
 suite.forPlatform('events', null, null, (test) => {
-  const element = props.getForKey('events', 'element');
-  const payload = loadPayload(element);
   it('should handle receiving x number of events for an element instance', () => {
+    const element = props.getForKey('events', 'element');
+    const payload = loadPayload(element);
     const load = props.getForKey('events', 'load');
     const wait = props.getForKey('events', 'wait');
     const port = props.getForKey('events', 'port');
