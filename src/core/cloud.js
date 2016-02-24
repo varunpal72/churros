@@ -133,6 +133,12 @@ const cruds = (api, payload, validationCb, updateCb) => {
 };
 exports.cruds = cruds;
 
+const sr = (api, validationCb) => {
+  return get(api, validationCb)
+    .then(r => get(api + '/' + r.body[0].id, validationCb));
+};
+exports.sr = sr;
+
 const createEvents = (element, eiId, payload, numEvents) => {
   numEvents = (numEvents || 1);
 
@@ -176,26 +182,26 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
   var events = [];
   return new Promise((resolve, reject) => {
     server = createServer((request, response) => {
-      var fullBody = '';
-      request.on('data', (chunk) => {
-        fullBody += chunk.toString();
-      });
-      request.on('end', () => {
-        request.body = fullBody;
-      });
+        var fullBody = '';
+        request.on('data', (chunk) => {
+          fullBody += chunk.toString();
+        });
+        request.on('end', () => {
+          request.body = fullBody;
+        });
 
-      response.end('{}');
-      receivedEvents++;
-      events.push(request);
-      logger.debug('%s event(s) received', receivedEvents);
-      if (receivedEvents === numEventsSent) {
-        resolve(events);
-        server.destroy();
-      }
-    })
-    .listen(port, "localhost", (err) => {
+        response.end('{}');
+        receivedEvents++;
+        events.push(request);
+        logger.debug('%s event(s) received', receivedEvents);
+        if (receivedEvents === numEventsSent) {
+          resolve(events);
+          server.destroy();
+        }
+      })
+      .listen(port, "localhost", (err) => {
         err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
-    });
+      });
 
     const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
     setTimeout(() => {

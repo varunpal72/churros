@@ -32,16 +32,14 @@ const itCrud = (api, payload, validationCb, updateCb) => {
   it(name, () => cloud.crud(api, payload, validationCb, updateCb));
 };
 
-const itCruds = (api, payload, validationCb) => {
+const itCruds = (api, payload, validationCb, updateCb) => {
   const name = util.format('should allow CRUDS for %s', api);
   it(name, () => cloud.cruds(api, payload, validationCb, updateCb));
 };
 
-const itSr = (api, validationCb, updateCb) => {
-      it('should support GET / and GET /{id}', () => { 
-        return cloud.get(api)
-      .then(r => {return cloud.get(api + '/' + r.body[0].entity_id)});
-    });
+const itSr = (api, validationCb) => {
+  const name = util.format('should allow SR for %s', api);
+  it(name, () => cloud.sr(api, validationCb));
 };
 
 const itPagination = (api, validationCb) => {
