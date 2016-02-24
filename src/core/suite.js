@@ -40,7 +40,7 @@ const itCruds = (api, payload, validationCb) => {
 const itSr = (api, validationCb) => {
       it('should allow Sr for $s', () => { 
         return cloud.get(api)
-      .then(r => {return cloud.get(api + '/' + r.body[0].entity_id)});
+      .then(r => {return cloud.get(api + '/' + r.body[0].id)});
     });
 };
 
