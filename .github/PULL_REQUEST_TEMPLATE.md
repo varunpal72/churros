@@ -1,7 +1,8 @@
 ## Highlights
 * bullet separated list of highlights
-* another highlight
+
+## Examples
+If applicable, please include any images, GIFs, etc. showing up these changes
 
 ## Closes
-Closes #${issueNumber}
-Closes #${anotherIssueNumberIfThisClosesMoreThanJustOne}
+* Closes #${issueNumber}
