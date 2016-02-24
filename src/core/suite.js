@@ -38,15 +38,10 @@ const itCruds = (api, payload, validationCb, updateCb) => {
 };
 
 const itSr = (api, validationCb) => {
-<<<<<<< HEAD
       it('should allow Sr for $s', () => { 
         return cloud.get(api)
       .then(r => {return cloud.get(api + '/' + r.body[0].id)});
     });
-=======
-  const name = util.format('should allow SR for %s', api);
-  it(name, () => cloud.sr(api, validationCb));
->>>>>>> a7d04b66163c46be9ee1ff8edbb17b531f02b170
 };
 
 const itPagination = (api, validationCb) => {
