@@ -37,8 +37,8 @@ const itCruds = (api, payload, validationCb) => {
   it(name, () => cloud.cruds(api, payload, validationCb, updateCb));
 };
 
-const itSr = (api, validationCb, updateCb) => {
-      it('should support GET / and GET /{id}', () => { 
+const itSr = (api, validationCb) => {
+      it('should allow Sr for $s', () => { 
         return cloud.get(api)
       .then(r => {return cloud.get(api + '/' + r.body[0].entity_id)});
     });
