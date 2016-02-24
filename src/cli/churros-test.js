@@ -81,7 +81,7 @@ const runTests = (suite, options) => {
   if (cliArgs.browser) args += util.format(" --browser %s", cliArgs.browser);
 
   let cmd = util.format(rootDir + '/../../node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
-  shell.exec(cmd);
+  process.exit(shell.exec(cmd).code); // execute the cmd and make our exit code the same as 'churros test' code
 };
 
 commander
