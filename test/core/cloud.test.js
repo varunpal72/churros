@@ -207,7 +207,7 @@ describe('cloud', () => {
 
   it('should throw an error if event validation fails', () => {
     return new Promise((res, rej) => {
-      const port = 8089;
+      const port = 8085;
       cloud.listenForEvents(port, 1, 5)
         .then(r => r.forEach(e => expect(e).to.be.empty))
         .then(r => rej('How embarrassing, I should have failed validating events: ' + r))
