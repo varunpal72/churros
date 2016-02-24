@@ -149,7 +149,7 @@ const createEvents = (element, eiId, payload, numEvents) => {
 };
 exports.createEvents = createEvents;
 
-function createServer(cb) {
+const createServer = (cb) => {
   const sx = {};
   const sv = http.createServer(cb);
   sv.on('connection', s => {
@@ -177,10 +177,10 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
   return new Promise((resolve, reject) => {
     server = createServer((request, response) => {
       var fullBody = '';
-      request.on('data', function(chunk) {
+      request.on('data', (chunk) => {
         fullBody += chunk.toString();
       });
-      request.on('end', function() {
+      request.on('end', () => {
         request.body = fullBody;
       });
 
@@ -194,12 +194,7 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
       }
     })
     .listen(port, "localhost", (err) => {
-      if (err) {
-        reject(err);
-        server.destroy();
-      } else {
-        logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
-      }
+        err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
     });
 
     const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);

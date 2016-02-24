@@ -217,6 +217,15 @@ describe('cloud', () => {
     });
   });
 
+  it('should throw an error if event listen times out', () => {
+    return new Promise((res, rej) => {
+      const port = 8085;
+      cloud.listenForEvents(port, 1, 1)
+        .then(r => rej('How embarrassing, I should have timed out listening for events: ' + r))
+        .catch(r => res(r));
+    });
+  });
+
   it('should support post file', () => {
     // should really NOT depend on the file system here :/
     const filePath = '.tmp';
