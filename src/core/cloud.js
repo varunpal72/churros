@@ -149,31 +149,59 @@ const createEvents = (element, eiId, payload, numEvents) => {
 };
 exports.createEvents = createEvents;
 
-const listenForEvents = (port, numEventsSent, waitSecs) => {
-  let receivedEvents = 0;
-  let events = [];
-  return new Promise((resolve, reject) => {
-    http.createServer((request, response) => {
-        var fullBody = '';
-        request.on('data', function (chunk) {
-          fullBody += chunk.toString();
-        });
-        request.on('end', function () {
-          request.body = fullBody;
-        });
+const createServer = (cb) => {
+  const sx = {};
+  const sv = http.createServer(cb);
+  sv.on('connection', s => {
+    const k = `${s.remoteAddress}:${s.remotePort}`;
+    sx[k] = s;
+    s.once('close', () => delete sx[k]);
+  });
 
-        response.end('{}');
-        receivedEvents++;
-        events.push(request);
-        logger.debug('%s event(s) received', receivedEvents);
-        if (receivedEvents === numEventsSent) resolve(events);
-      })
-      .listen(port, "localhost", (err) => {
-        err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+  sv.destroy = f => {
+    sv.close(f);
+    for (let s in sx) {
+      sx[s].destroy();
+      sx[s].unref();
+    }
+    sv.unref();
+    return true;
+  };
+  return sv;
+};
+
+const listenForEvents = (port, numEventsSent, waitSecs) => {
+  var server;
+  var receivedEvents = 0;
+  var events = [];
+  return new Promise((resolve, reject) => {
+    server = createServer((request, response) => {
+      var fullBody = '';
+      request.on('data', (chunk) => {
+        fullBody += chunk.toString();
+      });
+      request.on('end', () => {
+        request.body = fullBody;
       });
 
+      response.end('{}');
+      receivedEvents++;
+      events.push(request);
+      logger.debug('%s event(s) received', receivedEvents);
+      if (receivedEvents === numEventsSent) {
+        resolve(events);
+        server.destroy();
+      }
+    })
+    .listen(port, "localhost", (err) => {
+        err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+    });
+
     const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
-    setTimeout(() => reject(msg), waitSecs * 1000);
+    setTimeout(() => {
+      reject(msg);
+      server.destroy();
+    }, waitSecs * 1000);
   });
 };
 exports.listenForEvents = listenForEvents;
