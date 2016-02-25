@@ -4,6 +4,7 @@ const chakram = require('chakram');
 const expect = require('chakram').expect;
 const logger = require('winston');
 const util = require('util');
+const props = require('core/props');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
@@ -81,7 +82,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       {
         topics: [ topic ],
         config: {
-          url: 'http://localhost:8085'
+          url: props.getForKey('events', 'url')
         }
       });
     // TODO update account webhook failure delivery preferences to 'retry'
@@ -98,7 +99,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         nId = r.body.id;
         return new Promise((res, rej) => {
           // wait a few seconds for delivery to fail
-          setTimeout(() => res(), 3000);
+          setTimeout(() => res(), 5000);
         });
       })
       .then(r => {
@@ -109,7 +110,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           })
       })
       .then(r => {
-        return cloud.listenForEvents(8085, 1, 10)
+        return cloud.listenForEvents(8085, 1, 10);
       })
       .then(r => {
         return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
@@ -118,5 +119,64 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
             expect(r.body.status).to.equal('delivered');
           });
       })
+  });
+
+  it('should queue webhook delivery', () => {
+    if (props.get('user') === 'system') {
+      logger.warn("Unable to run webhook queueing test as system user. Run as a different user to test this feature.");
+    }
+    const topic = 'churros-topic-' + tools.random();
+    const n = genNotif({ topic: topic });
+    const s = genSub(
+      {
+        topics: [ topic ],
+        config: {
+          url: props.getForKey('events', 'url')
+        }
+      });
+    // TODO update account webhook failure delivery preferences to 'queue'
+    // create a subscription
+    let sId;
+    let nId;
+    // create a subscription
+    return cloud.post("notifications/subscriptions", s)
+      .then(r => {
+        // send a notification
+        sId = r.body.id;
+        return cloud.post("notifications", n);
+      })
+      .then(r => {
+        // wait a few seconds for delivery to fail
+        nId = r.body.id;
+        return new Promise((res, rej) => {
+          setTimeout(() => res(), 5000);
+        });
+      })
+      .then(r => {
+        // get delivery status, verify it is queued
+        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
+          (r) => {
+            expect(r.body).to.not.be.empty;
+            expect(r.body.status).to.equal('queued');
+          })
+      })
+      // listen for events
+      .then(r => cloud.listenForEvents(8085, 1, 10))
+      .catch(r => {
+        // get delivery status, verify it is _still_ queued
+        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
+          (r) => {
+            expect(r.body).to.not.be.empty;
+            expect(r.body.status).to.equal('queued');
+          });
+      })
+      .then(r => {
+        //listen for events again
+        let prettyPlease = cloud.listenForEvents(8085, 1, 10);
+        // release the queue for delivery
+        cloud.withOptions({ qs: { hydrate: true, where: util.format("channel='webhook' and status='queued' and config.url='%s'", props.getForKey('events', 'url')) }}).put('notifications/subscriptions/deliveries');
+        // queue should be released and this should succeed
+        return prettyPlease;
+      });
   });
 });
