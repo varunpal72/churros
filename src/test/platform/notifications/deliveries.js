@@ -24,7 +24,7 @@ const genSub = (opts) => new Object({
 });
 
 suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, (test) => {
-  it('should return delivery status for notifications and subscriptions', () => {
+  it('should return notification/subscription delivery status', () => {
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
     const s = genSub({ topics: [ topic ] });
@@ -62,10 +62,56 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
               // test search
               .then(r => cloud.withOptions({ qs: { hydrate: true, where: "channel='webhook'" } }).get('notifications/subscriptions/deliveries', (r) => {
                 expect(r).to.have.schemaAnd200(listSchema);
+                r.body.forEach(s => expect(s.subscription.channel).to.equal('webhook'));
               }));
           });
       })
       .then(r => subs.forEach(sub => cloud.delete(util.format('/notifications/subscriptions/%s', sub.body.id))));
   });
 
+  it('should retry webhook delivery', () => {
+    const topic = 'churros-topic-' + tools.random();
+    const n = genNotif({ topic: topic });
+    const s = genSub(
+      {
+        topics: [ topic ],
+        config: {
+          url: 'http://localhost:8085'
+        }
+      });
+    // TODO update account webhook failure delivery preferences to 'retry'
+    // create a subscription
+    let sId;
+    let nId;
+    return cloud.post("notifications/subscriptions", s)
+      .then(r => {
+        sId = r.body.id;
+        // send a notification
+        return cloud.post("notifications", n);
+      })
+      .then(r => {
+        nId = r.body.id;
+        return new Promise((res, rej) => {
+          // wait a few seconds for delivery to fail
+          setTimeout(() => res(), 3000);
+        });
+      })
+      .then(r => {
+        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
+          (r) => {
+            expect(r.body).to.not.be.empty;
+            expect(r.body.status).to.equal('retry');
+          })
+      })
+      .then(r => {
+        return cloud.listenForEvents(8085, 1, 10)
+      })
+      .then(r => {
+        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
+          (r) => {
+            expect(r.body).to.not.be.empty;
+            expect(r.body.status).to.equal('delivered');
+          });
+      })
+  });
 });
