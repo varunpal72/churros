@@ -151,12 +151,12 @@ describe('suite', () => {
 
     test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
     test.should.return200OnPost();
+    test.should.supportSr();
     test.should.supportCruds();
     test.should.supportCruds(chakram.put);
     test.should.supportCrud();
     test.should.supportCrd();
     test.should.supportCrds();
-    test.should.supportSr();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
     test.withApi('/foo/bad').should.return400OnPost();

@@ -193,6 +193,8 @@ describe('cloud', () => {
   it('should support cruds', () => cloud.cruds('/foo', genPayload(), genSchema()));
   it('should support creating events', () => cloud.createEvents('myelement', eiId, genPayload(), 2));
 
+  it('should support sr', () => cloud.sr('/foo', (r) => expect(r).to.have.statusCode(200)));
+
   it('should support listening for events with custom validation', () => {
     return new Promise((res, rej) => {
       const port = 8085;
