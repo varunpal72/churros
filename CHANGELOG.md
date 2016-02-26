@@ -5,6 +5,9 @@
 
 * To pass options on a given function in `cloud`, you now use the `cloud.withOptions` functions before your actual HTTP function, for example: `cloud.withOptions({qs: {foo: 'bar'}}).get('/foo')`.  As always, reference the unit tests for more examples.
 * Re-factored the schema validation code, and removed the expectation that all element tests would validate against schemas after revealing that, well, it's just not really worth it.
+* Woocommerce integration tests added. The following resources are supported:
+  * `CRUDS` for customers, discounts, orders and products
+  * `GET` tests for reports, report names and shops
 
 ## v0.2.0 <sub><sup>(2016-02-12)</sup></sub>
 
