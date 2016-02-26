@@ -1,3 +1,20 @@
 {
-  
+    "name" : "ChurrosTestAccount",
+    "type": "Prospect",
+    "phone": "555-666-7777",
+    "website": "http://www.superawesome.com",
+    "billingAddress": {
+        "street1": "455 E 1st Ave",
+        "city" : "Denver",
+        "stateOrProvince": "CO",
+        "postalCode": "80209",
+        "country": "US"
+    },
+    "shippingAddress": {
+        "street1": "1022 E Baker St.",
+        "city" : "Bakersfield",
+        "stateOrProvince": "CA",
+        "postalCode": "90122",
+        "country": "US"
+    }
 }
