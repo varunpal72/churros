@@ -8,6 +8,8 @@
 * Woocommerce integration tests added. The following resources are supported:
   * `CRUDS` for customers, discounts, orders and products
   * `GET` tests for reports, report names and shops
+* Event listener now able to shut down and restart in single execution
+* Added platform tests for `/elements/:id/instances` and `/instances/:id/events`
 
 ## v0.2.0 <sub><sup>(2016-02-12)</sup></sub>
 
