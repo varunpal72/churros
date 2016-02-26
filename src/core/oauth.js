@@ -225,24 +225,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     return browser.getCurrentUrl();
   case 'servicemax':
   case 'sfdc':
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.id("username")).clear();
-    browser.findElement(webdriver.By.id("username")).sendKeys(username);
-    browser.findElement(webdriver.By.id("password")).clear();
-    browser.findElement(webdriver.By.id("password")).sendKeys(password);
-    browser.findElement(webdriver.By.id("Login")).click();
-    browser.wait(() => {
-        return browser.isElementPresent(webdriver.By.id('oaapprove'));
-      }, 5000)
-      .thenCatch(r => true); // ignore
-
-    browser.findElement(webdriver.By.id('oaapprove'))
-      .then((element) => element.click(),
-        (err) => {
-          if (err.state && err.state === 'no such element') { // ignore this
-          } else { webdriver.promise.rejected(err); }
-        });
-    return browser.getCurrentUrl();
   case 'sfdcservicecloud':
   case 'sfdcmarketingcloud':
   case 'sfdcdocuments':
