@@ -31,21 +31,11 @@ suite.forElement('ecommerce', 'orders', order, (test) => {
     let productId;
     return cloud.post('/hubs/ecommerce/customers', customer())
       .then(r => customerId = r.body.id)
-      .then(r => {
-        return cloud.post('/hubs/ecommerce/products', product);
-      })
-      .then(r => {
-        productId = r.body.id;
-      })
-      .then(r => {
-        return cloud.post(test.api, createOrder(customerId, productId));
-      })
-      .then(r => {
-        return cloud.get(test.api + '/' + r.body.id);
-      })
-      .then(r => {
-        return cloud.update(test.api + '/' + r.body.id, order);
-      })
+      .then(r => cloud.post('/hubs/ecommerce/products', product))
+      .then(r => productId = r.body.id)
+      .then(r => cloud.post(test.api, createOrder(customerId, productId)))
+      .then(r => cloud.get(test.api + '/' + r.body.id))
+      .then(r => cloud.update(test.api + '/' + r.body.id, order))
       .then(r => cloud.delete('/hubs/ecommerce/orders/' + r.body.id))
       .then(r => cloud.delete('/hubs/ecommerce/customers/' + customerId))
       .then(r => cloud.delete('/hubs/ecommerce/products/' + productId));
