@@ -2,9 +2,8 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/opportunities');
-const schema = require('./assets/opportunities.schema');
 
-suite.forElement('crm', 'opportunities', payload, schema, (test) => {
+suite.forElement('crm', 'opportunities', payload, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
 });
