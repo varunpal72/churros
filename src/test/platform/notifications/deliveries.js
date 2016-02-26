@@ -85,11 +85,15 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           url: props.getForKey('events', 'url')
         }
       });
-    // TODO update account webhook failure delivery preferences to 'retry'
-    // create a subscription
+    const settings = {
+      'notification.webhook.failure.policy': 'retry'
+    };
     let sId;
     let nId;
-    return cloud.post("notifications/subscriptions", s)
+    // update account webhook failure delivery preferences to 'retry'
+    return cloud.patch("accounts/settings", settings)
+      // create a subscription
+      .then(r => cloud.post("notifications/subscriptions", s))
       .then(r => {
         sId = r.body.id;
         // send a notification
@@ -134,12 +138,15 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           url: props.getForKey('events', 'url')
         }
       });
-    // TODO update account webhook failure delivery preferences to 'queue'
-    // create a subscription
+    const settings = {
+      'notification.webhook.failure.policy': 'queue'
+    };
     let sId;
     let nId;
-    // create a subscription
-    return cloud.post("notifications/subscriptions", s)
+    // update account webhook failure delivery preferences to 'queue'
+    return cloud.patch("accounts/settings", settings)
+      //create a subscription
+      .then(r => cloud.post("notifications/subscriptions", s))
       .then(r => {
         // send a notification
         sId = r.body.id;

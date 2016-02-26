@@ -14,7 +14,7 @@ suite.forPlatform('notifications/subscriptions', genSub({}), schema, (test) => {
   test.withJson({}).should.return400OnPost();
   test.should.return404OnGet(-1);
 
-  const bad = genSub();
+  const bad = genSub({});
   bad.config.url = null;
   test.withJson(bad).should.return400OnPost(bad);
 });
