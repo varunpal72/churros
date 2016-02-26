@@ -50,4 +50,5 @@ suite.forElement('ecommerce', 'orders', order, (test) => {
       .then(r => cloud.delete('/hubs/ecommerce/customers/' + customerId))
       .then(r => cloud.delete('/hubs/ecommerce/products/' + productId));
   });
+  test.should.supportPagination();
 });

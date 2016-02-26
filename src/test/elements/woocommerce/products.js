@@ -5,4 +5,5 @@ const payload = require('./assets/products');
 
 suite.forElement('ecommerce', 'products', payload, (test) => {
   test.should.supportCruds();
+  test.should.supportPagination();
 });

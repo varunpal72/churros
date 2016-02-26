@@ -13,4 +13,5 @@ const customer = (custom) => ({
 
 suite.forElement('ecommerce', 'customers', customer({}), (test) => {
   test.should.supportCruds();
+  test.should.supportPagination();
 });
