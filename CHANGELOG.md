@@ -1,7 +1,12 @@
 ## v0.3.0 <sub><sup>(TBD)</sup></sub>
 #### Highlights
+* `churros test` shell exit code is now propagated back to CLI properly.
+![CLI](http://cl.ly/0I262G3Q0u1z/Screen%20Recording%202016-02-24%20at%2001.45%20PM.gif)
+
 * To pass options on a given function in `cloud`, you now use the `cloud.withOptions` functions before your actual HTTP function, for example: `cloud.withOptions({qs: {foo: 'bar'}}).get('/foo')`.  As always, reference the unit tests for more examples.
 * Re-factored the schema validation code, and removed the expectation that all element tests would validate against schemas after revealing that, well, it's just not really worth it.
+* Event listener now able to shut down and restart in single execution
+* Added platform tests for `/elements/:id/instances` and `/instances/:id/events`
 
 ## v0.2.0 <sub><sup>(2016-02-12)</sup></sub>
 

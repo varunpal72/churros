@@ -133,6 +133,12 @@ const cruds = (api, payload, validationCb, updateCb) => {
 };
 exports.cruds = cruds;
 
+const sr = (api, validationCb) => {
+  return get(api, validationCb)
+    .then(r => get(api + '/' + r.body[0].id, validationCb));
+};
+exports.sr = sr;
+
 const createEvents = (element, eiId, payload, numEvents) => {
   numEvents = (numEvents || 1);
 
@@ -149,16 +155,38 @@ const createEvents = (element, eiId, payload, numEvents) => {
 };
 exports.createEvents = createEvents;
 
+const createServer = (cb) => {
+  const sx = {};
+  const sv = http.createServer(cb);
+  sv.on('connection', s => {
+    const k = `${s.remoteAddress}:${s.remotePort}`;
+    sx[k] = s;
+    s.once('close', () => delete sx[k]);
+  });
+
+  sv.destroy = f => {
+    sv.close(f);
+    for (let s in sx) {
+      sx[s].destroy();
+      sx[s].unref();
+    }
+    sv.unref();
+    return true;
+  };
+  return sv;
+};
+
 const listenForEvents = (port, numEventsSent, waitSecs) => {
-  let receivedEvents = 0;
-  let events = [];
+  var server;
+  var receivedEvents = 0;
+  var events = [];
   return new Promise((resolve, reject) => {
-    http.createServer((request, response) => {
+    server = createServer((request, response) => {
         var fullBody = '';
-        request.on('data', function (chunk) {
+        request.on('data', (chunk) => {
           fullBody += chunk.toString();
         });
-        request.on('end', function () {
+        request.on('end', () => {
           request.body = fullBody;
         });
 
@@ -166,14 +194,20 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
         receivedEvents++;
         events.push(request);
         logger.debug('%s event(s) received', receivedEvents);
-        if (receivedEvents === numEventsSent) resolve(events);
+        if (receivedEvents === numEventsSent) {
+          resolve(events);
+          server.destroy();
+        }
       })
       .listen(port, "localhost", (err) => {
         err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
       });
 
     const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
-    setTimeout(() => reject(msg), waitSecs * 1000);
+    setTimeout(() => {
+      reject(msg);
+      server.destroy();
+    }, waitSecs * 1000);
   });
 };
 exports.listenForEvents = listenForEvents;

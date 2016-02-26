@@ -193,6 +193,8 @@ describe('cloud', () => {
   it('should support cruds', () => cloud.cruds('/foo', genPayload(), genSchema()));
   it('should support creating events', () => cloud.createEvents('myelement', eiId, genPayload(), 2));
 
+  it('should support sr', () => cloud.sr('/foo', (r) => expect(r).to.have.statusCode(200)));
+
   it('should support listening for events with custom validation', () => {
     return new Promise((res, rej) => {
       const port = 8085;
@@ -207,13 +209,22 @@ describe('cloud', () => {
 
   it('should throw an error if event validation fails', () => {
     return new Promise((res, rej) => {
-      const port = 8089;
+      const port = 8085;
       cloud.listenForEvents(port, 1, 5)
         .then(r => r.forEach(e => expect(e).to.be.empty))
         .then(r => rej('How embarrassing, I should have failed validating events: ' + r))
         .catch(r => res(r));
       chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
       return chakram.post('http://localhost:' + port, { event: 'green hat' });
+    });
+  });
+
+  it('should throw an error if event listen times out', () => {
+    return new Promise((res, rej) => {
+      const port = 8085;
+      cloud.listenForEvents(port, 1, 1)
+        .then(r => rej('How embarrassing, I should have timed out listening for events: ' + r))
+        .catch(r => res(r));
     });
   });
 

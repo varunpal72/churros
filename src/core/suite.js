@@ -7,9 +7,9 @@ const cloud = require('core/cloud');
 
 var exports = module.exports = {};
 
-const itPost = (api, payload, validationCb) => {
+const itPost = (api, payload, options, validationCb) => {
   const name = util.format('should allow POST for %s', api);
-  it(name, () => cloud.post(api, payload, validationCb));
+  it(name, () => cloud.withOptions(options).post(api, payload, validationCb));
 };
 
 const itGet = (api, options, validationCb) => {
@@ -35,6 +35,11 @@ const itCrud = (api, payload, validationCb, updateCb) => {
 const itCruds = (api, payload, validationCb, updateCb) => {
   const name = util.format('should allow CRUDS for %s', api);
   it(name, () => cloud.cruds(api, payload, validationCb, updateCb));
+};
+
+const itSr = (api, validationCb) => {
+  const name = util.format('should allow SR for %s', api);
+  it(name, () => cloud.get(api).then(r => cloud.get(api + '/' + r.body[0].id)));
 };
 
 const itPagination = (api, validationCb) => {
@@ -86,7 +91,7 @@ const runTests = (api, payload, validationCb, tests) => {
       return400OnPost: () => itPost400(api, payload),
       return404OnPatch: (invalidId) => itPatch404(api, payload, invalidId),
       return404OnGet: (invalidId) => itGet404(api, invalidId),
-      return200OnPost: () => itPost(api, payload, validationCb),
+      return200OnPost: () => itPost(api, payload, options, validationCb),
       return200OnGet: () => itGet(api, options, validationCb),
       supportPagination: () => itPagination(api, validationCb),
       supportCeqlSearch: (field) => itCeqlSearch(api, payload, field),
@@ -94,6 +99,7 @@ const runTests = (api, payload, validationCb, tests) => {
       supportCrud: (updateCb) => itCrud(api, payload, validationCb, updateCb),
       supportCrd: () => itCrd(api, payload, validationCb),
       supportCrds: () => itCrds(api, payload, validationCb),
+      supportSr: () => itSr(api, validationCb),
     };
   };
 

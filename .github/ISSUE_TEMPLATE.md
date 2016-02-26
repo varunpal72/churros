@@ -1,11 +1,8 @@
-# IF FEATURE
 ## Description
+Please put the description of the bug or feature here
 
-# IF BUG
 ## Expected Behavior
-
-## Actual Behavior
+For a bug, include the expected behavior here
 
 ## Steps to Reproduce
-
-> NOTE: Attach any useful videos, screenshots, etc.
+For a bug, include steps to reproduce here

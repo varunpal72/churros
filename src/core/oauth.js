@@ -190,6 +190,21 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id('password')).sendKeys(password);
     browser.findElement(webdriver.By.css('input.button.p0')).click();
     return browser.getCurrentUrl();
+  case 'magento':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.id('username')).sendKeys(username);
+    browser.findElement(webdriver.By.id('login')).sendKeys(password);
+    browser.findElement(webdriver.By.className('form-button')).click();
+    browser.wait(() => {
+      browser.findElement(webdriver.By.xpath("/html/body/div/div/div/div[1]/form[1]/button/span/span"))
+        .then((element) => element.click(),
+          (err) => {
+            if (err.state && err.state === 'no such element') { // ignore this
+            } else { webdriver.promise.rejected(err); }
+          });
+      return browser.getTitle().then((title) => !title);
+    }, 10000);
+    return browser.getCurrentUrl();
   case 'marketo':
     return 'https://foo.bar.com?code=' + config.code; // good gracious, why does this work?...
   case 'namely':
@@ -234,17 +249,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     browser.findElement(webdriver.By.id("password")).clear();
     browser.findElement(webdriver.By.id("password")).sendKeys(password);
     browser.findElement(webdriver.By.id("Login")).click();
-    browser.wait(() => {
-        return browser.isElementPresent(webdriver.By.id('oaapprove'));
-      }, 5000)
+    browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 5000)
       .thenCatch(r => true); // ignore
 
     browser.findElement(webdriver.By.id('oaapprove'))
-      .then((element) => element.click(),
-        (err) => {
-          if (err.state && err.state === 'no such element') { // ignore this
-          } else { webdriver.promise.rejected(err); }
-        });
+      .then((element) => element.click(), (err) => {}); // ignore this
     return browser.getCurrentUrl();
   case 'onedrivebusiness':
     browser.get(r.body.oauthUrl);
