@@ -5,8 +5,6 @@ const payload = require('./assets/opportunities');
 const schema = require('./assets/opportunities.schema');
 
 suite.forElement('crm', 'opportunities', payload, schema, (test) => {
-  // checkout functions available under test.should which provide a lot of pre-canned tests
-  //   more information here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#adding-tests-to-an-existing-suite
-
-  it('natedoyle should insert some tests here :)', () => true);
+  test.should.supportCruds();
+  test.should.supportPagination();
 });

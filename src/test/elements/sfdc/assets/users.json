@@ -1,3 +1,10 @@
-{
-  
+
+    "email": "churros@example.com",
+    "username": "Churros",
+    "LastName": "Sauce",
+    "Alias": "rb",
+    "TimeZoneSidKey": "America/Denver",
+    "LocaleSidKey": "en_US",
+    "EmailEncodingKey": "UTF-8",
+    "LanguageLocaleKey": "en_US"
 }
