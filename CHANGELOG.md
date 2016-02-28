@@ -1,4 +1,7 @@
-## v0.3.0 <sub><sup>(TBD)</sup></sub>
+## v0.4.0 <sub><sup>(TBD)</sup></sub>
+#### Highlights
+
+## v0.3.0 <sub><sup>(2016-02-28)</sup></sub>
 #### Highlights
 * `churros test` shell exit code is now propagated back to CLI properly.
 ![CLI](http://cl.ly/0I262G3Q0u1z/Screen%20Recording%202016-02-24%20at%2001.45%20PM.gif)
