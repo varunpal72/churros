@@ -1,6 +1,7 @@
 'use strict';
 
 const logger = require('winston');
+const portfinder = require('portfinder');
 
 var exports = module.exports = {};
 
@@ -21,3 +22,11 @@ exports.logAndThrow = (msg, error, arg) => {
 
 exports.base64Encode = s => new Buffer(s).toString('base64');
 exports.base64Decode = s => new Buffer(s, 'base64').toString('ascii');
+exports.getOpenPort = () => {
+  return new Promise((res, rej) => {
+    portfinder.getPort((err, port) => {
+      if (err) rej(err);
+      res(port);
+    });
+  });
+};

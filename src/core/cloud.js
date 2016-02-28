@@ -7,6 +7,7 @@ const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
+const localtunnel = require('localtunnel');
 
 var exports = module.exports = {};
 
@@ -147,7 +148,7 @@ const createEvents = (element, eiId, payload, numEvents) => {
 
   logger.debug('Attempting to send %s events to %s', numEvents, api);
   let promises = [];
-  for (var i = 0; i < numEvents; i++) {
+  for (let i = 0; i < numEvents; i++) {
     const response = chakram.post(api, payload, options);
     promises.push(response);
   }
@@ -176,17 +177,34 @@ const createServer = (cb) => {
   return sv;
 };
 
+const startTunnel = () => {
+  return new Promise((res, rej) => {
+    tools.getOpenPort()
+      .then(port => {
+        logger.debug('attempting to start up localtunnel on port %s', port);
+        localtunnel(port, (err, tunnel) => {
+          if (err) rej(err);
+          logger.debug('successfully started localtunnel on port %s with url %s', port, tunnel.url);
+          res({ tunnel: tunnel, port: port });
+        });
+      });
+  });
+};
+exports.startTunnel = startTunnel;
+
 const listenForEvents = (port, numEventsSent, waitSecs) => {
-  var server;
-  var receivedEvents = 0;
-  var events = [];
+  let server;
+  let receivedEvents = 0;
+  let events = [];
   return new Promise((resolve, reject) => {
     server = createServer((request, response) => {
-        var fullBody = '';
+        let fullBody = '';
         request.on('data', (chunk) => {
+          logger.debug('received data: %s', chunk.toString());
           fullBody += chunk.toString();
         });
         request.on('end', () => {
+          logger.debug('ending data and setting to: %s', fullBody);
           request.body = fullBody;
         });
 

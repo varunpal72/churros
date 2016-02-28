@@ -11,9 +11,9 @@ const crypto = require('crypto');
 const eventSchema = require('./assets/event.schema.json');
 
 const signatureKey = 'abcd1234efgh5678';
-const gen = (opts) => new Object({
+const gen = (opts, url) => new Object({
   'event.notification.enabled': opts['event.notification.enabled'] || true,
-  'event.notification.callback.url': opts['event.notification.callback.url'] || props.getForKey('events', 'url'),
+  'event.notification.callback.url': url,
   'event.notification.signature.key': signatureKey
 });
 
@@ -32,25 +32,33 @@ suite.forPlatform('events', null, null, (test) => {
     const payload = loadPayload(element);
     const load = props.getForKey('events', 'load');
     const wait = props.getForKey('events', 'wait');
-    const port = props.getForKey('events', 'port');
 
     let instanceId;
-    return provisioner.create(element, gen({}))
+    let tunnel;
+    let port;
+    return cloud.startTunnel()
+      .then(r => {
+        tunnel = r.tunnel;
+        port = r.port;
+        return tunnel;
+      })
+      .then(tunnel => provisioner.create(element, gen({}, tunnel.url)))
       .then(r => instanceId = r.body.id)
       .then(r => cloud.createEvents(element, instanceId, payload, load))
-      .then(r => cloud.listenForEvents(port, load, wait)
-        .then(r => r.forEach(event => {
-          // basic event header and body validation
-          expect(event.headers).to.not.be.empty;
-          expect(event.body).to.not.be.empty;
-          // validate webhook signature
-          expect(event.headers['elements-webhook-id']).to.not.be.empty;
-          expect(event.headers['elements-webhook-signature']).to.not.be.empty;
-          var signature = event.headers['elements-webhook-signature'];
-          var hash = 'sha1=' + crypto.createHmac('sha1', signatureKey).update(event.body).digest('base64');
-          expect(signature).to.equal(hash);
-        })))
+      .then(r => cloud.listenForEvents(port, load, wait))
+      .then(r => r.forEach(event => {
+        // basic event header and body validation
+        expect(event.headers).to.not.be.empty;
+        expect(event.body).to.not.be.empty;
+        // validate webhook signature
+        expect(event.headers['elements-webhook-id']).to.not.be.empty;
+        expect(event.headers['elements-webhook-signature']).to.not.be.empty;
+        var signature = event.headers['elements-webhook-signature'];
+        var hash = 'sha1=' + crypto.createHmac('sha1', signatureKey).update(event.body).digest('base64');
+        expect(signature).to.equal(hash);
+      }))
       .then(r => cloud.get(util.format('instances/%s/events', instanceId), eventSchema))
+      .then(r => tunnel.close())
       .then(r => provisioner.delete(instanceId));
   });
 

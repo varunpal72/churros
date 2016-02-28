@@ -99,10 +99,6 @@ $ churros test platform/notifications --verbose
 #### Events
 These tests create an instance of an element with event notifications enabled and the event notification callback URL as a locally exposed URL.  `churros` then simulates `x` number of events into our platform and ensures that our local callback receives `x` number of callbacks.
 
-There are some extra properties that are necessary to run the event tests.  `churros props events` will show you what is needed.  
-
-You will also need some way of exposing a local port out on the interwebs.  At Cloud Elements, we mainly use [ngrok](https://ngrok.com/) (with a few people using [localtunnel.me](https://localtunnel.me/) or SSH tunneling) but feel free to pick your favorite, as long as you have a publicly exposed URL setup in `churros props events:url` that is pointing to the port setup in `churros props events:port`.
-
 ```bash
 # Run the event tests, using the defaults in `churros props events`:
 $ churros test platform/events
