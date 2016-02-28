@@ -2,7 +2,7 @@
 
 --------------------------------------------------------------------------------
 
-[![version](http://img.shields.io/badge/version-v0.2.0-blue.svg)](#) [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/) [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
+[![version](http://img.shields.io/badge/version-v0.4.0-blue.svg)](#) [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/) [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
 [![Circle CI](https://circleci.com/gh/cloud-elements/churros.svg?style=shield)](https://circleci.com/gh/cloud-elements/churros)
 [![Coverage Status](https://coveralls.io/repos/github/cloud-elements/churros/badge.svg?branch=master)](https://coveralls.io/github/cloud-elements/churros?branch=master)
 
