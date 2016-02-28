@@ -52,13 +52,10 @@ describe('tools', () => {
 
   it('should support starting up a localtunnel', () => {
     return tools.startTunnel()
-      .then(r => {
-        expect(r).to.not.be.null;
-        expect(r.tunnel).to.not.be.null;
-        expect(r.tunnel.url).to.be.a('string');
-        expect(r.port).to.not.be.null;
-        expect(r.port).to.be.a('number');
-        r.tunnel.close();
+      .then(tunnel => {
+        expect(tunnel).to.not.be.null;
+        expect(tunnel.url).to.be.a('string');
+        tunnel.close();
       });
   });
 });

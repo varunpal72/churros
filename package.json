@@ -32,7 +32,6 @@
     "mockery": "^1.4.0",
     "nock": "^7.0.2",
     "optimist": "^0.6.1",
-    "portfinder": "^1.0.1",
     "replacestream": "^4.0.0",
     "selenium-webdriver": "^2.48.2",
     "shelljs": "^0.5.3",

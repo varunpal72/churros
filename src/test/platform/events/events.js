@@ -33,16 +33,12 @@ suite.forPlatform('events', null, null, (test) => {
     const payload = loadPayload(element);
     const load = props.getForKey('events', 'load');
     const wait = props.getForKey('events', 'wait');
+    const port = props.getForKey('events', 'port');
 
     let instanceId;
     let tunnel;
-    let port;
-    return tools.startTunnel()
-      .then(r => {
-        tunnel = r.tunnel;
-        port = r.port;
-        return tunnel;
-      })
+    return tools.startTunnel(port)
+      .then(tun => tunnel = tun)
       .then(tunnel => provisioner.create(element, gen({}, tunnel.url)))
       .then(r => instanceId = r.body.id)
       .then(r => cloud.createEvents(element, instanceId, payload, load))

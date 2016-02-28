@@ -6,7 +6,8 @@
   "events": {
     "load": "5",
     "wait": "60",
-    "element": ""
+    "element": "",
+    "port": 8999
   },
   "woocommerce": {
     "oauth.api.key": "",
