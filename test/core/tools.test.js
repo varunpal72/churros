@@ -49,4 +49,16 @@ describe('tools', () => {
     expect(encoded).to.be.a('string');
     expect(encoded).to.equal('ABCD');
   });
+
+  it('should support starting up a localtunnel', () => {
+    return tools.startTunnel()
+      .then(r => {
+        expect(r).to.not.be.null;
+        expect(r.tunnel).to.not.be.null;
+        expect(r.tunnel.url).to.be.a('string');
+        expect(r.port).to.not.be.null;
+        expect(r.port).to.be.a('number');
+        r.tunnel.close();
+      });
+  });
 });

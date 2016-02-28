@@ -2,6 +2,7 @@
 
 const logger = require('winston');
 const portfinder = require('portfinder');
+const localtunnel = require('localtunnel');
 
 var exports = module.exports = {};
 
@@ -22,11 +23,17 @@ exports.logAndThrow = (msg, error, arg) => {
 
 exports.base64Encode = s => new Buffer(s).toString('base64');
 exports.base64Decode = s => new Buffer(s, 'base64').toString('ascii');
-exports.getOpenPort = () => {
+
+exports.startTunnel = () => {
   return new Promise((res, rej) => {
     portfinder.getPort((err, port) => {
       if (err) rej(err);
-      res(port);
+      logger.debug('attempting to start up localtunnel on port %s', port);
+      localtunnel(port, (err, tunnel) => {
+        if (err) rej(err);
+        logger.debug('successfully started localtunnel on port %s with url %s', port, tunnel.url);
+        res({ tunnel: tunnel, port: port });
+      });
     });
   });
 };

@@ -3,6 +3,7 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const tools = require('core/tools');
 const provisioner = require('core/provisioner');
 const util = require('util');
 const props = require('core/props');
@@ -36,7 +37,7 @@ suite.forPlatform('events', null, null, (test) => {
     let instanceId;
     let tunnel;
     let port;
-    return cloud.startTunnel()
+    return tools.startTunnel()
       .then(r => {
         tunnel = r.tunnel;
         port = r.port;
