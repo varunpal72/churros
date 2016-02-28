@@ -8,6 +8,7 @@
 * Woocommerce integration tests added. The following resources are supported:
 * Event listener now able to shut down and restart in single execution
 * Added platform tests for `/elements/:id/instances` and `/instances/:id/events`
+* `localtunnel` is now an `npm` dependency, and when running event tests, a tunnel is started programmatically on a random, available, port number.  Before, the user was required to setup their own `ngrok` or `localtunnel` instance and then set that URL and port under `churros props events:url` and `churros props events:port`.  Less properties, less problems.
 
 ## v0.2.0 <sub><sup>(2016-02-12)</sup></sub>
 
