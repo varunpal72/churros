@@ -1,3 +1,5 @@
+'use strict';
+
 const chakram = require('chakram');
 const expect = chakram.expect;
 const tools = require('core/tools');
@@ -51,7 +53,7 @@ describe('tools', () => {
   });
 
   it('should support starting up a localtunnel', () => {
-    return tools.startTunnel()
+    return tools.startTunnel(8999)
       .then(tunnel => {
         expect(tunnel).to.not.be.null;
         expect(tunnel.url).to.be.a('string');

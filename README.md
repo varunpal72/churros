@@ -112,6 +112,8 @@ $ churros test platform/events --element sfdc --load 25 --wait 60 --verbose
 
 > __PROTIP:__ Passing a `--wait`, `--load` and/or `--element` to `churros test platform/events` overrides any default value that may be in your property file.
 
+> __PROTIP:__ If you want to change the default port that is exposed to receive events, then change the `events:port` property by calling `churros props events:port <my_port>`
+
 > __PROTIP:__ Some elements are not currently supported as they need to have an `events/assets/{element}.event.json` file setup so `churros` knows how to simulate events from that system.  If you run the event tests with an element that is not supported you will see an error message like:
 ```bash
 $ churros test platform/events --element box
