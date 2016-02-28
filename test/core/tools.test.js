@@ -1,3 +1,5 @@
+'use strict';
+
 const chakram = require('chakram');
 const expect = chakram.expect;
 const tools = require('core/tools');
@@ -48,5 +50,14 @@ describe('tools', () => {
     const encoded = tools.base64Decode('QUJDRA==');
     expect(encoded).to.be.a('string');
     expect(encoded).to.equal('ABCD');
+  });
+
+  it('should support starting up a localtunnel', () => {
+    return tools.startTunnel(8999)
+      .then(tunnel => {
+        expect(tunnel).to.not.be.null;
+        expect(tunnel.url).to.be.a('string');
+        tunnel.close();
+      });
   });
 });

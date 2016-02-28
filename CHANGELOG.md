@@ -5,11 +5,11 @@
 
 * To pass options on a given function in `cloud`, you now use the `cloud.withOptions` functions before your actual HTTP function, for example: `cloud.withOptions({qs: {foo: 'bar'}}).get('/foo')`.  As always, reference the unit tests for more examples.
 * Re-factored the schema validation code, and removed the expectation that all element tests would validate against schemas after revealing that, well, it's just not really worth it.
-* Woocommerce integration tests added. The following resources are supported:
-  * `CRUDS` for customers, discounts, orders and products
-  * `GET` tests for reports, report names and shops
+* Woocommerce integration tests added.
+* Magento integration tests added.
 * Event listener now able to shut down and restart in single execution
 * Added platform tests for `/elements/:id/instances` and `/instances/:id/events`
+* `localtunnel` is now an `npm` dependency, and when running event tests, a tunnel is started programmatically on the `events.port` property.  Before, the user was required to setup their own `ngrok` or `localtunnel` instance and then set that URL under `churros props events:url`.  Less properties, less problems.
 
 ## v0.2.0 <sub><sup>(2016-02-12)</sup></sub>
 
