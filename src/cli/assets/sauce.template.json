@@ -472,5 +472,14 @@
     "sharepoint.site.address": "",
     "site.address": "",
     "oauth.scope": ""
+  },
+  "magento": {
+    "provisioning": "oauth1",
+    "oauth.api.key": "",
+    "oauth.api.secret": "",
+    "username": "",
+    "password": "",
+    "site.address": "",
+    "store.url": ""
   }
 }
