@@ -139,6 +139,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
   it('should queue webhook delivery', () => {
     if (props.get('user') === 'system') {
       logger.warn("Unable to run webhook queueing test as system user. Run as a different user to test this feature.");
+      return;
     }
     const port = props.getForKey('events', 'port');
     const topic = 'churros-topic-' + tools.random();
