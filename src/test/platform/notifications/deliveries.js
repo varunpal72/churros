@@ -25,6 +25,8 @@ const genSub = (opts) => new Object({
 });
 
 suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, (test) => {
+  const port = props.getForKey('events', 'port');
+
   it('should return notification subscription delivery status', () => {
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
@@ -114,7 +116,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           })
       })
       .then(r => {
-        return cloud.listenForEvents(8085, 1, 10);
+        return cloud.listenForEvents(port, 1, 10);
       })
       .then(r => {
         return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
@@ -168,7 +170,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           })
       })
       // listen for events
-      .then(r => cloud.listenForEvents(8085, 1, 10))
+      .then(r => cloud.listenForEvents(port, 1, 10))
       .catch(r => {
         // get delivery status, verify it is _still_ queued
         return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
@@ -179,7 +181,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       })
       .then(r => {
         //listen for events again
-        let prettyPlease = cloud.listenForEvents(8085, 1, 10);
+        let prettyPlease = cloud.listenForEvents(port, 1, 10);
         // release the queue for delivery
         cloud.withOptions({ qs: { hydrate: true, where: util.format("channel='webhook' and status='queued' and config.url='%s'", props.getForKey('events', 'url')) }}).put('notifications/subscriptions/deliveries');
         // queue should be released and this should succeed
