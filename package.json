@@ -27,6 +27,7 @@
     "coveralls": "^2.11.6",
     "inquirer": "^0.11.4",
     "istanbul": "^0.4.2",
+    "localtunnel": "^1.8.1",
     "mocha": "^2.3.4",
     "mockery": "^1.4.0",
     "nock": "^7.0.2",

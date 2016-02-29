@@ -2,7 +2,7 @@
 
 --------------------------------------------------------------------------------
 
-[![version](http://img.shields.io/badge/version-v0.2.0-blue.svg)](#) [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/) [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
+[![version](http://img.shields.io/badge/version-v0.4.0-blue.svg)](#) [![versioning](http://img.shields.io/badge/versioning-semver-blue.svg)](http://semver.org/) [![branching](http://img.shields.io/badge/branching-github%20flow-blue.svg)](https://guides.github.com/introduction/flow/)
 [![Circle CI](https://circleci.com/gh/cloud-elements/churros.svg?style=shield)](https://circleci.com/gh/cloud-elements/churros)
 [![Coverage Status](https://coveralls.io/repos/github/cloud-elements/churros/badge.svg?branch=master)](https://coveralls.io/github/cloud-elements/churros?branch=master)
 
@@ -99,10 +99,6 @@ $ churros test platform/notifications --verbose
 #### Events
 These tests create an instance of an element with event notifications enabled and the event notification callback URL as a locally exposed URL.  `churros` then simulates `x` number of events into our platform and ensures that our local callback receives `x` number of callbacks.
 
-There are some extra properties that are necessary to run the event tests.  `churros props events` will show you what is needed.  
-
-You will also need some way of exposing a local port out on the interwebs.  At Cloud Elements, we mainly use [ngrok](https://ngrok.com/) (with a few people using [localtunnel.me](https://localtunnel.me/) or SSH tunneling) but feel free to pick your favorite, as long as you have a publicly exposed URL setup in `churros props events:url` that is pointing to the port setup in `churros props events:port`.
-
 ```bash
 # Run the event tests, using the defaults in `churros props events`:
 $ churros test platform/events
@@ -115,6 +111,8 @@ $ churros test platform/events --element sfdc --load 25 --wait 60 --verbose
 ```
 
 > __PROTIP:__ Passing a `--wait`, `--load` and/or `--element` to `churros test platform/events` overrides any default value that may be in your property file.
+
+> __PROTIP:__ If you want to change the default port that is exposed to receive events, then change the `events:port` property by calling `churros props events:port <my_port>`
 
 > __PROTIP:__ Some elements are not currently supported as they need to have an `events/assets/{element}.event.json` file setup so `churros` knows how to simulate events from that system.  If you run the event tests with an element that is not supported you will see an error message like:
 ```bash

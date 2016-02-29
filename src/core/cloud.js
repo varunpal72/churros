@@ -147,7 +147,7 @@ const createEvents = (element, eiId, payload, numEvents) => {
 
   logger.debug('Attempting to send %s events to %s', numEvents, api);
   let promises = [];
-  for (var i = 0; i < numEvents; i++) {
+  for (let i = 0; i < numEvents; i++) {
     const response = chakram.post(api, payload, options);
     promises.push(response);
   }
@@ -177,27 +177,25 @@ const createServer = (cb) => {
 };
 
 const listenForEvents = (port, numEventsSent, waitSecs) => {
-  var server;
-  var receivedEvents = 0;
-  var events = [];
+  let server;
+  let receivedEvents = 0;
+  let events = [];
   return new Promise((resolve, reject) => {
     server = createServer((request, response) => {
-        var fullBody = '';
-        request.on('data', (chunk) => {
-          fullBody += chunk.toString();
-        });
+        let fullBody = '';
+        request.on('data', (chunk) => fullBody += chunk.toString());
         request.on('end', () => {
-          request.body = fullBody;
-        });
+          request.body = fullBody
+          response.end('{}');
 
-        response.end('{}');
-        receivedEvents++;
-        events.push(request);
-        logger.debug('%s event(s) received', receivedEvents);
-        if (receivedEvents === numEventsSent) {
-          resolve(events);
-          server.destroy();
-        }
+          receivedEvents++;
+          events.push(request);
+          logger.debug('%s event(s) received', receivedEvents);
+          if (receivedEvents === numEventsSent) {
+            resolve(events);
+            server.destroy();
+          }
+        });
       })
       .listen(port, "localhost", (err) => {
         err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
