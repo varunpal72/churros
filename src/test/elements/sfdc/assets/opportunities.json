@@ -1,8 +1,10 @@
 {
-    "name": "Churros_Test_Opportunity",
-    "type": "New Customer",
-    "source": "Web",
-    "stage": "Prospecting",
-    "description": "A cool test opportunity",
-    "closeDate": "2018-09-08"
+  "Amount": 250,
+  "CloseDate": "2018-09-08",
+  "Description": "A test deal for testing of tests",
+  "LeadSource": "Web",
+  "Name": "Churros Test Opportunity",
+  "Probability": 60,
+  "StageName": "Test",
+  "Type": "New Customer"
 }

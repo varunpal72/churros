@@ -3,14 +3,6 @@
     "lastName": "ChurrosTestDude",
     "title": "Salesman",
     "department": "Sales",
-    "address":  {
-        "street1": "455 E 1st Ave",
-        "city" : "Denver",
-        "stateOrProvince": "CO",
-        "postalCode": "80209",
-        "country": "US"
-    },
     "phone": "444-444-4444",
-    "mobile": "555-555-5555",
-    "email": "bob@testrobot.com"
+    "email": "bob@churrostest.com"
 }

@@ -1,19 +1,17 @@
 {
-    "firstName" : "Jack",
-    "lastName": "ChurrosTestLead",
-    "phone": "444-444-4444",
-    "address":  {
-        "street1": "455 E 1st Ave",
-        "city" : "Denver",
-        "stateOrProvince": "CO",
-        "postalCode": "80209",
-        "country": "US"
-    },
-    "title": "Salesman",
-    "description": "hot lead from testing",
-    "status": "Working - Contacted",
-    "company": "Robot Test CO",
-    "source": "Web",
-    "mobile": "555-555-5555",
-    "email": "jack@testchurros.com"
+  "City": "Denver",
+  "Company": "Churros Elements",
+  "Country": "USA",
+  "Description": "Just a test for testing tests",
+  "Email": "jack@testchurros.com",
+  "FirstName": "Churros",
+  "Industry": "Testing",
+  "LastName": "TheTestLead",
+  "LeadSource": "Web",
+  "Phone": "555-532-2355",
+  "PostalCode": "80216",
+  "State": "CO",
+  "Status": "Working - Contacted",
+  "Street": "3001 Brighton Blvd.",
+  "Title": "Salesman"
 }

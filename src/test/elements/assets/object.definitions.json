@@ -43,5 +43,23 @@
       "path": "name",
       "type": "string"
     }]
+  },
+    "leads":{
+      "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+    "opportunities":{
+      "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+    "users":{
+      "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
