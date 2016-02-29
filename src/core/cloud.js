@@ -183,9 +183,7 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
   return new Promise((resolve, reject) => {
     server = createServer((request, response) => {
         let fullBody = '';
-        request.on('data', (chunk) => {
-          fullBody += chunk.toString()
-        });
+        request.on('data', (chunk) => fullBody += chunk.toString());
         request.on('end', () => {
           request.body = fullBody
           response.end('{}');
