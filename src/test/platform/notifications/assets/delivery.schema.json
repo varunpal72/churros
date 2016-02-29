@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "notificationId": {
+      "type": "number"
+    },
+    "subscriptionId": {
+      "type": "number"
+    },
+    "status": {
+      "enum": [
+        "created",
+        "notified",
+        "retry",
+        "queued"
+      ]
+    },
+    "createdDate": {
+      "type": "string"
+    },
+    "updatedDate": {
+      "type": "string"
+    },
+    "notification": {
+      "type": "object"
+    },
+    "subscription": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "notificationId",
+    "subscriptionId",
+    "status",
+    "createdDate"
+  ]
+}
