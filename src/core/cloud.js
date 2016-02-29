@@ -183,17 +183,21 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
   return new Promise((resolve, reject) => {
     server = createServer((request, response) => {
         let fullBody = '';
-        request.on('data', (chunk) => fullBody += chunk.toString());
-        request.on('end', () => request.body = fullBody);
-        response.end('{}');
+        request.on('data', (chunk) => {
+          fullBody += chunk.toString()
+        });
+        request.on('end', () => {
+          request.body = fullBody
+          response.end('{}');
 
-        receivedEvents++;
-        events.push(request);
-        logger.debug('%s event(s) received', receivedEvents);
-        if (receivedEvents === numEventsSent) {
-          resolve(events);
-          server.destroy();
-        }
+          receivedEvents++;
+          events.push(request);
+          logger.debug('%s event(s) received', receivedEvents);
+          if (receivedEvents === numEventsSent) {
+            resolve(events);
+            server.destroy();
+          }
+        });
       })
       .listen(port, "localhost", (err) => {
         err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
