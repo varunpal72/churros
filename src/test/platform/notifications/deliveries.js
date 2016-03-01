@@ -65,8 +65,8 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           expect(r.body.length).to.equal(load);
         });
       })
-      // test search
       .then(r => {
+        // test search
         return cloud.withOptions({ qs: { hydrate: true, where: "channel='webhook'" } }).get('notifications/subscriptions/deliveries', (r) => {
           expect(r).to.have.schemaAnd200(listSchema);
           r.body.forEach(s => expect(s.subscription.channel).to.equal('webhook'));
@@ -90,9 +90,14 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     };
     let sId;
     let nId;
+    let server;
     // update account webhook failure delivery preferences to 'retry'
     return cloud.patch("accounts/settings", settings)
-      .then(r => tools.startTunnel(port))
+      .then(r => cloud.startServer(port))
+      .then(s => {
+        server = s;
+        return tools.startTunnel(port);
+      })
       // create a subscription
       .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
       .then(r => {
@@ -102,6 +107,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       })
       .then(r => {
         nId = r.body.id;
+        logger.debug("Waiting for webhook delivery to fail");
         return new Promise((res, rej) => {
           // wait a few seconds for delivery to fail
           setTimeout(() => res(), 95000);
@@ -114,11 +120,12 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
             expect(r.body.status).to.equal('retry');
           });
       })
-      .then(r => cloud.listenForEvents(port, 1, 20))
+      .then(r => cloud.listenForEvents(server, 1, 20))
       .then(r => {
+        logger.debug("Waiting for delivery status to update");
         return new Promise((res, rej) => {
           // wait a bit for status to update
-          setTimeout(() => res(), 1000);
+          setTimeout(() => res(), 2000);
         });
       })
       .then(r => {
@@ -157,9 +164,14 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     };
     let sId;
     let nId;
+    let server;
     // update account webhook failure delivery preferences to 'queue'
     return cloud.patch("accounts/settings", settings)
-      .then(r => tools.startTunnel(port))
+      .then(r => cloud.startServer(port))
+      .then(s => {
+        server = s;
+        return tools.startTunnel(port);
+      })
       //create a subscription
       .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
       .then(r => {
@@ -183,7 +195,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           });
       })
       // listen for events
-      .then(r => cloud.listenForEvents(port, 1, 10))
+      .then(r => cloud.listenForEvents(server, 1, 10))
       .catch(r => {
         // get delivery status, verify it is _still_ queued
         return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
@@ -194,7 +206,11 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       })
       .then(r => {
         //listen for events again
-        let prettyPlease = cloud.listenForEvents(port, 1, 10);
+        let prettyPlease;
+        cloud.startServer(port)
+        .then(server => {
+          prettyPlease = cloud.listenForEvents(server, 1, 10)
+        });
         // release the queue for delivery
         cloud.withOptions({ qs: { hydrate: true, where: util.format("channel='webhook' and status='queued' and config.url='%s'", props.getForKey('events', 'url')) } }).put('notifications/subscriptions/deliveries');
         // queue should be released and this should succeed
