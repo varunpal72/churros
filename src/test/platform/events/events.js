@@ -3,7 +3,6 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
 const provisioner = require('core/provisioner');
 const util = require('util');
 const props = require('core/props');
@@ -34,12 +33,10 @@ suite.forPlatform('events', null, null, (test) => {
     const load = props.getForKey('events', 'load');
     const wait = props.getForKey('events', 'wait');
     const port = props.getForKey('events', 'port');
+    const url = props.getForKey('events', 'url');
 
     let instanceId;
-    let tunnel;
-    return tools.startTunnel(port)
-      .then(tun => tunnel = tun)
-      .then(tunnel => provisioner.create(element, gen({}, tunnel.url)))
+    return provisioner.create(element, gen({}, url))
       .then(r => instanceId = r.body.id)
       .then(r => cloud.createEvents(element, instanceId, payload, load))
       .then(r => cloud.listenForEvents(port, load, wait))
@@ -55,7 +52,6 @@ suite.forPlatform('events', null, null, (test) => {
         expect(signature).to.equal(hash);
       }))
       .then(r => cloud.get(util.format('instances/%s/events', instanceId), eventSchema))
-      .then(r => tunnel.close())
       .then(r => provisioner.delete(instanceId));
   });
 

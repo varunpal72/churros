@@ -5,6 +5,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const argv = require('optimist').argv;
 const defaults = require('core/defaults');
+const tools = require('core/tools');
 const logger = require('core/logger')(argv.verbose ? 'silly' : 'info');
 
 let config;
@@ -28,10 +29,17 @@ config.events.element = (argv.loadElement || config.events.element);
 // this happens once
 const props = require('core/props')(config);
 
-before((done) => {
+before(() => {
   const url = props.get('url');
   const secUrl = url + '/elements/j_spring_security_check';
   const options = { jar: true, form: { j_username: props.get('user'), j_password: props.get('password') } };
+
+  // sets up our localtunnel instead and whatever random URL localtunnel assigns to us, we set that
+  // in our events:url property to be used as our webhook callback URL elsewhere
+  const setupEventsTunnel = () => {
+    return tools.startTunnel(props.getForKey('events', 'port'))
+      .then(tunnel => props.setForKey('events', 'url', tunnel.url));
+  }
 
   return chakram.post(secUrl, null, options)
     .then(r => {
@@ -42,8 +50,8 @@ before((done) => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       defaults(url + '/elements/api-v2', r.body.user, r.body.company, props.get('user'));
-      done();
     })
+    .then(r => setupEventsTunnel())
     .catch(r => {
       // if the lifecycle fails, then we want to exit with an error and not let anything else continue
       logger.error('Well shucks...failed to finish initialization...\n  Is %s up and running?\n  Do you have the right username and password?\n', url);

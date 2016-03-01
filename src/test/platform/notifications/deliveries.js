@@ -79,10 +79,10 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     const port = props.getForKey('events', 'port');
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
-    const s = (tunnelUrl) => genSub({
+    const s = genSub({
       topics: [topic],
       config: {
-        url: tunnelUrl
+        url: props.getForKey('events', 'url')
       }
     });
     const settings = {
@@ -92,9 +92,8 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     let nId;
     // update account webhook failure delivery preferences to 'retry'
     return cloud.patch("accounts/settings", settings)
-      .then(r => tools.startTunnel(port))
       // create a subscription
-      .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
+      .then(r => cloud.post("notifications/subscriptions", s))
       .then(r => {
         sId = r.body.id;
         // send a notification
@@ -104,7 +103,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         nId = r.body.id;
         return new Promise((res, rej) => {
           // wait a few seconds for delivery to fail
-          setTimeout(() => res(), 95000);
+          setTimeout(() => res(), 5000);
         });
       })
       .then(r => {
@@ -146,10 +145,10 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     const port = props.getForKey('events', 'port');
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
-    const s = (tunnelUrl) => genSub({
+    const s = genSub({
       topics: [topic],
       config: {
-        url: tunnelUrl
+        url: props.getForKey('events', 'url')
       }
     });
     const settings = {
@@ -159,9 +158,8 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     let nId;
     // update account webhook failure delivery preferences to 'queue'
     return cloud.patch("accounts/settings", settings)
-      .then(r => tools.startTunnel(port))
       //create a subscription
-      .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
+      .then(r => cloud.post("notifications/subscriptions", s))
       .then(r => {
         // send a notification
         sId = r.body.id;
