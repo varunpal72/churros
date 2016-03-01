@@ -110,7 +110,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         logger.debug("Waiting for webhook delivery to fail");
         return new Promise((res, rej) => {
           // wait a few seconds for delivery to fail
-          setTimeout(() => res(), 95000);
+          setTimeout(() => res(), 5000);
         });
       })
       .then(r => {
@@ -125,7 +125,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         logger.debug("Waiting for delivery status to update");
         return new Promise((res, rej) => {
           // wait a bit for status to update
-          setTimeout(() => res(), 2000);
+          setTimeout(() => res(), 1000);
         });
       })
       .then(r => {
