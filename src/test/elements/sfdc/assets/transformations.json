@@ -35,15 +35,51 @@
       }
     ]
   },
-  "opportunities": {
+"opportunities": {
     "vendorName": "Opportunity",
     "fields": [
       {
         "path": "id",
         "vendorPath": "Id"
+      },
+      {
+        "path": "name",
+        "vendorPath": "Name"
+      },
+      {
+        "path": "accountId",
+        "vendorPath": "AccountId"
+      },
+      {
+        "path": "type",
+        "vendorPath": "Type"
+      },
+      {
+        "path": "source",
+        "vendorPath": "LeadSource"
+      },
+      {
+        "path": "description",
+        "vendorPath": "Description"
+      },
+      {
+        "path": "amount",
+        "vendorPath": "Amount"
+      },
+      {
+        "path": "closeDate",
+        "vendorPath": "CloseDate"
+      },
+      {
+        "path": "stage",
+        "vendorPath": "StageName"
+      },
+      {
+        "path": "probability",
+        "vendorPath": "Probability"
       }
     ]
-  },
+    },
   "users": {
     "vendorName": "User",
     "fields": [
