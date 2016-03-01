@@ -101,6 +101,12 @@ beforeEach(() => {
     .reply(404, (uri, requestBody) => {
       return { message: 'No foo found with the given ID' };
     })
+    .patch('/foo/file')
+    .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
+    .patch('/foo/bad/file')
+    .reply(404, (uri, requestBody) => {
+      return { message: 'No resource found at /foo/bad/file' };
+    })
     .put('/foo/123')
     .reply(200, (uri, requestBody) => {
       requestBody.id = 123;
@@ -248,6 +254,35 @@ describe('cloud', () => {
     const filePath = '.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.postFile('/foo/bad/file', filePath)
+      .then(r => {
+        throw Error('Where my error at?');
+      })
+      .catch(r => {
+        fs.unlink(filePath);
+        return true;
+      });
+  });
+
+  it('should support patch file', () => {
+    // should really NOT depend on the file system here :/
+    const filePath = '.tmp';
+    fs.closeSync(fs.openSync(filePath, 'w'));
+    return cloud.patchFile('/foo/file', filePath)
+      .then(r => fs.unlink(filePath));
+  });
+
+  it('should support patch file with options', () => {
+    // should really NOT depend on the file system here :/
+    const filePath = '.tmp';
+    fs.closeSync(fs.openSync(filePath, 'w'));
+    return cloud.withOptions({ json: false }).patchFile('/foo/file', filePath)
+      .then(r => fs.unlink(filePath));
+  });
+
+  it('should throw an error if patch file validation fails', () => {
+    const filePath = '.tmp';
+    fs.closeSync(fs.openSync(filePath, 'w'));
+    return cloud.patchFile('/foo/bad/file', filePath)
       .then(r => {
         throw Error('Where my error at?');
       })
