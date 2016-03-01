@@ -189,31 +189,46 @@ const createServer = (cb) => {
   return sv;
 };
 
-const listenForEvents = (port, numEventsSent, waitSecs) => {
-  let server;
+const startServer = (port) => {
+  return new Promise((resolve, reject) => {
+    let server = createServer((request, response) => {
+      if (server.handle) {
+        server.handle(request, response);
+      } else {
+        response.writeHead(502, { 'Content-Type': "application/json" });
+        response.end('{"message": "Bad Gateway"}');
+        logger.debug("Received message and responded with 502 Bad Gateway");
+      }
+    });
+    server.listen(port, "localhost", (err) => {
+        logger.debug('Started HTTP server on port %d', port);
+        resolve(server);
+    });
+  });
+};
+exports.startServer = startServer;
+
+const listenForEvents = (server, numEventsSent, waitSecs) => {
   let receivedEvents = 0;
   let events = [];
   return new Promise((resolve, reject) => {
-    server = createServer((request, response) => {
-        let fullBody = '';
-        request.on('data', (chunk) => fullBody += chunk.toString());
-        request.on('end', () => {
-          request.body = fullBody;
-          response.end('{}');
+    server.handle = (request, response) => {
+      let fullBody = '';
+      request.on('data', (chunk) => fullBody += chunk.toString());
+      request.on('end', () => {
+        request.body = fullBody;
+        response.end('{}');
 
-          receivedEvents++;
-          events.push(request);
-          logger.debug('%s event(s) received', receivedEvents);
-          if (receivedEvents === numEventsSent) {
-            resolve(events);
-            server.destroy();
-          }
-        });
-      })
-      .listen(port, "localhost", (err) => {
-        err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
+        receivedEvents++;
+        events.push(request);
+        logger.debug('%s event(s) received', receivedEvents);
+        if (receivedEvents === numEventsSent) {
+          resolve(events);
+          server.destroy();
+        }
       });
-
+    };
+    logger.debug('Waiting %s seconds to receive %s events', waitSecs, numEventsSent);
     const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
     setTimeout(() => {
       reject(msg);

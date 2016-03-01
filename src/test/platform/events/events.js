@@ -39,7 +39,8 @@ suite.forPlatform('events', null, null, (test) => {
     return provisioner.create(element, gen({}, url))
       .then(r => instanceId = r.body.id)
       .then(r => cloud.createEvents(element, instanceId, payload, load))
-      .then(r => cloud.listenForEvents(port, load, wait))
+      .then(r => cloud.startServer(port))
+      .then(s => cloud.listenForEvents(s, load, wait))
       .then(r => r.forEach(event => {
         // basic event header and body validation
         expect(event.headers).to.not.be.empty;
