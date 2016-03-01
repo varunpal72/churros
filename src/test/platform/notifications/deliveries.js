@@ -92,7 +92,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     let nId;
     // update account webhook failure delivery preferences to 'retry'
     return cloud.patch("accounts/settings", settings)
-      .then(r => tools.startTunnel())
+      .then(r => tools.startTunnel(port))
       // create a subscription
       .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
       .then(r => {
@@ -110,6 +110,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       .then(r => {
         return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
           (r) => {
+            console.log(r.body);
             expect(r.body).to.not.be.empty;
             expect(r.body.status).to.equal('retry');
           });
@@ -159,7 +160,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     let nId;
     // update account webhook failure delivery preferences to 'queue'
     return cloud.patch("accounts/settings", settings)
-      .then(r => tools.startTunnel())
+      .then(r => tools.startTunnel(port))
       //create a subscription
       .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
       .then(r => {
