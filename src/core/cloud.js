@@ -77,6 +77,7 @@ const postFile = (api, filePath, options) => {
   options = (options || {});
   options.formData = { file: fs.createReadStream(filePath) };
 
+  logger.debug('POST %s with options %s', api, options);
   return chakram.post(api, undefined, options)
     .then(r => validator(undefined)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
