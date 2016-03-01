@@ -77,11 +77,23 @@ const postFile = (api, filePath, options) => {
   options = (options || {});
   options.formData = { file: fs.createReadStream(filePath) };
 
+  logger.debug('POST %s with multipart/form-data file');
   return chakram.post(api, undefined, options)
     .then(r => validator(undefined)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
 exports.postFile = postFile;
+
+const patchFile = (api, filePath, options) => {
+  options = (options || {});
+  options.formData = { file: fs.createReadStream(filePath) };
+
+  logger.debug('PATCH %s with multipart/form-data file');
+  return chakram.patch(api, undefined, options)
+    .then(r => validator(undefined)(r))
+    .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
+};
+exports.patchFile = patchFile;
 
 /*
  * Gives you access to adding HTTP request options to any of the HTTP-related APIs
@@ -90,6 +102,7 @@ exports.withOptions = (options) => {
   return {
     post: (api, payload, validationCb) => post(api, payload, validationCb, options),
     postFile: (api, filePath) => postFile(api, filePath, options),
+    patchFile: (api, filePath) => patchFile(api, filePath, options),
     put: (api, payload, validationCb) => put(api, payload, validationCb, options),
     patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
     get: (api, validationCb) => get(api, validationCb, options),
@@ -185,7 +198,7 @@ const listenForEvents = (port, numEventsSent, waitSecs) => {
         let fullBody = '';
         request.on('data', (chunk) => fullBody += chunk.toString());
         request.on('end', () => {
-          request.body = fullBody
+          request.body = fullBody;
           response.end('{}');
 
           receivedEvents++;

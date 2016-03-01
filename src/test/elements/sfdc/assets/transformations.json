@@ -1,16 +1,92 @@
 {
   "contacts": {
     "vendorName": "Contact",
-    "fields": [{
-      "path": "id",
-      "vendorPath": "Id"
-    }]
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
   },
   "accounts": {
     "vendorName": "Account",
-    "fields": [{
-      "path": "id",
-      "vendorPath": "Id"
-    }]
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
+  },
+  "attachments": {
+    "vendorName": "Attachment",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
+  },
+  "leads": {
+    "vendorName": "Lead",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
+  },
+"opportunities": {
+    "vendorName": "Opportunity",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      },
+      {
+        "path": "name",
+        "vendorPath": "Name"
+      },
+      {
+        "path": "accountId",
+        "vendorPath": "AccountId"
+      },
+      {
+        "path": "type",
+        "vendorPath": "Type"
+      },
+      {
+        "path": "source",
+        "vendorPath": "LeadSource"
+      },
+      {
+        "path": "description",
+        "vendorPath": "Description"
+      },
+      {
+        "path": "amount",
+        "vendorPath": "Amount"
+      },
+      {
+        "path": "closeDate",
+        "vendorPath": "CloseDate"
+      },
+      {
+        "path": "stage",
+        "vendorPath": "StageName"
+      },
+      {
+        "path": "probability",
+        "vendorPath": "Probability"
+      }
+    ]
+    },
+  "users": {
+    "vendorName": "User",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
   }
 }
