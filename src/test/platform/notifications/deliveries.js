@@ -104,13 +104,12 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         nId = r.body.id;
         return new Promise((res, rej) => {
           // wait a few seconds for delivery to fail
-          setTimeout(() => res(), 5000);
+          setTimeout(() => res(), 95000);
         });
       })
       .then(r => {
         return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
           (r) => {
-            console.log(r.body);
             expect(r.body).to.not.be.empty;
             expect(r.body.status).to.equal('retry');
           });
