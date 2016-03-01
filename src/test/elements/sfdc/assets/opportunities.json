@@ -1,0 +1,10 @@
+{
+  "Amount": 250,
+  "CloseDate": "2018-09-08",
+  "Description": "A test deal for testing of tests",
+  "LeadSource": "Web",
+  "Name": "Churros Test Opportunity",
+  "Probability": 60,
+  "StageName": "Test",
+  "Type": "New Customer"
+}

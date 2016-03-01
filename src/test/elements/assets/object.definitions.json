@@ -43,5 +43,56 @@
       "path": "name",
       "type": "string"
     }]
+  },
+  "leads":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "opportunities":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    },{
+      "path": "name",
+      "type": "Name"
+    },{
+      "path": "accountId",
+      "type": "string"
+    },{
+      "path": "type",
+      "type": "string"
+    },{
+      "path": "source",
+      "type": "string"
+    },{
+      "path": "description",
+      "type": "string"
+    },{
+      "path": "amount",
+      "type": "string"
+    },{
+      "path": "closeDate",
+      "type": "string"
+    },{
+      "path": "stage",
+      "type": "string"
+    },{
+      "path": "probability",
+      "type": "string"
+    }]
+  },
+  "users":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "attachments":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
