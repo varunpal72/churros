@@ -61,5 +61,11 @@
       "path": "id",
       "type": "string"
     }]
+  },
+    "attachments":{
+      "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
