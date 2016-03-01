@@ -21,9 +21,9 @@ suite.forElement('crm', 'contacts', payload, (test) => {
     let attachmentId;
     return cloud.post('/hubs/crm/contacts', contact())
       .then(r => contactId = r.body.id)
-      .then(r => cloud.postFile('/hubs/crm/Contact/' + contactId + '/attachments', __dirname + '/assets/attach.txt'))
+      .then(r => cloud.postFile('/hubs/crm/contacts/' + contactId + '/attachments', __dirname + '/assets/attach.txt'))
       .then(r => attachmentId = r.body.id)
-      .then(r => cloud.get('/hubs/crm/Contact/' + contactId + '/attachments/' + attachmentId))
+      .then(r => cloud.get('/hubs/crm/contacts/' + contactId + '/attachments/' + attachmentId))
       .then(r => cloud.get('/hubs/crm/attachments/' + attachmentId + '/data'))
       .then(r => cloud.patchFile('/hubs/crm/attachments/' + attachmentId, __dirname + '/assets/update.txt'))
       .then(r => cloud.delete('/hubs/crm/attachments/' + attachmentId))
