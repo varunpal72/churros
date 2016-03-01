@@ -221,15 +221,15 @@ const listenForEvents = (server, numEventsSent, waitSecs) => {
 
         receivedEvents++;
         events.push(request);
-        logger.debug('%s request(s) received', receivedEvents);
+        logger.debug('%s event(s) received', receivedEvents);
         if (receivedEvents === numEventsSent) {
           resolve(events);
           server.destroy();
         }
       });
     };
-    logger.debug('Waiting %s seconds to receive %s requests', waitSecs, numEventsSent);
-    const msg = util.format('Did not receive all %s requests before the %s second timer expired', numEventsSent, waitSecs);
+    logger.debug('Waiting %s seconds to receive %s events', waitSecs, numEventsSent);
+    const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
     setTimeout(() => {
       reject(msg);
       server.destroy();
