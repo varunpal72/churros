@@ -20,7 +20,7 @@ const genNotif = (opts) => new Object({
 
 const genSub = (opts) => new Object({
   channel: (opts.channel || 'webhook'),
-  topics: (opts.topics || [ 'churros-topic' ]),
+  topics: (opts.topics || ['churros-topic']),
   config: (opts.config || { url: 'http://fake.churros.api.com' })
 });
 
@@ -28,7 +28,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
   it('should return notification subscription delivery status', () => {
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
-    const s = genSub({ topics: [ topic ] });
+    const s = genSub({ topics: [topic] });
     const load = 2;
     let promises = [];
     for (let i = 0; i < load; i++) {
@@ -41,11 +41,11 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     return chakram.all(promises)
       .then(r => {
         r.forEach(sr => subs.push(sr));
-        return cloud.post("notifications", n)
+        return cloud.post("notifications", n);
       })
       .then(r => {
         nId = r.body.id;
-        sId = subs[ 0 ].body.id;
+        sId = subs[0].body.id;
         // test get by notification id and subscription id
         return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
           (r) => {
@@ -55,7 +55,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
             expect(r.body.subscriptionId).to.equal(sId);
             expect(r.body.notification).to.not.be.empty;
             expect(r.body.subscription).to.not.be.empty;
-          })
+          });
       })
       .then(r => {
         // test get all by notification id
@@ -63,14 +63,14 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           expect(r).to.have.schemaAnd200(listSchema);
           expect(r.body).to.not.be.empty;
           expect(r.body.length).to.equal(load);
-        })
+        });
       })
       // test search
       .then(r => {
         return cloud.withOptions({ qs: { hydrate: true, where: "channel='webhook'" } }).get('notifications/subscriptions/deliveries', (r) => {
           expect(r).to.have.schemaAnd200(listSchema);
           r.body.forEach(s => expect(s.subscription.channel).to.equal('webhook'));
-        })
+        });
       })
       .then(r => subs.forEach(sub => cloud.delete(util.format('/notifications/subscriptions/%s', sub.body.id))));
   });
@@ -79,13 +79,12 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     const port = props.getForKey('events', 'port');
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
-    const s = genSub(
-      {
-        topics: [ topic ],
-        config: {
-          url: props.getForKey('events', 'url')
-        }
-      });
+    const s = (tunnelUrl) => genSub({
+      topics: [topic],
+      config: {
+        url: tunnelUrl
+      }
+    });
     const settings = {
       'notification.webhook.failure.policy': 'retry'
     };
@@ -93,8 +92,9 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     let nId;
     // update account webhook failure delivery preferences to 'retry'
     return cloud.patch("accounts/settings", settings)
+      .then(r => tools.startTunnel())
       // create a subscription
-      .then(r => cloud.post("notifications/subscriptions", s))
+      .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
       .then(r => {
         sId = r.body.id;
         // send a notification
@@ -112,7 +112,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           (r) => {
             expect(r.body).to.not.be.empty;
             expect(r.body.status).to.equal('retry');
-          })
+          });
       })
       .then(r => cloud.listenForEvents(port, 1, 20))
       .then(r => {
@@ -132,7 +132,9 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       .catch(err => {
         // if anything bad happens, clean up the subscription
         return cloud.delete(util.format('/notifications/subscriptions/%s', sId))
-          .then (r => { throw err; })
+          .then(r => {
+            throw err;
+          });
       });
   });
 
@@ -144,13 +146,12 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     const port = props.getForKey('events', 'port');
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
-    const s = genSub(
-      {
-        topics: [ topic ],
-        config: {
-          url: props.getForKey('events', 'url')
-        }
-      });
+    const s = (tunnelUrl) => genSub({
+      topics: [topic],
+      config: {
+        url: tunnelUrl
+      }
+    });
     const settings = {
       'notification.webhook.failure.policy': 'queue'
     };
@@ -158,8 +159,9 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     let nId;
     // update account webhook failure delivery preferences to 'queue'
     return cloud.patch("accounts/settings", settings)
+      .then(r => tools.startTunnel())
       //create a subscription
-      .then(r => cloud.post("notifications/subscriptions", s))
+      .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
       .then(r => {
         // send a notification
         sId = r.body.id;
@@ -178,7 +180,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           (r) => {
             expect(r.body).to.not.be.empty;
             expect(r.body.status).to.equal('queued');
-          })
+          });
       })
       // listen for events
       .then(r => cloud.listenForEvents(port, 1, 10))
@@ -194,7 +196,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         //listen for events again
         let prettyPlease = cloud.listenForEvents(port, 1, 10);
         // release the queue for delivery
-        cloud.withOptions({ qs: { hydrate: true, where: util.format("channel='webhook' and status='queued' and config.url='%s'", props.getForKey('events', 'url')) }}).put('notifications/subscriptions/deliveries');
+        cloud.withOptions({ qs: { hydrate: true, where: util.format("channel='webhook' and status='queued' and config.url='%s'", props.getForKey('events', 'url')) } }).put('notifications/subscriptions/deliveries');
         // queue should be released and this should succeed
         return prettyPlease;
       })
@@ -202,7 +204,9 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       .catch(err => {
         // if anything bad happens, clean up the subscription
         return cloud.delete(util.format('/notifications/subscriptions/%s', sId))
-          .then (r => { throw err; })
+          .then(r => {
+            throw err;
+          });
       });
   });
 });
