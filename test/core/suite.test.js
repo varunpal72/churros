@@ -156,6 +156,7 @@ describe('suite', () => {
     test.should.supportCruds(chakram.put);
     test.should.supportCrud();
     test.should.supportCrd();
+    test.should.supportCd();
     test.should.supportCrds();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
