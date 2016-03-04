@@ -30,8 +30,6 @@ suite.forPlatform('elements/resources/models', common.genParameter({}), schema, 
         .then(r => cloud.delete(keyUrl));
 
   });
-  //common.crudSubResource(keyUrl, schema, listSchema, common.genModel({}), common.genModel({ description: "An updated Churros model" })));
-  //it('should support CRUD by ID', () => common.crudSubResource(idUrl, schema, listSchema, common.genModel({}), common.genModel({ description: "An updated Churros model" })));
 
   after(done => { cloud.delete('elements/' + element.key).then(() => done()) });
 });
