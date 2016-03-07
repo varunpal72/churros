@@ -5,10 +5,28 @@ const fs = require('fs');
 const commander = require('commander');
 const util = require('util');
 const shell = require('shelljs');
+const prompter = require('./assets/prompter');
 
 const collect = (val, list) => {
   list.push(val);
   return list;
+};
+
+const validateValue = (value) => value ? true : 'Must enter a value';
+
+const fromOptions = (url, options) => {
+  return new Promise((res, rej) => {
+    res({
+      url: url,
+      user: options.user,
+      password: options.password,
+      wait: options.wait,
+      load: options.load,
+      loadElement: options.element,
+      browser: options.browser,
+      verbose: options.verbose === undefined ? false : options.verbose // hack...i can't figure out why it's not default to false
+    });
+  });
 };
 
 const parse = (options) => {
@@ -16,22 +34,19 @@ const parse = (options) => {
   if (url && url.startsWith('localhost')) url = 'http://' + url;
   if (url && !url.startsWith('http')) url = 'https://' + url;
 
-  return {
-    url: url,
-    user: options.user,
-    password: options.password,
-    wait: options.wait,
-    load: options.load,
-    loadElement: options.element,
-    browser: options.browser,
-    verbose: options.verbose === undefined ? false : options.verbose // hack...i can't figure out why it's not default to fals
-  };
+  // if the user passed the --password flag, then prompt them for their password before continuing
+  if (options.password) {
+    const qs = [prompter.buildQuestion('password', 'password', 'Enter password:', (value) => validateValue(value))];
+    return prompter.askQuestions(qs)
+      .then(r => options.password = r.password)
+      .then(r => fromOptions(url, options));
+  }
+  return fromOptions(url, options);
 };
 
-const runTests = (suite, options) => {
+const run = (suite, options, cliArgs) => {
   const file = options.file;
   const test = options.test;
-  const cliArgs = parse(options);
 
   // ugly as all get out ...
   const rootDir = path.dirname(require.main.filename);
@@ -84,6 +99,15 @@ const runTests = (suite, options) => {
   process.exit(shell.exec(cmd).code); // execute the cmd and make our exit code the same as 'churros test' code
 };
 
+const runTests = (suite, options) => {
+  return parse(options)
+    .then(cliArgs => run(suite, options, cliArgs))
+    .catch(r => {
+      console.log('Failed to run tests: ', r);
+      process.exit(1);
+    });
+};
+
 commander
   .command('suite', 'suite to test')
   .action((suite, options) => runTests(suite, options))
@@ -92,9 +116,9 @@ commander
   .option('-e, --element <element>', 'element to use while running this specific suite (only available for "churros test events")')
   .option('-l, --load <#>', 'specifies the specific load to test with (only available for "churros test events")')
   .option('-w, --wait <#>', 'how long to wait for tests to complete (only available for "churros test events")')
-  .option('-u, --user <user>', 'overrides the default user setup during initialization')
-  .option('-p, --password <password>', 'overrides the default password setup during initialization')
   .option('-r, --url [url]', 'overrides the default URL setup during initialization')
+  .option('-u, --user <user>', 'overrides the default user setup during initialization')
+  .option('-p, --password', 'overrides the default password setup during initialization (this will prompt you for your password)')
   .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'firefox') // will change this to phantomjs as churros becomes more mature
   .option('-V, --verbose', 'logging verbose mode')
   .on('--help', () => {

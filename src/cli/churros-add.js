@@ -5,6 +5,7 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const replaceStream = require('replacestream');
 const tools = require('core/tools');
+const prompter = require('./assets/prompter');
 
 const terminate = (msg, args) => {
   args ? console.error(msg, args) : console.error(msg);
@@ -15,20 +16,10 @@ const buildRootPlatformDir = () => __dirname + '/../test/platform';
 
 const buildRootElementDir = () => __dirname + '/../test/elements';
 
-const askQuestions = (questions) => new Promise((res, rej) => inquirer.prompt(questions, (answers) => res(answers)));
-
 const validateValue = (value) => value ? true : 'Must enter a value';
 
-const buildQuestion = (name, type, message, validate, isDefault) => new Object({
-  name: name,
-  type: type,
-  message: message,
-  validate: validate,
-  default: isDefault
-});
-
 const buildChoiceQuestion = (name, type, message, choices, filter) => {
-  const q = buildQuestion(name, type, message);
+  const q = prompter.buildQuestion(name, type, message);
   q.choices = choices;
   q.filter = filter;
   return q;
@@ -36,23 +27,23 @@ const buildChoiceQuestion = (name, type, message, choices, filter) => {
 
 const buildPlatformQuestions = () =>
   new Promise((res, rej) => {
-    res([buildQuestion('name', 'input', 'Platform resource name:', (value) => validateValue(value))]);
+    res([prompter.buildQuestion('name', 'input', 'Platform resource name:', (value) => validateValue(value))]);
   });
 
 const buildElementQuestions = () =>
   new Promise((res, rej) => {
     res([
-      buildQuestion('name', 'input', 'Element name:', (value) => validateValue(value)),
-      buildQuestion('hub', 'input', 'Hub name:', (value) => validateValue(value)),
+      prompter.buildQuestion('name', 'input', 'Element name:', (value) => validateValue(value)),
+      prompter.buildQuestion('hub', 'input', 'Hub name:', (value) => validateValue(value)),
       buildChoiceQuestion('auth', 'list', 'Auth type:', ['standard', 'oauth1', 'oauth2'], (value) => value.toLowerCase())
     ]);
   });
 
 const buildResourceQuestions = () => [
-  buildQuestion('name', 'input', 'Resource name (CE name):', (value) => validateValue(value)),
-  buildQuestion('vendorName', 'input', 'Vendor resource name:', (value) => validateValue(value)),
-  buildQuestion('vendorId', 'input', 'Vendor ID field:', (value) => validateValue(value)),
-  buildQuestion('more', 'confirm', 'Add more resources:')
+  prompter.buildQuestion('name', 'input', 'Resource name (CE name):', (value) => validateValue(value)),
+  prompter.buildQuestion('vendorName', 'input', 'Vendor resource name:', (value) => validateValue(value)),
+  prompter.buildQuestion('vendorId', 'input', 'Vendor ID field:', (value) => validateValue(value)),
+  prompter.buildQuestion('more', 'confirm', 'Add more resources:')
 ];
 
 const askResourceQuestions = (r, resources) => {
@@ -73,23 +64,23 @@ const buildConfigQuestions = (auth, currentProps, firstTime) => {
   const qs = [];
   // these props are ALWAYS required for OAuth2 and OAuth1 elements
   if (firstTime && (auth === 'oauth1' || auth === 'oauth2')) {
-    qs.push(buildQuestion('oauth.api.key', 'input', 'OAuth API Key:', (value) => validateValue(value)));
-    qs.push(buildQuestion('oauth.api.secret', 'input', 'OAuth API Secret:', (value) => validateValue(value)));
-    qs.push(buildQuestion('username', 'input', 'Username:', (value) => validateValue(value)));
-    qs.push(buildQuestion('password', 'input', 'Password:', (value) => validateValue(value)));
-    qs.push(buildQuestion('oauth.scope', 'input', 'OAuth Scope (optional):'));
-    qs.push(buildQuestion('site.address', 'input', 'Subdomain (optional):'));
-    qs.push(buildQuestion('more', 'confirm', 'Add more configs:'));
+    qs.push(prompter.buildQuestion('oauth.api.key', 'input', 'OAuth API Key:', (value) => validateValue(value)));
+    qs.push(prompter.buildQuestion('oauth.api.secret', 'input', 'OAuth API Secret:', (value) => validateValue(value)));
+    qs.push(prompter.buildQuestion('username', 'input', 'Username:', (value) => validateValue(value)));
+    qs.push(prompter.buildQuestion('password', 'input', 'Password:', (value) => validateValue(value)));
+    qs.push(prompter.buildQuestion('oauth.scope', 'input', 'OAuth Scope (optional):'));
+    qs.push(prompter.buildQuestion('site.address', 'input', 'Subdomain (optional):'));
+    qs.push(prompter.buildQuestion('more', 'confirm', 'Add more configs:'));
   } else if (firstTime) {
-    qs.push(buildQuestion('more', 'confirm', 'Add configs:'));
+    qs.push(prompter.buildQuestion('more', 'confirm', 'Add configs:'));
   }
 
   if (!firstTime) {
     // using a random string so we can matchup these from key: "", value: "" to key: value later on
     const random = tools.random();
-    qs.push(buildQuestion('key.' + random, 'input', 'Key (i.e. my.config.key):'));
-    qs.push(buildQuestion('value.' + random, 'input', 'Value:'));
-    qs.push(buildQuestion('more', 'confirm', 'Add more configs:'));
+    qs.push(prompter.buildQuestion('key.' + random, 'input', 'Key (i.e. my.config.key):'));
+    qs.push(prompter.buildQuestion('value.' + random, 'input', 'Value:'));
+    qs.push(prompter.buildQuestion('more', 'confirm', 'Add more configs:'));
   }
 
   return qs;
@@ -250,7 +241,7 @@ const complete = (r, link) => {
 const add = (type, options) => {
   if (type === 'element') {
     buildElementQuestions(type)
-      .then(r => askQuestions(r))
+      .then(r => prompter.askQuestions(r))
       .then(r => askConfigQuestions(r))
       .then(r => askResourceQuestions(r))
       .then(r => stubElementFiles(r))
@@ -258,7 +249,7 @@ const add = (type, options) => {
       .catch(r => terminate(r));
   } else if (type === 'platform') {
     buildPlatformQuestions(type)
-      .then(r => askQuestions(r))
+      .then(r => prompter.askQuestions(r))
       .then(r => stubPlatformFiles(r))
       .then(r => complete(r, 'new-platform-suite'))
       .catch(r => terminate(r));
