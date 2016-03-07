@@ -151,6 +151,9 @@ const stubPlatformFiles = (r) =>
 
 const stubElementFiles = (answers) =>
   new Promise((res, rej) => {
+    const objectDefinitionsFile = buildRootElementDir() + '/assets/object.definitions.json';
+    if (!fs.existsSync(objectDefinitionsFile)) fs.writeFileSync(objectDefinitionsFile, '{}');
+
     const suiteDir = buildRootElementDir() + '/' + answers.name;
     if (!fs.existsSync(suiteDir)) fs.mkdirSync(suiteDir);
 
@@ -208,6 +211,18 @@ const stubElementFiles = (answers) =>
         fs.writeFileSync(transformationsFile, JSON.stringify(currentTransformations, null, 2));
       } else {
         console.log('transformation for %s already exists for %s', name, answers.name);
+      }
+
+      const objectDefinitions = require(objectDefinitionsFile);
+      if (!objectDefinitions[name]) {
+        objectDefinitions[name] = {
+          fields: [{
+            path: 'id',
+            type: 'string'
+          }]
+        };
+      } else {
+        console.log('Object definition for %s already exists. To add fields to the object definition see elements/assets/object.definitions.json');
       }
     });
 
