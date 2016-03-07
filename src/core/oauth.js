@@ -281,7 +281,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     }, 10000);
     browser.findElement(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow')).click();
     return browser.getCurrentUrl();
-  case 'sugar':
+  case 'sugarcrmv2':
   case 'zendesk':
     // TODO - not quite working yet ...
     browser.get(r.body.oauthUrl);
