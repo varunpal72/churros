@@ -30,16 +30,6 @@ const genObjectDef = (opts) => new Object({
   ]
 });
 
-/*configuration: [
-  {
-    type: 'passThrough',
-    properties: {
-      fromVendor: false,
-      toVendor: false
-    }
-  }
-];*/
-
 const genBaseTrans = (opts) => new Object({
   vendorName: (opts.vendorName || 'Account'),
   configuration: (opts.configuration || null),
