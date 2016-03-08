@@ -26,7 +26,7 @@ const parseProps = (element) => {
       qs: {
         apiKey: props.getForKey(element, 'oauth.api.key'),
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
-        callbackUrl: (props.getForKey(element, 'oauth.callback.url') || props.get('oauth.callback.url')),
+        callbackUrl: (props.getOptionalForKey(element, 'oauth.callback.url') || props.get('oauth.callback.url')),
         scope: props.getOptionalForKey(element, 'oauth.scope'),
         siteAddress: props.getOptionalForKey(element, 'site.address')
       }
@@ -101,7 +101,7 @@ exports.create = (element, args) => {
   switch (type) {
     case 'oauth1':
     case 'oauth2':
-      config['oauth.callback.url'] = props.getForKey(element, 'oauth.callback.url') === null ?
+      config['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
         props.get('oauth.callback.url') :
         props.getForKey(element, 'oauth.callback.url');
       logger.debug('Using callback URL: ' + config['oauth.callback.url']);
