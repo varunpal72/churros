@@ -26,7 +26,7 @@ const parseProps = (element) => {
       qs: {
         apiKey: props.getForKey(element, 'oauth.api.key'),
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
-        callbackUrl: props.get('oauth.callback.url'),
+        callbackUrl: (props.getForKey(element, 'oauth.callback.url') || props.get('oauth.callback.url')),
         scope: props.getOptionalForKey(element, 'oauth.scope'),
         siteAddress: props.getOptionalForKey(element, 'site.address')
       }
@@ -56,6 +56,7 @@ const createInstance = (element, config, providerData) => {
 
 const oauth = (element, args, config) => {
   const url = util.format('/elements/%s/oauth/url', element);
+  logger.debug('GET %s with options %s', url, args.options);
   return chakram.get(url, args.options)
     .then(r => {
       expect(r).to.have.statusCode(200);
@@ -98,15 +99,18 @@ exports.create = (element, args) => {
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
 
   switch (type) {
-  case 'oauth1':
-  case 'oauth2':
-    config['oauth.callback.url'] = props.get('oauth.callback.url');
-    return parseProps(element)
-      .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
-      .then(r => oauth(element, r, config))
-      .then(r => createInstance(element, config, r));
-  default:
-    return createInstance(element, config);
+    case 'oauth1':
+    case 'oauth2':
+      config['oauth.callback.url'] = props.getForKey(element, 'oauth.callback.url') === null ?
+        props.get('oauth.callback.url') :
+        props.getForKey(element, 'oauth.callback.url');
+      logger.debug('Using callback URL: ' + config['oauth.callback.url']);
+      return parseProps(element)
+        .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
+        .then(r => oauth(element, r, config))
+        .then(r => createInstance(element, config, r));
+    default:
+      return createInstance(element, config);
   }
 };
 
