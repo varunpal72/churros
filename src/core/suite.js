@@ -22,6 +22,11 @@ const itCrd = (api, payload, validationCb) => {
   it(name, () => cloud.crd(api, payload, validationCb));
 };
 
+const itCd = (api, payload, validationCb) => {
+  const name = util.format('should allow CD for %s', api);
+  it(name, () => cloud.cd(api, payload, validationCb));
+};
+
 const itCrds = (api, payload, validationCb) => {
   const name = util.format('should allow CRDS for %s', api);
   it(name, () => cloud.crd(api, payload, validationCb));
@@ -98,6 +103,7 @@ const runTests = (api, payload, validationCb, tests) => {
       supportCruds: (updateCb) => itCruds(api, payload, validationCb, updateCb),
       supportCrud: (updateCb) => itCrud(api, payload, validationCb, updateCb),
       supportCrd: () => itCrd(api, payload, validationCb),
+      supportCd: () => itCd(api, payload, validationCb),
       supportCrds: () => itCrds(api, payload, validationCb),
       supportSr: () => itSr(api, validationCb),
     };

@@ -5,6 +5,24 @@
       "type": "string"
     }]
   },
+  "activities":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "attachments":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "campaigns":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
   "contacts": {
     "fields": [{
       "path": "id",
@@ -44,11 +62,47 @@
       "type": "string"
     }]
   },
+  "customers":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "employees":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "incidents":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "invoices":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
   "leads":{
     "fields":[{
       "path": "id",
       "type": "string"
     }]
+  },
+  "lists":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "notes":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
   },
   "opportunities":{
     "fields":[{
@@ -83,31 +137,55 @@
       "type": "string"
     }]
   },
+  "orders":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "payments":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "products":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "tasks":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
   "users":{
     "fields":[{
       "path": "id",
       "type": "string"
     }]
   },
-  "attachments":{
+  "vendors":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "groups":{
     "fields":[{
       "path": "id",
       "type": "string"
     }]
   },
-    "groups":{
+  "widgets":{
     "fields":[{
       "path": "id",
       "type": "string"
     }]
   },
-    "widgets":{
-    "fields":[{
-      "path": "id",
-      "type": "string"
-    }]
-  },
-    "transientDocuments":{
+  "transientDocuments":{
     "fields":[{
       "path": "id",
       "type": "string"
@@ -120,10 +198,10 @@
     }
     ]
   },
-    "documents":{
+  "documents":{
     "fields":[{
       "path": "id",
       "type": "string"
-    }]
+    }]  
   }
 }
