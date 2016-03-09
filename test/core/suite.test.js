@@ -149,7 +149,10 @@ describe('suite', () => {
     test.withApi(test.api + '/456').should.return404OnGet();
     // *****************************************
 
+    // with options, uses the request libraries options object
     test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
+
+    // no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above
     test.should.return200OnPost();
     test.should.supportSr();
     test.should.supportCruds();
@@ -160,6 +163,12 @@ describe('suite', () => {
     test.should.supportCrds();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
+
+    // overriding the default API that was passed in as the default in the `suite.forPlatform`
     test.withApi('/foo/bad').should.return400OnPost();
+
+    // examples of using .withName(...) which will set the name of the test to be whatever string is passed in
+    test.withName('this should be the name of the test').should.return200OnPost();
+    test.withApi('/foo/bad').withName('this should be the name of the test').should.return400OnPost();
   });
 });
