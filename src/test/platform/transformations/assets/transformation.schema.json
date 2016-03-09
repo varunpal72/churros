@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "objectName": {
+      "type": "string"
+    },
+    "vendorName": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "array"
+    },
+    "configuration": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "vendorName",
+    "fields"
+  ]
+}
