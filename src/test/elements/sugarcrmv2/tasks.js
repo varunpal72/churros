@@ -5,4 +5,5 @@ const payload = require('./assets/tasks');
 
 suite.forElement('crm', 'tasks', payload, (test) => {
   test.should.supportCruds();
+  test.should.supportPagination();
 });
