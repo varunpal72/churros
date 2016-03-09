@@ -94,5 +94,36 @@
       "path": "id",
       "type": "string"
     }]
+  },
+    "groups":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+    "widgets":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+    "transientDocuments":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "libraryDocuments":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }
+    ]
+  },
+    "documents":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }

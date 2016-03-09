@@ -1,0 +1,56 @@
+{
+  "groups": {
+    "vendorName": "groups",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "groupId"
+      }
+    ]
+  },
+  "libraryDocuments": {
+    "vendorName": "libraryDocuments",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "libraryDocumentId"
+      }
+    ]
+  },
+  "widgets": {
+    "vendorName": "widgets",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "widgetId"
+      }
+    ]
+  },
+  "users": {
+    "vendorName": "users",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "userId"
+      }
+    ]
+  },
+  "transientDocuments": {
+    "vendorName": "transientDocuments",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "transientDocumentId"
+      }
+    ]
+  },
+  "documents": {
+    "vendorName": "documents",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "documentId"
+      }
+    ]
+  }
+}

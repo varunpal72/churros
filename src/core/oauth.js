@@ -6,6 +6,15 @@ const props = require('core/props');
 
 const manipulateDom = (element, browser, r, username, password, config) => {
   switch (element) {
+  case 'adobe-esign':
+  	browser.get(r.body.oauthUrl);
+  	browser.findElement(webdriver.By.name('j_username')).sendKeys(username);
+  	browser.findElement(webdriver.By.name('j_password')).sendKeys(password);
+  	browser.findElement(webdriver.By.id('login')).click();
+  	browser.wait(() => {
+  	  return browser.getTitle().then((title) => !title);
+  	}, 10000);
+  	return browser.getCurrentUrl(); 
   case 'desk':
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('user_session_email')).sendKeys(username);
