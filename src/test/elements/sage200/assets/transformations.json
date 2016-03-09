@@ -1,0 +1,11 @@
+{
+  "customers": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/customers",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
