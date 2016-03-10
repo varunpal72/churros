@@ -1,0 +1,56 @@
+{
+  "accounts": {
+    "vendorName": "companies",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "companyId"
+      }
+    ]
+  },
+  "activities": {
+    "vendorName": "engagements",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "engagement.id"
+      }
+    ]
+  },
+  "contacts": {
+    "vendorName": "contacts",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "vid"
+      }
+    ]
+  },
+  "leads": {
+    "vendorName": "leads",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "vid"
+      }
+    ]
+  },
+  "opportunities": {
+    "vendorName": "deals",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "dealId"
+      }
+    ]
+  },
+  "owners": {
+    "vendorName": "owners",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "ownerId"
+      }
+    ]
+  }
+}
