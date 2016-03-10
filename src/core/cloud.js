@@ -117,6 +117,12 @@ const crd = (api, payload, validationCb) => {
 };
 exports.crd = crd;
 
+const cd = (api, payload, validationCb) => {
+  return post(api, payload, validationCb)
+    .then(r => remove(api + '/' + r.body.id));
+};
+exports.cd = cd;
+
 const crds = (api, payload, validationCb) => {
   let createdId = -1;
   return post(api, payload, validationCb)

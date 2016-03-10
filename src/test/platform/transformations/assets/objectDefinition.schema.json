@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "properties": {
+    "objectName": {
+      "type": "string"
+    },
+    "fields": {
+      "type": "array"
+    }
+  },
+  "required": [
+    "fields"
+  ]
+}
