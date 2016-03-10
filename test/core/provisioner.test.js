@@ -20,54 +20,6 @@ const auth = 'User fake, Organization fake';
 const headers = () => new Object({ reqheaders: { 'Authorization': (value) => value === auth } });
 const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 
-/** Before each because we run all of the unit tests at once and initializing some of these things
-in multiple before blocks breaks things. I prefer them to be self-contained as opposed to a global
-before or something like that ... */
-beforeEach(() => {
-  defaults(baseUrl, 'fake', 'fake', 'churrosUnitTester');
-
-  /** Has to be in before each with current approach: https://github.com/pgte/nock#specifying-hostname **/
-  nock(baseUrl, headers())
-    .post('/instances')
-    .reply(200, (uri, requestBody) => {
-      requestBody.id = 123;
-      return requestBody;
-    })
-    .post('/instances', {
-      name: 'churros-instance',
-      element: { key: 'badelement' }
-    })
-    .reply(404, (uri, requestBody) => {
-      return { message: 'No element found with key badelement' };
-    })
-    .delete('/instances/123')
-    .reply(200)
-    .delete('/instances/456')
-    .reply(404);
-
-  nock(baseUrl, headers())
-    .get('/elements/myoauth1element/oauth/token')
-    .query(true)
-    .reply(200, () => new Object({
-      token: 'token',
-      secret: 'secret'
-    }));
-
-  nock(baseUrl, headers())
-    .get('/elements/myoauth1element/oauth/url')
-    .query(true)
-    .reply(200, () => new Object({
-      oauthUrl: 'http://frankthetanksoauthurl.com'
-    }));
-
-  nock(baseUrl, headers())
-    .get('/elements/myoauth2element/oauth/url')
-    .query(true)
-    .reply(200, () => new Object({
-      oauthUrl: 'http://frankthetanksoauthurl.com'
-    }));
-});
-
 const setupProps = () => {
   props({
     'user': 'franky',
@@ -98,6 +50,54 @@ const setupProps = () => {
 };
 
 describe('provisioner', () => {
+  /** Before each because we run all of the unit tests at once and initializing some of these things
+  in multiple before blocks breaks things. I prefer them to be self-contained as opposed to a global
+  before or something like that ... */
+  beforeEach(() => {
+    defaults(baseUrl, 'fake', 'fake', 'churrosUnitTester');
+
+    /** Has to be in before each with current approach: https://github.com/pgte/nock#specifying-hostname **/
+    nock(baseUrl, headers())
+      .post('/instances')
+      .reply(200, (uri, requestBody) => {
+        requestBody.id = 123;
+        return requestBody;
+      })
+      .post('/instances', {
+        name: 'churros-instance',
+        element: { key: 'badelement' }
+      })
+      .reply(404, (uri, requestBody) => {
+        return { message: 'No element found with key badelement' };
+      })
+      .delete('/instances/123')
+      .reply(200)
+      .delete('/instances/456')
+      .reply(404);
+
+    nock(baseUrl, headers())
+      .get('/elements/myoauth1element/oauth/token')
+      .query(true)
+      .reply(200, () => new Object({
+        token: 'token',
+        secret: 'secret'
+      }));
+
+    nock(baseUrl, headers())
+      .get('/elements/myoauth1element/oauth/url')
+      .query(true)
+      .reply(200, () => new Object({
+        oauthUrl: 'http://frankthetanksoauthurl.com'
+      }));
+
+    nock(baseUrl, headers())
+      .get('/elements/myoauth2element/oauth/url')
+      .query(true)
+      .reply(200, () => new Object({
+        oauthUrl: 'http://frankthetanksoauthurl.com'
+      }));
+  });
+
   it('should allow creating a standard element instance', () => {
     setupProps();
     return provisioner.create('myelement')
