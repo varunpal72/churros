@@ -57,7 +57,7 @@ const getHandler = () => handlerCb || handlerCbs['502'];
  */
 exports.start = (port) => {
   if (server) {
-    throw Error('Server is already running...');
+    throw Error('Server is already running.  Please stop the current server (call "server.stop()") before trying to start a new one.');
   }
 
   return new Promise((resolve, reject) => {
