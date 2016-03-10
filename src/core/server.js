@@ -56,6 +56,10 @@ const getHandler = () => handlerCb || handlerCbs['502'];
  * @return {Promise}     A promise that, when resolved, contains the server that was just started
  */
 exports.start = (port) => {
+  if (server) {
+    throw Error('Server is already running...');
+  }
+
   return new Promise((resolve, reject) => {
     server = createServer((request, response) => getHandler()(request, response));
     server.listen(port, "localhost", (err) => {
@@ -66,6 +70,16 @@ exports.start = (port) => {
 };
 
 /**
+ * If an HTTP server is running, this stops that server
+ */
+exports.stop = () => {
+  if (server) {
+    server.destroy();
+    server = null;
+  }
+};
+
+/**
  * Toggle the server to "listen" mode, which will listen for x number of incoming events before resolving
  * @param  {number} numEventsSent The number of events that were sent
  * @param  {number} waitSecs      How long to wait for incoming events
@@ -73,9 +87,9 @@ exports.start = (port) => {
  */
 exports.listen = (numEventsSent, waitSecs) => {
   return new Promise((resolve, reject) => {
-    handlerCb = (request, response) => {
-      let receivedEvents = 0;
-      let events = [];
+    let receivedEvents = 0;
+    let events = [];
+    setHandler((request, response) => {
       let fullBody = '';
       request.on('data', (chunk) => fullBody += chunk.toString());
       request.on('end', () => {
@@ -86,18 +100,13 @@ exports.listen = (numEventsSent, waitSecs) => {
         events.push(request);
         logger.debug('%s event(s) received', receivedEvents);
         if (receivedEvents === numEventsSent) {
-          resolve(events);
           setHandler(null);
-          server.destroy();
+          resolve(events);
         }
       });
-    };
+    });
 
     logger.debug('Waiting %s seconds to receive %s events', waitSecs, numEventsSent);
-    const msg = `Did not receive all ${numEventsSent} events before the ${waitSecs} second timer expired`;
-    setTimeout(() => {
-      reject(msg);
-      server.destroy();
-    }, waitSecs * 1000);
+    setTimeout(() => reject(new Error(`Did not receive all ${numEventsSent} events before the ${waitSecs} second timer expired`)), waitSecs * 1000);
   });
 };

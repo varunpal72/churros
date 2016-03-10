@@ -138,7 +138,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         expect(r.body).to.not.be.empty;
         expect(r.body.status).to.equal('queued');
       })
-      .then(r => server.listen(1, 10)) // listen for events
+      .then(r => server .listen(1, 10)) // listen for events
       .catch(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`)) // get delivery status, verify it is _still_ queued
       .then(r => {
         console.log('2');
