@@ -5,7 +5,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const argv = require('optimist').argv;
 const defaults = require('core/defaults');
-const tools = require('core/tools');
+const tunnel = require('core/tunnel');
 const logger = require('core/logger')(argv.verbose ? 'silly' : 'info');
 
 let config;
@@ -37,9 +37,9 @@ before(() => {
   // sets up our localtunnel instead and whatever random URL localtunnel assigns to us, we set that
   // in our events:url property to be used as our webhook callback URL elsewhere
   const setupEventsTunnel = () => {
-    return tools.startTunnel(props.getForKey('events', 'port'))
+    return tunnel.start(props.getForKey('events', 'port'))
       .then(tunnel => props.setForKey('events', 'url', tunnel.url));
-  }
+  };
 
   return chakram.post(secUrl, null, options)
     .then(r => {

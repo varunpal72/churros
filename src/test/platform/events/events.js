@@ -3,6 +3,7 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const server = require('core/server');
 const provisioner = require('core/provisioner');
 const util = require('util');
 const props = require('core/props');
@@ -39,8 +40,8 @@ suite.forPlatform('events', null, null, (test) => {
     return provisioner.create(element, gen({}, url))
       .then(r => instanceId = r.body.id)
       .then(r => cloud.createEvents(element, instanceId, payload, load))
-      .then(r => cloud.startServer(port))
-      .then(s => cloud.listenForEvents(s, load, wait))
+      .then(r => server.startServer(port))
+      .then(s => server.listenForEvents(s, load, wait))
       .then(r => r.forEach(event => {
         // basic event header and body validation
         expect(event.headers).to.not.be.empty;
@@ -48,8 +49,8 @@ suite.forPlatform('events', null, null, (test) => {
         // validate webhook signature
         expect(event.headers['elements-webhook-id']).to.not.be.empty;
         expect(event.headers['elements-webhook-signature']).to.not.be.empty;
-        var signature = event.headers['elements-webhook-signature'];
-        var hash = 'sha1=' + crypto.createHmac('sha1', signatureKey).update(event.body).digest('base64');
+        const signature = event.headers['elements-webhook-signature'];
+        const hash = 'sha1=' + crypto.createHmac('sha1', signatureKey).update(event.body).digest('base64');
         expect(signature).to.equal(hash);
       }))
       .then(r => cloud.get(util.format('instances/%s/events', instanceId), eventSchema))

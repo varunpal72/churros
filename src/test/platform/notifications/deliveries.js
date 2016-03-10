@@ -7,6 +7,7 @@ const util = require('util');
 const props = require('core/props');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const server = require('core/server');
 const tools = require('core/tools');
 const schema = require('./assets/delivery.schema.json');
 const listSchema = require('./assets/deliveries.schema.json');
@@ -24,6 +25,8 @@ const genSub = (opts) => new Object({
   config: (opts.config || { url: 'http://fake.churros.api.com' })
 });
 
+const genSettings = () => ({ 'notification.webhook.failure.policy': 'retry' });
+
 suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, (test) => {
   it('should return notification subscription delivery status', () => {
     const topic = 'churros-topic-' + tools.random();
@@ -31,48 +34,39 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     const s = genSub({ topics: [topic] });
     const load = 2;
     let promises = [];
-    for (let i = 0; i < load; i++) {
-      promises.push(cloud.post("notifications/subscriptions", s));
-    }
+    for (let i = 0; i < load; i++) { promises.push(cloud.post("notifications/subscriptions", s)); }
+
     let subs = [];
     let nId;
     let sId;
-
     return chakram.all(promises)
-      .then(r => {
-        r.forEach(sr => subs.push(sr));
-        return cloud.post("notifications", n);
-      })
+      .then(r => r.forEach(sr => subs.push(sr)))
+      .then(r => cloud.post("notifications", n))
       .then(r => {
         nId = r.body.id;
         sId = subs[0].body.id;
-        // test get by notification id and subscription id
-        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
-          (r) => {
-            expect(r).to.have.schemaAnd200(schema);
-            expect(r.body).to.not.be.empty;
-            expect(r.body.notificationId).to.equal(nId);
-            expect(r.body.subscriptionId).to.equal(sId);
-            expect(r.body.notification).to.not.be.empty;
-            expect(r.body.subscription).to.not.be.empty;
-          });
       })
+      .then(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`))
       .then(r => {
-        // test get all by notification id
-        return cloud.get(util.format('notifications/%s/subscriptions/deliveries', nId), (r) => {
-          expect(r).to.have.schemaAnd200(listSchema);
-          expect(r.body).to.not.be.empty;
-          expect(r.body.length).to.equal(load);
-        });
+        expect(r).to.have.schemaAnd200(schema);
+        expect(r.body).to.not.be.empty;
+        expect(r.body.notificationId).to.equal(nId);
+        expect(r.body.subscriptionId).to.equal(sId);
+        expect(r.body.notification).to.not.be.empty;
+        expect(r.body.subscription).to.not.be.empty;
       })
+      .then(r => cloud.get(`notifications/${nId}/subscriptions/deliveries`))
       .then(r => {
-        // test search
-        return cloud.withOptions({ qs: { hydrate: true, where: "channel='webhook'" } }).get('notifications/subscriptions/deliveries', (r) => {
-          expect(r).to.have.schemaAnd200(listSchema);
-          r.body.forEach(s => expect(s.subscription.channel).to.equal('webhook'));
-        });
+        expect(r).to.have.schemaAnd200(listSchema);
+        expect(r.body).to.not.be.empty;
+        expect(r.body.length).to.equal(load);
       })
-      .then(r => subs.forEach(sub => cloud.delete(util.format('/notifications/subscriptions/%s', sub.body.id))));
+      .then(r => cloud.withOptions({ qs: { hydrate: true, where: "channel='webhook'" } }).get('notifications/subscriptions/deliveries'))
+      .then(r => {
+        expect(r).to.have.schemaAnd200(listSchema);
+        r.body.forEach(s => expect(s.subscription.channel).to.equal('webhook'));
+      })
+      .then(r => subs.forEach(sub => cloud.delete(`/notifications/subscriptions/${sub.body.id}`)));
   });
 
   it('should retry webhook delivery', () => {
@@ -85,17 +79,15 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         url: props.getForKey('events', 'url')
       }
     });
-    const settings = {
-      'notification.webhook.failure.policy': 'retry'
-    };
+
     let sId;
     let nId;
-    let server;
+    let myServer;
     // update account webhook failure delivery preferences to 'retry'
-    return cloud.patch("accounts/settings", settings)
-      .then(r => cloud.startServer(port))
+    return cloud.patch("accounts/settings", genSettings())
+      .then(r => server.startServer(port))
       .then(s => {
-        server = s;
+        myServer = s;
         return tools.startTunnel(port);
       })
       // create a subscription
@@ -120,7 +112,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
             expect(r.body.status).to.equal('retry');
           });
       })
-      .then(r => cloud.listenForEvents(server, 1, 20))
+      .then(r => cloud.listenForEvents(myServer, 1, 20))
       .then(r => {
         logger.debug("Waiting for delivery status to update");
         return new Promise((res, rej) => {
@@ -164,12 +156,12 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     };
     let sId;
     let nId;
-    let server;
+    let myServer;
     // update account webhook failure delivery preferences to 'queue'
     return cloud.patch("accounts/settings", settings)
-      .then(r => cloud.startServer(port))
+      .then(r => server.startServer(port))
       .then(s => {
-        server = s;
+        myServer = s;
         return tools.startTunnel(port);
       })
       //create a subscription
@@ -195,7 +187,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
           });
       })
       // listen for events
-      .then(r => cloud.listenForEvents(server, 1, 10))
+      .then(r => cloud.listenForEvents(myServer, 1, 10))
       .catch(r => {
         // get delivery status, verify it is _still_ queued
         return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
@@ -207,10 +199,10 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       .then(r => {
         //listen for events again
         let prettyPlease;
-        cloud.startServer(port)
-        .then(server => {
-          prettyPlease = cloud.listenForEvents(server, 1, 10);
-        });
+        server.startServer(port)
+          .then(server => {
+            prettyPlease = cloud.listenForEvents(myServer, 1, 10);
+          });
         // release the queue for delivery
         cloud.withOptions({ qs: { hydrate: true, where: util.format("channel='webhook' and status='queued' and config.url='%s'", props.getForKey('events', 'url')) } }).put('notifications/subscriptions/deliveries');
         // queue should be released and this should succeed
