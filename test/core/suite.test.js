@@ -151,13 +151,13 @@ describe('suite', () => {
 
     test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
     test.should.return200OnPost();
-    test.should.supportSr();
-    test.should.supportCruds();
-    test.should.supportCruds(chakram.put);
-    test.should.supportCrud();
-    test.should.supportCrd();
-    test.should.supportCd();
-    test.should.supportCrds();
+    test.withOptions({ json: true }).should.supportSr();
+    test.withOptions({ json: true }).should.supportCruds();
+    test.withOptions({ json: true }).should.supportCruds(chakram.put);
+    test.withOptions({ json: true }).should.supportCrud();
+    test.withOptions({ json: true }).should.supportCrd();
+    test.withOptions({ json: true }).should.supportCd();
+    test.withOptions({ json: true }).should.supportCrds();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
     test.withApi('/foo/bad').should.return400OnPost();
