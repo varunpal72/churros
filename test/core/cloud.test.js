@@ -216,14 +216,14 @@ describe('cloud', () => {
 
   it('should support post file with options', () => {
     // should really NOT depend on the file system here :/
-    const filePath = '.tmp';
+    const filePath = '.post1.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.withOptions({ json: false }).postFile('/foo/file', filePath)
       .then(r => fs.unlink(filePath));
   });
 
   it('should throw an error if post file validation fails', () => {
-    const filePath = '.tmp';
+    const filePath = '.post2.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.postFile('/foo/bad/file', filePath)
       .then(r => {
@@ -237,7 +237,7 @@ describe('cloud', () => {
 
   it('should support patch file', () => {
     // should really NOT depend on the file system here :/
-    const filePath = '.tmp';
+    const filePath = '.patch1.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.patchFile('/foo/file', filePath)
       .then(r => fs.unlink(filePath));
@@ -245,7 +245,7 @@ describe('cloud', () => {
 
   it('should support patch file with options', () => {
     // should really NOT depend on the file system here :/
-    const filePath = '.tmp';
+    const filePath = '.patch2.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.withOptions({ json: false }).patchFile('/foo/file', filePath)
       .then(r => fs.unlink(filePath));
