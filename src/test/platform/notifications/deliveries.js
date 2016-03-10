@@ -40,12 +40,12 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     let sId;
     return chakram.all(promises)
       .then(r => r.forEach(sr => subs.push(sr)))
-      .then(r => cloud.post("notifications", n))
+      .then(r => cloud.post("notifications", n)) // create a notification
       .then(r => {
         nId = r.body.id;
         sId = subs[0].body.id;
       })
-      .then(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`))
+      .then(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`)) // retrieve subscription deliveries
       .then(r => {
         expect(r).to.have.schemaAnd200(schema);
         expect(r.body).to.not.be.empty;
@@ -118,11 +118,12 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       return;
     }
 
+    const eventsUrl = props.getForKey('events', 'url');
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
     const s = genSub({
       topics: [topic],
-      config: { url: props.getForKey('events', 'url') }
+      config: { url: eventsUrl }
     });
 
     let sId;
@@ -138,23 +139,17 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         expect(r.body).to.not.be.empty;
         expect(r.body.status).to.equal('queued');
       })
-      .then(r => server .listen(1, 10)) // listen for events
+      .then(r => server.listen(1, 10)) // listen for events
       .catch(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`)) // get delivery status, verify it is _still_ queued
       .then(r => {
-        console.log('2');
         expect(r.body).to.not.be.empty;
         expect(r.body.status).to.equal('queued');
       })
       .then(r => {
-        // listen for events again
-        let prettyPlease;
-        server.listen(1, 10);
-        // release the queue for delivery
-        const eventsUrl = props.getForKey('events', 'url');
+        const listener = server.listen(1, 10);
         const opts = { qs: { hydrate: true, where: `channel='webhook' and status='queued' and config.url='${eventsUrl}'` } };
-        cloud.withOptions(opts).put('notifications/subscriptions/deliveries');
-        // queue should be released and this should succeed
-        return prettyPlease;
+        cloud.withOptions(opts).put('notifications/subscriptions/deliveries'); // release the queue for delivery
+        return listener;
       })
       .then(r => cloud.delete(`/notifications/subscriptions/${sId}`))
       .catch(err => {
