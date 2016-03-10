@@ -197,9 +197,14 @@ describe('cloud', () => {
   it('should support crds', () => cloud.crds('/foo', genPayload(), genSchema()));
   it('should support crud', () => cloud.crud('/foo', genPayload(), genSchema()));
   it('should support cruds', () => cloud.cruds('/foo', genPayload(), genSchema()));
+  it('should support crd with options', () => cloud.withOptions({ json: true }).crd('/foo', genPayload(), genSchema()));
+  it('should support crds with options', () => cloud.withOptions({ json: true }).crds('/foo', genPayload(), genSchema()));
+  it('should support crud with options', () => cloud.withOptions({ json: true }).crud('/foo', genPayload(), genSchema()));
+  it('should support cruds with options', () => cloud.withOptions({ json: true }).cruds('/foo', genPayload(), genSchema()));
   it('should support creating events', () => cloud.createEvents('myelement', eiId, genPayload(), 2));
 
   it('should support sr', () => cloud.sr('/foo', (r) => expect(r).to.have.statusCode(200)));
+  it('should support sr with options', () => cloud.withOptions({ json: true }).sr('/foo', (r) => expect(r).to.have.statusCode(200)));
 
   it('should support post file', () => {
     // should really NOT depend on the file system here :/

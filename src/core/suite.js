@@ -17,34 +17,34 @@ const itGet = (api, options, validationCb) => {
   it(name, () => cloud.withOptions(options).get(api, validationCb));
 };
 
-const itCrd = (api, payload, validationCb) => {
+const itCrd = (api, payload, validationCb, options) => {
   const name = util.format('should allow CRD for %s', api);
-  it(name, () => cloud.crd(api, payload, validationCb));
+  it(name, () => cloud.withOptions(options).crd(api, payload, validationCb));
 };
 
-const itCd = (api, payload, validationCb) => {
+const itCd = (api, payload, validationCb, options) => {
   const name = util.format('should allow CD for %s', api);
-  it(name, () => cloud.cd(api, payload, validationCb));
+  it(name, () => cloud.withOptions(options).cd(api, payload, validationCb));
 };
 
-const itCrds = (api, payload, validationCb) => {
+const itCrds = (api, payload, validationCb, options) => {
   const name = util.format('should allow CRDS for %s', api);
-  it(name, () => cloud.crd(api, payload, validationCb));
+  it(name, () => cloud.withOptions(options).crds(api, payload, validationCb));
 };
 
-const itCrud = (api, payload, validationCb, updateCb) => {
+const itCrud = (api, payload, validationCb, updateCb, options) => {
   const name = util.format('should allow CRUD for %s', api);
-  it(name, () => cloud.crud(api, payload, validationCb, updateCb));
+  it(name, () => cloud.withOptions(options).crud(api, payload, validationCb, updateCb));
 };
 
-const itCruds = (api, payload, validationCb, updateCb) => {
+const itCruds = (api, payload, validationCb, updateCb, options) => {
   const name = util.format('should allow CRUDS for %s', api);
-  it(name, () => cloud.cruds(api, payload, validationCb, updateCb));
+  it(name, () => cloud.withOptions(options).cruds(api, payload, validationCb, updateCb));
 };
 
-const itSr = (api, validationCb) => {
+const itSr = (api, validationCb, options) => {
   const name = util.format('should allow SR for %s', api);
-  it(name, () => cloud.get(api).then(r => cloud.get(api + '/' + r.body[0].id)));
+  it(name, () => cloud.withOptions(options).get(api).then(r => cloud.get(api + '/' + r.body[0].id)));
 };
 
 const itPagination = (api, validationCb) => {
@@ -100,12 +100,12 @@ const runTests = (api, payload, validationCb, tests) => {
       return200OnGet: () => itGet(api, options, validationCb),
       supportPagination: () => itPagination(api, validationCb),
       supportCeqlSearch: (field) => itCeqlSearch(api, payload, field),
-      supportCruds: (updateCb) => itCruds(api, payload, validationCb, updateCb),
-      supportCrud: (updateCb) => itCrud(api, payload, validationCb, updateCb),
-      supportCrd: () => itCrd(api, payload, validationCb),
-      supportCd: () => itCd(api, payload, validationCb),
-      supportCrds: () => itCrds(api, payload, validationCb),
-      supportSr: () => itSr(api, validationCb),
+      supportCruds: (updateCb) => itCruds(api, payload, validationCb, updateCb, options),
+      supportCrud: (updateCb) => itCrud(api, payload, validationCb, updateCb, options),
+      supportCrd: () => itCrd(api, payload, validationCb, options),
+      supportCd: () => itCd(api, payload, validationCb, options),
+      supportCrds: () => itCrds(api, payload, validationCb, options),
+      supportSr: () => itSr(api, validationCb, options),
     };
   };
 
