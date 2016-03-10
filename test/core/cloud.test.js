@@ -38,94 +38,94 @@ const genSchema = () => new Object({
   required: ['id', 'foo']
 });
 
-beforeEach(() => {
-  chakram.setRequestDefaults({
-    baseUrl: baseUrl,
-    headers: { Authorization: auth }
+describe('cloud', () => {
+  beforeEach(() => {
+    chakram.setRequestDefaults({
+      baseUrl: baseUrl,
+      headers: { Authorization: auth }
+    });
+
+    /** MOCKING OUT HTTP ENDPOINTS **/
+    /** https://github.com/pgte/nock#specifying-hostname **/
+
+    /** POST **/
+    nock(baseUrl, headers())
+      .post('/foo')
+      .reply(200, (uri, requestBody) => {
+        requestBody.id = 123;
+        return requestBody;
+      })
+      .post('/foo/bad')
+      .reply(400, (uri, requestBody) => {
+        return { message: 'Invalid JSON body' };
+      })
+      .post('/foo/file')
+      .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
+      .post('/foo/bad/file')
+      .reply(404, (uri, requestBody) => {
+        return { message: 'No resource found at /foo/bad/file' };
+      });
+
+    nock(baseUrl, eventHeaders())
+      .post('/events/myelement')
+      .reply(200, (uri, requestBody) => requestBody);
+
+    /** GET **/
+    nock(baseUrl, headers())
+      .get('/foo/123')
+      .reply(200, () => genPayload({ id: 123 }))
+      .get('/foo/456')
+      .reply(404, () => {
+        return { message: 'No foo found with the given ID' };
+      })
+      .get('/foo/bad')
+      .reply(404, () => {
+        return { message: 'No resource found with name /foo/bad' };
+      })
+      .get('/foo')
+      .reply(200, (uri, requestBody) => [genPayload({ id: 123 }), genPayload({ id: 456 })])
+      .get('/foo')
+      .query({ page: '1', pageSize: '1' })
+      .reply(200, () => genPayload({ id: 123 }))
+      .get('/foo')
+      .query({ where: 'id=\'123\'' })
+      .reply(200, () => [genPayload({ id: 123 })]);
+
+    /** PATCH && PUT **/
+    nock(baseUrl, headers())
+      .patch('/foo/123')
+      .reply(200, (uri, requestBody) => {
+        requestBody.id = 123;
+        return requestBody;
+      })
+      .patch('/foo/456')
+      .reply(404, (uri, requestBody) => {
+        return { message: 'No foo found with the given ID' };
+      })
+      .patch('/foo/file')
+      .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
+      .patch('/foo/bad/file')
+      .reply(404, (uri, requestBody) => {
+        return { message: 'No resource found at /foo/bad/file' };
+      })
+      .put('/foo/123')
+      .reply(200, (uri, requestBody) => {
+        requestBody.id = 123;
+        return requestBody;
+      })
+      .put('/foo/456')
+      .reply(404, (uri, requestBody) => {
+        return { message: 'No foo found with the given ID' };
+      });
+
+    /** DELETE **/
+    nock(baseUrl, headers())
+      .delete('/foo/123')
+      .reply(200, (uri, requestBody) => {
+        return {};
+      });
   });
 
-  /** MOCKING OUT HTTP ENDPOINTS **/
-  /** https://github.com/pgte/nock#specifying-hostname **/
-
-  /** POST **/
-  nock(baseUrl, headers())
-    .post('/foo')
-    .reply(200, (uri, requestBody) => {
-      requestBody.id = 123;
-      return requestBody;
-    })
-    .post('/foo/bad')
-    .reply(400, (uri, requestBody) => {
-      return { message: 'Invalid JSON body' };
-    })
-    .post('/foo/file')
-    .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
-    .post('/foo/bad/file')
-    .reply(404, (uri, requestBody) => {
-      return { message: 'No resource found at /foo/bad/file' };
-    });
-
-  nock(baseUrl, eventHeaders())
-    .post('/events/myelement')
-    .reply(200, (uri, requestBody) => requestBody);
-
-  /** GET **/
-  nock(baseUrl, headers())
-    .get('/foo/123')
-    .reply(200, () => genPayload({ id: 123 }))
-    .get('/foo/456')
-    .reply(404, () => {
-      return { message: 'No foo found with the given ID' };
-    })
-    .get('/foo/bad')
-    .reply(404, () => {
-      return { message: 'No resource found with name /foo/bad' };
-    })
-    .get('/foo')
-    .reply(200, (uri, requestBody) => [genPayload({ id: 123 }), genPayload({ id: 456 })])
-    .get('/foo')
-    .query({ page: '1', pageSize: '1' })
-    .reply(200, () => genPayload({ id: 123 }))
-    .get('/foo')
-    .query({ where: 'id=\'123\'' })
-    .reply(200, () => [genPayload({ id: 123 })]);
-
-  /** PATCH && PUT **/
-  nock(baseUrl, headers())
-    .patch('/foo/123')
-    .reply(200, (uri, requestBody) => {
-      requestBody.id = 123;
-      return requestBody;
-    })
-    .patch('/foo/456')
-    .reply(404, (uri, requestBody) => {
-      return { message: 'No foo found with the given ID' };
-    })
-    .patch('/foo/file')
-    .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
-    .patch('/foo/bad/file')
-    .reply(404, (uri, requestBody) => {
-      return { message: 'No resource found at /foo/bad/file' };
-    })
-    .put('/foo/123')
-    .reply(200, (uri, requestBody) => {
-      requestBody.id = 123;
-      return requestBody;
-    })
-    .put('/foo/456')
-    .reply(404, (uri, requestBody) => {
-      return { message: 'No foo found with the given ID' };
-    });
-
-  /** DELETE **/
-  nock(baseUrl, headers())
-    .delete('/foo/123')
-    .reply(200, (uri, requestBody) => {
-      return {};
-    });
-});
-
-describe('cloud', () => {
   it('should support post', () => cloud.post('/foo', genPayload(), genSchema()));
   it('should support post with options', () => cloud.withOptions({ json: true }).post('/foo', genPayload(), genSchema()));
   it('should support post with custom validation', () => cloud.post('/foo/bad', {}, (r) => expect(r).to.have.statusCode(400)));
@@ -197,42 +197,14 @@ describe('cloud', () => {
   it('should support crds', () => cloud.crds('/foo', genPayload(), genSchema()));
   it('should support crud', () => cloud.crud('/foo', genPayload(), genSchema()));
   it('should support cruds', () => cloud.cruds('/foo', genPayload(), genSchema()));
+  it('should support crd with options', () => cloud.withOptions({ json: true }).crd('/foo', genPayload(), genSchema()));
+  it('should support crds with options', () => cloud.withOptions({ json: true }).crds('/foo', genPayload(), genSchema()));
+  it('should support crud with options', () => cloud.withOptions({ json: true }).crud('/foo', genPayload(), genSchema()));
+  it('should support cruds with options', () => cloud.withOptions({ json: true }).cruds('/foo', genPayload(), genSchema()));
   it('should support creating events', () => cloud.createEvents('myelement', eiId, genPayload(), 2));
 
   it('should support sr', () => cloud.sr('/foo', (r) => expect(r).to.have.statusCode(200)));
-
-  it('should support listening for events with custom validation', () => {
-    return new Promise((res, rej) => {
-      const port = 8085;
-      cloud.listenForEvents(port, 1, 5)
-        .then(r => r.forEach(e => expect(e).to.not.be.empty))
-        .then(r => res(r))
-        .catch(r => rej('How embarrassing, I failed validating events: ' + r));
-      chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
-      return chakram.post('http://localhost:' + port, { event: 'green hat' });
-    });
-  });
-
-  it('should throw an error if event validation fails', () => {
-    return new Promise((res, rej) => {
-      const port = 8085;
-      cloud.listenForEvents(port, 1, 5)
-        .then(r => r.forEach(e => expect(e).to.be.empty))
-        .then(r => rej('How embarrassing, I should have failed validating events: ' + r))
-        .catch(r => res(r));
-      chakram.setRequestDefaults({ headers: { 'User-Agent': 'churros-test' } });
-      return chakram.post('http://localhost:' + port, { event: 'green hat' });
-    });
-  });
-
-  it('should throw an error if event listen times out', () => {
-    return new Promise((res, rej) => {
-      const port = 8085;
-      cloud.listenForEvents(port, 1, 1)
-        .then(r => rej('How embarrassing, I should have timed out listening for events: ' + r))
-        .catch(r => res(r));
-    });
-  });
+  it('should support sr with options', () => cloud.withOptions({ json: true }).sr('/foo', (r) => expect(r).to.have.statusCode(200)));
 
   it('should support post file', () => {
     // should really NOT depend on the file system here :/

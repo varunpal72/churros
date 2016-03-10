@@ -1,9 +1,7 @@
 'use strict';
 
 const tools = require('core/tools');
-const http = require('http');
 const fs = require('fs');
-const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
@@ -64,7 +62,7 @@ exports.put = (api, payload, validationCb) => put(api, payload, validationCb, nu
 
 const remove = (api, options) => {
   logger.debug('DELETE %s with options %s', api, options);
-  return chakram.delete(api, options)
+  return chakram.delete(api, null, options)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return r;
@@ -95,6 +93,54 @@ const patchFile = (api, filePath, options) => {
 };
 exports.patchFile = patchFile;
 
+const crd = (api, payload, validationCb, options) => {
+  return post(api, payload, validationCb, options)
+    .then(r => get(api + '/' + r.body.id, validationCb, options))
+    .then(r => remove(api + '/' + r.body.id, options));
+};
+exports.crd = crd;
+
+const cd = (api, payload, validationCb, options) => {
+  return post(api, payload, validationCb, options)
+    .then(r => remove(api + '/' + r.body.id, options));
+};
+exports.cd = cd;
+
+const crds = (api, payload, validationCb, options) => {
+  let createdId = -1;
+  return post(api, payload, validationCb, options)
+    .then(r => createdId = r.body.id)
+    .then(r => get(api + '/' + createdId, validationCb, options))
+    .then(r => get(api, validationCb, options))
+    .then(r => remove(api + '/' + createdId, options));
+};
+exports.crds = crds;
+
+const crud = (api, payload, validationCb, updateCb, options) => {
+  return post(api, payload, validationCb, options)
+    .then(r => get(api + '/' + r.body.id, validationCb, options))
+    .then(r => update(api + '/' + r.body.id, payload, validationCb, updateCb, options))
+    .then(r => remove(api + '/' + r.body.id, options));
+};
+exports.crud = crud;
+
+const cruds = (api, payload, validationCb, updateCb, options) => {
+  let createdId = -1;
+  return post(api, payload, validationCb, options)
+    .then(r => createdId = r.body.id)
+    .then(r => get(api + '/' + createdId, validationCb, options))
+    .then(r => update(api + '/' + createdId, payload, validationCb, updateCb, options))
+    .then(r => get(api, validationCb, options))
+    .then(r => remove(api + '/' + createdId, options));
+};
+exports.cruds = cruds;
+
+const sr = (api, validationCb, options) => {
+  return get(api, validationCb, options)
+    .then(r => get(api + '/' + r.body[0].id, validationCb, options));
+};
+exports.sr = sr;
+
 /*
  * Gives you access to adding HTTP request options to any of the HTTP-related APIs
  */
@@ -106,57 +152,15 @@ exports.withOptions = (options) => {
     put: (api, payload, validationCb) => put(api, payload, validationCb, options),
     patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
     get: (api, validationCb) => get(api, validationCb, options),
-    delete: (api, validationCb) => remove(api, options)
+    delete: (api, validationCb) => remove(api, options),
+    cruds: (api, payload, validationCb, updateCb) => cruds(api, payload, validationCb, updateCb, options),
+    crd: (api, payload, validationCb, updateCb) => crd(api, payload, validationCb, updateCb, options),
+    cd: (api, payload, validationCb) => cd(api, payload, validationCb, options),
+    crds: (api, payload, validationCb) => crds(api, payload, validationCb, options),
+    crud: (api, payload, validationCb, updateCb) => crud(api, payload, validationCb, updateCb, options),
+    sr: (api, validationCb) => sr(api, validationCb, options)
   };
 };
-
-const crd = (api, payload, validationCb) => {
-  return post(api, payload, validationCb)
-    .then(r => get(api + '/' + r.body.id, validationCb))
-    .then(r => remove(api + '/' + r.body.id));
-};
-exports.crd = crd;
-
-const cd = (api, payload, validationCb) => {
-  return post(api, payload, validationCb)
-    .then(r => remove(api + '/' + r.body.id));
-};
-exports.cd = cd;
-
-const crds = (api, payload, validationCb) => {
-  let createdId = -1;
-  return post(api, payload, validationCb)
-    .then(r => createdId = r.body.id)
-    .then(r => get(api + '/' + createdId, validationCb))
-    .then(r => get(api, validationCb))
-    .then(r => remove(api + '/' + createdId));
-};
-exports.crds = crds;
-
-const crud = (api, payload, validationCb, updateCb) => {
-  return post(api, payload, validationCb)
-    .then(r => get(api + '/' + r.body.id, validationCb))
-    .then(r => update(api + '/' + r.body.id, payload, validationCb, updateCb))
-    .then(r => remove(api + '/' + r.body.id));
-};
-exports.crud = crud;
-
-const cruds = (api, payload, validationCb, updateCb) => {
-  let createdId = -1;
-  return post(api, payload, validationCb)
-    .then(r => createdId = r.body.id)
-    .then(r => get(api + '/' + createdId, validationCb))
-    .then(r => update(api + '/' + createdId, payload, validationCb, updateCb))
-    .then(r => get(api, validationCb))
-    .then(r => remove(api + '/' + createdId));
-};
-exports.cruds = cruds;
-
-const sr = (api, validationCb) => {
-  return get(api, validationCb)
-    .then(r => get(api + '/' + r.body[0].id, validationCb));
-};
-exports.sr = sr;
 
 const createEvents = (element, eiId, payload, numEvents) => {
   numEvents = (numEvents || 1);
@@ -173,58 +177,3 @@ const createEvents = (element, eiId, payload, numEvents) => {
   return chakram.all(promises);
 };
 exports.createEvents = createEvents;
-
-const createServer = (cb) => {
-  const sx = {};
-  const sv = http.createServer(cb);
-  sv.on('connection', s => {
-    const k = `${s.remoteAddress}:${s.remotePort}`;
-    sx[k] = s;
-    s.once('close', () => delete sx[k]);
-  });
-
-  sv.destroy = f => {
-    sv.close(f);
-    for (let s in sx) {
-      sx[s].destroy();
-      sx[s].unref();
-    }
-    sv.unref();
-    return true;
-  };
-  return sv;
-};
-
-const listenForEvents = (port, numEventsSent, waitSecs) => {
-  let server;
-  let receivedEvents = 0;
-  let events = [];
-  return new Promise((resolve, reject) => {
-    server = createServer((request, response) => {
-        let fullBody = '';
-        request.on('data', (chunk) => fullBody += chunk.toString());
-        request.on('end', () => {
-          request.body = fullBody;
-          response.end('{}');
-
-          receivedEvents++;
-          events.push(request);
-          logger.debug('%s event(s) received', receivedEvents);
-          if (receivedEvents === numEventsSent) {
-            resolve(events);
-            server.destroy();
-          }
-        });
-      })
-      .listen(port, "localhost", (err) => {
-        err ? reject(err) : logger.debug('Waiting %s seconds to receive %s events on port %s', waitSecs, numEventsSent, port);
-      });
-
-    const msg = util.format('Did not receive all %s events before the %s second timer expired', numEventsSent, waitSecs);
-    setTimeout(() => {
-      reject(msg);
-      server.destroy();
-    }, waitSecs * 1000);
-  });
-};
-exports.listenForEvents = listenForEvents;
