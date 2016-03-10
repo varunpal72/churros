@@ -12,10 +12,10 @@ var exports = module.exports = {};
  */
 exports.start = (port) => {
   return new Promise((res, rej) => {
-    logger.debug('attempting to start up localtunnel on port %s', port);
+    logger.debug('Attempting to start up localtunnel on port %s', port);
     localtunnel(port, (err, tunnel) => {
       if (err) rej(err);
-      logger.debug('successfully started localtunnel on port %s with url %s', port, tunnel.url);
+      logger.debug('Successfully started localtunnel on port %s with url %s', port, tunnel.url);
       res(tunnel);
     });
   });

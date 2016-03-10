@@ -26,7 +26,7 @@ const createServer = (cb) => {
   return sv;
 };
 
-const startServer = (port) => {
+exports.start = (port) => {
   return new Promise((resolve, reject) => {
     let server = createServer((request, response) => {
       if (server.handle) {
@@ -43,9 +43,8 @@ const startServer = (port) => {
     });
   });
 };
-exports.startServer = startServer;
 
-const listenForEvents = (server, numEventsSent, waitSecs) => {
+exports.listen = (server, numEventsSent, waitSecs) => {
   let receivedEvents = 0;
   let events = [];
   return new Promise((resolve, reject) => {
@@ -73,4 +72,3 @@ const listenForEvents = (server, numEventsSent, waitSecs) => {
     }, waitSecs * 1000);
   });
 };
-exports.listenForEvents = listenForEvents;

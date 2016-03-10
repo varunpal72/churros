@@ -3,7 +3,6 @@
 const chakram = require('chakram');
 const expect = require('chakram').expect;
 const logger = require('winston');
-const util = require('util');
 const props = require('core/props');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
@@ -25,7 +24,7 @@ const genSub = (opts) => new Object({
   config: (opts.config || { url: 'http://fake.churros.api.com' })
 });
 
-const genSettings = () => ({ 'notification.webhook.failure.policy': 'retry' });
+const genSettings = (policy) => ({ 'notification.webhook.failure.policy': policy });
 
 suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, (test) => {
   it('should return notification subscription delivery status', () => {
@@ -75,62 +74,42 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     const n = genNotif({ topic: topic });
     const s = genSub({
       topics: [topic],
-      config: {
-        url: props.getForKey('events', 'url')
-      }
+      config: { url: props.getForKey('events', 'url') }
     });
 
     let sId;
     let nId;
     let myServer;
-    // update account webhook failure delivery preferences to 'retry'
-    return cloud.patch("accounts/settings", genSettings())
-      .then(r => server.startServer(port))
-      .then(s => {
-        myServer = s;
-        return tools.startTunnel(port);
-      })
-      // create a subscription
-      .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
-      .then(r => {
-        sId = r.body.id;
-        // send a notification
-        return cloud.post("notifications", n);
-      })
+    return cloud.patch("accounts/settings", genSettings('retry')) // update account webhook failure delivery preferences to 'retry'
+      .then(r => server.start(port))
+      .then(s => myServer = s)
+      .then(r => cloud.post("notifications/subscriptions", s)) // create a subscription
+      .then(r => sId = r.body.id)
+      .then(r => cloud.post("notifications", n)) // send a notification
       .then(r => {
         nId = r.body.id;
         logger.debug("Waiting for webhook delivery to fail");
-        return new Promise((res, rej) => {
-          // wait a few seconds for delivery to fail
-          setTimeout(() => res(), 5000);
-        });
+        return new Promise((res, rej) => setTimeout(() => res(), 5000)); // wait a few seconds for delivery to fail
       })
+      .then(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`))
       .then(r => {
-        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
-          (r) => {
-            expect(r.body).to.not.be.empty;
-            expect(r.body.status).to.equal('retry');
-          });
+        expect(r.body).to.not.be.empty;
+        expect(r.body.status).to.equal('retry');
       })
-      .then(r => cloud.listenForEvents(myServer, 1, 20))
+      .then(r => server.listen(myServer, 1, 20))
       .then(r => {
         logger.debug("Waiting for delivery status to update");
-        return new Promise((res, rej) => {
-          // wait a bit for status to update
-          setTimeout(() => res(), 1000);
-        });
+        return new Promise((res, rej) => setTimeout(() => res(), 1000)); // wait a bit for status to update
       })
+      .then(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`))
       .then(r => {
-        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
-          (r) => {
-            expect(r.body).to.not.be.empty;
-            expect(r.body.status).to.equal('delivered');
-          });
+        expect(r.body).to.not.be.empty;
+        expect(r.body.status).to.equal('delivered');
       })
-      .then(r => cloud.delete(util.format('/notifications/subscriptions/%s', sId)))
+      .then(r => cloud.delete(`/notifications/subscriptions/${sId}`))
       .catch(err => {
         // if anything bad happens, clean up the subscription
-        return cloud.delete(util.format('/notifications/subscriptions/%s', sId))
+        return cloud.delete(`/notifications/subscriptions/${sId}`)
           .then(r => {
             throw err;
           });
@@ -142,76 +121,52 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       logger.warn("Unable to run webhook queueing test as system user. Run as a different user to test this feature.");
       return;
     }
+
     const port = props.getForKey('events', 'port');
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
     const s = genSub({
       topics: [topic],
-      config: {
-        url: props.getForKey('events', 'url')
-      }
+      config: { url: props.getForKey('events', 'url') }
     });
-    const settings = {
-      'notification.webhook.failure.policy': 'queue'
-    };
+
     let sId;
     let nId;
     let myServer;
-    // update account webhook failure delivery preferences to 'queue'
-    return cloud.patch("accounts/settings", settings)
-      .then(r => server.startServer(port))
-      .then(s => {
-        myServer = s;
-        return tools.startTunnel(port);
-      })
-      //create a subscription
-      .then(tunnel => cloud.post("notifications/subscriptions", s(tunnel.url)))
+    return cloud.patch("accounts/settings", genSettings('queue')) // update account webhook failure delivery preferences to 'queue'
+      .then(r => server.start(port))
+      .then(s => myServer = s)
+      .then(r => cloud.post("notifications/subscriptions", s)) //create a subscription
+      .then(r => sId = r.body.id)
+      .then(r => cloud.post("notifications", n)) // send a notification
+      .then(r => nId = r.body.id)
+      .then(r => new Promise((res, rej) => setTimeout(() => res(), 5000))) // wait a few seconds for delivery to fail
+      .then(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`)) // get delivery status, verify it is queued
       .then(r => {
-        // send a notification
-        sId = r.body.id;
-        return cloud.post("notifications", n);
+        expect(r.body).to.not.be.empty;
+        expect(r.body.status).to.equal('queued');
       })
+      .then(r => server.listen(myServer, 1, 10)) // listen for events
+      .catch(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`)) // get delivery status, verify it is _still_ queued
       .then(r => {
-        // wait a few seconds for delivery to fail
-        nId = r.body.id;
-        return new Promise((res, rej) => {
-          setTimeout(() => res(), 5000);
-        });
+        expect(r.body).to.not.be.empty;
+        expect(r.body.status).to.equal('queued');
       })
       .then(r => {
-        // get delivery status, verify it is queued
-        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
-          (r) => {
-            expect(r.body).to.not.be.empty;
-            expect(r.body.status).to.equal('queued');
-          });
-      })
-      // listen for events
-      .then(r => cloud.listenForEvents(myServer, 1, 10))
-      .catch(r => {
-        // get delivery status, verify it is _still_ queued
-        return cloud.withOptions({ qs: { hydrate: true } }).get(util.format('notifications/%s/subscriptions/%s/deliveries', nId, sId),
-          (r) => {
-            expect(r.body).to.not.be.empty;
-            expect(r.body.status).to.equal('queued');
-          });
-      })
-      .then(r => {
-        //listen for events again
+        // listen for events again
         let prettyPlease;
-        server.startServer(port)
-          .then(server => {
-            prettyPlease = cloud.listenForEvents(myServer, 1, 10);
-          });
+        server.start(port).then(server => prettyPlease = server.listen(myServer, 1, 10));
         // release the queue for delivery
-        cloud.withOptions({ qs: { hydrate: true, where: util.format("channel='webhook' and status='queued' and config.url='%s'", props.getForKey('events', 'url')) } }).put('notifications/subscriptions/deliveries');
+        const eventsUrl = props.getForKey('events', 'url');
+        const opts = { qs: { hydrate: true, where: `channel='webhook' and status='queued' and config.url='${eventsUrl}'` } };
+        cloud.withOptions(opts).put('notifications/subscriptions/deliveries');
         // queue should be released and this should succeed
         return prettyPlease;
       })
-      .then(r => cloud.delete(util.format('/notifications/subscriptions/%s', sId)))
+      .then(r => cloud.delete(`/notifications/subscriptions/${sId}`))
       .catch(err => {
         // if anything bad happens, clean up the subscription
-        return cloud.delete(util.format('/notifications/subscriptions/%s', sId))
+        return cloud.delete(`/notifications/subscriptions/${sId}`)
           .then(r => {
             throw err;
           });
