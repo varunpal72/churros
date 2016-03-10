@@ -8,6 +8,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const server = require('core/server');
 const tools = require('core/tools');
+const persister = require('./assets/persister');
 
 const schema = require('./assets/delivery.schema.json');
 const listSchema = require('./assets/deliveries.schema.json');
@@ -28,6 +29,9 @@ const genSub = (opts) => new Object({
 const genSettings = (policy) => ({ 'notification.webhook.failure.policy': policy });
 
 suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, (test) => {
+  before(() => persister.snapshot());
+  after(() => persister.restore());
+
   it('should return notification subscription delivery status', () => {
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });

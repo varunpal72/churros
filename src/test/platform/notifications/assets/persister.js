@@ -14,7 +14,7 @@ let saved = {};
 const KEY = 'notification.webhook.failure.policy';
 
 exports.snapshot = () => {
-  logger.debug('Attempting to save settings in case they are modified during teseting');
+  logger.debug('Attempting to save settings in case they are modified during testing');
 
   return cloud.get('accounts/settings')
     .then(r => saved.policy = r.body[KEY]);
