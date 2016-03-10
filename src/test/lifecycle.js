@@ -6,6 +6,7 @@ const expect = chakram.expect;
 const argv = require('optimist').argv;
 const defaults = require('core/defaults');
 const tunnel = require('core/tunnel');
+const server = require('core/server');
 const logger = require('core/logger')(argv.verbose ? 'silly' : 'info');
 
 let config;
@@ -34,11 +35,22 @@ before(() => {
   const secUrl = url + '/elements/j_spring_security_check';
   const options = { jar: true, form: { j_username: props.get('user'), j_password: props.get('password') } };
 
-  // sets up our localtunnel instead and whatever random URL localtunnel assigns to us, we set that
-  // in our events:url property to be used as our webhook callback URL elsewhere
+  /**
+   * Sets up our localtunnel instead and whatever random URL localtunnel assigns to us, we set that
+   * in our events:url property to be used as our webhook callback URL elsewhere
+   * @return {Promise} A promise that, when resolved, contains the tunnel that was started
+   */
   const setupEventsTunnel = () => {
     return tunnel.start(props.getForKey('events', 'port'))
       .then(tunnel => props.setForKey('events', 'url', tunnel.url));
+  };
+
+  /**
+   * Sets up our HTTP server listener
+   * @return {Promise} A promise that, when resolved, contains the server that was started
+   */
+  const setupServer = () => {
+    return server.start(props.getForKey('events', 'port'));
   };
 
   return chakram.post(secUrl, null, options)
@@ -52,6 +64,7 @@ before(() => {
       defaults(url + '/elements/api-v2', r.body.user, r.body.company, props.get('user'));
     })
     .then(r => setupEventsTunnel())
+    .then(r => setupServer())
     .catch(r => {
       // if the lifecycle fails, then we want to exit with an error and not let anything else continue
       logger.error('Well shucks...failed to finish initialization...\n  Is %s up and running?\n  Do you have the right username and password?\n', url);

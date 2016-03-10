@@ -5,6 +5,18 @@ const logger = require('winston');
 
 var exports = module.exports = {};
 
+/**
+ * Global HTTP server object, that represents the current server that is listening for incoming HTTP requests
+ * @type {object} The HTTP server
+ */
+let server = null;
+
+/**
+ * Global handlerCb function defines how this server will handle any incoming HTTP requests
+ * @type {function}
+ */
+let handlerCb = null;
+
 const createServer = (cb) => {
   const sx = {};
   const sv = http.createServer(cb);
@@ -26,17 +38,26 @@ const createServer = (cb) => {
   return sv;
 };
 
+const handlerCbs = {
+  502: (req, res) => {
+    res.writeHead(502, { 'Content-Type': "application/json" });
+    res.end(JSON.stringify({ message: 'Simulating bad gateway' }));
+    logger.debug("Received message and responded with 502");
+  }
+};
+
+const setHandler = (h) => handlerCb = (typeof h === 'function' ? h : null);
+
+const getHandler = () => handlerCb || handlerCbs['502'];
+
+/**
+ * Start the HTTP server
+ * @param  {number} port The port to listen on
+ * @return {Promise}     A promise that, when resolved, contains the server that was just started
+ */
 exports.start = (port) => {
   return new Promise((resolve, reject) => {
-    let server = createServer((request, response) => {
-      if (server.handle) {
-        server.handle(request, response);
-      } else {
-        response.writeHead(502, { 'Content-Type': "application/json" });
-        response.end('{"message": "Bad Gateway"}');
-        logger.debug("Received message and responded with 502 Bad Gateway");
-      }
-    });
+    server = createServer((request, response) => getHandler()(request, response));
     server.listen(port, "localhost", (err) => {
       logger.debug('Started HTTP server on port %d', port);
       resolve(server);
@@ -44,11 +65,17 @@ exports.start = (port) => {
   });
 };
 
-exports.listen = (server, numEventsSent, waitSecs) => {
-  let receivedEvents = 0;
-  let events = [];
+/**
+ * Toggle the server to "listen" mode, which will listen for x number of incoming events before resolving
+ * @param  {number} numEventsSent The number of events that were sent
+ * @param  {number} waitSecs      How long to wait for incoming events
+ * @return {Promise}              A promise that, when resolved, will contain all of the incoming HTTP requests that came in
+ */
+exports.listen = (numEventsSent, waitSecs) => {
   return new Promise((resolve, reject) => {
-    server.handle = (request, response) => {
+    handlerCb = (request, response) => {
+      let receivedEvents = 0;
+      let events = [];
       let fullBody = '';
       request.on('data', (chunk) => fullBody += chunk.toString());
       request.on('end', () => {
@@ -60,10 +87,12 @@ exports.listen = (server, numEventsSent, waitSecs) => {
         logger.debug('%s event(s) received', receivedEvents);
         if (receivedEvents === numEventsSent) {
           resolve(events);
+          setHandler(null);
           server.destroy();
         }
       });
     };
+
     logger.debug('Waiting %s seconds to receive %s events', waitSecs, numEventsSent);
     const msg = `Did not receive all ${numEventsSent} events before the ${waitSecs} second timer expired`;
     setTimeout(() => {

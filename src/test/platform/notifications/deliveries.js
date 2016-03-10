@@ -69,7 +69,6 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
   });
 
   it('should retry webhook delivery', () => {
-    const port = props.getForKey('events', 'port');
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
     const s = genSub({
@@ -79,10 +78,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
 
     let sId;
     let nId;
-    let myServer;
     return cloud.patch("accounts/settings", genSettings('retry')) // update account webhook failure delivery preferences to 'retry'
-      .then(r => server.start(port))
-      .then(s => myServer = s)
       .then(r => cloud.post("notifications/subscriptions", s)) // create a subscription
       .then(r => sId = r.body.id)
       .then(r => cloud.post("notifications", n)) // send a notification
@@ -96,7 +92,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         expect(r.body).to.not.be.empty;
         expect(r.body.status).to.equal('retry');
       })
-      .then(r => server.listen(myServer, 1, 20))
+      .then(r => server.listen(1, 20))
       .then(r => {
         logger.debug("Waiting for delivery status to update");
         return new Promise((res, rej) => setTimeout(() => res(), 1000)); // wait a bit for status to update
@@ -122,7 +118,6 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
       return;
     }
 
-    const port = props.getForKey('events', 'port');
     const topic = 'churros-topic-' + tools.random();
     const n = genNotif({ topic: topic });
     const s = genSub({
@@ -132,10 +127,7 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
 
     let sId;
     let nId;
-    let myServer;
     return cloud.patch("accounts/settings", genSettings('queue')) // update account webhook failure delivery preferences to 'queue'
-      .then(r => server.start(port))
-      .then(s => myServer = s)
       .then(r => cloud.post("notifications/subscriptions", s)) //create a subscription
       .then(r => sId = r.body.id)
       .then(r => cloud.post("notifications", n)) // send a notification
@@ -146,16 +138,17 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
         expect(r.body).to.not.be.empty;
         expect(r.body.status).to.equal('queued');
       })
-      .then(r => server.listen(myServer, 1, 10)) // listen for events
+      .then(r => server.listen(1, 10)) // listen for events
       .catch(r => cloud.withOptions({ qs: { hydrate: true } }).get(`notifications/${nId}/subscriptions/${sId}/deliveries`)) // get delivery status, verify it is _still_ queued
       .then(r => {
+        console.log('2');
         expect(r.body).to.not.be.empty;
         expect(r.body.status).to.equal('queued');
       })
       .then(r => {
         // listen for events again
         let prettyPlease;
-        server.start(port).then(server => prettyPlease = server.listen(myServer, 1, 10));
+        server.listen(1, 10);
         // release the queue for delivery
         const eventsUrl = props.getForKey('events', 'url');
         const opts = { qs: { hydrate: true, where: `channel='webhook' and status='queued' and config.url='${eventsUrl}'` } };
