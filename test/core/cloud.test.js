@@ -97,6 +97,14 @@ beforeEach(() => {
       requestBody.id = 123;
       return requestBody;
     })
+    .patch('/foo/123', {
+      id: 789,
+      foo: 'bar'
+    })
+    .reply(200, (uri, requestBody) => {
+      requestBody.id = 789;
+      return requestBody;
+    })
     .patch('/foo/456')
     .reply(404, (uri, requestBody) => {
       return { message: 'No foo found with the given ID' };
@@ -110,6 +118,14 @@ beforeEach(() => {
     .put('/foo/123')
     .reply(200, (uri, requestBody) => {
       requestBody.id = 123;
+      return requestBody;
+    })
+    .put('/foo/123', {
+      id: 789,
+      foo: 'bar'
+    })
+    .reply(200, (uri, requestBody) => {
+      requestBody.id = 789;
       return requestBody;
     })
     .put('/foo/456')
@@ -153,6 +169,10 @@ describe('cloud', () => {
   it('should support put', () => cloud.put('/foo/123', genPayload(), genSchema()));
   it('should support put with options', () => cloud.withOptions({ json: true }).put('/foo/123', genPayload(), genSchema()));
   it('should support put with custom validation', () => cloud.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
+  it('should support put with alternate payload', () => {
+    return cloud.withOptions({ updatePayload: genPayload({ id: 789 }) })
+      .put('/foo/123', genPayload({ id: 123 }), (r) => expect(r.body.id).to.equal(789));
+  });
   it('should support put with no custom validation', () => cloud.put('/foo/123', genPayload()));
   it('should throw an error if put validation fails', () => {
     return cloud.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(200))
@@ -165,6 +185,10 @@ describe('cloud', () => {
   it('should support patch', () => cloud.patch('/foo/123', genPayload({ id: 123 }), genSchema()));
   it('should support patch with options', () => cloud.withOptions({ json: true }).patch('/foo/123', genPayload({ id: 123 }), genSchema()));
   it('should support patch with custom validation', () => cloud.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
+  it('should support patch with alternate payload', () => {
+    return cloud.withOptions({ updatePayload: genPayload({ id: 789 }) })
+      .patch('/foo/123', genPayload({ id: 123 }), (r) => expect(r.body.id).to.equal(789));
+  });
   it('should support patch with no custom validation', () => cloud.put('/foo/123', genPayload()));
   it('should throw an error if patch validation fails', () => {
     return cloud.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(200))

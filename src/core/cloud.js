@@ -46,7 +46,15 @@ const get = (api, validationCb, options) => {
 };
 exports.get = (api, validationCb) => get(api, validationCb, null);
 
+const modifyPayload = (payload, options) => {
+  if (!options) return payload;
+  let updatePayload = options.updatePayload;
+  delete options.updatePayload;
+  return updatePayload ? updatePayload : payload;
+};
+
 const update = (api, payload, validationCb, chakramCb, options) => {
+  payload = modifyPayload(payload, options);
   chakramCb = (chakramCb || chakram.patch);
   logger.debug('%s %s with options %s', chakramCb === chakram.patch ? 'PATCH' : 'PUT', api, options);
 

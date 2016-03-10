@@ -95,6 +95,11 @@ beforeEach(() => {
       requestBody.id = 123;
       return requestBody;
     })
+    .patch('/foo/123')
+    .reply(200, (uri, requestBody) => {
+      requestBody.id = 123;
+      return requestBody;
+    })
     .patch('/foo/456')
     .reply(404, (uri, requestBody) => {
       return { message: 'No foo found with the given ID' };
