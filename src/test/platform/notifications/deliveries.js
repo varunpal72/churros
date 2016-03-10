@@ -8,6 +8,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const server = require('core/server');
 const tools = require('core/tools');
+
 const schema = require('./assets/delivery.schema.json');
 const listSchema = require('./assets/deliveries.schema.json');
 

@@ -7,6 +7,7 @@ const argv = require('optimist').argv;
 const defaults = require('core/defaults');
 const tunnel = require('core/tunnel');
 const server = require('core/server');
+const persister = require('./persister');
 const logger = require('core/logger')(argv.verbose ? 'silly' : 'info');
 
 let config;
@@ -72,3 +73,6 @@ before(() => {
       process.exit(1);
     });
 });
+
+before(() => persister.snapshot());
+after(() => persister.restore());
