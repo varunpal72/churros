@@ -136,6 +136,13 @@ const cruds = (api, payload, validationCb, updateCb, options) => {
     .then(r => remove(api + '/' + createdId, options));
 };
 exports.cruds = cruds;
+
+const sr = (api, validationCb, options) => {
+  return get(api, validationCb, options)
+    .then(r => get(api + '/' + r.body[0].id, validationCb, options));
+};
+exports.sr = sr;
+
 /*
  * Gives you access to adding HTTP request options to any of the HTTP-related APIs
  */
@@ -156,13 +163,6 @@ exports.withOptions = (options) => {
     sr: (api, validationCb) => sr(api, validationCb, options)
   };
 };
-
-
-const sr = (api, validationCb, options) => {
-  return get(api, validationCb, options)
-    .then(r => get(api + '/' + r.body[0].id, validationCb, options));
-};
-exports.sr = sr;
 
 const createEvents = (element, eiId, payload, numEvents) => {
   numEvents = (numEvents || 1);
