@@ -64,7 +64,7 @@ exports.put = (api, payload, validationCb) => put(api, payload, validationCb, nu
 
 const remove = (api, options) => {
   logger.debug('DELETE %s with options %s', api, options);
-  return chakram.delete(api, options)
+  return chakram.delete(api, null, options)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return r;
