@@ -13,14 +13,14 @@ suite.forElement('crm', 'campaigns', payload, (test) => {
   test.should.supportPagination();
   let campaignId;
   let noteId;
-  it('Should support CRUDS for campaigns/notes', () =>{
+  it('should support CRUDS for campaigns/notes', () =>{
     return cloud.post(test.api, payload)
-    .then(r => {campaignId = r.body.id;})
-    .then(() => cloud.post(`${test.api}/${campaignId}/notes`, note))
-    .then(r => {noteId = r.body.id;})
+    .then(r => campaignId = r.body.id)
+    .then(r => cloud.post(`${test.api}/${campaignId}/notes`, note))
+    .then(r => noteId = r.body.id)
     .then(r => cloud.get(`${test.api}/${campaignId}/notes/${noteId}`))
     .then(r => cloud.patch(`${test.api}/${campaignId}/notes/${noteId}`, {"description":"this is an updated note"}))
     .then(r => cloud.delete(`${test.api}/${campaignId}/notes/${noteId}`))
-    .then(r => cloud.delete(test.api + '/' + campaignId));
+    .then(r => cloud.delete(`${test.api}/${campaignId}`));
   });
 });
