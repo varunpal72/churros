@@ -175,6 +175,7 @@ exports.withOptions = (options) => {
     cd: (api, payload, validationCb) => cd(api, payload, validationCb, options),
     crds: (api, payload, validationCb) => crds(api, payload, validationCb, options),
     crud: (api, payload, validationCb, updateCb) => crud(api, payload, validationCb, updateCb, options),
+    crus: (api, payload, validationCb, updateCb) => crus(api, payload, validationCb, updateCb, options),
     sr: (api, validationCb) => sr(api, validationCb, options)
   };
 };
