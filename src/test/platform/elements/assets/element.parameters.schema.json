@@ -1,0 +1,6 @@
+{
+  "type": "array",
+  "items": {
+    "$ref": "element.parameter.schema.json"
+  }
+}
