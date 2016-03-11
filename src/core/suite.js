@@ -98,7 +98,7 @@ const itCeqlSearch = (name, api, payload, field) => {
     return cloud.post(api, payload)
       .then(r => {
         id = r.body.id;
-        const clause = `${field}='${r.body[field]}`; // have to escape where values with single quotes
+        const clause = `${field}='${r.body[field]}'`; // have to escape where values with single quotes
         const options = { qs: { where: clause } };
         return cloud.withOptions(options).get(api, (r) => {
           expect(r).to.have.statusCode(200);
@@ -150,15 +150,18 @@ const runTests = (api, payload, validationCb, tests) => {
 };
 
 exports.forElement = (hub, resource, payload, tests) => {
-  describe(resource, () => {
-    let api = `/hubs/${hub}/${resource}`;
-    runTests(api, payload, (r) => expect(r).to.have.statusCode(200), tests);
-  });
+  describe(resource, () => runTests(`/hubs/${hub}/${resource}`, payload, (r) => expect(r).to.have.statusCode(200), tests));
 };
 
-exports.forPlatform = (resource, payload, validationCb, tests) => {
-  describe(resource, () => {
-    let api = `/${resource}`;
-    runTests(api, payload, validationCb, tests);
-  });
+/**
+ * Starts up a new test suite for a platform resource.  This wraps all of the given tests in a mocha describe block, and
+ * provides a bunch of convenience functions inside of the given tests under the 'test' object.
+
+ * @param  {string} resource     The name of the platform resource you're testing
+ * @param  {object} payload      The default JSON payload to go about creating one of these resources
+ * @param  {function} schema     The schema to validate responses against
+ * @param  {function} tests      A function, containing all tests
+ */
+exports.forPlatform = (resource, payload, schema, tests) => {
+  describe(resource, () => runTests(`/${resource}`, payload, schema, tests));
 };
