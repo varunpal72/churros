@@ -1,6 +1,6 @@
 ## v0.4.0 <sub><sup>(TBD)</sup></sub>
 #### Highlights
-* `test.withOptions()` will now pass through for all variations of `shouldSupportCruds`
+* `test.withOptions()` will now pass through for all variations of `should.supportCruds()`
 * able to pass churros options to withOptions, currently only the following is supported (`qs` included for context):
 ```javascript
 {
