@@ -5,51 +5,105 @@
       {
         "path": "id",
         "vendorPath": "companyId"
-      }
-    ]
-  },
-  "activities": {
-    "vendorName": "engagements",
-    "fields": [
+      },
       {
-        "path": "id",
-        "vendorPath": "engagement.id"
-      }
-    ]
-  },
-  "contacts": {
-    "vendorName": "contacts",
-    "fields": [
+        "path": "name",
+        "vendorPath": "properties.name"
+      },
       {
-        "path": "id",
-        "vendorPath": "vid"
+        "path": "description",
+        "vendorPath": "properties.description"
       }
     ]
   },
-  "leads": {
-    "vendorName": "leads",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "vid"
-      }
-    ]
-  },
-  "opportunities": {
+  "opportunities":{
     "vendorName": "deals",
     "fields": [
       {
         "path": "id",
         "vendorPath": "dealId"
+      },
+      {
+        "path": "name",
+        "vendorPath": "properties.dealname"
+      },
+      {
+        "path": "amount",
+        "vendorPath": "properties.amount"
       }
     ]
   },
-  "owners": {
-    "vendorName": "owners",
+  "contacts":{
+    "vendorName": "contacts",
     "fields": [
       {
-        "path": "id",
-        "vendorPath": "ownerId"
+        "path":"id",
+        "vendorPath":"vid"
+      },
+      {
+        "path":"firstName",
+        "vendorPath":"properties.firstname"
+      },
+      {
+        "path":"lastName",
+        "vendorPath":"properties.lastname"
+      },
+      {
+        "path":"email",
+        "vendorPath":"properties.email"
+      }
+    ]
+  },
+  "leads":{
+    "vendorName": "leads",
+    "fields": [
+      {
+        "path":"id",
+        "vendorPath":"vid"
+      },
+      {
+        "path":"firstName",
+        "vendorPath":"properties.firstname"
+      },
+      {
+        "path":"lastName",
+        "vendorPath":"properties.lastname"
+      },
+      { "path":"email",
+        "vendorPath":"properties.email"}
+    ]
+  },
+  "activities":{
+    "vendorName":"engagements",
+    "fields": [
+      {
+        "path":"id",
+        "vendorPath":"engagement.id"
+      },
+      {
+        "path":"body",
+        "vendorPath":"metadata.body"
+      },
+      {
+        "path":"type",
+        "vendorPath":"engagement.type"
+      },
+      {
+        "path": "contactId",
+        "vendorPath": "properties.external_user_id"
+      }
+    ]
+  },
+  "owners":{
+    "vendorName":"owners",
+    "fields": [
+      {
+        "path":"id",
+        "vendorPath":"ownerId"
+      },
+      {
+        "path":"email",
+        "vendorPath":"email"
       }
     ]
   }

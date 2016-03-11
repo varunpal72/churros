@@ -42,6 +42,11 @@ const itCruds = (api, payload, validationCb, updateCb) => {
   it(name, () => cloud.cruds(api, payload, validationCb, updateCb));
 };
 
+const itCrus = (api, payload, validationCb, updateCb) => {
+  const name = util.format('should allow CRUS for %s', api);
+  it(name, () => cloud.crus(api, payload, validationCb, updateCb));
+};
+
 const itSr = (api, validationCb) => {
   const name = util.format('should allow SR for %s', api);
   it(name, () => cloud.get(api).then(r => cloud.get(api + '/' + r.body[0].id)));
@@ -102,6 +107,7 @@ const runTests = (api, payload, validationCb, tests) => {
       supportCeqlSearch: (field) => itCeqlSearch(api, payload, field),
       supportCruds: (updateCb) => itCruds(api, payload, validationCb, updateCb),
       supportCrud: (updateCb) => itCrud(api, payload, validationCb, updateCb),
+      supportCrus: (updateCb) => itCrus(api, payload, validationCb, updateCb),
       supportCrd: () => itCrd(api, payload, validationCb),
       supportCd: () => itCd(api, payload, validationCb),
       supportCrds: () => itCrds(api, payload, validationCb),

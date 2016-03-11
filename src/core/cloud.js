@@ -150,6 +150,16 @@ const cruds = (api, payload, validationCb, updateCb) => {
 };
 exports.cruds = cruds;
 
+const crus = (api, payload, validationCb, updateCb) => {
+  let createdId = -1;
+  return post(api, payload, validationCb)
+    .then(r => createdId = r.body.id)
+    .then(r => get(api + '/' + createdId, validationCb))
+    .then(r => update(api + '/' + createdId, payload, validationCb, updateCb))
+    .then(r => get(api, validationCb))
+};
+exports.crus = crus;
+
 const sr = (api, validationCb) => {
   return get(api, validationCb)
     .then(r => get(api + '/' + r.body[0].id, validationCb));
