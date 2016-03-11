@@ -25,7 +25,6 @@
 updatePayload is used to pass a different payload to the `update` portion of a CRUDS cycle
 * Element tests:
  * `sugarcrmv2`
- * `hubspotcrm`
 * Platform tests:
  * object definitions and transformation
  * formula tests enhancements
