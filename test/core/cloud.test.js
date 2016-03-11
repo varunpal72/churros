@@ -98,6 +98,14 @@ describe('cloud', () => {
         requestBody.id = 123;
         return requestBody;
       })
+      .patch('/foo/123', {
+        id: 789,
+        foo: 'bar'
+      })
+      .reply(200, (uri, requestBody) => {
+        requestBody.id = 789;
+        return requestBody;
+      })
       .patch('/foo/456')
       .reply(404, (uri, requestBody) => {
         return { message: 'No foo found with the given ID' };
@@ -111,6 +119,14 @@ describe('cloud', () => {
       .put('/foo/123')
       .reply(200, (uri, requestBody) => {
         requestBody.id = 123;
+        return requestBody;
+      })
+      .put('/foo/123', {
+        id: 789,
+        foo: 'bar'
+      })
+      .reply(200, (uri, requestBody) => {
+        requestBody.id = 789;
         return requestBody;
       })
       .put('/foo/456')
@@ -153,6 +169,10 @@ describe('cloud', () => {
   it('should support put', () => cloud.put('/foo/123', genPayload(), genSchema()));
   it('should support put with options', () => cloud.withOptions({ json: true }).put('/foo/123', genPayload(), genSchema()));
   it('should support put with custom validation', () => cloud.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
+  it('should support put with alternate payload', () => {
+    return cloud.withOptions({ churros: { updatePayload: genPayload({ id: 789 }) } })
+      .put('/foo/123', genPayload({ id: 123 }), (r) => expect(r.body.id).to.equal(789));
+  });
   it('should support put with no custom validation', () => cloud.put('/foo/123', genPayload()));
   it('should throw an error if put validation fails', () => {
     return cloud.put('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(200))
@@ -165,6 +185,10 @@ describe('cloud', () => {
   it('should support patch', () => cloud.patch('/foo/123', genPayload({ id: 123 }), genSchema()));
   it('should support patch with options', () => cloud.withOptions({ json: true }).patch('/foo/123', genPayload({ id: 123 }), genSchema()));
   it('should support patch with custom validation', () => cloud.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(404)));
+  it('should support patch with alternate payload', () => {
+    return cloud.withOptions({ churros: { updatePayload: genPayload({ id: 789 }) } })
+      .patch('/foo/123', genPayload({ id: 123 }), (r) => expect(r.body.id).to.equal(789));
+  });
   it('should support patch with no custom validation', () => cloud.put('/foo/123', genPayload()));
   it('should throw an error if patch validation fails', () => {
     return cloud.patch('/foo/456', genPayload(), (r) => expect(r).to.have.statusCode(200))
@@ -197,9 +221,14 @@ describe('cloud', () => {
   it('should support crds', () => cloud.crds('/foo', genPayload(), genSchema()));
   it('should support crud', () => cloud.crud('/foo', genPayload(), genSchema()));
   it('should support cruds', () => cloud.cruds('/foo', genPayload(), genSchema()));
+  it('should support crd with options', () => cloud.withOptions({ json: true }).crd('/foo', genPayload(), genSchema()));
+  it('should support crds with options', () => cloud.withOptions({ json: true }).crds('/foo', genPayload(), genSchema()));
+  it('should support crud with options', () => cloud.withOptions({ json: true }).crud('/foo', genPayload(), genSchema()));
+  it('should support cruds with options', () => cloud.withOptions({ json: true }).cruds('/foo', genPayload(), genSchema()));
   it('should support creating events', () => cloud.createEvents('myelement', eiId, genPayload(), 2));
 
   it('should support sr', () => cloud.sr('/foo', (r) => expect(r).to.have.statusCode(200)));
+  it('should support sr with options', () => cloud.withOptions({ json: true }).sr('/foo', (r) => expect(r).to.have.statusCode(200)));
 
   it('should support post file', () => {
     // should really NOT depend on the file system here :/
@@ -211,14 +240,14 @@ describe('cloud', () => {
 
   it('should support post file with options', () => {
     // should really NOT depend on the file system here :/
-    const filePath = '.tmp';
+    const filePath = '.post1.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.withOptions({ json: false }).postFile('/foo/file', filePath)
       .then(r => fs.unlink(filePath));
   });
 
   it('should throw an error if post file validation fails', () => {
-    const filePath = '.tmp';
+    const filePath = '.post2.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.postFile('/foo/bad/file', filePath)
       .then(r => {
@@ -232,7 +261,7 @@ describe('cloud', () => {
 
   it('should support patch file', () => {
     // should really NOT depend on the file system here :/
-    const filePath = '.tmp';
+    const filePath = '.patch1.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.patchFile('/foo/file', filePath)
       .then(r => fs.unlink(filePath));
@@ -240,7 +269,7 @@ describe('cloud', () => {
 
   it('should support patch file with options', () => {
     // should really NOT depend on the file system here :/
-    const filePath = '.tmp';
+    const filePath = '.patch2.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.withOptions({ json: false }).patchFile('/foo/file', filePath)
       .then(r => fs.unlink(filePath));
