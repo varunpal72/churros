@@ -15,8 +15,8 @@ suite.forPlatform('elements/resources', common.genResource({}), schema, (test) =
   before(done => cloud.post('elements', common.genElement({}))
   .then(r => element = r.body)
   .then(r => keyUrl = 'elements/' + element.key + '/resources')
-  .then(r => keyUrl = 'elements/' + element.id + '/resources')
-  .then(done()));
+  .then(r => idUrl = 'elements/' + element.id + '/resources')
+  .then(r => done()));
 
   it('should support CRUD by key', () => common.crudSubResource(keyUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
 
