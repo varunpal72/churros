@@ -1,0 +1,15 @@
+{
+  "type": "object",
+  "properties": {
+    "name": {
+      "id": "name",
+      "type": "string"
+    },
+    "swagger": {
+      "type": "object"
+    },
+    "rawSwagger": {
+      "type": "object"
+    }
+  }
+}
