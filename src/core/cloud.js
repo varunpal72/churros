@@ -47,9 +47,8 @@ const get = (api, validationCb, options) => {
 exports.get = (api, validationCb) => get(api, validationCb, null);
 
 const modifyPayload = (payload, options) => {
-  if (!options) return payload;
-  let updatePayload = options.updatePayload;
-  delete options.updatePayload;
+  if (!options || !options.churros) return payload;
+  let updatePayload = options.churros.updatePayload;
   return updatePayload ? updatePayload : payload;
 };
 

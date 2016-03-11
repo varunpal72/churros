@@ -1,5 +1,18 @@
 ## v0.4.0 <sub><sup>(TBD)</sup></sub>
 #### Highlights
+* `test.withOptions()` will now pass through for all variations of `shouldSupportCruds`
+* able to pass churros options to withOptions, currently only the following is supported (`qs` included for context):
+```javascript
+{
+  qs: {
+    where: 'foo=bar'
+  },
+  churros: {
+    updatePayload: inserUpdatePayloadHere  
+  }
+}
+```
+updatePayload is used to pass a different payload to the `update` portion of a CRUDS cycle
 
 ## v0.3.0 <sub><sup>(2016-02-28)</sup></sub>
 #### Highlights
