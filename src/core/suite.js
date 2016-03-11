@@ -48,10 +48,33 @@ const itSr = (name, api, validationCb, options) => {
 };
 
 const itPagination = (name, api, validationCb) => {
-  const n = name || util.format('should allow paginating %s', api);
+  const n = name || util.format('should allow paginating with page and pageSize %s', api);
   const options = { qs: { page: 1, pageSize: 1 } };
 
   it(n, () => cloud.withOptions(options).get(api, validationCb));
+};
+
+/**
+ * Creates a few objects, and then, using our ?pageSize=x&nextPage=y pagination, tests out paginating this resource
+ * @param  {string} name         The optional test name
+ * @param  {string} api          The API resource
+ * @param  {function} validationCb The optional validation CB
+ */
+const itNextPagePagination = (name, api, payload, validationCb) => {
+  const n = name || util.format('should allow paginating with page and nextPage %s', api);
+  const num = 5;
+  const promises = [];
+  for (let i = 0; i < num; i++) {
+    promises.push(cloud.post(api, payload));
+  }
+
+  it(n, () => {
+    const ids = [];
+    return chakram.all(promises)
+      .then(r => expect(r).length.to.equal(num))
+      .then(r => r.forEach(o => ids.push(o.body.id)))
+      .then(r => ids.forEach(id => cloud.delete(`${api}/id`)));
+  });
 };
 
 const itGet404 = (name, api, invalidId) => {
@@ -99,6 +122,7 @@ const runTests = (api, payload, validationCb, tests) => {
       return200OnPost: () => itPost(name, api, payload, options, validationCb),
       return200OnGet: () => itGet(name, api, options, validationCb),
       supportPagination: () => itPagination(name, api, validationCb),
+      supportNextPagePagination: () => itNextPagePagination(name, api, validationCb),
       supportCeqlSearch: (field) => itCeqlSearch(name, api, payload, field),
       supportCruds: (updateCb) => itCruds(name, api, payload, validationCb, updateCb, options),
       supportCrud: (updateCb) => itCrud(name, api, payload, validationCb, updateCb, options),
