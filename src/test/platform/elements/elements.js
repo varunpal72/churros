@@ -43,7 +43,7 @@ suite.forPlatform('elements', common.genElement({}), schema, (test) => {
     }
     let clone;
     return getElementId('freshdesk')
-    .then(id => cloud.post('elements/' + id + '/clone', schema))
+    .then(id => cloud.post(`elements/${id}/clone`, schema))
     .then(r => clone = r.body)
     .then(r => cloud.delete('elements/' + clone.id));
   });
@@ -55,6 +55,12 @@ suite.forPlatform('elements', common.genElement({}), schema, (test) => {
   it('should support oauth URL generation by ID', () => {
     return getElementId('sfdc')
     .then(id => testOAuthUrl(id));
+  });
+
+  it('should support retrieve default transformations by key', () => cloud.get('elements/sfdc/transformations'));
+  it('should support retrieve default transformations by ID', () => {
+    return getElementId('sfdc')
+    .then(id => cloud.get(`elements/${id}/transformations`));
   });
 });
 
@@ -86,7 +92,7 @@ const testElementActivation = (idField, schema) => {
     .then(r => cloud.delete('elements/' + element[idField]));
 };
 const testOAuthUrl = (idOrKey) => {
-  return cloud.withOptions({qs: {apiKey: 'abcdefg', apiSecret: '1234567', callbackUrl: 'http://localhost:8080'}}).get('elements/' + idOrKey + '/oauth/url', r => {
+  return cloud.withOptions({qs: {apiKey: 'abcdefg', apiSecret: '1234567', callbackUrl: 'http://localhost:8080'}}).get(`elements/${idOrKey}/oauth/url`, r => {
     expect(r.body).to.not.be.empty;
     expect(r.body.element).to.equal('sfdc');
     expect(r.body.oauthUrl).to.not.be.empty;
