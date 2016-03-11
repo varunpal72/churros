@@ -50,6 +50,12 @@ suite.forPlatform('elements', common.genElement({}), schema, (test) => {
 
   it('should support activate/deactivate by key', () => testElementActivation('key', schema));
   it('should support activate/deactivate by ID', () => testElementActivation('id', schema));
+
+  it('should support oauth URL generation by key', () => testOAuthUrl('sfdc'));
+  it('should support oauth URL generation by ID', () => {
+    return getElementId('sfdc')
+    .then(id => testOAuthUrl(id));
+  });
 });
 
 const getElementId = (key) => {
@@ -78,4 +84,11 @@ const testElementActivation = (idField, schema) => {
       expect(r.body.active).to.equal(false);
     }))
     .then(r => cloud.delete('elements/' + element[idField]));
+};
+const testOAuthUrl = (idOrKey) => {
+  return cloud.withOptions({qs: {apiKey: 'abcdefg', apiSecret: '1234567', callbackUrl: 'http://localhost:8080'}}).get('elements/' + idOrKey + '/oauth/url', r => {
+    expect(r.body).to.not.be.empty;
+    expect(r.body.element).to.equal('sfdc');
+    expect(r.body.oauthUrl).to.not.be.empty;
+  });
 };
