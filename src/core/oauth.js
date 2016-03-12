@@ -295,15 +295,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         browser.findElement(webdriver.By.className('submit floatRight')).click();
         return browser.isElementPresent(webdriver.By.name('authoriseChoice'));
       }, 10000);
-  //    browser.wait(() => {
         browser.findElement(webdriver.By.name('authoriseChoice')).click();
-//        return browser.isElementPresent(webdriver.By.id('details-button'));
-      //}, 10000);
-      //browser.findElement(webdriver.By.className('submit floatRight')).click();
-      wait(browser, 10000); //wait 10 sec
-      //need to do the replace back to localhost:8080
-      //return 'https://localhost:8080?code=' + config.code;
-      //logger.debug(browser.getCurrentUrl());
       return browser.getCurrentUrl();
   case 'sharepoint':
     browser.get(r.body.oauthUrl);

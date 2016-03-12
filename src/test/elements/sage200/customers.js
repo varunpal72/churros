@@ -2,10 +2,23 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/customers');
+const cloud = require('core/cloud');
+//const tools = require('core/tools');
+
+const customerUpdate = () => ({
+  "website": "www.cloud-elements.com"
+});
 
 suite.forElement('finance', 'customers', payload, (test) => {
-  // checkout functions available under test.should which provide a lot of pre-canned tests
-  //   more information here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#adding-tests-to-an-existing-suite
-
-  it('tylertoth should insert some tests here :)', () => true);
+  let customerId;
+  it('Should support CRUDS with custom PATCH', () => {
+    return cloud.post(test.api,payload)
+      .then(r => customerId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + customerId))
+      .then(r => cloud.patch(test.api + '/' + customerId, customerUpdate()))
+      .then(r => cloud.get(test.api))
+      .then(r => cloud.delete(test.api + '/' + customerId));
+  });
+  test.should.supportPagination();
+  test.should.supportCeqlSearch('id'); 
 });

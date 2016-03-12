@@ -7,5 +7,77 @@
         "vendorPath": "id"
       }
     ]
+  },
+  "banks": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/banks",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "invoices": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/sales_invoices",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "payments": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/sales_payments",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "payments/receipts": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/sales_receipts",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "products": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/products",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "products/groups": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/product_groups",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "products/prices": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/product_price_views",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "transactions": {
+    "vendorName": "https://api.columbus.sage.com/uk/sage200/accounts/v1/sales_posted_transactions",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
   }
 }
