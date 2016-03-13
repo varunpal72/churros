@@ -126,32 +126,24 @@ describe('suite', () => {
         return requestBody;
       })
       .post('/foo/bad')
-      .reply(400, (uri, requestBody) => {
-        return { message: 'Invalid JSON body' };
-      })
+      .reply(400, (uri, requestBody) => ({ message: 'Invalid JSON body' }))
       .post('/foo/file')
       .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
       .post('/foo/bad/file')
-      .reply(404, (uri, requestBody) => {
-        return { message: 'No resource found at /foo/bad/file' };
-      });
-
-    nock(baseUrl, eventHeaders())
+      .reply(404, (uri, requestBody) => ({ message: 'No resource found at /foo/bad/file' }))
       .post('/events/myelement')
-      .reply(200, (uri, requestBody) => requestBody);
+      .reply(200, (uri, requestBody) => requestBody)
+      .post('/foo/pagination')
+      .reply(200, (uri, requestBody) => genPayload({ id: 123 }));
 
     /** GET **/
     nock(baseUrl, headers())
       .get('/foo/123')
       .reply(200, () => genPayload({ id: 123 }))
       .get('/foo/456')
-      .reply(404, () => {
-        return { message: 'No foo found with the given ID' };
-      })
+      .reply(404, () => ({ message: 'No foo found with the given ID' }))
       .get('/foo/bad')
-      .reply(404, () => {
-        return { message: 'No resource found with name /foo/bad' };
-      })
+      .reply(404, () => ({ message: 'No resource found with name /foo/bad' }))
       .get('/foo')
       .reply(200, (uri, requestBody) => [genPayload({ id: 123 }), genPayload({ id: 456 })])
       .get('/foo')
@@ -159,6 +151,9 @@ describe('suite', () => {
       .reply(200, () => genPayload({ id: 123 }))
       .get('/foo')
       .query({ where: 'id=\'123\'' })
+      .reply(200, () => [genPayload({ id: 123 })])
+      .get('/foo/pagination')
+      .query(true)
       .reply(200, () => [genPayload({ id: 123 })]);
 
     /** PATCH && PUT **/
@@ -169,25 +164,21 @@ describe('suite', () => {
         return requestBody;
       })
       .patch('/foo/456')
-      .reply(404, (uri, requestBody) => {
-        return { message: 'No foo found with the given ID' };
-      })
+      .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }))
       .put('/foo/123')
       .reply(200, (uri, requestBody) => {
         requestBody.id = 123;
         return requestBody;
       })
       .put('/foo/456')
-      .reply(404, (uri, requestBody) => {
-        return { message: 'No foo found with the given ID' };
-      });
+      .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }));
 
     /** DELETE **/
     nock(baseUrl, headers())
       .delete('/foo/123')
-      .reply(200, (uri, requestBody) => {
-        return {};
-      });
+      .reply(200, (uri, requestBody) => ({}))
+      .delete('/foo/pagination/123')
+      .reply(200, (uri, requestBody) => ({}));
   });
 
   suite.forElement('fakehub', 'resource', null, (test) => {
@@ -236,6 +227,7 @@ describe('suite', () => {
     test.withOptions({ json: true }).should.supportCrds();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
+    test.withApi('/foo/pagination').should.supportNextPagePagination(1);
 
     // overriding the default API that was passed in as the default in the `suite.forPlatform`
     test.withApi('/foo/bad').should.return400OnPost();
