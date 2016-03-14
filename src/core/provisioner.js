@@ -35,14 +35,6 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
-exports.genInstance = (element, o, args) => {
-  return {
-    name: (o.name || 'churros-instance'),
-    element: { key: element },
-    configuration: (o.config || genConfig(props.all(element), args))
-  };
-};
-
 const createInstance = (element, config, providerData, baseApi) => {
   const instance = {
     name: 'churros-instance',

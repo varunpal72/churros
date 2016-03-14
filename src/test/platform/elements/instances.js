@@ -16,6 +16,14 @@ suite.forPlatform('elements/instances', instanceSchema, null, (test) => {
   });
 });
 
+const genInstance = (element, o) => {
+  return {
+    name: (o.name || 'churros-instance'),
+    element: { key: element },
+    configuration: props.all(element)
+  };
+};
+
 const crudInstance = (baseUrl, schema) => {
   let id;
   return provisioner.create('freshdesk', undefined, baseUrl)
@@ -26,6 +34,6 @@ const crudInstance = (baseUrl, schema) => {
     expect(r.body.configuration.password).to.equal("********");
     expect(r.body.configuration.username).to.equal(props.getForKey('freshdesk', 'username'));
   }))
-  .then(r => cloud.put(`${baseUrl}/${id}`, provisioner.genInstance('freshdesk', { name: 'updated-instance' })))
+  .then(r => cloud.put(`${baseUrl}/${id}`, genInstance('freshdesk', { name: 'updated-instance' })))
   .then(r => provisioner.delete(id, baseUrl));
 };
