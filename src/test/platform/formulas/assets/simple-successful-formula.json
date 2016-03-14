@@ -8,7 +8,8 @@
             "type": "script",
             "properties": {
                 "mimeType": "application/javascript",
-                "body": "var id = trigger.event.objectId; var test = { \"integration-test-1\": 1,\n \"integration-test-2\":  true,\n \"integration-test-3\": \"integration-value\", \"trigger-test\": id };\n\nreturn test;"
+                "scriptEngine": "v2",
+                "body": "'use strict'; const id = trigger.event.objectId; done({ 'integration-test-1': 1, 'integration-test-2': true, 'integration-test-3': 'integration-value', 'trigger-test': id });"
             }
         }
     ],
