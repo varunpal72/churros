@@ -44,7 +44,7 @@ const itCruds = (name, api, payload, validationCb, updateCb, options) => {
 
 const itCrus = (name, api, payload, validationCb, updateCb, options) => {
   const n = name || `should allow CRUS for ${api}`;
-  it(name, () => cloud.withOptions(options).crus(api, payload, validationCb, updateCb));
+  it(n, () => cloud.withOptions(options).crus(api, payload, validationCb, updateCb));
 };
 
 const itSr = (name, api, validationCb, options) => {
