@@ -221,6 +221,7 @@ describe('suite', () => {
     test.withOptions({ json: true }).should.supportCruds();
     test.withOptions({ json: true }).should.supportCruds(chakram.put);
     test.withOptions({ json: true }).should.supportCrud();
+    test.withOptions({ json: true }).should.supportCrus();
     test.withOptions({ json: true }).should.supportCrd();
     test.withOptions({ json: true }).should.supportCd();
     test.withOptions({ json: true }).should.supportCrds();
