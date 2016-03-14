@@ -10,6 +10,8 @@ const genGoodV1Script = () => "return {foo: 'bar'};";
 
 const genGoodV2Script = () => "done({foo: 'bar'});";
 
+const genGoodV2ScriptWithFunction = () => "const promiseMe = () => { return new Promise((res, rej) => res('resolved')); }; promiseMe() .then(r => done({ status: r }));";
+
 const genBadV2Script = () => "'use strict'; let name = 'foo';";
 
 const genBaseStep = (engine, genScript) => ({
@@ -54,6 +56,11 @@ suite.forPlatform('formulas', null, schema, (test) => {
     .withName('should not allow creating a script without a return statement in the v1 engine')
     .withJson(gen(genV1Step)(genGoodV2Script))
     .should.return400OnPost();
+
+  test
+    .withName('should allow creating a script with a helper function that has a return statement in the v2 engine')
+    .withJson(gen(genV2Step)(genGoodV2ScriptWithFunction))
+    .should.supportCd();
 
   test
     .withName('should not allow creating a script with a return statement in the v2 engine')
