@@ -142,6 +142,16 @@ const cruds = (api, payload, validationCb, updateCb, options) => {
 };
 exports.cruds = cruds;
 
+const crus = (api, payload, validationCb, updateCb, options) => {
+  let createdId = -1;
+  return post(api, payload, validationCb, options)
+    .then(r => createdId = r.body.id)
+    .then(r => get(api + '/' + createdId, validationCb, options))
+    .then(r => update(api + '/' + createdId, payload, validationCb, updateCb, options))
+    .then(r => get(api, validationCb, options))
+};
+exports.crus = crus;
+
 const sr = (api, validationCb, options) => {
   return get(api, validationCb, options)
     .then(r => get(api + '/' + r.body[0].id, validationCb, options));
@@ -165,6 +175,7 @@ exports.withOptions = (options) => {
     cd: (api, payload, validationCb) => cd(api, payload, validationCb, options),
     crds: (api, payload, validationCb) => crds(api, payload, validationCb, options),
     crud: (api, payload, validationCb, updateCb) => crud(api, payload, validationCb, updateCb, options),
+    crus: (api, payload, validationCb, updateCb) => crus(api, payload, validationCb, updateCb, options),
     sr: (api, validationCb) => sr(api, validationCb, options)
   };
 };
