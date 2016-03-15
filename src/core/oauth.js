@@ -84,6 +84,38 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then(findBtn())
           .thenCatch(() => false);
       }, 5000);
+    case 'dropboxbusiness':
+      browser.get(r.body.oauthUrl);
+      const findLoginUser = () => {
+        return browser.findElement(webdriver.By.xpath('//div[input/@name="login_email"]'))
+          .then(r => {
+              r.sendKeys(username);
+              return true;
+            });
+          };
+      const findLoginPass = () => {
+        return browser.wait(() => {
+          return browser.findElement(webdriver.By.xpath('//div[input/@name="login_password"]'))
+        }, 10000)
+          .then(r => {
+              r.sendKeys(password);
+              return true;
+            });
+          };
+      const findSubmit = () => {
+        return browser.findElement(webdriver.By.className('login-button button-primary'))
+          .then(r => {
+            r.click();
+            return true;
+          });
+      };
+      return browser.wait(() => {
+        return findLoginUser()
+          .then(findLoginPass())
+          .then(findSubmit())
+          .thenCatch(() => false)
+          .then(console.log(browser.getCurrentUrl()));
+      }, 5000);
     case 'facebooksocial':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).clear();
