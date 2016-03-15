@@ -1,23 +1,53 @@
 'use strict';
 
 const suite = require('core/suite');
-//const payload = require('./assets/libraryDocuments');
-//const chakram = require('chakram');
+const chakram = require('chakram');
 const cloud = require('core/cloud');
-//const winston = require('winston');
+const winston = require('winston');
 const tools = require('core/tools');
-//const expect = chakram.expect;
+const expect = chakram.expect;
 
+
+const createWorkflows = (transientDocumentId) => ({
+  "documentCreationInfo": {
+    "formFieldLayerTemplates": [{
+      "transientDocumentId": transientDocumentId
+    }],
+    "locale": "",
+    "name": tools.random(),
+    "fileInfos": [{
+      "transientDocumentId": transientDocumentId,
+      "name": tools.random(),
+      "workflowLibraryDocumentId": tools.random()
+    }],
+    "recipientsListInfo": [{
+      "recipients": [{
+        "email": tools.randomEmail()
+      }],
+      "name": tools.random()
+    }]
+  }
+});
 
 suite.forElement('esignature', 'workflows', null, (test) => {
-	let workflowId = '3AAABLblqZhDxBYJolhNTN97iasNYVJSz7j5mN5Nz-DiDtNe1lVP5FyRxfRmAK1uezvNn-LcePWX9M1nZ0CEAeVrA6VETr6Uc'
-//GET all
-	it('should allow GET for ' + test.api, () => {    
-		return cloud.get(test.api)  
+  let workflowId;
+  let transientDocumentId;
+  it('should allow GET for ' + test.api, () => {
+    return cloud.get(test.api)
+      .then(r => expect(r).to.have.statusCode(200))
   });
-  
-//GET /workflows/{workflowId}
-	it('should allow GET for ' + test.api+'/'+workflowId, () => {    
-		return cloud.get(test.api+ '/' + workflowId)  
+  it('should allow GET for ' + test.api + '/{workflowId}', () => {
+    return cloud.get(test.api)
+      .then(r => workflowId = r.body[0].id)
+      .then(r => cloud.get(test.api + '/' + workflowId))
+      .then(r => expect(r).to.have.statusCode(200))
   });
-});  
+  it('should allow POST for ' + test.api + '/{workflowId}/agreements', () => {
+    return cloud.get(test.api)
+      .then(r => workflowId = r.body[0].id)
+      .then(r => cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt'))
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api + '/' + workflowId + '/agreements', createWorkflows(transientDocumentId)))
+      .then(r => expect(r).to.have.statusCode(200))
+  });
+});

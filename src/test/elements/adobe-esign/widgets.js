@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/widgets');
 const cloud = require('core/cloud');
 const winston = require('winston');
 const chakram = require('chakram');
@@ -10,128 +9,107 @@ const tools = require('core/tools');
 
 const createWidget = (transientDocumentId) => ({
   "widgetCreationInfo": {
-    "fileInfos": [
-      {
-        "transientDocumentId": transientDocumentId
-      }
-    ],
+    "fileInfos": [{
+      "transientDocumentId": transientDocumentId
+    }],
     "name": tools.random(),
     "signatureFlow": "SENDER_SIGNATURE_NOT_REQUIRED"
   }
 });
 
 const updateWidgetPersonalize = () => ({
-	"email": tools.randomEmail()
+  "email": tools.randomEmail()
 });
 
 const updateWidgetStatus = () => ({
-	"message": "Testing widget status",
-	"value": "ENABLE"
+  "message": "Testing widget status",
+  "value": "ENABLE"
 });
 
 suite.forElement('esignature', 'widgets', null, (test) => {
-	let widgetId;
-	let transientDocumentId;
-	let documentId;
-
-	it('should allow POST for ' + test.api, () => {    
-		return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-		.then(r => transientDocumentId = r.body.id)
-		.then(r => cloud.post(test.api,createWidget(transientDocumentId)))
-		.then(r => widgetId = r.body.id)
-		.then(r => cloud.get(test.api+ '/' + widgetId))
-		.then(r => cloud.get(test.api+ '/' + widgetId + '/agreements'))
-		.then(r => cloud.get(test.api+ '/' + widgetId + '/auditTrail'))
-		.then(r => cloud.get(test.api+ '/' + widgetId + '/combinedDocument'))
-		.then(r => cloud.get(test.api+ '/' + widgetId + '/formData'))
-		.then(r => cloud.get(test.api+ '/' + widgetId + '/documents'))
-		.then(r => documentId = r.body.documentId)
-		.then(r => cloud.get(test.api + '/' + widgetId + '/documents/' + documentId))
-		.then(r => cloud.patch(test.api+ '/' + widgetId + '/personalize',updateWidgetPersonalize()))
-		.then(r => cloud.patch(test.api+ '/' + widgetId + '/status',updateWidgetStatus()))
-		.then(r =>cloud.get(test.api))
-		});
-
-
-/*
-	it('should allow CRUDS for /transientDocuments', () => {
-    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')	
-	  .then(r => transientDocumentId = r.body.id)
-	});	
-	
-    return cloud.post('/hubs/ecommerce/customers', customer())
-      .then(r => customerId = r.body.id)
-      .then(r => cloud.post('/hubs/ecommerce/products', product))
-      .then(r => productId = r.body.id)
-      .then(r => cloud.post(test.api, createOrder(customerId, productId)))
-      .then(r => cloud.get(test.api + '/' + r.body.id))
-      .then(r => cloud.update(test.api + '/' + r.body.id, order))
-      .then(r => cloud.delete('/hubs/ecommerce/orders/' + r.body.id))
-      .then(r => cloud.delete('/hubs/ecommerce/customers/' + customerId))
-      .then(r => cloud.delete('/hubs/ecommerce/products/' + productId));
+  let widgetId;
+  let transientDocumentId;
+  let documentId;
+  it('should allow POST for ' + test.api, () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => expect(r).to.have.statusCode(200))
   });
-//POST
-	it('should allow POST for ' + test.api, () => {    
-		return cloud.post(test.api,createWidget(transientDocumentId))
-		.then(r => widgetId = r.body.id)
-//        .then(r => cloud.get(test.api+ '/' + widgetId)) 
-  }); 	
-//GET all
-	it('should allow GET for ' + test.api, () => {    
-		return cloud.get(test.api)   
+  it('should allow GET for ' + test.api, () => {
+    return cloud.get(test.api)
+      .then(r => expect(r).to.have.statusCode(200))
   });
-//GET /widgets/{widgetId}
-	it('should allow GET for ' + test.api+'/{widgetId}', () => {  
-    	return cloud.get(test.api+ '/' + widgetId)
+  it('should allow GET ' + test.api + '/{widgetId}', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + widgetId))
+      .then(r => expect(r).to.have.statusCode(200))
   });
-//GET /widgets/{widgetId}/agreements
-	it('should allow GET for ' + test.api+'/{widgetId}/agreements', () => {  
-    	return cloud.get(test.api+ '/' + widgetId + '/agreements')
+  it('should allow GET ' + test.api + '/{widgetId}/agreements', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + widgetId + '/agreements'))
+      .then(r => expect(r).to.have.statusCode(200))
   });
-//GET /widgets/{widgetId}/auditTrail
-	it('should allow GET for ' + test.api+'/{widgetId}/auditTrail', () => {  
-    	return cloud.get(test.api+ '/' + widgetId + '/auditTrail')
+  it('should allow GET ' + test.api + '/{widgetId}/auditTrail', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + widgetId + '/auditTrail'))
+      .then(r => expect(r).to.have.statusCode(200))
   });
-//GET /widgets/{widgetId}/combinedDocument
-	it('should allow GET for ' + test.api+'/{widgetId}/combinedDocument', () => {  
-    	return cloud.get(test.api+ '/' + widgetId + '/combinedDocument')
-  });    
-//GET /widgets/{widgetId}/formData
-	it('should allow GET for ' + test.api+'/{widgetId}/formData', () => {  
-    	return cloud.get(test.api+ '/' + widgetId + '/formData')
+  it('should allow GET ' + test.api + '/{widgetId}/combinedDocument', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + widgetId + '/combinedDocument'))
+      .then(r => expect(r).to.have.statusCode(200))
   });
-//GET /widgets/{widgetId}/documents
-	it('should allow GET for ' + test.api+'/{widgetId}/documents', () => {  
-    	return cloud.get(test.api+ '/' + widgetId + '/documents')
-
-    		.then(r => {
-    		documentId = r.body.dId;
-    		winston.debug(r.body.dId);
-    		})
-    		.then(r => cloud.get(test.api + '/' + widgetId + '/documents/' + documentId))   
-   		 	
-  });    
-/*  
-//GET /widgets/{widgetId}/documents/{documentId} 
-	it('should allow GET for ' + test.api+'/{widgetId}/documents', () => {  
-		let documentId
-    	return cloud.get(test.api+ '/' + widgetId + '/documents')
-    		.then(r => documentId = r.body.id)
-    		.then(r => cloud.get(test.api + '/' + widgetId + '/documents/' + documentId))
-  });  
-*/   
-/*
-//PATCH /widgets/{widgetId}/personalize
-	it('should allow PATCH for ' + test.api+'/{widgetId}/personalize', () => {  
-    	return cloud.patch(test.api+ '/' + widgetId + '/personalize',updateWidgetPersonalize())
+  it('should allow GET ' + test.api + '/{widgetId}/documents', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + widgetId + '/documents'))
+      .then(r => expect(r).to.have.statusCode(200))
   });
-//PATCH /widgets/{widgetId}/status
-	it('should allow PATCH for ' + test.api+'/{widgetId}/status', () => {  
-    	return cloud.patch(test.api+ '/' + widgetId + '/status',updateWidgetStatus())
+  it('should allow GET ' + test.api + '/{widgetId}/documents/{documentId}', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + widgetId + '/documents'))
+      .then(r => documentId = r.body.documentId)
+      .then(r => cloud.get(test.api + '/' + widgetId + '/documents/' + documentId))
+      .then(r => expect(r).to.have.statusCode(200))
   });
-*/
-
-  
+  it('should allow GET ' + test.api + '/{widgetId}/formData', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + widgetId + '/formData'))
+      .then(r => expect(r).to.have.statusCode(200))
+  });
+  it('should allow PATCH for ' + test.api + '/{widgetId}/personalize', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.patch(test.api + '/' + widgetId + '/personalize', updateWidgetPersonalize()))
+  });
+  it('should allow PATCH for ' + test.api + '/{widgetId}/status', () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id)
+      .then(r => cloud.patch(test.api + '/' + widgetId + '/status', updateWidgetStatus()))
+  });
 });
-
-

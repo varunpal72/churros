@@ -52,5 +52,14 @@
         "vendorPath": "documentId"
       }
     ]
+  },
+    "workflows": {
+    "vendorName": "workflows",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "workflowId"
+      }
+    ]
   }
 }

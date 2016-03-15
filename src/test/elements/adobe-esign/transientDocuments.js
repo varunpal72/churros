@@ -2,11 +2,12 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const chakram = require('chakram');
+const expect = chakram.expect;
 
 suite.forElement('esignature', 'transientDocuments', null, (test) => {
-  it('should allow CRUDS for /transientDocuments', () => {
-    let attachmentId;
+  it('should allow POST for /transientDocuments', () => {
     return cloud.postFile(test.api, __dirname + '/assets/attach.txt')
-      .then(r => attachmentId = r.body.id)  
-	});
+      .then(r => expect(r).to.have.statusCode(200))
+  });
 });
