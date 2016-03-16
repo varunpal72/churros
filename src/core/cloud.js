@@ -67,16 +67,13 @@ exports.patch = (api, payload, validationCb) => patch(api, payload, validationCb
 const put = (api, payload, validationCb, options) => update(api, payload, validationCb, chakram.put, options);
 exports.put = (api, payload, validationCb) => put(api, payload, validationCb, null);
 
-const remove = (api, options) => {
+const remove = (api, validationCb, options) => {
   logger.debug('DELETE %s with options %s', api, options);
   return chakram.delete(api, null, options)
-    .then(r => {
-      expect(r).to.have.statusCode(200);
-      return r;
-    })
+    .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to delete %s', r, api));
 };
-exports.delete = (api) => remove(api, null);
+exports.delete = (api, validationCb) => remove(api, validationCb, null);
 
 const postFile = (api, filePath, options) => {
   options = (options || {});
