@@ -1,0 +1,69 @@
+{
+    "name": "script-context-successful",
+    "steps": [
+        {
+            "onSuccess": [],
+            "onFailure": [],
+            "name": "customer-retrieve",
+            "type": "script",
+            "properties": {
+                "body": "var customer = steps['customer-update'];\n\nreturn customer;",
+                "mimeType": "application/javascript"
+            }
+        },
+        {
+            "onSuccess": [
+                "customer-update"
+            ],
+            "onFailure": [],
+            "name": "customer",
+            "type": "script",
+            "properties": {
+                "body": "var customer = { \"name\": \"test\", \"id\": \"8000270E-1392053436\" };\nvar address = {\n    \"city\": \"city\",\n  \"state\": \"state\",\n    \"streetAddress\": \"asdfasdfasf\",\n    \"postalCode\": \"23423\"\n}\n\nreturn customer;",
+                "mimeType": "application/javascript"
+            }
+        },
+        {
+            "onSuccess": [
+                "customer-retrieve"
+            ],
+            "onFailure": [],
+            "name": "customer-update",
+            "type": "script",
+            "properties": {
+                "body": "var customer = steps.customer;\n\ncustomer.newthing = { \"some\": \"new thing\" };\n\nreturn customer;",
+                "mimeType": "application/javascript"
+            }
+        }
+    ],
+    "triggers": [
+        {
+            "type": "event",
+            "async": true,
+            "onSuccess": [
+                "customer"
+            ],
+            "onFailure": [],
+            "properties": {
+                "elementInstanceId": "${trigger-instance}"
+            }
+        }
+    ],
+    "active": true,
+    "singleThreaded": false,
+    "configuration": [
+        {
+            "key": "notification.email",
+            "name": "Notification Email",
+            "type": "value",
+            "description": "Optional email where formula errors and notification steps will be sent (If more than one email is needed, separate each email with a comma)",
+            "required": false
+        },
+        {
+            "key": "trigger-instance",
+            "name": "trigger-instance",
+            "type": "elementInstance",
+            "required": true
+        }
+    ]
+}
