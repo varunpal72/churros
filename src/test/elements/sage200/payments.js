@@ -13,25 +13,34 @@ const createPayment = (customerId, bankId) => ({
 
 const createCustomer = (rando) => ({
   "reference": "CE"+ rando ,
-  "name": "Tyler"
+  "name": "CE Payments"
 })
 
 suite.forElement('finance', 'payments', createPayment(), (test) => {
   let customerId;
   let bankId;
-  it('Should create a customer and then payments for that id - have to mod reference number after execution', () => {
+  let urnId;
+  let paymentId;
+  let receiptId;
+  it('Should create a customer and then payments for that id', () => {
     return cloud.post('/hubs/finance/customers',createCustomer(tools.randomInt().toString()))
       .then(r => customerId = r.body.id)
       .then(r => cloud.get('/hubs/finance/customers/' + customerId))
       .then(r => cloud.get('/hubs/finance/banks'))
       .then(r => bankId = r.body[0].id)
-      //add this back in when we debug the 403 error
       .then(r => cloud.post(test.api,createPayment(customerId, bankId)))
+      .then(r => urnId = r.body.urn)
+      .then(r => cloud.get(test.api),{qs: {where: 'urn=\''+urnId +'\''}})
+      .then(r => paymentId = r.body[0].id)
+      .then(r => cloud.get(test.api + '/' + paymentId))
       .then(r => cloud.post(test.api + '/receipts',createPayment(customerId, bankId)))
-      .then(r => cloud.get(test.api))
+      .then(r => urnId = r.body.urn)
+      .then(r => cloud.get(test.api),{qs: {where: 'urn=\''+urnId +'\''}})
+      .then(r => receiptId = r.body[0].id)
+      .then(r => cloud.get(test.api + '/' + receiptId))
+      .then(r => cloud.get(test.api));
       //can't delete a customer with transactions ...
       //.then(r => cloud.delete('/hubs/finance/customers/' + customerId));
   });
   test.should.supportPagination();
-  test.should.supportCeqlSearch('id');
 });

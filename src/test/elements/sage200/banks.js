@@ -8,5 +8,5 @@ suite.forElement('finance', 'banks', null, (test) => {
     return cloud.get(test.api)
   });
   test.should.supportPagination();
-  test.should.supportCeqlSearch('id');
+  test.withOptions({qs: {where: 'code=\'1200\''}}).should.return200OnGet();
 });

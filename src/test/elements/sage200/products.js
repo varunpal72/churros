@@ -2,8 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-//const customerPayload = require('./assets/customers');
-
 
 const createProducts = (productGroupId) => ({
   "product_group_id": productGroupId,
@@ -22,12 +20,10 @@ suite.forElement('finance', 'products', createProducts(), (test) => {
       .then(r => cloud.post(test.api, createProducts(productGroupId)))
       .then(r => productId = r.body.id)
       .then(r => cloud.get(test.api + '/' + productId))
-      //add this back in when we debug the 403 error
-      //.then(r => cloud.post(test.api,createInvoices(customerId)))
       .then(r => cloud.delete(test.api + '/' + productId));
   });
   test.should.supportPagination();
   test.withApi(test.api +'/prices').should.supportPagination();
   test.withApi(test.api +'/groups').should.supportPagination();
-  test.should.supportCeqlSearch('id');
+  test.withOptions({qs: {where: 'date_time_updated>\'2015-10-22T16:40:09.563\''}}).should.return200OnGet();
 });

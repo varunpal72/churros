@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const payload = require('./assets/customers');
 const cloud = require('core/cloud');
-//const tools = require('core/tools');
 
 const customerUpdate = () => ({
   "website": "www.cloud-elements.com"
@@ -20,5 +19,5 @@ suite.forElement('finance', 'customers', payload, (test) => {
       .then(r => cloud.delete(test.api + '/' + customerId));
   });
   test.should.supportPagination();
-  test.should.supportCeqlSearch('id'); 
+  test.should.supportCeqlSearch('id');
 });

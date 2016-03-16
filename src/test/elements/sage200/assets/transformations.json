@@ -23,6 +23,10 @@
       {
         "path": "id",
         "vendorPath": "id"
+      },
+      {
+        "path": "urn",
+        "vendorPath": "urn"
       }
     ]
   },
@@ -32,6 +36,10 @@
       {
         "path": "id",
         "vendorPath": "id"
+      },
+      {
+        "path": "urn",
+        "vendorPath": "urn"
       }
     ]
   },
@@ -41,6 +49,10 @@
       {
         "path": "id",
         "vendorPath": "id"
+      },
+      {
+        "path": "urn",
+        "vendorPath": "urn"
       }
     ]
   },

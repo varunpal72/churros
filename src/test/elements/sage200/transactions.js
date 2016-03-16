@@ -11,5 +11,5 @@ suite.forElement('finance', 'transactions', null, (test) => {
       .then(r => cloud.get(test.api + '/' + transactionsId))
   });
   test.should.supportPagination();
-  test.should.supportCeqlSearch('id');
+  test.withOptions({qs: {where: 'date_time_updated>\'2016-03-04T17:35:41.453\''}}).should.return200OnGet();
 });
