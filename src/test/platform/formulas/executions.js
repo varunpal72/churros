@@ -47,9 +47,14 @@ const validateSimpleSuccessfulScheduledTrigger = t => {
   expect(flat['trigger.type']).to.equal('scheduled');
 };
 
-const validateSuccessfulStepExecution = se => {
-  expect(se).to.have.property('status').and.equal('success');
-};
+const validateStepExecutionStatus = (se, status) =>
+  expect(se).to.have.property('status').and.equal(status);
+
+const validateSuccessfulStepExecution = se =>
+  validateStepExecutionStatus(se, 'success');
+
+const validateErrorStepExecution = se =>
+  validateStepExecutionStatus(se, 'failed');
 
 const validateSimpleSuccessfulStepExecutionsForType = tValidator => ses => {
   expect(ses).to.have.length(2);
@@ -73,6 +78,16 @@ const validateScriptContextSuccessfulStepExecutionsForEvents = tValidator => ses
   expect(consolidated['customer-retrieve.name']).to.equal('test');
   expect(consolidated['customer-retrieve.newthing']).to.equal('{"some":"new thing"}');
 };
+
+const validateSimpleTimeoutStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(2);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName !== 'trigger').map(validateErrorStepExecution);
+
+  const consolidated = consolidateStepExecutionValues(ses);
+
+  expect(consolidated['simple-script.error']).to.contain('Script timed out after');
+}
 
 const validateStepExecutions = ses => {
   ses.map(se => validateSuccessfulStepExecution(se));
@@ -122,6 +137,10 @@ const validateSimpleSuccessfulStepExecutions = {
 
 const validateScriptContextSuccessfulStepExecutions = {
   forEvents: (num) => validateScriptContextSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+}
+
+const validateSimpleTimeoutStepExecutions = {
+  forEvents: (num) => validateSimpleTimeoutStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 }
 
 suite.forPlatform('formulas', null, null, (test) => {
@@ -252,5 +271,34 @@ suite.forPlatform('formulas', null, null, (test) => {
       });
   });
 
+  it('should properly handle a formula with a step that times out', () => {
+    return common.deleteFormulasByName(test.api, 'simple-timeout')
+      .then(r => {
+        const formula = require('./assets/simple-timeout-formula');
+        const formulaInstance = require('./assets/simple-timeout-formula-instance');
+
+        formulaInstance.configuration['trigger-instance'] = sfdcId;
+
+        return cloud.post(test.api, formula, fSchema)
+          .then(r => {
+            const formulaId = r.body.id;
+            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
+              .then(r => {
+                const formulaInstanceId = r.body.id;
+                return generateSingleSfdcPollingEvent(sfdcId)
+                  .then(() => sleep.sleep(40))
+                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+                  .then(r => {
+                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+                    return r;
+                  })
+                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleTimeoutStepExecutions.forEvents(1))))
+                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+                  .then(() => common.deleteFormula(formulaId));
+              });
+          });
+      });
+  });
   after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
 });
