@@ -1,3 +1,11 @@
 {
-  
+  "new_members": [
+    {
+      "member_given_name": "Tasty churros",
+      "member_email": "churros@example.com",
+      "member_surname": "Churros",
+      "send_welcome_email": true
+    }
+  ],
+  "force_async": false
 }
