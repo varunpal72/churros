@@ -25,6 +25,11 @@ const flattenStepExecutionValues = sevs =>
     return flat;
   }, {});
 
+const consolidateStepExecutionValues = ses =>
+  ses.reduce((prev, curr) =>
+    Object.assign(prev, flattenStepExecutionValues(curr.stepExecutionValues)),
+    ({}));
+
 const validateSimpleSuccessfulRequestTrigger = t => {
   const flat = flattenStepExecutionValues(t.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('request');
@@ -42,18 +47,35 @@ const validateSimpleSuccessfulScheduledTrigger = t => {
   expect(flat['trigger.type']).to.equal('scheduled');
 };
 
-const validateStepExecution = se => {
+const validateSuccessfulStepExecution = se => {
   expect(se).to.have.property('status').and.equal('success');
 };
 
 const validateSimpleSuccessfulStepExecutionsForType = tValidator => ses => {
   expect(ses).to.have.length(2);
-  ses.map(se => validateStepExecution(se));
+  ses.map(se => validateSuccessfulStepExecution(se));
   ses.filter(se => se.stepName === 'trigger').map(tValidator);
 };
 
+const validateScriptContextSuccessfulStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(4);
+  ses.map(se => validateSuccessfulStepExecution(se));
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+
+  const consolidated = consolidateStepExecutionValues(ses);
+
+  expect(consolidated['customer.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
+  expect(consolidated['customer.name']).to.equal('test');
+  expect(consolidated['customer-update.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
+  expect(consolidated['customer-update.name']).to.equal('test');
+  expect(consolidated['customer-update.newthing']).to.equal('{"some":"new thing"}');
+  expect(consolidated['customer-retrieve.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
+  expect(consolidated['customer-retrieve.name']).to.equal('test');
+  expect(consolidated['customer-retrieve.newthing']).to.equal('{"some":"new thing"}');
+};
+
 const validateStepExecutions = ses => {
-  ses.map(se => validateStepExecution(se));
+  ses.map(se => validateSuccessfulStepExecution(se));
 };
 
 const validateExecution = e => validator => {
@@ -84,7 +106,7 @@ const validateTriggerBodyEvents = (tb, num) => {
   expect(tb.message.events).to.have.length(num);
 };
 
-const validateSimpleSuccessfulEventTrigger = num => t => {
+const validateSuccessfulEventTrigger = num => t => {
   const flat = flattenStepExecutionValues(t.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('event');
   expect(flat['trigger.event']).to.exist;
@@ -93,10 +115,14 @@ const validateSimpleSuccessfulEventTrigger = num => t => {
 };
 
 const validateSimpleSuccessfulStepExecutions = {
-  forEvents: (num) => validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulEventTrigger(num)),
+  forEvents: (num) => validateSimpleSuccessfulStepExecutionsForType(validateSuccessfulEventTrigger(num)),
   forRequest: validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulRequestTrigger),
   forScheduled: validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulScheduledTrigger)
 };
+
+const validateScriptContextSuccessfulStepExecutions = {
+  forEvents: (num) => validateScriptContextSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+}
 
 suite.forPlatform('formulas', null, null, (test) => {
   let sfdcId;
@@ -165,5 +191,34 @@ suite.forPlatform('formulas', null, null, (test) => {
       });
   });
 
-  after(done => { provisioner.delete(sfdcId).then(() => done()); });
+  it('should successfully execute a formula and properly handle context between steps', () => {
+    return common.deleteFormulasByName(test.api, 'script-context-successful')
+      .then(r => {
+        const formula = require('./assets/script-context-successful-formula');
+        const formulaInstance = require('./assets/script-context-successful-formula-instance');
+
+        formulaInstance.configuration['trigger-instance'] = sfdcId;
+
+        return cloud.post(test.api, formula, fSchema)
+          .then(r => {
+            const formulaId = r.body.id;
+            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
+              .then(r => {
+                const formulaInstanceId = r.body.id;
+                return generateSingleSfdcPollingEvent(sfdcId)
+                  .then(() => sleep.sleep(5))
+                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+                  .then(r => {
+                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+                    return r;
+                  })
+                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+                  .then(rs => rs.map(r => validateExecution(r.body)(validateScriptContextSuccessfulStepExecutions.forEvents(1))))
+                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+                  .then(() => common.deleteFormula(formulaId));
+              });
+          });
+      });
+  });
+  after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
 });
