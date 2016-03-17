@@ -42,9 +42,9 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('password')).sendKeys(password);
       browser.findElement(webdriver.By.name('commit')).click();
       logger.debug(browser.getTitle());
-      browser.wait(() => {
-        return browser.getTitle().then((title) => !title);
-      }, 10000);
+      // browser.wait(() => {
+      //   return browser.getTitle().then((title) => !title);
+      // }, 10000);
       return browser.getCurrentUrl();
     case 'dropbox':
       // TODO - not working yet...

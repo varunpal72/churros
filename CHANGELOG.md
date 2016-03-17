@@ -1,5 +1,34 @@
-## v0.4.0 <sub><sup>(TBD)</sup></sub>
+## v0.5.0 <sub><sup>(TBD)</sup></sub>
 #### Highlights
+
+## v0.4.0 <sub><sup>(2016-03-11)</sup></sub>
+#### Highlights
+* changed `localtunnel` support so that a tunnel is started at the beginning of all tests, and the publicly available URL is saved in `props.events.url` property
+* during `churros add element`, the `id` field is added to the global object definitions JSON file *if* it is not already present on that object
+* the `churros test` option: `--password` is now a flag instead of an input option:
+![CLI](https://camo.githubusercontent.com/40a190aa2c9a86eef338de2ace574e59976ef052/687474703a2f2f636c2e6c792f3257303131753343303933342f53637265656e2532305265636f7264696e67253230323031362d30332d3035253230617425323030392e3433253230414d2e676966)
+* changed the HTTP server that listens in `churros` for incoming requests (events, notification subscriptions, etc.) to be a global object that will respond with `502`s by default, until `server.listen` is called in which case it will listen for `x` number of requests and respond with `200`s during that time.  See `server.js` for more information.
+* If the default `oauth.callback.url` property of `http://httpbin.org/get` will not work for your OAuth element, then you can now override that callback URL by setting the `<element>:oauth.callback.url` property.
+* `test.should.supportNextPagePagination(amount)` to test our cursor-based pagination
+* `test.withOptions()` will now pass through for all variations of `should.supportCruds()`
+* able to pass churros options to withOptions, currently only the following is supported (`qs` included for context):
+```javascript
+{
+  qs: {
+    where: 'foo=bar'
+  },
+  churros: {
+    updatePayload: inserUpdatePayloadHere  
+  }
+}
+```
+updatePayload is used to pass a different payload to the `update` portion of a CRUDS cycle
+* Element tests:
+ * `sugarcrmv2`
+* Platform tests:
+ * object definitions and transformation
+ * formula tests enhancements
+ * notifications enhancements
 
 ## v0.3.0 <sub><sup>(2016-02-28)</sup></sub>
 #### Highlights

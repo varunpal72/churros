@@ -35,16 +35,17 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
-const createInstance = (element, config, providerData) => {
+const createInstance = (element, config, providerData, baseApi) => {
   const instance = {
     name: 'churros-instance',
     element: { key: element },
     configuration: config
   };
+  baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
 
-  return chakram.post('/instances', instance)
+  return chakram.post(baseApi, instance)
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
@@ -92,7 +93,7 @@ const oauth1 = (element, args) => {
     });
 };
 
-exports.create = (element, args) => {
+exports.create = (element, args, baseApi) => {
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
 
@@ -108,14 +109,15 @@ exports.create = (element, args) => {
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
         .then(r => oauth(element, r, config))
-        .then(r => createInstance(element, config, r));
+        .then(r => createInstance(element, config, r, baseApi));
     default:
-      return createInstance(element, config);
+      return createInstance(element, config, undefined, baseApi);
   }
 };
 
-exports.delete = (id) => {
-  return chakram.delete('/instances/' + id)
+exports.delete = (id, baseApi) => {
+  baseApi = (baseApi) ? baseApi : '/instances';
+  return chakram.delete(baseApi + '/' + id)
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Deleted element instance with ID: ' + id);

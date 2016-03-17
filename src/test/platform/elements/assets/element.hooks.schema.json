@@ -1,0 +1,6 @@
+{
+  "type": "array",
+  "items": {
+    "$ref": "element.hook.schema.json"
+  }
+}
