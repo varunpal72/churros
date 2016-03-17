@@ -14,7 +14,7 @@ suite.forElement('documents', 'members', payload, (test) => {
     	memberId = memberStr.split(":")[1];
       })
     .then(r => cloud.delete(`${test.api}/${memberId}`))
-    .then (r => cloud.get(test.api)
+    .then (r => cloud.get(test.api))
     .then(r => {
     	let record = r.body[r.body.length-1];
     	memberId = record.profile.team_member_id.split(":")[1];
@@ -22,7 +22,7 @@ suite.forElement('documents', 'members', payload, (test) => {
     .then(r => cloud.get(`${test.api}/${memberId}`))
     .then(r => cloud.patch(`${test.api}/${memberId}/suspend/false`))
     .then(r => cloud.patch(`${test.api}/${memberId}/unsuspend`))
-    .then(r => cloud.patch(`${test.api}/${memberId}/suspend`))
+    .then(r => cloud.patch(`${test.api}/${memberId}/suspend/true`))
     .then(r => cloud.patch(`${test.api}/${memberId}/unsuspend`))
   });
 });
