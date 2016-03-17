@@ -1,7 +1,8 @@
 {
     "formula": {
         "active": true,
-        "singleThreaded": false
+        "singleThreaded": false,
+        "scriptEngine": "v2"
     },
     "name": "simple-successful-inst",
     "configuration": {
