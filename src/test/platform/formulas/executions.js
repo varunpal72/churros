@@ -388,5 +388,36 @@ suite.forPlatform('formulas', null, null, (test) => {
           });
       });
   });
+
+  it('should properly handle a single threaded formula with a step that contains invalid json, triggered by an event with three objects', () => {
+    return common.deleteFormulasByName(test.api, 'simple-error')
+      .then(r => {
+        const formula = require('./assets/simple-error-formula');
+        const formulaInstance = require('./assets/simple-error-formula-instance');
+
+        formula.singleThreaded = true;
+        formulaInstance.configuration['trigger-instance'] = sfdcId;
+
+        return cloud.post(test.api, formula, fSchema)
+          .then(r => {
+            const formulaId = r.body.id;
+            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
+              .then(r => {
+                const formulaInstanceId = r.body.id;
+                return generateTripleSfdcPollingEvent(sfdcId)
+                  .then(() => sleep.sleep(5))
+                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+                  .then(r => {
+                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
+                    return r;
+                  })
+                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forEvents(3))))
+                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+                  .then(() => common.deleteFormula(formulaId));
+              });
+          });
+      });
+  });
   after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
 });
