@@ -19,7 +19,7 @@ suite.forPlatform('elements/resources', common.genResource({}), schema, (test) =
   .then(r => done()));
 
   it('should support CRUD by key', () => common.crudSubResource(keyUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
+  it('should support CRUD by ID', () => common.crudSubResource(idUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
 
   after(done => { cloud.delete('elements/' + element.key).then(() => done()) });
-
 });
