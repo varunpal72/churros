@@ -46,44 +46,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       //   return browser.getTitle().then((title) => !title);
       // }, 10000);
       return browser.getCurrentUrl();
-    // case 'dropbox':
-    //   // TODO - not working yet...
-    //   browser.get(r.body.oauthUrl);
-    //   const findLoginEmail = () => {
-    //     return browser.findElements(webdriver.By.name('login_email'))
-    //       .then(r => {
-    //         r.forEach(element => {
-    //           if (element.getTagName() === 'input') {
-    //             element.sendKeys(username);
-    //             return true;
-    //           }
-    //         });
-    //       });
-    //   };
-    //   const findLoginPassword = () => {
-    //     return browser.findElements(webdriver.By.name('login_password'))
-    //       .then(r => {
-    //         r.forEach(element => {
-    //           if (element.getTagName() === 'input') {
-    //             r.sendKeys(password);
-    //             return true;
-    //           }
-    //         });
-    //       });
-    //   };
-    //   const findBtn = () => {
-    //     return browser.findElement(webdriver.By.css('.login-button'))
-    //       .then(r => {
-    //         r.click();
-    //         return true;
-    //       });
-    //   };
-    //   return browser.wait(() => {
-    //     return findLoginEmail()
-    //       .then(findLoginPassword())
-    //       .then(findBtn())
-    //       .thenCatch(() => false);
-    //   }, 5000);
     case 'dropboxbusiness':
     case 'dropbox':
       browser.get(r.body.oauthUrl);
