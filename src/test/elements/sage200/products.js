@@ -5,7 +5,7 @@ const cloud = require('core/cloud');
 
 const createProducts = (productGroupId) => ({
   "product_group_id": productGroupId,
-  "name": "Testsss",
+  "name": "CE Product Test",
   "code": "CE006"
 });
 

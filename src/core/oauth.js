@@ -277,26 +277,12 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
       return browser.getCurrentUrl();
-    case 'sharepoint':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
-      browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
-      browser.wait(() => {
-        browser.findElement(webdriver.By.id('cred_sign_in_button')).click(); // ... i'm serious, you have to just keep clicking.  wtf microsoft.
-        return browser.isElementPresent(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow'));
-      }, 10000);
-      browser.findElement(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow')).click();
-      return browser.getCurrentUrl();
-    case 'sage200':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.name('sso.Email')).sendKeys(username);
-      browser.findElement(webdriver.By.name('sso.Password')).sendKeys(password);
-      browser.wait(() => {
-        browser.findElement(webdriver.By.className('submit floatRight')).click();
-        return browser.isElementPresent(webdriver.By.name('authoriseChoice'));
-      }, 10000);
-        browser.findElement(webdriver.By.name('authoriseChoice')).click();
-      return browser.getCurrentUrl();
+  case 'sage200':
+    browser.get(r.body.oauthUrl);
+    browser.findElement(webdriver.By.name('sso.Email')).sendKeys(username);
+    browser.findElement(webdriver.By.name('sso.Password')).sendKeys(password);
+    browser.findElement(webdriver.By.className('submit floatRight')).click();
+    return browser.getCurrentUrl();
   case 'sharepoint':
     browser.get(r.body.oauthUrl);
     browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);

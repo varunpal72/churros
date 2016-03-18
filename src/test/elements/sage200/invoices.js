@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const customerPayload = require('./assets/customers');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 
@@ -28,8 +27,6 @@ suite.forElement('finance', 'invoices', createInvoices(), (test) => {
       .then(r => cloud.get(test.api),{qs: {where: 'urn=\''+urnId +'\''}})
       .then(r => invoiceId = r.body[0].id)
       .then(r => cloud.get(test.api + '/' + invoiceId));
-      //can't delete a customer with transactions ...
-      //.then(r => cloud.delete('/hubs/finance/customers/' + customerId));
   });
   test.should.supportPagination();
 });

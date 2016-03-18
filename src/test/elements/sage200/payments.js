@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const customerPayload = require('./assets/customers');
 const cloud = require('core/cloud');
 
 const createPayment = (customerId, bankId) => ({
@@ -39,8 +38,6 @@ suite.forElement('finance', 'payments', createPayment(), (test) => {
       .then(r => receiptId = r.body[0].id)
       .then(r => cloud.get(test.api + '/' + receiptId))
       .then(r => cloud.get(test.api));
-      //can't delete a customer with transactions ...
-      //.then(r => cloud.delete('/hubs/finance/customers/' + customerId));
   });
   test.should.supportPagination();
 });
