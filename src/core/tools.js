@@ -1,7 +1,6 @@
 'use strict';
 
 const logger = require('winston');
-const localtunnel = require('localtunnel');
 
 var exports = module.exports = {};
 
@@ -22,14 +21,3 @@ exports.logAndThrow = (msg, error, arg) => {
 
 exports.base64Encode = s => new Buffer(s).toString('base64');
 exports.base64Decode = s => new Buffer(s, 'base64').toString('ascii');
-
-exports.startTunnel = (port) => {
-  return new Promise((res, rej) => {
-    logger.debug('attempting to start up localtunnel on port %s', port);
-    localtunnel(port, { 'local_host': '127.0.0.1' }, (err, tunnel) => {
-      if (err) rej(err);
-      logger.debug('successfully started localtunnel on port %s with url %s', port, tunnel.url);
-      res(tunnel);
-    });
-  });
-};

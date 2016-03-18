@@ -3,13 +3,28 @@
     "fields": [{
       "path": "id",
       "type": "string"
+    }, {
+      "path":"name",
+      "type":"string"
+    }, {
+      "path":"description",
+      "type":"string"
     }]
   },
   "activities":{
     "fields":[{
       "path": "id",
       "type": "string"
-      }]
+      }, {
+      "path":"body",
+      "type":"string"
+    }, {
+      "path":"type",
+      "type":"string"
+    }, {
+      "path":"contactId",
+      "type":"string"
+    }]
   },
   "attachments":{
     "fields":[{
@@ -21,7 +36,7 @@
     "fields":[{
       "path": "id",
       "type": "string"
-      }]
+    }]
   },
   "contacts": {
     "fields": [{
@@ -90,6 +105,15 @@
     "fields":[{
       "path": "id",
       "type": "string"
+    }, {
+      "path": "firstName",
+      "type": "string"
+    }, {
+      "path": "lastName",
+      "type": "string"
+    }, {
+      "path": "email",
+      "type": "string"
     }]
   },
   "lists":{
@@ -142,6 +166,15 @@
       "path": "id",
       "type": "string"
       }]
+  },
+  "owners":{
+    "fields":[{
+      "path":"id",
+      "type":"string"
+      }, {
+      "path":"email",
+      "type":"string"
+    }]
   },
   "payments":{
     "fields":[{

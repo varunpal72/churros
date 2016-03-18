@@ -3,16 +3,15 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
+const server = require('core/server');
 const provisioner = require('core/provisioner');
-const util = require('util');
 const props = require('core/props');
 const logger = require('winston');
 const crypto = require('crypto');
 const eventSchema = require('./assets/event.schema.json');
 
 const signatureKey = 'abcd1234efgh5678';
-const gen = (opts, url) => new Object({
+const gen = (opts, url) => ({
   'event.notification.enabled': opts['event.notification.enabled'] || true,
   'event.notification.callback.url': url,
   'event.notification.signature.key': signatureKey
@@ -20,7 +19,7 @@ const gen = (opts, url) => new Object({
 
 const loadPayload = (element) => {
   try {
-    return require(util.format('./assets/%s.event.json', element));
+    return require(`./assets/${element}.event.json`);
   } catch (e) {
     logger.error('No %s.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events', element);
     process.exit(1);
@@ -33,16 +32,13 @@ suite.forPlatform('events', null, null, (test) => {
     const payload = loadPayload(element);
     const load = props.getForKey('events', 'load');
     const wait = props.getForKey('events', 'wait');
-    const port = props.getForKey('events', 'port');
+    const url = props.getForKey('events', 'url');
 
     let instanceId;
-    let tunnel;
-    return tools.startTunnel(port)
-      .then(tun => tunnel = tun)
-      .then(tunnel => provisioner.create(element, gen({}, tunnel.url)))
+    return provisioner.create(element, gen({}, url))
       .then(r => instanceId = r.body.id)
       .then(r => cloud.createEvents(element, instanceId, payload, load))
-      .then(r => cloud.listenForEvents(port, load, wait))
+      .then(s => server.listen(load, wait))
       .then(r => r.forEach(event => {
         // basic event header and body validation
         expect(event.headers).to.not.be.empty;
@@ -50,12 +46,11 @@ suite.forPlatform('events', null, null, (test) => {
         // validate webhook signature
         expect(event.headers['elements-webhook-id']).to.not.be.empty;
         expect(event.headers['elements-webhook-signature']).to.not.be.empty;
-        var signature = event.headers['elements-webhook-signature'];
-        var hash = 'sha1=' + crypto.createHmac('sha1', signatureKey).update(event.body).digest('base64');
+        const signature = event.headers['elements-webhook-signature'];
+        const hash = 'sha256=' + crypto.createHmac('sha256', signatureKey).update(event.body).digest('base64');
         expect(signature).to.equal(hash);
       }))
-      .then(r => cloud.get(util.format('instances/%s/events', instanceId), eventSchema))
-      .then(r => tunnel.close())
+      .then(r => cloud.get(`instances/${instanceId}/events`, eventSchema))
       .then(r => provisioner.delete(instanceId));
   });
 
