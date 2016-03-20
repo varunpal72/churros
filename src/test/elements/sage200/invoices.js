@@ -18,7 +18,7 @@ suite.forElement('finance', 'invoices', createInvoices(), (test) => {
   let customerId;
   let urnId;
   let invoiceId;
-  it('Should create a customer and then an invoice for that id', () => {
+  it('should create a customer and then an invoice for that id', () => {
     return cloud.post('/hubs/finance/customers',createCustomer(tools.randomInt().toString()))
       .then(r => customerId = r.body.id)
       .then(r => cloud.get('/hubs/finance/customers/' + customerId))

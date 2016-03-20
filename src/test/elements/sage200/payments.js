@@ -21,7 +21,7 @@ suite.forElement('finance', 'payments', createPayment(), (test) => {
   let urnId;
   let paymentId;
   let receiptId;
-  it('Should create a customer and then payments for that id', () => {
+  it('should create a customer and then payments for that id', () => {
     return cloud.post('/hubs/finance/customers',createCustomer(tools.randomInt().toString()))
       .then(r => customerId = r.body.id)
       .then(r => cloud.get('/hubs/finance/customers/' + customerId))

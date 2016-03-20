@@ -12,7 +12,7 @@ const createProducts = (productGroupId) => ({
 suite.forElement('finance', 'products', createProducts(), (test) => {
   let productGroupId;
   let productId;
-  it('Should create a product', () => {
+  it('should create a product', () => {
     return cloud.get(test.api + '/groups')
       .then(r => productGroupId = r.body[0].id)
       .then(r => cloud.get(test.api))
