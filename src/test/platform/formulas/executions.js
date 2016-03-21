@@ -191,7 +191,6 @@ suite.forPlatform('formulas', null, null, (test) => {
       executions.stepExecutions.forEach(se => {
         se.stepExecutionValues.forEach(sev => {
           if (sev.key.indexOf('error') >= 0) {
-            console.log(sev.value);
             errorValueExists = true;
             expect(sev.value).to.contain('found inactive');
           }
