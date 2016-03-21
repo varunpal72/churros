@@ -62,6 +62,12 @@ const validateSimpleSuccessfulStepExecutionsForType = tValidator => ses => {
   ses.filter(se => se.stepName === 'trigger').map(tValidator);
 };
 
+const validateSimpleSuccessfulScheduledStepExecutionsForScheduled = tValidator => ses => {
+  expect(ses).to.have.length(2);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName !== 'trigger').map(validateSuccessfulStepExecution);
+};
+
 const validateScriptContextSuccessfulStepExecutionsForEvents = tValidator => ses => {
   expect(ses).to.have.length(4);
   ses.map(se => validateSuccessfulStepExecution(se));
@@ -155,6 +161,11 @@ const validateSuccessfulEventTrigger = num => t => {
   validateTriggerBodyEvents(JSON.parse(flat['trigger.body']), num);
 };
 
+const validateSuccessfulScheduledTrigger = num => t => {
+  const flat = flattenStepExecutionValues(t.stepExecutionValues);
+  expect(flat['trigger.type']).to.equal('scheduled');
+};
+
 const validateSimpleSuccessfulStepExecutions = {
   forEvents: (num) => validateSimpleSuccessfulStepExecutionsForType(validateSuccessfulEventTrigger(num)),
   forRequest: validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulRequestTrigger),
@@ -175,6 +186,10 @@ const validateSimpleNoReturnStepExecutions = {
 
 const validateSimpleErrorStepExecutions = {
   forEvents: (num) => validateSimpleErrorStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+}
+
+const validateSimpleSuccessfulScheduledStepExecutions = {
+  forScheduled: (num) => validateSimpleSuccessfulScheduledStepExecutionsForScheduled(validateSuccessfulScheduledTrigger(num))
 }
 
 suite.forPlatform('formulas', null, null, (test) => {
@@ -491,5 +506,43 @@ suite.forPlatform('formulas', null, null, (test) => {
           });
       });
   });
+
+  it('should successfully execute a simple formula triggered by schedule', () => {
+    return common.deleteFormulasByName(test.api, 'simple-successful')
+      .then(r => chakram.get('/hubs/crm/ping'))
+      .then(r => {
+        const currentDt = r.body.dateTime;
+        const dt = new Date(currentDt);
+        dt.setSeconds(dt.getSeconds() + 30);
+
+        const formula = require('./assets/simple-successful-scheduled-trigger-formula');
+
+        formula.triggers[0].properties.cron = `${dt.getSeconds()} ${dt.getMinutes()} ${dt.getHours()} ${dt.getDate()} ${dt.getMonth() + 1} ? ${dt.getFullYear()}`;
+
+        const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+        formulaInstance.configuration['trigger-instance'] = sfdcId;
+
+        return cloud.post(test.api, formula, fSchema)
+          .then(r => {
+            const formulaId = r.body.id;
+            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
+              .then(r => {
+                const formulaInstanceId = r.body.id;
+                  return Promise.all([sleep.sleep(35)])
+                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+                  .then(r => {
+                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+                    return r;
+                  })
+                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulScheduledStepExecutions.forScheduled())))
+                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+                  .then(() => common.deleteFormula(formulaId));
+              });
+          });
+      });
+  });
+
   after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
 });
