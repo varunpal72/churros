@@ -8,7 +8,8 @@ const cloud = require('core/cloud');
 const fSchema = require('./assets/formula.schema');
 const fiSchema = require('./assets/formula.instance.schema');
 const chakram = require('chakram');
-const b64 = require('core/tools').base64Encode;
+const tools = require('core/tools');
+const b64 = tools.base64Encode;
 const sleep = require('sleep');
 const expect = require('chakram').expect;
 
@@ -165,5 +166,62 @@ suite.forPlatform('formulas', null, null, (test) => {
       });
   });
 
+  it('should terminate an execution if the deactivate API is called during execution', () => {
+    const formula = require('./assets/loop-formula');
+    const formulaInstance = require('./assets/loop-formula-instance');
+    formulaInstance.configuration['sfdc.instance.id'] = sfdcId;
+
+    const isActiveValidation = (r) => {
+      expect(r.body).to.not.be.null;
+      expect(r.body.active).to.equal(true);
+      return r;
+    };
+
+    const isStartedValidation = (r) => {
+      expect(r.body).to.have.length(1);
+      return r;
+    };
+
+    const validateTerminatedExecution = (executions) => {
+      expect(executions).to.not.be.null;
+      expect(executions.stepExecutions).to.have.length.of.at.least(1);
+
+      // look through the step execution values for our *.error value
+      let errorValueExists = false;
+      executions.stepExecutions.forEach(se => {
+        se.stepExecutionValues.forEach(sev => {
+          if (sev.key.indexOf('error') >= 0) {
+            console.log(sev.value);
+            errorValueExists = true;
+            expect(sev.value).to.contain('found inactive');
+          }
+        });
+      });
+      expect(errorValueExists).to.equal(true); // by now, this better be true
+
+      return executions;
+    };
+
+    let formulaId, formulaInstanceId, formulaInstanceExecutionId;
+    return common.deleteFormulasByName(test.api, 'loop-formula')
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => isActiveValidation(r))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId)) // should trigger a formula execution
+      .then(() => tools.sleep(10)) // wait for the formula to start executing
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => isStartedValidation(r)) // make sure execution started
+      .then(r => formulaInstanceExecutionId = r.body[0].id)
+      .then(r => cloud.delete(`/formulas/${formulaId}/instances/${formulaInstanceId}/active`)) // deactivate formula instance
+      .then(() => tools.sleep(10)) // wait for the formula to be terminated
+      .then(r => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, formulaInstanceExecutionId))
+      .then(r => validateTerminatedExecution(r.body)) // make sure that the formula was actually deactivated
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  /** Clean up */
   after(done => { provisioner.delete(sfdcId).then(() => done()); });
 });

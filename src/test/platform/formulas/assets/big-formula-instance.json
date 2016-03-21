@@ -4,7 +4,7 @@
     "stIdFieldName": "field2",
     "synchableFieldName": "field",
     "notification.email": "churros+trash@cloud-elements.com",
-    "sfdc.instance.id": "%s",
-    "sailthru.instance.id": "%s"
+    "sfdc.instance.id": "<replace-me>",
+    "sailthru.instance.id": "<replace-me>"
   }
 }
