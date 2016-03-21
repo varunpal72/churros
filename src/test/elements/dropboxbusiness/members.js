@@ -4,14 +4,12 @@ const suite = require('core/suite');
 const payload = require('./assets/members');
 const cloud = require('core/cloud');
 
-let memberId;
 // member is unsuspended twice to make sure it's in a state where it can be tested next time.
 suite.forElement('documents', 'members', payload, (test) => {
   it('should support CRUDS for members', () =>{
+  	let memberId;
     return cloud.post(test.api, payload)
-    .then(r => {
-    	let memberId = r.body.complete[0].profile.team_member_id;
-      })
+    .then(r => memberId = r.body.complete[0].profile.team_member_id)
     .then(r => cloud.delete(`${test.api}/${memberId}`))
     .then (r => cloud.get(test.api))
     .then(r => {
