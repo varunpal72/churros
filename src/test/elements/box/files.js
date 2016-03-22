@@ -15,8 +15,8 @@ suite.forElement('documents', 'files', null, (test) => {
     return cloud.postFile(test.api, path, { qs: query })
       .then(r => fileId = r.body.id)
       .then(r => cloud.get(test.api + '/' + fileId, (r) => expect(r).to.have.statusCode(200)))
-      .then(r => cloud.patch(test.api + '/' + fileId + '/lock', (r) => expect(r).to.have.statusCode(200)))
-      .then(r => cloud.patch(test.api + '/' + fileId + '/unlock', (r) => expect(r).to.have.statusCode(200)))
+      .then(r => cloud.put(test.api + '/' + fileId + '/lock', (r) => expect(r).to.have.statusCode(200)))
+      .then(r => cloud.delete(test.api + '/' + fileId + '/unlock', (r) => expect(r).to.have.statusCode(200)))
       .then(r => cloud.delete('/hubs/documents/files/' + fileId));
   });
 });
