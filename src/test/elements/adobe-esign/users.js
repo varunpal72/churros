@@ -29,24 +29,10 @@ const updateUsers = (groupId) => ({
 
 suite.forElement('esignature', 'users', null, (test) => {
   let userId;
-  it('should allow GET for ' + test.api, () => {
-    return cloud.get(test.api)
-      .then(r => expect(r).to.have.statusCode(200))
-  });
-  it('should allow POST for ' + test.api, () => {
-    return cloud.post(test.api, createUsers())
-      .then(r => expect(r).to.have.statusCode(200))
-  });
-  it('should allow GET for ' + test.api + '/{userId}', () => {
-    return cloud.post(test.api, createUsers())
-      .then(r => userId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + userId))
-      .then(r => expect(r).to.have.statusCode(200))
-  });
+  test.withJson(createUsers()).should.supportCrs();
   it('should allow PUT for ' + test.api + '/{userId}', () => {
     return cloud.get(test.api)
       .then(r => userId = r.body[0].id)
       .then(r => cloud.put(test.api + '/' + userId, updateUsers()))
-      .then(r => expect(r).to.have.statusCode(200))
   });
 });

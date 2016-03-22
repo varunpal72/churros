@@ -32,15 +32,15 @@ const createWorkflows = (transientDocumentId) => ({
 suite.forElement('esignature', 'workflows', null, (test) => {
   let workflowId;
   let transientDocumentId;
-  it('should allow GET for ' + test.api, () => {
+/*  it('should allow GET for ' + test.api, () => {
     return cloud.get(test.api)
       .then(r => expect(r).to.have.statusCode(200))
-  });
+  });*/
+  test.should.return200OnGet();
   it('should allow GET for ' + test.api + '/{workflowId}', () => {
     return cloud.get(test.api)
       .then(r => workflowId = r.body[0].id)
       .then(r => cloud.get(test.api + '/' + workflowId))
-      .then(r => expect(r).to.have.statusCode(200))
   });
   it('should allow POST for ' + test.api + '/{workflowId}/agreements', () => {
     return cloud.get(test.api)
@@ -48,6 +48,5 @@ suite.forElement('esignature', 'workflows', null, (test) => {
       .then(r => cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt'))
       .then(r => transientDocumentId = r.body.id)
       .then(r => cloud.post(test.api + '/' + workflowId + '/agreements', createWorkflows(transientDocumentId)))
-      .then(r => expect(r).to.have.statusCode(200))
   });
 });

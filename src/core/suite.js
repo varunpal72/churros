@@ -52,6 +52,11 @@ const itSr = (name, api, validationCb, options) => {
   it(n, () => cloud.withOptions(options).get(api).then(r => cloud.get(api + '/' + r.body[0].id)));
 };
 
+const itCrs = (name, api, payload, validationCb, options) => {
+  const n = name || `should allow CRS for ${api}`;
+  it(n, () => cloud.withOptions(options).crs(api, payload, validationCb));
+};
+
 const itPagination = (name, api, validationCb) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
   const options = { qs: { page: 1, pageSize: 1 } };
@@ -152,6 +157,7 @@ const runTests = (api, payload, validationCb, tests) => {
     supportCd: () => itCd(name, api, payload, validationCb, options),
     supportCrds: () => itCrds(name, api, payload, validationCb, options),
     supportSr: () => itSr(name, api, validationCb, options),
+    supportCrs: () => itCrs(name, api, payload, validationCb, options),
   });
 
   const using = (myApi, myValidationCb, myPayload, myOptions, myName) => ({

@@ -26,33 +26,32 @@ suite.forElement('esignature', 'libraryDocuments', null, (test) => {
   let libraryDocumentId;
   let transientDocumentId;
   let documentId;
+/*
   it('should allow GET for ' + test.api, () => {
     return cloud.get(test.api)
       .then(r => expect(r).to.have.statusCode(200))
-  });
+  });*/
+  test.should.return200OnGet();
   it('should allow POST for ' + test.api, () => {
     return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
       .then(r => transientDocumentId = r.body.id)
       .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-      .then(r => expect(r).to.have.statusCode(200))
   });
-  it('should allow GET for ' + test.api + '{libraryDocumentId}', () => {
+  it(`should allow GET for ${test.api}/{libraryDocumentId}`, () => {
     return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
       .then(r => transientDocumentId = r.body.id)
       .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
       .then(r => libraryDocumentId = r.body.id)
       .then(r => cloud.get(test.api + '/' + libraryDocumentId))
-      .then(r => expect(r).to.have.statusCode(200))
   });
-  it('should allow GET for ' + test.api + '{libraryDocumentId}/auditTrail', () => {
+  it(`should allow GET for ${test.api}/{libraryDocumentId}/auditTrail`, () => {
     return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
       .then(r => transientDocumentId = r.body.id)
       .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
       .then(r => libraryDocumentId = r.body.id)
       .then(r => cloud.get(test.api + '/' + libraryDocumentId + '/auditTrail'))
-      .then(r => expect(r).to.have.statusCode(200))
   });
-// As part of the PULL request, Brad is going to look into below commented scripts  
+// As part of the PULL request, Brad is going to look into below commented scripts
 /*
   it('should allow GET /libraryDocuments/{libraryDocumentId}/combinedDocument', () => {
     return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')

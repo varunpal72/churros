@@ -9,13 +9,14 @@ const expect = chakram.expect;
 const util = require('util');
 
 suite.forElement('esignature', 'agreementAssetEvents', null, (test) => {
-  let currentDate;	
   var date = new Date();
-  currentDate = date.toISOString().substring(0,19); 
+  let startIndex = 0;
+  let endIndex = 19;
+  let currentDate = date.toISOString().substring(startIndex,endIndex);
   startDate = date.setDate(date.getDate()-10);
   var oldDate = new Date(startDate);
-  var startDate = oldDate.toISOString().substring(0,19);
-  
+  var startDate = oldDate.toISOString().substring(startIndex,endIndex);
+
   it('should allow GET for ' + test.api, () => {
     return cloud.withOptions({
       qs: {

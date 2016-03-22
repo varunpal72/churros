@@ -13,12 +13,11 @@ const group = () => ({
 
 suite.forElement('esignature', 'groups', group(), (test) => {
   test.should.supportCruds(chakram.put);
-  it('should allow GET for ' + test.api + '/' + '{groupId}/users', () => {
+  it(`should allow GET for ${test.api}/{groupId}/users`, () => {
     let groupId;
     return cloud.post(test.api, group())
       .then(r => groupId = r.body.id)
       .then(r => cloud.get(test.api + '/' + groupId + '/users'))
       .then(r => cloud.delete(test.api + '/' + groupId ))
-      .then(r => expect(r).to.have.statusCode(200))
   });
 });
