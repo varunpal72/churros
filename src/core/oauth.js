@@ -203,18 +203,19 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.className('to-login')).click();
       browser.findElement(webdriver.By.className('button')).click();
       return browser.getCurrentUrl();
-    case 'onedrivev2':
+    case 'onenote':
+    // case 'onedrivev2':
       browser.get(r.body.oauthUrl);
-      browser.isElementPresent(webdriver.By.id('i0116'));
-      browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
-      browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
-      browser.findElement(webdriver.By.id('idSIButton9')).click();
-      browser.findElement(webdriver.By.id('idBtn_Accept'))
-        .then((element) => element.click(),
-          (err) => {
-            if (err.state && err.state === 'no such element') { // ignore this
-            } else { webdriver.promise.rejected(err); }
-          });
+      // browser.isElementPresent(webdriver.By.id('i0116'));
+      // browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+      // browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
+      // browser.findElement(webdriver.By.id('idSIButton9')).click();
+      // browser.findElement(webdriver.By.id('idBtn_Accept'))
+      //   .then((element) => element.click(),
+      //     (err) => {
+      //       if (err.state && err.state === 'no such element') { // ignore this
+      //       } else { webdriver.promise.rejected(err); }
+      //     });
       return browser.getCurrentUrl();
     case 'quickbooks':
       // TODO - not working quite yet...
