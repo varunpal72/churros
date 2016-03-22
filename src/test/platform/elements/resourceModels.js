@@ -21,15 +21,17 @@ suite.forPlatform('elements/resources/models', common.genParameter({}), schema, 
     .then(r => idUrl = 'elements/' + element.id + '/resources/' + resource.id + '/models')
     .then(r => done()));
 
-  it('should support CRUD by key', () => {
-      let model;
-      return cloud.post(keyUrl, common.genModel({}), schema)
-        .then(r => model = r.body)
-        .then(r => cloud.get(keyUrl, schema))
-        .then(r => cloud.put(keyUrl, common.genModel({name: 'updatedName'}), schema))
-        .then(r => cloud.delete(keyUrl));
-
-  });
+  it('should support CRUD by key', () => crudModels(keyUrl, schema));
+  it('should support CRUD by ID', () => crudModels(idUrl, schema));
 
   after(done => { cloud.delete('elements/' + element.key).then(() => done()) });
 });
+
+const crudModels = (url, schema) => {
+  let model;
+  return cloud.post(url, common.genModel({}), schema)
+    .then(r => model = r.body)
+    .then(r => cloud.get(url, schema))
+    .then(r => cloud.put(url, common.genModel({name: 'updatedName'}), schema))
+    .then(r => cloud.delete(url));
+}

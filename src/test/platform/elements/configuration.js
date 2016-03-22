@@ -12,17 +12,21 @@ const listSchema = require('./assets/element.configurations.schema.json');
 
 suite.forPlatform('elements/configuration', common.genConfig({}), schema, (test) => {
   let element;
-  before(done => cloud.post('elements', common.genElement({})).then(r => { element = r.body; done(); }));
+  before(done => cloud.post('elements', common.genElement({}))
+  .then(r => element = r.body)
+  .then(r => done()));
 
-  it('should support CRUD by key', () => {
-    let config;
-    return cloud.post('elements/' + element.key + '/configuration', common.genConfig({}), schema)
-    .then(r => config = r.body)
-    .then(r => cloud.get('elements/' + element.key + '/configuration', listSchema))
-    .then(r => cloud.put('elements/' + element.key + '/configuration/' + config.key, common.genConfig({ description: "An updated Churros config" }), schema))
-    .then(r => cloud.delete('elements/' + element.key + '/configuration/' + config.key));
-  });
+  it('should support CRUD by key', () => crudConfig(element.key, common.genConfig({}), common.genConfig({ description: "An updated Churros config" }), schema, listSchema));
+  it('should support CRUD by ID', () => crudConfig(element.id, common.genConfig({}), common.genConfig({ description: "An updated Churros config" }), schema, listSchema));
 
   after(done => { cloud.delete('elements/' + element.key).then(() => done()) });
-
 });
+
+const crudConfig = (idOrKey, payload, updatePayload, schema, listSchema) => {
+  let config;
+  return cloud.post('elements/' + idOrKey + '/configuration', payload, schema)
+  .then(r => config = r.body)
+  .then(r => cloud.get('elements/' + idOrKey + '/configuration', listSchema))
+  .then(r => cloud.put('elements/' + idOrKey + '/configuration/' + config.key, updatePayload))
+  .then(r => cloud.delete('elements/' + idOrKey + '/configuration/' + config.key));
+};

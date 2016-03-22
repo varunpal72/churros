@@ -47,7 +47,7 @@ suite.forPlatform('events', null, null, (test) => {
         expect(event.headers['elements-webhook-id']).to.not.be.empty;
         expect(event.headers['elements-webhook-signature']).to.not.be.empty;
         const signature = event.headers['elements-webhook-signature'];
-        const hash = 'sha1=' + crypto.createHmac('sha1', signatureKey).update(event.body).digest('base64');
+        const hash = 'sha256=' + crypto.createHmac('sha256', signatureKey).update(event.body).digest('base64');
         expect(signature).to.equal(hash);
       }))
       .then(r => cloud.get(`instances/${instanceId}/events`, eventSchema))

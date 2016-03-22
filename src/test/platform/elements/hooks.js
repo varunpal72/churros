@@ -19,7 +19,7 @@ suite.forPlatform('elements/hooks', common.genHook({}), schema, (test) => {
   .then(r => done()));
 
   it('should support CRUD by key', () => common.crudSubResource(keyUrl, schema, listSchema, common.genHook({}), common.genHook({ description: "An updated Churros hook" })));
-  //it('should support CRUD by id', () => common.crudSubResource(idUrl, schema, listSchema, common.genHook({}), common.genHook({ description: "An updated Churros hook" })));
+  it('should support CRUD by ID', () => common.crudSubResource(idUrl, schema, listSchema, common.genHook({}), common.genHook({ description: "An updated Churros hook" })));
 
   after(done => { cloud.delete('elements/' + element.key).then(() => done()) });
 
