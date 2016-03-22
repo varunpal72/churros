@@ -51,4 +51,8 @@ describe('tools', () => {
     expect(encoded).to.be.a('string');
     expect(encoded).to.equal('ABCD');
   });
+
+  it('should support sleeping for x seconds', () => {
+    tools.sleep(1);
+  });
 });
