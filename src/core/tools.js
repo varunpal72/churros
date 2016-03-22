@@ -1,6 +1,7 @@
 'use strict';
 
 const logger = require('winston');
+const sleep = require('sleep');
 
 var exports = module.exports = {};
 
@@ -21,3 +22,8 @@ exports.logAndThrow = (msg, error, arg) => {
 
 exports.base64Encode = s => new Buffer(s).toString('base64');
 exports.base64Decode = s => new Buffer(s, 'base64').toString('ascii');
+
+exports.sleep = secs => {
+  logger.debug(`sleeping for ${secs} seconds`);
+  sleep.sleep(secs);
+};
