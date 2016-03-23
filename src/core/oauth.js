@@ -206,11 +206,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'onenote':
     // case 'onedrivev2':
       browser.get(r.body.oauthUrl);
-      // browser.isElementPresent(webdriver.By.id('i0116'));
-      // browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
-      // browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
-      // browser.findElement(webdriver.By.id('idSIButton9')).click()
-      // .then(wait(browser, 50000));
       return browser.findElement(webdriver.By.id('i0116'))
       .then(el => {
         el.sendKeys(username);
@@ -228,16 +223,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           // return browser.getTitle().then((title) => !title);
         }, 5000)
       })
-      // .then(() => {
-      //   return browser.getCurrentUrl();
-      // })
-      // browser.findElement(webdriver.By.id('idBtn_Accept'))
-      //   .then((element) => element.click(),
-      //     (err) => {
-      //       if (err.state && err.state === 'no such element') { // ignore this
-      //       } else { webdriver.promise.rejected(err); }
-      //     });
-      return browser.getCurrentUrl();
     case 'quickbooks':
       // TODO - not working quite yet...
       browser.get(r.body.oauthUrl);
