@@ -177,6 +177,8 @@ describe('suite', () => {
     nock(baseUrl, headers())
       .delete('/foo/123')
       .reply(200, (uri, requestBody) => ({}))
+      .delete('/foo/456')
+      .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }))
       .delete('/foo/pagination/123')
       .reply(200, (uri, requestBody) => ({}));
   });
@@ -207,16 +209,18 @@ describe('suite', () => {
     // NOTE: all of these are equivalent just as examples
     // *****************************************
     test.should.return404OnPatch(456);
-    test.should.return404OnGet(456);
     test.withApi(test.api + '/456').should.return404OnPatch();
-    test.withApi(test.api + '/456').should.return404OnGet();
     // *****************************************
 
-    // with options, uses the request libraries options object
+    // with options, extends the request libraries options object
     test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
 
     // no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above
     test.should.return200OnPost();
+    test.should.return404OnGet(456);
+    test.withApi(test.api + '/456').should.return404OnGet();
+    test.withApi('/foo/456').should.return404OnPut();
+    test.withApi('/foo/456').should.return404OnDelete();
     test.withOptions({ json: true }).should.supportSr();
     test.withOptions({ json: true }).should.supportCruds();
     test.withOptions({ json: true }).should.supportCruds(chakram.put);
