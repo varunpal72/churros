@@ -209,7 +209,28 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       // browser.isElementPresent(webdriver.By.id('i0116'));
       // browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
       // browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
-      // browser.findElement(webdriver.By.id('idSIButton9')).click();
+      // browser.findElement(webdriver.By.id('idSIButton9')).click()
+      // .then(wait(browser, 50000));
+      return browser.findElement(webdriver.By.id('i0116'))
+      .then(el => {
+        el.sendKeys(username);
+        return browser.findElement(webdriver.By.id('i0118'))
+      })
+      .then(el => {
+        el.sendKeys(password);
+        return browser.findElement(webdriver.By.id('idSIButton9'))
+      })
+      .then(el => {
+        el.click()
+        return browser.wait(() => {
+          console.log(browser.getCurrentUrl());
+          return browser.getCurrentUrl();
+          // return browser.getTitle().then((title) => !title);
+        }, 5000)
+      })
+      // .then(() => {
+      //   return browser.getCurrentUrl();
+      // })
       // browser.findElement(webdriver.By.id('idBtn_Accept'))
       //   .then((element) => element.click(),
       //     (err) => {
