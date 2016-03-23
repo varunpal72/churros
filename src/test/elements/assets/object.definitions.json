@@ -38,6 +38,15 @@
       "type": "string"
     }]
   },
+  "comments": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "comment_id",
+      "type": "string"
+    }]
+  },
   "contacts": {
     "fields": [{
       "path": "id",
@@ -162,6 +171,12 @@
     }]
   },
   "orders":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+      }]
+  },
+  "organizations":{
     "fields":[{
       "path": "id",
       "type": "string"
