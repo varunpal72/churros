@@ -115,6 +115,40 @@ const validateSimpleErrorStepExecutionsForEvents = tValidator => ses => {
   expect(consolidated['simple-script.error']).to.contain('Script execution failed with message:');
 };
 
+const validateLoopSuccessfulLoopStepExecution = se => {
+  const flat = flattenStepExecutionValues(se.stepExecutionValues);
+
+  expect(flat['loop.index']).to.not.be.empty;
+  const index = parseInt(flat['loop.index']);
+
+  expect(index).to.be.at.least(0);
+
+  if (index === 50) {
+    return validateErrorStepExecution(se);
+  }
+
+  validateSuccessfulStepExecution(se);
+  expect(flat['loop.entry']).to.contain('{"val":0.');
+}
+
+const validateLoopSuccessfulEmailStepExecution = se => {
+  validateSuccessfulStepExecution(se);
+  const flat = flattenStepExecutionValues(se.stepExecutionValues);
+
+  expect(flat['create-email-body.from']).to.equal('devnull@cloud-elements.com');
+  expect(flat['create-email-body.to']).to.equal('devnull@cloud-elements.com');
+  expect(flat['create-email-body.subject']).to.equal('Formula Email');
+  expect(flat['create-email-body.message']).to.contain('Loopy val: 0.');
+}
+
+const validateLoopSuccessfulStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(103);
+  const consolidated = consolidateStepExecutionValues(ses);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName === 'create-email-body').map(validateLoopSuccessfulEmailStepExecution);
+  ses.filter(se => se.stepName === 'loop').map(validateLoopSuccessfulLoopStepExecution);
+};
+
 const validateStepExecutions = ses => {
   ses.map(se => validateSuccessfulStepExecution(se));
 };
@@ -190,6 +224,10 @@ const validateSimpleErrorStepExecutions = {
 
 const validateSimpleSuccessfulScheduledStepExecutions = {
   forScheduled: (num) => validateSimpleSuccessfulScheduledStepExecutionsForScheduled(validateSuccessfulScheduledTrigger(num))
+}
+
+const validateLoopSuccessfulStepExecutions = {
+  forEvents: (num) => validateLoopSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 }
 
 suite.forPlatform('formulas', null, null, (test) => {
@@ -463,7 +501,6 @@ suite.forPlatform('formulas', null, null, (test) => {
                   .then(() => sleep.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
-                    console.log(r.body);
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
                     return r;
                   })
@@ -544,5 +581,34 @@ suite.forPlatform('formulas', null, null, (test) => {
       });
   });
 
+  it('should successfully execute a simple loop formula triggered by a single event', () => {
+    return common.deleteFormulasByName(test.api, 'loop-successful')
+      .then(r => {
+        const formula = require('./assets/loop-successful-formula');
+        const formulaInstance = require('./assets/loop-successful-formula-instance');
+
+        formulaInstance.configuration['trigger-instance'] = sfdcId;
+
+        return cloud.post(test.api, formula, fSchema)
+          .then(r => {
+            const formulaId = r.body.id;
+            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
+              .then(r => {
+                const formulaInstanceId = r.body.id;
+                return generateSingleSfdcPollingEvent(sfdcId)
+                  .then(() => sleep.sleep(15))
+                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+                  .then(r => {
+                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+                    return r;
+                  })
+                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+                  .then(rs => rs.map(r => validateExecution(r.body)(validateLoopSuccessfulStepExecutions.forEvents(1))))
+                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+                  .then(() => common.deleteFormula(formulaId));
+              });
+          });
+      });
+  });
   after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
 });
