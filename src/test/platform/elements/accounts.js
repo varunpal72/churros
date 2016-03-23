@@ -1,13 +1,11 @@
 'use strict';
 
-const util = require('util');
-const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const props = require('core/props');
-const provisioner = require('core/provisioner');
 const common = require('./assets/common.js');
 const schema = require('./assets/element.accounts.schema.json');
+const logger = require('winston');
 
 suite.forPlatform('elements/parameters', common.genParameter({}), schema, (test) => {
   let element, keyUrl, idUrl, subAccountId;
