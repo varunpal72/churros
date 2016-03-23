@@ -6,7 +6,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 
 suite.forElement('esignature', 'transientDocuments', null, (test) => {
-  it('should allow POST for /transientDocuments', () => {
+  it(`should allow POST for /transientDocuments`, () => {
     return cloud.postFile(test.api, __dirname + '/assets/attach.txt')
   });
 });

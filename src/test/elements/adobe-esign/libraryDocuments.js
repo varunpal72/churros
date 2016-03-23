@@ -4,6 +4,8 @@ const suite = require('core/suite');
 const chakram = require('chakram');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const sleep = require('sleep');
+const winston = require('winston');
 const expect = chakram.expect;
 
 const createLibraryDocuments = (transientDocumentId) => ({
@@ -23,61 +25,44 @@ const createLibraryDocuments = (transientDocumentId) => ({
 });
 
 suite.forElement('esignature', 'libraryDocuments', null, (test) => {
-  let libraryDocumentId;
-  let transientDocumentId;
-  let documentId;
-/*
-  it('should allow GET for ' + test.api, () => {
-    return cloud.get(test.api)
-      .then(r => expect(r).to.have.statusCode(200))
-  });*/
+  /*
+  // Commented the POST for this resource to avoid creation of new Library Documents, since the code
+  // might break for GET /libraryDocuments due to time-out. Also there is no DELETE API for libraryDocuments
+    it(`should allow POST for ${test.api}`, () => {
+    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)));
+    });
+  */
+  let transientDocumentId, libraryDocumentId;
+  before(done => cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+  .then(r => transientDocumentId = r.body.id)
+  .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
+  .then(r => libraryDocumentId = r.body.id)
+  .then(r => done()));
+
   test.should.return200OnGet();
-  it('should allow POST for ' + test.api, () => {
-    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-      .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-  });
+
   it(`should allow GET for ${test.api}/{libraryDocumentId}`, () => {
-    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-      .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-      .then(r => libraryDocumentId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + libraryDocumentId))
+    return cloud.get(test.api + '/' + libraryDocumentId);
   });
   it(`should allow GET for ${test.api}/{libraryDocumentId}/auditTrail`, () => {
-    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-      .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-      .then(r => libraryDocumentId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + libraryDocumentId + '/auditTrail'))
+    return cloud.get(test.api + '/' + libraryDocumentId + '/auditTrail');
   });
-// As part of the PULL request, Brad is going to look into below commented scripts
-/*
-  it('should allow GET /libraryDocuments/{libraryDocumentId}/combinedDocument', () => {
-    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-      .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-      .then(r => libraryDocumentId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + libraryDocumentId + '/combinedDocument'))
-      .then(r => expect(r).to.have.statusCode(200))
+  it(`should allow GET ${test.api}/{libraryDocumentId}/combinedDocument`, () => {
+    sleep.sleep(30)
+    return cloud.get(test.api + '/' + libraryDocumentId + '/combinedDocument');
   });
-  it('should allow GET /libraryDocuments/{libraryDocumentId}/documents', () => {
-    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-      .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-      .then(r => libraryDocumentId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + libraryDocumentId + '/documents'))
-      .then(r => expect(r).to.have.statusCode(200))
+  it(`should allow GET ${test.api}/{libraryDocumentId}/documents`, () => {
+    sleep.sleep(30)
+    return cloud.get(test.api + '/' + libraryDocumentId + '/documents');
   });
-  it('should allow GET /libraryDocuments/{libraryDocumentId}/documents/{documentId}', () => {
-    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-      .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-      .then(r => libraryDocumentId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + libraryDocumentId + '/documents'))
+  it(`should allow GET ${test.api}/{libraryDocumentId}/documents/{documentId}`, () => {
+    let documentId;
+    sleep.sleep(30)
+    return cloud.get(test.api + '/' + libraryDocumentId + '/documents')
       .then(r => documentId = r.body.documentId)
-      .then(r => cloud.get(test.api + '/' + libraryDocumentId + '/documents/' + documentId))
-      .then(r => expect(r).to.have.statusCode(200))
+      .then(() => sleep.sleep(30))
+      .then(r => cloud.get(test.api + '/' + libraryDocumentId + '/documents/' + documentId));
   });
-*/
 });

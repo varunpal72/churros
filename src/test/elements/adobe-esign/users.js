@@ -28,9 +28,9 @@ const updateUsers = (groupId) => ({
 });
 
 suite.forElement('esignature', 'users', null, (test) => {
-  let userId;
   test.withJson(createUsers()).should.supportCrs();
-  it('should allow PUT for ' + test.api + '/{userId}', () => {
+  it(`should allow PUT for ${test.api}/{userId}`, () => {
+    let userId;
     return cloud.get(test.api)
       .then(r => userId = r.body[0].id)
       .then(r => cloud.put(test.api + '/' + userId, updateUsers()))
