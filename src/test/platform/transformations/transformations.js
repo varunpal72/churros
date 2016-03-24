@@ -147,15 +147,16 @@ const testTransformation = (instanceId, objectName, objDefUrl, transUrl) => test
 suite.forPlatform('transformations', schema, null, (test) => {
   /** before - provision element to use throughout */
   const elementKey = 'sfdc';
-  let sfdcId;
-  before(() => provisioner.create(elementKey).then(r => sfdcId = r.body.id));
+  let sfdcId, elementId;
+  before(() => provisioner.create(elementKey).then(r => { sfdcId = r.body.id; elementId = r.body.element.id; }));
 
   /** after - clean up element */
   after(() => provisioner.delete(sfdcId));
 
   /** org-level */
   it('should support org-level object definition CRUD by name', () => crudObjectDefsByName('organizations', genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
-  it('should support org-level transformation CRUD by name', () => crudTransformsByName('organizations', elementKey, genDefaultTrans({}), genDefaultTrans({}), schema));
+  it('should support org-level transformation CRUD by name and element key', () => crudTransformsByName('organizations', elementKey, genDefaultTrans({}), genDefaultTrans({}), schema));
+  it('should support org-level transformation CRUD by name and element ID', () => crudTransformsByName('organizations', elementId, genDefaultTrans({}), genDefaultTrans({}), schema));
   it('should support org-level transformations', () => {
     let objectName = 'churros-object-' + tools.random();
     return testTransformation(sfdcId, objectName, getObjectDefUrl('organizations', objectName), getTransformUrl('organizations', objectName, elementKey));
@@ -169,11 +170,17 @@ suite.forPlatform('transformations', schema, null, (test) => {
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => crudObjectDefsByName('accounts/' + accountId, genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
   });
-  it('should support account-level transformation CRUD by name', () => {
+  it('should support account-level transformation CRUD by name and element key', () => {
     let accountId;
     return cloud.get('accounts')
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => crudTransformsByName('accounts/' + accountId, elementKey, genDefaultTrans({}), genDefaultTrans({}), schema));
+  });
+  it('should support account-level transformation CRUD by name and element ID', () => {
+    let accountId;
+    return cloud.get('accounts')
+      .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
+      .then(r => crudTransformsByName('accounts/' + accountId, elementId, genDefaultTrans({}), genDefaultTrans({}), schema));
   });
   it('should support account-level transformations', () => {
     let objectName = 'churros-object-' + tools.random();
