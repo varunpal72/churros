@@ -41,9 +41,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('password')).clear();
       browser.findElement(webdriver.By.name('password')).sendKeys(password);
       browser.findElement(webdriver.By.name('commit')).click();
-      browser.wait(() => {
-        return browser.getTitle().then((title) => !title);
-      }, 10000);
       return browser.getCurrentUrl();
     case 'dropboxbusiness':
     case 'dropbox':
