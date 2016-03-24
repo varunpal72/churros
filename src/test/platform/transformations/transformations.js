@@ -151,10 +151,7 @@ const testTransformation = (elementKey, objectName, objDefUrl, transUrl) => {
 };
 
 suite.forPlatform('transformations', schema, null, (test) => {
-  // org level
-  //it('should support org-level object definition CRUD', () => true);
-  //it('should support org-level transformation CRUD', () => true);
-
+  /** org-level */
   it('should support org-level object definition CRUD by name', () => crudObjectDefsByName('organizations', genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
   it('should support org-level transformation CRUD by name', () => crudTransformsByName('organizations', 'sfdc', genDefaultTrans({}), genDefaultTrans({}), schema));
   it('should support org-level transformations', () => {
@@ -163,10 +160,7 @@ suite.forPlatform('transformations', schema, null, (test) => {
     return testTransformation(elementKey, objectName, getObjectDefUrl('organizations', objectName), getTransformUrl('organizations', objectName, elementKey));
   });
 
-  // account level
-  //it('should support account-level object definitions CRUD', () => true);
-  //it('should support account-level transformation CRUD', () => true);
-
+  /** account-level */
   it('should support default account-level object definition CRUD by name', () => crudObjectDefsByName('accounts', genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
   it('should support account-level object definition CRUD by name', () => {
     let accountId;
@@ -190,10 +184,7 @@ suite.forPlatform('transformations', schema, null, (test) => {
       .then(r => testTransformation(elementKey, objectName, getObjectDefUrl(level, objectName), getTransformUrl(level, objectName, elementKey)));
   });
 
-  // instance level
-  //it('should support instance-level object definitions CRUD', () => true);
-  //it('should support instance-level transformation CRUD', () => true);
-
+  /** instance-level */
   it('should support instance-level object definition CRUD by name', () => {
     let instanceId;
     return provisioner.create('sfdc')

@@ -4,10 +4,10 @@ const webdriver = require('selenium-webdriver');
 const logger = require('winston');
 const props = require('core/props');
 
-const wait = (browser, secs) => {
+const wait = (browser, ms) => {
   browser.wait(() => {
     return false;
-  }, secs);
+  }, ms);
 };
 
 const manipulateDom = (element, browser, r, username, password, config) => {
@@ -50,23 +50,21 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'dropbox':
       browser.get(r.body.oauthUrl);
       return browser.findElement(webdriver.By.xpath('//input[@name="login_email"]'))
-      .then(el => {
-        el.sendKeys(username);
-        return browser.findElement(webdriver.By.xpath('//input[@name="login_password"]'))
-      })
-      .then(el => {
-        el.sendKeys(password);
-        return browser.findElement(webdriver.By.className('login-button button-primary'))
-      })
-      .then(el => {
-        el.click()
-        return browser.wait(() => {
-          return browser.getTitle().then((title) => !title);
-        }, 5000)
-      })
-      .then(() => {
-        return browser.getCurrentUrl();
-      })
+        .then(el => {
+          el.sendKeys(username);
+          return browser.findElement(webdriver.By.xpath('//input[@name="login_password"]'));
+        })
+        .then(el => {
+          el.sendKeys(password);
+          return browser.findElement(webdriver.By.className('login-button button-primary'));
+        })
+        .then(el => {
+          el.click();
+          return browser.wait(() => {
+            return browser.getTitle().then((title) => !title);
+          }, 5000);
+        })
+        .then(() => browser.getCurrentUrl());
     case 'facebooksocial':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).clear();
@@ -233,11 +231,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'sfdcmarketingcloud':
     case 'sfdcdocuments':
       browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id("username")).clear();
-      browser.findElement(webdriver.By.id("username")).sendKeys(username);
-      browser.findElement(webdriver.By.id("password")).clear();
-      browser.findElement(webdriver.By.id("password")).sendKeys(password);
-      browser.findElement(webdriver.By.id("Login")).click();
+      // wait 5 seconds for username to popup
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('username')), 5000);
+      browser.findElement(webdriver.By.id('username')).clear();
+      browser.findElement(webdriver.By.id('username')).sendKeys(username);
+      browser.findElement(webdriver.By.id('password')).clear();
+      browser.findElement(webdriver.By.id('password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('Login')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 5000)
         .thenCatch(r => true); // ignore
 
@@ -260,34 +260,34 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
       return browser.getCurrentUrl();
-  case 'sage200':
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.name('sso.Email')).sendKeys(username);
-    browser.findElement(webdriver.By.name('sso.Password')).sendKeys(password);
-    browser.findElement(webdriver.By.className('submit floatRight')).click();
-    return browser.getCurrentUrl();
-  case 'sharepoint':
-    browser.get(r.body.oauthUrl);
-    browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
-    browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
-    browser.wait(() => {
-      browser.findElement(webdriver.By.id('cred_sign_in_button')).click(); // ... i'm serious, you have to just keep clicking.  wtf microsoft.
-      return browser.isElementPresent(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow'));
-    }, 10000);
-    browser.findElement(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow')).click();
-    return browser.getCurrentUrl();
-  case 'zendesk':
-    // TODO - not quite working yet ...
-    browser.get(r.body.oauthUrl);
-    const iframe = webdriver.By.tagName('iframe')[0];
-    browser.switchTo().frame(iframe);
-    browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
-    browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
-    browser.findElement(webdriver.By.name('commit')).click();
-    return browser.getCurrentUrl();
-  default:
-    logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
-    process.exit(1);
+    case 'sage200':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.name('sso.Email')).sendKeys(username);
+      browser.findElement(webdriver.By.name('sso.Password')).sendKeys(password);
+      browser.findElement(webdriver.By.className('submit floatRight')).click();
+      return browser.getCurrentUrl();
+    case 'sharepoint':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
+      browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
+      browser.wait(() => {
+        browser.findElement(webdriver.By.id('cred_sign_in_button')).click(); // ... i'm serious, you have to just keep clicking.  wtf microsoft.
+        return browser.isElementPresent(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow'));
+      }, 10000);
+      browser.findElement(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow')).click();
+      return browser.getCurrentUrl();
+    case 'zendesk':
+      // TODO - not quite working yet ...
+      browser.get(r.body.oauthUrl);
+      const iframe = webdriver.By.tagName('iframe')[0];
+      browser.switchTo().frame(iframe);
+      browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
+      browser.findElement(webdriver.By.name('commit')).click();
+      return browser.getCurrentUrl();
+    default:
+      logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
+      process.exit(1);
   }
 };
 
