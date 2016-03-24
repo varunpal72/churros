@@ -145,7 +145,7 @@ const crus = (api, payload, validationCb, updateCb, options) => {
     .then(r => createdId = r.body.id)
     .then(r => get(api + '/' + createdId, validationCb, options))
     .then(r => update(api + '/' + createdId, payload, validationCb, updateCb, options))
-    .then(r => get(api, validationCb, options))
+    .then(r => get(api, validationCb, options));
 };
 exports.crus = crus;
 

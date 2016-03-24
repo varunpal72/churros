@@ -9,6 +9,7 @@ const cloud = require('core/cloud');
 const server = require('core/server');
 const tools = require('core/tools');
 const persister = require('./assets/persister');
+const sleep = require('sleep');
 
 const schema = require('./assets/delivery.schema.json');
 const listSchema = require('./assets/deliveries.schema.json');
@@ -38,7 +39,13 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     const s = genSub({ topics: [topic] });
     const load = 2;
     let promises = [];
-    for (let i = 0; i < load; i++) { promises.push(cloud.post("notifications/subscriptions", s)); }
+    // sleep for half second here, as if you try to create two subscriptions at once, with the same topic, they might both try to create
+    // that topic.  we fail properly, however we still fail...
+    promises.push(cloud.post("notifications/subscriptions", s));
+    sleep.sleep(1);
+    for (let i = 0; i < load - 1; i++) {
+      promises.push(cloud.post("notifications/subscriptions", s));
+    }
 
     let subs = [];
     let nId;
