@@ -1,12 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const chakram = require('chakram');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const sleep = require('sleep');
-const winston = require('winston');
-const expect = chakram.expect;
+const logger = require('winston');
 
 const createLibraryDocuments = (transientDocumentId) => ({
   "libraryDocumentCreationInfo": {
@@ -35,31 +33,34 @@ suite.forElement('esignature', 'libraryDocuments', null, (test) => {
     });
   */
   let transientDocumentId, libraryDocumentId;
-  before(done => cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-  .then(r => transientDocumentId = r.body.id)
-  .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-  .then(r => libraryDocumentId = r.body.id)
-  .then(r => done()));
+  before(() => cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+    .then(r => transientDocumentId = r.body.id)
+    .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
+    .then(r => libraryDocumentId = r.body.id)
+    .then(r => logger.debug(`IDs: ${transientDocumentId}, ${libraryDocumentId}`)));
 
-  test.should.return200OnGet();
+  test
+    .withApi(`${test.api}/${libraryDocumentId}`)
+    .should.return200OnGet();
 
   it(`should allow GET for ${test.api}/{libraryDocumentId}`, () => {
     return cloud.get(test.api + '/' + libraryDocumentId);
   });
+
   it(`should allow GET for ${test.api}/{libraryDocumentId}/auditTrail`, () => {
     return cloud.get(test.api + '/' + libraryDocumentId + '/auditTrail');
   });
   it(`should allow GET ${test.api}/{libraryDocumentId}/combinedDocument`, () => {
-    sleep.sleep(30)
+    sleep.sleep(30);
     return cloud.get(test.api + '/' + libraryDocumentId + '/combinedDocument');
   });
   it(`should allow GET ${test.api}/{libraryDocumentId}/documents`, () => {
-    sleep.sleep(30)
+    sleep.sleep(30);
     return cloud.get(test.api + '/' + libraryDocumentId + '/documents');
   });
   it(`should allow GET ${test.api}/{libraryDocumentId}/documents/{documentId}`, () => {
     let documentId;
-    sleep.sleep(30)
+    sleep.sleep(30);
     return cloud.get(test.api + '/' + libraryDocumentId + '/documents')
       .then(r => documentId = r.body.documentId)
       .then(() => sleep.sleep(30))
