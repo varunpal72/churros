@@ -100,13 +100,13 @@ exports.patchFile = patchFile;
 const crd = (api, payload, validationCb, options) => {
   return post(api, payload, validationCb, options)
     .then(r => get(api + '/' + r.body.id, validationCb, options))
-    .then(r => remove(api + '/' + r.body.id, options));
+    .then(r => remove(api + '/' + r.body.id, null, options));
 };
 exports.crd = crd;
 
 const cd = (api, payload, validationCb, options) => {
   return post(api, payload, validationCb, options)
-    .then(r => remove(api + '/' + r.body.id, options));
+    .then(r => remove(api + '/' + r.body.id, null, options));
 };
 exports.cd = cd;
 
@@ -116,7 +116,7 @@ const crds = (api, payload, validationCb, options) => {
     .then(r => createdId = r.body.id)
     .then(r => get(api + '/' + createdId, validationCb, options))
     .then(r => get(api, validationCb, options))
-    .then(r => remove(api + '/' + createdId, options));
+    .then(r => remove(api + '/' + createdId, null, options));
 };
 exports.crds = crds;
 
@@ -124,7 +124,7 @@ const crud = (api, payload, validationCb, updateCb, options) => {
   return post(api, payload, validationCb, options)
     .then(r => get(api + '/' + r.body.id, validationCb, options))
     .then(r => update(api + '/' + r.body.id, payload, validationCb, updateCb, options))
-    .then(r => remove(api + '/' + r.body.id, options));
+    .then(r => remove(api + '/' + r.body.id, null, options));
 };
 exports.crud = crud;
 
@@ -132,10 +132,10 @@ const cruds = (api, payload, validationCb, updateCb, options) => {
   let createdId = -1;
   return post(api, payload, validationCb, options)
     .then(r => createdId = r.body.id)
-    .then(r => get(api + '/' + createdId, validationCb, options))
-    .then(r => update(api + '/' + createdId, payload, validationCb, updateCb, options))
+    .then(r => get(`${api}/${createdId}`, validationCb, options))
+    .then(r => update(`${api}/${createdId}`, payload, validationCb, updateCb, options))
     .then(r => get(api, validationCb, options))
-    .then(r => remove(api + '/' + createdId, options));
+    .then(r => remove(`${api}/${createdId}`, null, options));
 };
 exports.cruds = cruds;
 
@@ -166,7 +166,7 @@ exports.withOptions = (options) => {
     put: (api, payload, validationCb) => put(api, payload, validationCb, options),
     patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
     get: (api, validationCb) => get(api, validationCb, options),
-    delete: (api, validationCb) => remove(api, options),
+    delete: (api, validationCb) => remove(api, validationCb, options),
     cruds: (api, payload, validationCb, updateCb) => cruds(api, payload, validationCb, updateCb, options),
     crd: (api, payload, validationCb, updateCb) => crd(api, payload, validationCb, updateCb, options),
     cd: (api, payload, validationCb) => cd(api, payload, validationCb, options),
