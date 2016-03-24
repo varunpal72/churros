@@ -142,22 +142,23 @@ const testTransformationForInstance = (objectName, objDefUrl, transUrl) => {
     .then(r => cloud.delete(objDefUrl));
 };
 
-const testTransformation = (elementKey, objectName, objDefUrl, transUrl) => {
-  let instanceId;
-  return provisioner.create(elementKey)
-    .then(r => instanceId = r.body.id)
-    .then(r => testTransformationForInstance(objectName, objDefUrl, transUrl))
-    .then(r => provisioner.delete(instanceId));
-};
+const testTransformation = (instanceId, objectName, objDefUrl, transUrl) => testTransformationForInstance(objectName, objDefUrl, transUrl);
 
 suite.forPlatform('transformations', schema, null, (test) => {
+  /** before - provision element to use throughout */
+  const elementKey = 'sfdc';
+  let sfdcId;
+  before(() => provisioner.create(elementKey).then(r => sfdcId = r.body.id));
+
+  /** after - clean up element */
+  after(() => provisioner.delete(sfdcId));
+
   /** org-level */
   it('should support org-level object definition CRUD by name', () => crudObjectDefsByName('organizations', genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
-  it('should support org-level transformation CRUD by name', () => crudTransformsByName('organizations', 'sfdc', genDefaultTrans({}), genDefaultTrans({}), schema));
+  it('should support org-level transformation CRUD by name', () => crudTransformsByName('organizations', elementKey, genDefaultTrans({}), genDefaultTrans({}), schema));
   it('should support org-level transformations', () => {
-    let elementKey = 'sfdc';
     let objectName = 'churros-object-' + tools.random();
-    return testTransformation(elementKey, objectName, getObjectDefUrl('organizations', objectName), getTransformUrl('organizations', objectName, elementKey));
+    return testTransformation(sfdcId, objectName, getObjectDefUrl('organizations', objectName), getTransformUrl('organizations', objectName, elementKey));
   });
 
   /** account-level */
@@ -172,53 +173,36 @@ suite.forPlatform('transformations', schema, null, (test) => {
     let accountId;
     return cloud.get('accounts')
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
-      .then(r => crudTransformsByName('accounts/' + accountId, 'sfdc', genDefaultTrans({}), genDefaultTrans({}), schema));
+      .then(r => crudTransformsByName('accounts/' + accountId, elementKey, genDefaultTrans({}), genDefaultTrans({}), schema));
   });
   it('should support account-level transformations', () => {
-    let elementKey = 'sfdc';
     let objectName = 'churros-object-' + tools.random();
     let accountId, level;
     return cloud.get('accounts')
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => level = 'accounts/' + accountId)
-      .then(r => testTransformation(elementKey, objectName, getObjectDefUrl(level, objectName), getTransformUrl(level, objectName, elementKey)));
+      .then(r => testTransformation(sfdcId, objectName, getObjectDefUrl(level, objectName), getTransformUrl(level, objectName, elementKey)));
   });
 
   /** instance-level */
   it('should support instance-level object definition CRUD by name', () => {
-    let instanceId;
-    return provisioner.create('sfdc')
-      .then(r => instanceId = r.body.id)
-      .then(r => crudObjectDefsByName('instances/' + instanceId, genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema))
-      .then(r => provisioner.delete(instanceId));
+    return crudObjectDefsByName(`instances/${sfdcId}`, genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema);
   });
   it('should support instance-level transformation CRUD by name', () => {
-    let instanceId;
-    return provisioner.create('sfdc')
-      .then(r => instanceId = r.body.id)
-      .then(r => crudTransformsByName('instances/' + instanceId, undefined, genDefaultTrans({}), genDefaultTrans({}), schema))
-      .then(r => provisioner.delete(instanceId));
+    return crudTransformsByName(`instances/${sfdcId}`, undefined, genDefaultTrans({}), genDefaultTrans({}), schema);
   });
   it('should support instance-level transformations', () => {
-    let elementKey = 'sfdc';
     let objectName = 'churros-object-' + tools.random();
-    let instanceId, level;
-    return provisioner.create(elementKey)
-      .then(r => instanceId = r.body.id)
-      .then(r => level = 'instances/' + instanceId)
-      .then(r => testTransformationForInstance(objectName, getObjectDefUrl(level, objectName), getTransformUrl(level, objectName)))
-      .then(r => provisioner.delete(instanceId));
+    let level = `instances/${sfdcId}`;
+    return testTransformationForInstance(objectName, getObjectDefUrl(level, objectName), getTransformUrl(level, objectName));
   });
 
   it('should support transformation inheritance', () => {
-    let elementKey = 'sfdc';
     let objectName = 'churros-object-' + tools.random();
-    let instanceId, accountId;
-    return provisioner.create(elementKey)
-      .then(r => instanceId = r.body.id)
-      .then(r => cloud.post(getObjectDefUrl('organizations', objectName), genBaseObjectDef({})))
+    let accountId;
+    return cloud.post(getObjectDefUrl('organizations', objectName), genBaseObjectDef({}))
       .then(r => cloud.post(getTransformUrl('organizations', objectName, elementKey), genBaseTrans({})))
-      .then(r => cloud.get('hubs/crm/' + objectName, r => {
+      .then(r => cloud.get(`hubs/crm/${objectName}`, r => {
         expect(r.body).to.not.be.null;
         r.body.forEach(item => {
           expect(item.churrosId).to.not.be.empty;
@@ -237,7 +221,7 @@ suite.forPlatform('transformations', schema, null, (test) => {
         let trans = genBaseTrans({ fields: [getTransField('churrosName', 'string', 'Name', 'string')], configuration: [getConfig('inherit', true, true)] });
         return cloud.post(getTransformUrl('accounts/' + accountId, objectName, elementKey), trans);
       })
-      .then(r => cloud.get('accounts/' + accountId + '/elements/' + elementKey + '/transformations/' + objectName, r => {
+      .then(r => cloud.get(`accounts/${accountId}/elements/${elementKey}/transformations/${objectName}`, r => {
         expect(r.body).to.not.be.null;
         let foundId = false,
           foundName = false;
@@ -259,13 +243,13 @@ suite.forPlatform('transformations', schema, null, (test) => {
       // create instance-level obj def and trans for mod field
       .then(r => {
         let objDef = genBaseObjectDef({ fields: [getObjDefField('churrosMod', 'string')] });
-        return cloud.post(getObjectDefUrl('instances/' + instanceId, objectName), objDef);
+        return cloud.post(getObjectDefUrl('instances/' + sfdcId, objectName), objDef);
       })
       .then(r => {
         let trans = genBaseTrans({ fields: [getTransField('churrosMod', 'string', 'LastModifiedDate', 'string')], configuration: [getConfig('inherit', true, true)] });
-        return cloud.post(getTransformUrl('instances/' + instanceId, objectName), trans);
+        return cloud.post(getTransformUrl('instances/' + sfdcId, objectName), trans);
       })
-      .then(r => cloud.get('instances/' + instanceId + '/transformations/' + objectName, r => {
+      .then(r => cloud.get(`instances/${sfdcId}/transformations/${objectName}`, r => {
         expect(r.body).to.not.be.null;
         let foundId = false,
           foundName = false,
@@ -288,12 +272,11 @@ suite.forPlatform('transformations', schema, null, (test) => {
         });
       }))
       // clean up!
-      .then(r => cloud.delete(getTransformUrl('instances/' + instanceId, objectName)))
-      .then(r => cloud.delete(getObjectDefUrl('instances/' + instanceId, objectName)))
+      .then(r => cloud.delete(getTransformUrl('instances/' + sfdcId, objectName)))
+      .then(r => cloud.delete(getObjectDefUrl('instances/' + sfdcId, objectName)))
       .then(r => cloud.delete(getTransformUrl('accounts/' + accountId, objectName, elementKey)))
       .then(r => cloud.delete(getObjectDefUrl('accounts/' + accountId, objectName)))
       .then(r => cloud.delete(getTransformUrl('organizations', objectName, elementKey)))
-      .then(r => cloud.delete(getObjectDefUrl('organizations', objectName)))
-      .then(r => provisioner.delete(instanceId));
+      .then(r => cloud.delete(getObjectDefUrl('organizations', objectName)));
   });
 });
