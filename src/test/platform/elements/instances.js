@@ -15,22 +15,22 @@ const genInstance = (element, o) => ({
 
 const crudInstance = (baseUrl, schema) => {
   let id;
-  return provisioner.create('freshdesk', undefined, baseUrl)
+  return provisioner.create('jira', undefined, baseUrl)
     .then(r => id = r.body.id)
     .then(r => cloud.get(`${baseUrl}/${id}`, (r) => {
       expect(r).to.have.schemaAnd200(schema);
       expect(r.body.configuration).to.not.be.empty;
       expect(r.body.configuration.password).to.equal("********");
-      expect(r.body.configuration.username).to.equal(props.getForKey('freshdesk', 'username'));
+      expect(r.body.configuration.username).to.equal(props.getForKey('jira', 'username'));
     }))
-    .then(r => cloud.put(`${baseUrl}/${id}`, genInstance('freshdesk', { name: 'updated-instance' })))
+    .then(r => cloud.put(`${baseUrl}/${id}`, genInstance('jira', { name: 'updated-instance' })))
     .then(r => provisioner.delete(id, baseUrl));
 };
 
 suite.forPlatform('elements/instances', instanceSchema, null, (test) => {
-  it('should support CRUD by key', () => crudInstance('elements/freshdesk/instances', instanceSchema));
+  it('should support CRUD by key', () => crudInstance('elements/jira/instances', instanceSchema));
   it('should support CRUD by ID', () => {
-    return cloud.get('elements/freshdesk')
+    return cloud.get('elements/jira')
       .then(r => crudInstance(`elements/${r.body.id}/instances`, instanceSchema));
   });
 });
