@@ -7,14 +7,14 @@ const cloud = require('core/cloud');
 const tools = require('core/tools');
 const expect = chakram.expect;
 
-suite.forElement('esignature', 'agreementAssetEvents', null, (test) => {
-  var date = new Date();
+suite.forElement('esignature', 'agreement-asset-events', null, (test) => {
+  let date = new Date();
   let startIndex = 0;
   let endIndex = 19;
   let currentDate = date.toISOString().substring(startIndex, endIndex);
-  startDate = date.setDate(date.getDate() - 10);
-  var oldDate = new Date(startDate);
-  var startDate = oldDate.toISOString().substring(startIndex, endIndex);
+  let startDate = date.setDate(date.getDate() - 10);
+  let oldDate = new Date(startDate);
+  startDate = oldDate.toISOString().substring(startIndex, endIndex);
 
   it(`should allow GET for ${test.api}`, () => {
     return cloud.withOptions({

@@ -28,11 +28,15 @@ const updateUsers = (groupId) => ({
 });
 
 suite.forElement('esignature', 'users', null, (test) => {
+/*
+//  Commented out POST /users, since there is no DELETE API for that.
   test.withJson(createUsers()).should.supportCrs();
+*/
+  test.withJson(createUsers()).should.supportSr();
   it(`should allow PUT for ${test.api}/{userId}`, () => {
     let userId;
     return cloud.get(test.api)
       .then(r => userId = r.body[0].id)
-      .then(r => cloud.put(test.api + '/' + userId, updateUsers()))
+      .then(r => cloud.put(`${test.api}/${userId}`, updateUsers()))
   });
 });

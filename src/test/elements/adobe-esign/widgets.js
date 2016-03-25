@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const winston = require('winston');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const tools = require('core/tools');
@@ -31,49 +30,53 @@ suite.forElement('esignature', 'widgets', null, (test) => {
   // This script breaks, as there are over 700 widgets which leads to time-out
     test.should.return200OnGet();
   */
-  let transientDocumentId, widgetId;
-  before(done => cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-  .then(r => transientDocumentId = r.body.id)
-  .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
-  .then(r => widgetId = r.body.id)
-  .then(r => done()));
 /*
-// Commented the POST for this resource to avoid creation of new Widgets, since the code
-// breaks for GET /widgets due to time-out. Also there is no DELETE API for widgets
-  it(`should allow POST for ${test.api}`, () => {
-    return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
-      .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
-  });
+//Commented out this block to avoid all posts, instead hardcoded the widgetId of a widget in the Adobe Esign
+// named "DoNotDeleteThisWidgetThisIsForChurrosTesting".
+  let transientDocumentId, widgetId;
+  before(() => cloud.postFile(`/hubs/esignature/transient-documents`, `${__dirname}/assets/attach.txt`)
+    .then(r => transientDocumentId = r.body.id)
+    .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+    .then(r => widgetId = r.body.id));
 */
+  let widgetId = "3AAABLblqZhA_ZRfpH6d0l0tD8pnUXG-UWi0Xe0gtQ8dRJCvFzbQyMxiEyzUXcUWIi-xrslmcBBTlqU0DOukS_31TmSaqCck9";
+  /*
+  // Commented the POST for this resource to avoid creation of new Widgets, since the code
+  // breaks for GET /widgets due to time-out. Also there is no DELETE API for widgets
+    it(`should allow POST for ${test.api}`, () => {
+      return cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+        .then(r => transientDocumentId = r.body.id)
+        .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+    });
+  */
   it(`should allow GET ${test.api}/{widgetId}`, () => {
-    return cloud.get(test.api + '/' + widgetId);
+    return cloud.get(`${test.api}/${widgetId}`);
   });
   it(`should allow GET ${test.api}/{widgetId}/agreements`, () => {
-    return cloud.get(test.api + '/' + widgetId + '/agreements');
+    return cloud.get(`${test.api}/${widgetId}/agreements`);
   });
-  it(`should allow GET ${test.api}/{widgetId}/auditTrail`, () => {
-    return cloud.get(test.api + '/' + widgetId + '/auditTrail');
+  it(`should allow GET ${test.api}/{widgetId}/audits`, () => {
+    return cloud.get(`${test.api}/${widgetId}/audits`);
   });
-  it(`should allow GET ${test.api}/{widgetId}/combinedDocument`, () => {
-    return cloud.get(test.api + '/' + widgetId + '/combinedDocument');
+  it(`should allow GET ${test.api}/{widgetId}/combined-documents`, () => {
+    return cloud.get(`${test.api}/${widgetId}/combined-documents`);
   });
   it(`should allow GET ${test.api}/{widgetId}/documents`, () => {
-    return cloud.get(test.api + '/' + widgetId + '/documents');
+    return cloud.get(`${test.api}/${widgetId}/documents`);
   });
   it(`should allow GET ${test.api}/{widgetId}/documents/{documentId}`, () => {
     let documentId;
-    return cloud.get(test.api + '/' + widgetId + '/documents')
+    return cloud.get(`${test.api}/${widgetId}/documents`)
       .then(r => documentId = r.body.documentId)
-      .then(r => cloud.get(test.api + '/' + widgetId + '/documents/' + documentId));
+      .then(r => cloud.get(`${test.api}/${widgetId}/documents/${documentId}`));
   });
-  it(`should allow GET ${test.api}/{widgetId}/formData`, () => {
-    return cloud.get(test.api + '/' + widgetId + '/formData');
+  it(`should allow GET ${test.api}/{widgetId}/data`, () => {
+    return cloud.get(`${test.api}/${widgetId}/data`);
   });
-  it(`should allow PATCH for ${test.api}/{widgetId}/personalize`, () => {
-    return cloud.patch(test.api + '/' + widgetId + '/personalize', updateWidgetPersonalize());
+  it(`should allow PATCH for ${test.api}/{widgetId}/signable-documents`, () => {
+    return cloud.patch(`${test.api}/${widgetId}/signable-documents`, updateWidgetPersonalize());
   });
-  it(`should allow PATCH for ${test.api}/{widgetId}/status`, () => {
-    return cloud.patch(test.api + '/' + widgetId + '/status', updateWidgetStatus());
+  it(`should allow PATCH for ${test.api}/{widgetId}/statuses`, () => {
+    return cloud.patch(`${test.api}/${widgetId}/statuses`, updateWidgetStatus());
   });
 });

@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const chakram = require('chakram');
 const cloud = require('core/cloud');
-const winston = require('winston');
 const tools = require('core/tools');
 const expect = chakram.expect;
 
@@ -36,8 +35,8 @@ suite.forElement('esignature', 'workflows', null, (test) => {
     let transientDocumentId;
     return cloud.get(test.api)
       .then(r => workflowId = r.body[0].id)
-      .then(r => cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt'))
+      .then(r => cloud.postFile(`/hubs/esignature/transient-documents`, `${__dirname}/assets/attach.txt`))
       .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(test.api + '/' + workflowId + '/agreements', createWorkflows(transientDocumentId)))
+      .then(r => cloud.post(`${test.api}/${workflowId}/agreements`, createWorkflows(transientDocumentId)))
   });
 });

@@ -17,7 +17,7 @@ suite.forElement('esignature', 'groups', group(), (test) => {
     let groupId;
     return cloud.post(test.api, group())
       .then(r => groupId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + groupId + '/users'))
-      .then(r => cloud.delete(test.api + '/' + groupId))
+      .then(r => cloud.get(`${test.api}/${groupId}/users`))
+      .then(r => cloud.delete(`${test.api}/${groupId}`))
   });
 });

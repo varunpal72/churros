@@ -4,7 +4,6 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const sleep = require('sleep');
-const logger = require('winston');
 
 const createLibraryDocuments = (transientDocumentId) => ({
   "libraryDocumentCreationInfo": {
@@ -22,7 +21,7 @@ const createLibraryDocuments = (transientDocumentId) => ({
   }
 });
 
-suite.forElement('esignature', 'libraryDocuments', null, (test) => {
+suite.forElement('esignature', 'library-documents', null, (test) => {
   /*
   // Commented the POST for this resource to avoid creation of new Library Documents, since the code
   // might break for GET /libraryDocuments due to time-out. Also there is no DELETE API for libraryDocuments
@@ -32,38 +31,35 @@ suite.forElement('esignature', 'libraryDocuments', null, (test) => {
       .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)));
     });
   */
+/*
+//Commented out this block to avoid all posts, instead hardcoded the libraryDocumentId of a Library Document
+//in the Adobe Esign UI named "DoNotDeleteThisLibraryDocumentThisIsForChurrosTesting".
   let transientDocumentId, libraryDocumentId;
-  before(() => cloud.postFile('/hubs/esignature/transientDocuments', __dirname + '/assets/attach.txt')
+  before(() => cloud.postFile(`/hubs/esignature/transient-documents`, `${__dirname}/assets/attach.txt`)
     .then(r => transientDocumentId = r.body.id)
     .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-    .then(r => libraryDocumentId = r.body.id)
-    .then(r => logger.debug(`IDs: ${transientDocumentId}, ${libraryDocumentId}`)));
+    .then(r => libraryDocumentId = r.body.id))
+*/
+  let libraryDocumentId = "3AAABLblqZhClHK1fioPebGw8EMx-PrHOTwkxSZMn6hfb0y3T95CA9ScNV7XZytrJM2gHPHMR0DgdY3simUO62FIYJnetl25d";
+    sleep.sleep(60);
 
-  test
-    .withApi(`${test.api}/${libraryDocumentId}`)
-    .should.return200OnGet();
-
+  test.should.return200OnGet();
   it(`should allow GET for ${test.api}/{libraryDocumentId}`, () => {
-    return cloud.get(test.api + '/' + libraryDocumentId);
+    return cloud.get(`${test.api}/${libraryDocumentId}`);
   });
-
-  it(`should allow GET for ${test.api}/{libraryDocumentId}/auditTrail`, () => {
-    return cloud.get(test.api + '/' + libraryDocumentId + '/auditTrail');
+  it(`should allow GET for ${test.api}/{libraryDocumentId}/audits`, () => {
+    return cloud.get(`${test.api}/${libraryDocumentId}/audits`);
   });
-  it(`should allow GET ${test.api}/{libraryDocumentId}/combinedDocument`, () => {
-    sleep.sleep(30);
-    return cloud.get(test.api + '/' + libraryDocumentId + '/combinedDocument');
+  it(`should allow GET ${test.api}/{libraryDocumentId}/combined-documents`, () => {
+    return cloud.get(`${test.api}/${libraryDocumentId}/combined-documents`);
   });
   it(`should allow GET ${test.api}/{libraryDocumentId}/documents`, () => {
-    sleep.sleep(30);
-    return cloud.get(test.api + '/' + libraryDocumentId + '/documents');
+    return cloud.get(`${test.api}/${libraryDocumentId}/documents`);
   });
   it(`should allow GET ${test.api}/{libraryDocumentId}/documents/{documentId}`, () => {
     let documentId;
-    sleep.sleep(30);
-    return cloud.get(test.api + '/' + libraryDocumentId + '/documents')
+    return cloud.get(`${test.api}/${libraryDocumentId}/documents`)
       .then(r => documentId = r.body.documentId)
-      .then(() => sleep.sleep(30))
-      .then(r => cloud.get(test.api + '/' + libraryDocumentId + '/documents/' + documentId));
+      .then(r => cloud.get(`${test.api}/${libraryDocumentId}/documents/${documentId}`));
   });
 });

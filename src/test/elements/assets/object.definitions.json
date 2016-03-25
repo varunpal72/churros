@@ -218,13 +218,13 @@
       "type": "string"
     }]
   },
-  "transientDocuments":{
+  "transient-documents":{
     "fields":[{
       "path": "id",
       "type": "string"
     }]
   },
-  "libraryDocuments":{
+  "library-documents":{
     "fields":[{
       "path": "id",
       "type": "string"
@@ -235,12 +235,12 @@
     "fields":[{
       "path": "id",
       "type": "string"
-    }]  
+    }]
   },
   "workflows":{
     "fields":[{
       "path": "id",
       "type": "string"
-    }]  
+    }]
   }
 }

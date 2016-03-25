@@ -5,6 +5,6 @@ const chakram = require('chakram');
 const cloud = require('core/cloud');
 const expect = chakram.expect;
 
-suite.forElement('esignature', 'geturls', null, (test) => {
+suite.forElement('esignature', 'uris', null, (test) => {
   test.should.return200OnGet();
 });
