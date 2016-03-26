@@ -20,5 +20,5 @@ const options = {
 suite.forElement('helpdesk', 'incidents', payload, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
-  test.withOptions({qs: {where: 'email=\'support@desk.com\''}}).should.return200OnGet();
+  test.withOptions({ qs: { where: 'email=\'support@desk.com\'' } }).should.return200OnGet();
 });
