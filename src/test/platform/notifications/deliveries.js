@@ -38,12 +38,18 @@ suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, 
     const s = genSub({ topics: [topic] });
     const load = 2;
     let promises = [];
-    for (let i = 0; i < load; i++) { promises.push(cloud.post("notifications/subscriptions", s)); }
 
     let subs = [];
     let nId;
     let sId;
-    return chakram.all(promises)
+    // little confusing here: create one subscription, and then create the rest because if we create two subscriptions
+    // at the exact same time w the exact same topic, one of them may fail (as it should, not a bug), we just need
+    // to slow down for the first
+    return cloud.post('notifications/subscriptions', s)
+      .then(r => {
+        for (let i = 0; i < load - 1; i++) { promises.push(cloud.post('notifications/subscriptions', s)); }
+        return chakram.all(promises);
+      })
       .then(r => r.forEach(sr => subs.push(sr)))
       .then(r => cloud.post("notifications", n)) // create a notification
       .then(r => {

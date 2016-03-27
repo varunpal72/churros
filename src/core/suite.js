@@ -99,16 +99,16 @@ const itNextPagePagination = (name, api, payload, amount, options, validationCb)
   });
 };
 
-const itGet404 = (name, api, invalidId) => {
-  const n = name || `should throw a 404 when trying to retrieve a(n) ${api} with an ID that does not exist`;
+const it404 = (name, api, invalidId, method, cloudCb) => {
+  const n = name || `should throw a 404 when trying to ${method} ${api} with an ID that does not exist`;
   if (invalidId) api = api + '/' + invalidId;
-  it(n, () => cloud.get(api, (r) => expect(r).to.have.statusCode(404)));
+  it(n, () => cloudCb(api, (r) => expect(r).to.have.statusCode(404)));
 };
 
-const itPatch404 = (name, api, payload, invalidId) => {
-  const n = name || `should throw a 404 when trying to update a(n) ${api} with an ID that does not exist`;
+const itUpdate404 = (name, api, payload, invalidId, method, chakramUpdateCb) => {
+  const n = name || `should throw a 404 when trying to ${method} ${api} with an ID that does not exist`;
   if (invalidId) api = api + '/' + invalidId;
-  it(n, () => cloud.update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakram.patch));
+  it(n, () => cloud.update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakramUpdateCb));
 };
 
 const itPost400 = (name, api, payload) => {
@@ -138,8 +138,10 @@ const itCeqlSearch = (name, api, payload, field) => {
 const runTests = (api, payload, validationCb, tests) => {
   const should = (api, validationCb, payload, options, name) => ({
     return400OnPost: () => itPost400(name, api, payload),
-    return404OnPatch: (invalidId) => itPatch404(name, api, payload, invalidId),
-    return404OnGet: (invalidId) => itGet404(name, api, invalidId),
+    return404OnPatch: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PATCH', chakram.patch),
+    return404OnPut: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PUT', chakram.put),
+    return404OnGet: (invalidId) => it404(name, api, invalidId, 'GET', cloud.get),
+    return404OnDelete: (invalidId) => it404(name, api, invalidId, 'DELETE', cloud.delete),
     return200OnPost: () => itPost(name, api, payload, options, validationCb),
     return200OnGet: () => itGet(name, api, options, validationCb),
     supportPagination: () => itPagination(name, api, validationCb),

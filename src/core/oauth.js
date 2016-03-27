@@ -4,10 +4,10 @@ const webdriver = require('selenium-webdriver');
 const logger = require('winston');
 const props = require('core/props');
 
-const wait = (browser, secs) => {
+const wait = (browser, ms) => {
   browser.wait(() => {
     return false;
-  }, secs);
+  }, ms);
 };
 
 const manipulateDom = (element, browser, r, username, password, config) => {
@@ -41,49 +41,26 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('password')).clear();
       browser.findElement(webdriver.By.name('password')).sendKeys(password);
       browser.findElement(webdriver.By.name('commit')).click();
-      logger.debug(browser.getTitle());
-      // browser.wait(() => {
-      //   return browser.getTitle().then((title) => !title);
-      // }, 10000);
       return browser.getCurrentUrl();
+    case 'dropboxbusiness':
     case 'dropbox':
-      // TODO - not working yet...
       browser.get(r.body.oauthUrl);
-      const findLoginEmail = () => {
-        return browser.findElements(webdriver.By.name('login_email'))
-          .then(r => {
-            r.forEach(element => {
-              if (element.getTagName() === 'input') {
-                element.sendKeys(username);
-                return true;
-              }
-            });
-          });
-      };
-      const findLoginPassword = () => {
-        return browser.findElements(webdriver.By.name('login_password'))
-          .then(r => {
-            r.forEach(element => {
-              if (element.getTagName() === 'input') {
-                r.sendKeys(password);
-                return true;
-              }
-            });
-          });
-      };
-      const findBtn = () => {
-        return browser.findElement(webdriver.By.css('.login-button'))
-          .then(r => {
-            r.click();
-            return true;
-          });
-      };
-      return browser.wait(() => {
-        return findLoginEmail()
-          .then(findLoginPassword())
-          .then(findBtn())
-          .thenCatch(() => false);
-      }, 5000);
+      return browser.findElement(webdriver.By.xpath('//input[@name="login_email"]'))
+        .then(el => {
+          el.sendKeys(username);
+          return browser.findElement(webdriver.By.xpath('//input[@name="login_password"]'));
+        })
+        .then(el => {
+          el.sendKeys(password);
+          return browser.findElement(webdriver.By.className('login-button button-primary'));
+        })
+        .then(el => {
+          el.click();
+          return browser.wait(() => {
+            return browser.getTitle().then((title) => !title);
+          }, 5000);
+        })
+        .then(() => browser.getCurrentUrl());
     case 'facebooksocial':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).clear();
@@ -250,11 +227,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'sfdcmarketingcloud':
     case 'sfdcdocuments':
       browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id("username")).clear();
-      browser.findElement(webdriver.By.id("username")).sendKeys(username);
-      browser.findElement(webdriver.By.id("password")).clear();
-      browser.findElement(webdriver.By.id("password")).sendKeys(password);
-      browser.findElement(webdriver.By.id("Login")).click();
+      // wait 5 seconds for username to popup
+      browser.wait(webdriver.until.elementLocated(webdriver.By.name('username')), 5000);
+      browser.findElement(webdriver.By.id('username')).clear();
+      browser.findElement(webdriver.By.id('username')).sendKeys(username);
+      browser.findElement(webdriver.By.id('password')).clear();
+      browser.findElement(webdriver.By.id('password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('Login')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 5000)
         .thenCatch(r => true); // ignore
 
@@ -277,6 +256,12 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
       return browser.getCurrentUrl();
+    case 'sage200':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.name('sso.Email')).sendKeys(username);
+      browser.findElement(webdriver.By.name('sso.Password')).sendKeys(password);
+      browser.findElement(webdriver.By.className('submit floatRight')).click();
+      return browser.getCurrentUrl();
     case 'sharepoint':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
@@ -295,10 +280,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.name('commit')).click();
-      return browser.getCurrentUrl();
-    case 'sage200':
-      browser.get(r.body.oauthUrl);
-      wait(browser, 10);
       return browser.getCurrentUrl();
     default:
       logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
