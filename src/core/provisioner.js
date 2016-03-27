@@ -65,7 +65,6 @@ const oauth = (element, args, config) => {
     .then(r => {
       const query = urlParser.parse(r, true).query;
       expect(query).to.not.be.null;
-      expect(query.code).to.not.be.undefined;
       const providerData = {
         code: query.code,
         apikey: query.apikey,
