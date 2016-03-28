@@ -10,6 +10,8 @@ const schema = require('./assets/schemas/formula.schema');
 const triggerSchema = require('./assets/schemas/formula.trigger.schema');
 const instanceSchema = require('./assets/schemas/formula.instance.schema');
 const common = require('./assets/common');
+const props = require('core/props');
+const logger = require('winston');
 
 suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
 
@@ -90,23 +92,19 @@ suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
     .withApi(test.api + '/-1/export')
     .should.return404OnGet();
 
-  it('should allow publishing and un-publishing a formula', () => {
-    const f = common.genFormula({});
-    const fUpdate = (isPublished) => ({ name: f.name, published: isPublished });
+  it('should allow monitoring and un-monitoring a formula', () => {
+    if (props.get('user') !== 'system') {
+      logger.warn("Can only run these tests as system user");
+      return;
+    }
 
-    const validator = (response, isPublished) => {
-      expect(response.body.published).to.equal(isPublished);
-      return response;
-    };
+    const f = common.genFormula({});
 
     let formulaId;
     return cloud.post(test.api, f, schema)
-      .then(r => validator(r, false))
       .then(r => formulaId = r.body.id)
-      .then(r => cloud.put(`${test.api}/${formulaId}`, fUpdate(true), schema))
-      .then(r => validator(r, true))
-      .then(r => cloud.put(`${test.api}/${formulaId}`, fUpdate(false), schema))
-      .then(r => validator(r, false))
+      .then(r => cloud.put(`${test.api}/${formulaId}/monitored`, {}))
+      .then(r => cloud.delete(`${test.api}/${formulaId}/monitored`, {}))
       .then(r => cloud.delete(`${test.api}/${formulaId}`));
   });
 });

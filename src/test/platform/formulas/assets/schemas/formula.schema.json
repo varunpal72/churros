@@ -19,9 +19,6 @@
     "active": {
       "type": "boolean"
     },
-    "published": {
-      "type": "boolean"
-    },
     "singleThreaded": {
       "type": "boolean"
     },
@@ -35,5 +32,5 @@
       "type": "array"
     }
   },
-  "required": ["id", "name", "userId", "accountId", "createdDate", "active", "published"]
+  "required": ["id", "name", "userId", "accountId", "createdDate", "active"]
 }
