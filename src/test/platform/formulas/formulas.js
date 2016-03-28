@@ -89,4 +89,24 @@ suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
   test
     .withApi(test.api + '/-1/export')
     .should.return404OnGet();
+
+  it('should allow publishing and un-publishing a formula', () => {
+    const f = common.genFormula({});
+    const fUpdate = (isPublished) => ({ name: f.name, published: isPublished });
+
+    const validator = (response, isPublished) => {
+      expect(response.body.published).to.equal(isPublished);
+      return response;
+    };
+
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => validator(r, false))
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.put(`${test.api}/${formulaId}`, fUpdate(true), schema))
+      .then(r => validator(r, true))
+      .then(r => cloud.put(`${test.api}/${formulaId}`, fUpdate(false), schema))
+      .then(r => validator(r, false))
+      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+  });
 });
