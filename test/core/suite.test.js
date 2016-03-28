@@ -229,6 +229,7 @@ describe('suite', () => {
     test.withOptions({ json: true }).should.supportCrd();
     test.withOptions({ json: true }).should.supportCd();
     test.withOptions({ json: true }).should.supportCrds();
+    test.withOptions({ json: true }).should.supportCrs();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
     test.withApi('/foo/pagination').should.supportNextPagePagination(1);
