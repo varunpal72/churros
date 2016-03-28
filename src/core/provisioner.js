@@ -27,7 +27,8 @@ const parseProps = (element) => {
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
         callbackUrl: (props.getOptionalForKey(element, 'oauth.callback.url') || props.get('oauth.callback.url')),
         scope: props.getOptionalForKey(element, 'oauth.scope'),
-        siteAddress: props.getOptionalForKey(element, 'site.address')
+        siteAddress: props.getOptionalForKey(element, 'site.address'),
+        subdomain: props.getOptionalForKey(element, 'subdomain')
       }
     }
   };
