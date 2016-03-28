@@ -5,8 +5,8 @@ const chakram = require('chakram');
 const util = require('util');
 const provisioner = require('core/provisioner');
 const cloud = require('core/cloud');
-const fSchema = require('./formula.schema');
-const fiSchema = require('./formula.instance.schema');
+const fSchema = require('./schemas/formula.schema');
+const fiSchema = require('./schemas/formula.instance.schema');
 
 var exports = module.exports = {};
 

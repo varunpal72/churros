@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const schema = require('./assets/formula.schema');
+const schema = require('./assets/schemas/formula.schema');
 const common = require('./assets/common');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;

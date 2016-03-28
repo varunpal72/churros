@@ -1,0 +1,39 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "name": {
+      "type": "string"
+    },
+    "userId": {
+      "type": "number"
+    },
+    "accountId": {
+      "type": "number"
+    },
+    "createdDate": {
+      "type": "string"
+    },
+    "active": {
+      "type": "boolean"
+    },
+    "published": {
+      "type": "boolean"
+    },
+    "singleThreaded": {
+      "type": "boolean"
+    },
+    "steps": {
+      "type": "array"
+    },
+    "triggers": {
+      "type": "array"
+    },
+    "configuration": {
+      "type": "array"
+    }
+  },
+  "required": ["id", "name", "userId", "accountId", "createdDate", "active", "published"]
+}
