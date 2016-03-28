@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('util');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const tools = require('core/tools');
@@ -28,7 +27,8 @@ const parseProps = (element) => {
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
         callbackUrl: (props.getOptionalForKey(element, 'oauth.callback.url') || props.get('oauth.callback.url')),
         scope: props.getOptionalForKey(element, 'oauth.scope'),
-        siteAddress: props.getOptionalForKey(element, 'site.address')
+        siteAddress: props.getOptionalForKey(element, 'site.address'),
+        subdomain: props.getOptionalForKey(element, 'subdomain')
       }
     }
   };
@@ -56,7 +56,7 @@ const createInstance = (element, config, providerData, baseApi) => {
 };
 
 const oauth = (element, args, config) => {
-  const url = util.format('/elements/%s/oauth/url', element);
+  const url = `/elements/${element}/oauth/url`;
   logger.debug('GET %s with options %s', url, args.options);
   return chakram.get(url, args.options)
     .then(r => {
@@ -65,6 +65,7 @@ const oauth = (element, args, config) => {
     })
     .then(r => {
       const query = urlParser.parse(r, true).query;
+      expect(query).to.not.be.null;
       const providerData = {
         code: query.code,
         apikey: query.apikey,
@@ -83,7 +84,7 @@ const oauth = (element, args, config) => {
 };
 
 const oauth1 = (element, args) => {
-  const oauthTokenUrl = util.format('/elements/%s/oauth/token', element);
+  const oauthTokenUrl = `/elements/${element}/oauth/token`;
   return chakram.get(oauthTokenUrl, args.options)
     .then(r => {
       expect(r).to.have.statusCode(200);

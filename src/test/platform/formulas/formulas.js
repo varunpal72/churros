@@ -88,7 +88,8 @@ suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
         const id = r.body.id;
 
         let fi = require('./assets/big-formula-instance.json');
-        Object.keys(fi.configuration).forEach(key => fi.configuration[key] = util.format(fi.configuration[key], id));
+        fi.configuration['sfdc.instance.id'] = id;
+        fi.configuration['sailthru.instance.id'] = id;
 
         let f = require('./assets/big-formula.json');
         f.name = tools.random();
