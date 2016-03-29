@@ -53,11 +53,6 @@ suite.forPlatform('formulas', null, schema, (test) => {
     .should.supportCd();
 
   test
-    .withName('should not allow creating a script without a return statement in the v1 engine')
-    .withJson(gen(genV1Step)(genGoodV2Script))
-    .should.return400OnPost();
-
-  test
     .withName('should allow creating a script with a helper function that has a return statement in the v2 engine')
     .withJson(gen(genV2Step)(genGoodV2ScriptWithFunction))
     .should.supportCd();
