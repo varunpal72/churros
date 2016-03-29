@@ -1,7 +1,6 @@
 'use strict';
 
 const chakram = require('chakram');
-const util = require('util');
 const logger = require('winston');
 
 let baseUrl = null;
@@ -14,8 +13,8 @@ const setDefaults = (b, u, o, un) => {
   chakram.setRequestDefaults({
     baseUrl: b,
     headers: {
-      Authorization: util.format('User %s, Organization %s', userSecret, orgSecret),
-      'User-Agent': util.format('Churrosbot/%s', un)
+      Authorization: `User ${userSecret}, Organization ${orgSecret}`,
+      'User-Agent': `Churrosbot/${un}`
     }
   });
 };
@@ -46,8 +45,8 @@ exports.token = (token) => {
   chakram.setRequestDefaults({
     baseUrl: baseUrl,
     headers: {
-      Authorization: util.format('User %s, Organization %s, Element %s', userSecret, orgSecret, token),
-      'User-Agent': util.format('Churrosbot/%s', username)
+      Authorization: `User ${userSecret}, Organization ${orgSecret}, Element ${token}`,
+      'User-Agent': `Churrosbot/${username}`
     }
   });
 };

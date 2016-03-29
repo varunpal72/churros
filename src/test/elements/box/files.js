@@ -1,6 +1,5 @@
 'use strict';
 
-const util = require('util');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
@@ -9,7 +8,7 @@ const cloud = require('core/cloud');
 suite.forElement('documents', 'files', null, (test) => {
   it('should allow uploading and downloading a file', () => {
     let fileId = -1;
-    let query = { path: util.format('/brady-%s.jpg', tools.random()) };
+    let query = { path: `/brady-${tools.random()}.jpg` };
     let path = __dirname + '/assets/brady.jpg';
 
     return cloud.postFile(test.api, path, { qs: query })
