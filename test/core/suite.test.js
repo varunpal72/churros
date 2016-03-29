@@ -87,6 +87,9 @@ describe('suite', () => {
       .reply(200, () => genPayload({ id: 123 }))
       .get('/foo')
       .query({ where: 'id=\'123\'' })
+      .reply(200, () => [genPayload({ id: 123 })])
+      .get('/foo/search')
+      .query({ foo: 'bar' })
       .reply(200, () => [genPayload({ id: 123 })]);
 
     /** PATCH && PUT **/
@@ -240,5 +243,11 @@ describe('suite', () => {
     // examples of using .withName(...) which will set the name of the test to be whatever string is passed in
     test.withName('this should be the name of the test').should.return200OnPost();
     test.withApi('/foo/bad').withName('this should be the name of the test').should.return400OnPost();
+
+    test
+      .withName('should allow overriding the api and the options with new values')
+      .withApi(`${test.api}/search`)
+      .withOptions({ qs: { foo: 'bar' } })
+      .should.return200OnGet();
   });
 });
