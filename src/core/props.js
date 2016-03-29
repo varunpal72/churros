@@ -1,7 +1,6 @@
 'use strict';
 
 const tools = require('core/tools');
-const util = require('util');
 const logger = require('winston');
 
 let config = {};
@@ -12,7 +11,7 @@ var exports = module.exports = (initConfig) => {
   config = initConfig;
 
   const missingPropForRootKey = (rootKey, key) => {
-    const msg = util.format("Missing required property '%s' for '%s'\n   Note: Can set this property by calling 'churros props %s:%s <value>'", key, rootKey, rootKey, key);
+    const msg = `Missing required property '${key}' for '${rootKey}'\n   Note: Can set this property by calling 'churros props ${rootKey}:${key} <value>'`;
     throw Error(msg);
   };
 
@@ -22,7 +21,7 @@ var exports = module.exports = (initConfig) => {
 
     // right now, if a property isn't found we just fail immediately.  long term, we want to add the ability to run in
     // '--prompt' mode, which will prompt the user for a value to use.
-    const msg = util.format("No value found for required property '%s'\n   Note: Can set this property by calling 'churros props %s <value>'", key, key);
+    const msg = `No value found for required property '${key}'\n   Note: Can set this property by calling 'churros props ${key} <value>'`;
     throw Error(msg);
   };
 
@@ -58,7 +57,7 @@ var exports = module.exports = (initConfig) => {
   exports.all = (element) => {
     logger.debug('Looking for props for %s', element);
     if (!config[element]) {
-      const msg = util.format("No properties found for element '%s'\n   Note: Can setup properties for this element by calling 'churros props %s:my.config.key <value>'", element, element);
+      const msg = `No properties found for element '${element}'\n   Note: Can setup properties for this element by calling 'churros props ${element}:my.config.key <value>'`;
       throw Error(msg);
     }
 

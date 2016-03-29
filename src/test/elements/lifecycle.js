@@ -31,19 +31,19 @@ before(done => {
       expect(r).to.have.statusCode(200);
       instanceId = r.body.id;
       // object definitions file exists? create the object definitions on the instance
-      const objectDefinitionsFile = util.format('%s/assets/object.definitions', __dirname);
+      const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
       if (fs.existsSync(objectDefinitionsFile + '.json')) {
         logger.debug('Setting up object definitions');
-        const url = util.format('/instances/%s/objects/%s/definitions', instanceId);
+        const url = `/instances/${instanceId}/objects/%s/definitions`;
         return createAll(url, require(objectDefinitionsFile));
       }
     })
     .then(r => {
       // transformations file exists? create the transformations on the instance
-      const transformationsFile = util.format('%s/%s/assets/transformations', __dirname, element);
+      const transformationsFile = `${__dirname}/${element}/assets/transformations`;
       if (fs.existsSync(transformationsFile + '.json')) {
         logger.debug('Setting up transformations');
-        const url = util.format('/instances/%s/transformations/%s', instanceId);
+        const url = `/instances/${instanceId}/transformations/%s`;
         return createAll(url, require(transformationsFile));
       }
     })
