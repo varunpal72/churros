@@ -10,6 +10,6 @@ const discount = (custom) => ({
   value: custom.value || 100
 });
 
-suite.forElement('ecommerce', 'discounts', discount({}), (test) => {
+suite.forElement('ecommerce', 'discounts', { payload: discount({}) }, (test) => {
   test.should.supportCrds();
 });

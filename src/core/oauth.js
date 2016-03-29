@@ -4,11 +4,7 @@ const webdriver = require('selenium-webdriver');
 const logger = require('winston');
 const props = require('core/props');
 
-const wait = (browser, ms) => {
-  browser.wait(() => {
-    return false;
-  }, ms);
-};
+const wait = (browser, ms) => browser.wait(() => false, ms);
 
 const manipulateDom = (element, browser, r, username, password, config) => {
   switch (element) {

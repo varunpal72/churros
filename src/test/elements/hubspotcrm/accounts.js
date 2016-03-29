@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const payload = require('./assets/accounts');
 
-suite.forElement('crm', 'accounts', payload, (test) => {
+suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
 });

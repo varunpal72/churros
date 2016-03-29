@@ -11,13 +11,9 @@ const incidentsUpdate = () => ({
   }
 });
 
-const options = {
-  churros: {
-    updatePayload: incidentsUpdate()
-  }
-};
+const options = { churros: { updatePayload: incidentsUpdate() } };
 
-suite.forElement('helpdesk', 'incidents', payload, (test) => {
+suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'email=\'support@desk.com\'' } }).should.return200OnGet();

@@ -184,19 +184,35 @@ const runTests = (api, payload, validationCb, tests) => {
   tests ? tests(test) : it('add some tests to me!!!', () => true);
 };
 
-exports.forElement = (hub, resource, payload, tests) => {
-  describe(resource, () => runTests(`/hubs/${hub}/${resource}`, payload, (r) => expect(r).to.have.statusCode(200), tests));
+const run = (api, resource, options, defaultValidation, tests) => {
+  // if options is a function, we're assuming those are the tests
+  if (typeof options === 'function') {
+    tests = options;
+    options = {};
+  }
+
+  options = options || {};
+  const name = options.name || resource;
+  describe(name, () => runTests(api, options.payload, defaultValidation, tests));
 };
+
+/**
+ * Starts up a new test suite for an element.  This wraps all of the given tests in a mocha describe block, and provides
+ * a bunch of convenience functions inside of the given tests under the 'test' object.
+
+ * @param  {string} hub       The hub that this element is in (i.e. crm, marketing, etc.)
+ * @param  {string} resource  The name of the elements API resource this test suite is for
+ * @param  {object} options   The suite options object
+ * @param  {function} tests   A function, containing all test
+ */
+exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, resource, options, (r) => expect(r).to.have.statusCode(200), tests);
 
 /**
  * Starts up a new test suite for a platform resource.  This wraps all of the given tests in a mocha describe block, and
  * provides a bunch of convenience functions inside of the given tests under the 'test' object.
 
- * @param  {string} resource     The name of the platform resource you're testing
- * @param  {object} payload      The default JSON payload to go about creating one of these resources
- * @param  {function} schema     The schema to validate responses against
+ * @param  {string} resource     The name of the platform API resource this test suite is for
+ * @param  {object} options      The suite options object
  * @param  {function} tests      A function, containing all tests
  */
-exports.forPlatform = (resource, payload, schema, tests) => {
-  describe(resource, () => runTests(`/${resource}`, payload, schema, tests));
-};
+exports.forPlatform = (resource, options, tests) => run(`${resource}`, resource, options, options.schema, tests);

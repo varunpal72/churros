@@ -8,19 +8,18 @@ const note = {
   "description": "I am a test note"
 };
 
-suite.forElement('crm', 'campaigns', payload, (test) => {
+suite.forElement('crm', 'campaigns', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
-  let campaignId;
-  let noteId;
-  it('should support CRUDS for campaigns/notes', () =>{
+  let campaignId, noteId;
+  it('should support CRUDS for campaigns/notes', () => {
     return cloud.post(test.api, payload)
-    .then(r => campaignId = r.body.id)
-    .then(r => cloud.post(`${test.api}/${campaignId}/notes`, note))
-    .then(r => noteId = r.body.id)
-    .then(r => cloud.get(`${test.api}/${campaignId}/notes/${noteId}`))
-    .then(r => cloud.patch(`${test.api}/${campaignId}/notes/${noteId}`, {"description":"this is an updated note"}))
-    .then(r => cloud.delete(`${test.api}/${campaignId}/notes/${noteId}`))
-    .then(r => cloud.delete(`${test.api}/${campaignId}`));
+      .then(r => campaignId = r.body.id)
+      .then(r => cloud.post(`${test.api}/${campaignId}/notes`, note))
+      .then(r => noteId = r.body.id)
+      .then(r => cloud.get(`${test.api}/${campaignId}/notes/${noteId}`))
+      .then(r => cloud.patch(`${test.api}/${campaignId}/notes/${noteId}`, { "description": "this is an updated note" }))
+      .then(r => cloud.delete(`${test.api}/${campaignId}/notes/${noteId}`))
+      .then(r => cloud.delete(`${test.api}/${campaignId}`));
   });
 });

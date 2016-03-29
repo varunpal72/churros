@@ -2,8 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const chakram = require('chakram');
-const expect = chakram.expect;
 const tools = require('core/tools');
 
 const createWidget = (transientDocumentId) => ({
@@ -25,20 +23,20 @@ const updateWidgetStatus = () => ({
   "value": "ENABLE"
 });
 
-suite.forElement('esignature', 'widgets', null, (test) => {
+suite.forElement('esignature', 'widgets', (test) => {
   /*
   // This script breaks, as there are over 700 widgets which leads to time-out
     test.should.return200OnGet();
   */
-/*
-//Commented out this block to avoid all posts, instead hardcoded the widgetId of a widget in the Adobe Esign
-// named "DoNotDeleteThisWidgetThisIsForChurrosTesting".
-  let transientDocumentId, widgetId;
-  before(() => cloud.postFile(`/hubs/esignature/transient-documents`, `${__dirname}/assets/attach.txt`)
-    .then(r => transientDocumentId = r.body.id)
-    .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
-    .then(r => widgetId = r.body.id));
-*/
+  /*
+  //Commented out this block to avoid all posts, instead hardcoded the widgetId of a widget in the Adobe Esign
+  // named "DoNotDeleteThisWidgetThisIsForChurrosTesting".
+    let transientDocumentId, widgetId;
+    before(() => cloud.postFile(`/hubs/esignature/transient-documents`, `${__dirname}/assets/attach.txt`)
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createWidget(transientDocumentId)))
+      .then(r => widgetId = r.body.id));
+  */
   let widgetId = "3AAABLblqZhA_ZRfpH6d0l0tD8pnUXG-UWi0Xe0gtQ8dRJCvFzbQyMxiEyzUXcUWIi-xrslmcBBTlqU0DOukS_31TmSaqCck9";
   /*
   // Commented the POST for this resource to avoid creation of new Widgets, since the code

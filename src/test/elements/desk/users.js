@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 
-suite.forElement('helpdesk', 'users', null, (test) => {
+suite.forElement('helpdesk', 'users', (test) => {
   test.should.supportSr();
   test.should.supportPagination();
 });

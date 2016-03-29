@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const sleep = require('sleep');
 
 const createLibraryDocuments = (transientDocumentId) => ({
   "libraryDocumentCreationInfo": {
@@ -21,7 +20,7 @@ const createLibraryDocuments = (transientDocumentId) => ({
   }
 });
 
-suite.forElement('esignature', 'library-documents', null, (test) => {
+suite.forElement('esignature', 'library-documents', (test) => {
   /*
   // Commented the POST for this resource to avoid creation of new Library Documents, since the code
   // might break for GET /libraryDocuments due to time-out. Also there is no DELETE API for libraryDocuments
@@ -31,17 +30,16 @@ suite.forElement('esignature', 'library-documents', null, (test) => {
       .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)));
     });
   */
-/*
-//Commented out this block to avoid all posts, instead hardcoded the libraryDocumentId of a Library Document
-//in the Adobe Esign UI named "DoNotDeleteThisLibraryDocumentThisIsForChurrosTesting".
-  let transientDocumentId, libraryDocumentId;
-  before(() => cloud.postFile(`/hubs/esignature/transient-documents`, `${__dirname}/assets/attach.txt`)
-    .then(r => transientDocumentId = r.body.id)
-    .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
-    .then(r => libraryDocumentId = r.body.id))
-*/
+  /*
+  //Commented out this block to avoid all posts, instead hardcoded the libraryDocumentId of a Library Document
+  //in the Adobe Esign UI named "DoNotDeleteThisLibraryDocumentThisIsForChurrosTesting".
+    let transientDocumentId, libraryDocumentId;
+    before(() => cloud.postFile(`/hubs/esignature/transient-documents`, `${__dirname}/assets/attach.txt`)
+      .then(r => transientDocumentId = r.body.id)
+      .then(r => cloud.post(test.api, createLibraryDocuments(transientDocumentId)))
+      .then(r => libraryDocumentId = r.body.id))
+  */
   let libraryDocumentId = "3AAABLblqZhClHK1fioPebGw8EMx-PrHOTwkxSZMn6hfb0y3T95CA9ScNV7XZytrJM2gHPHMR0DgdY3simUO62FIYJnetl25d";
-    sleep.sleep(60);
 
   test.should.return200OnGet();
   it(`should allow GET for ${test.api}/{libraryDocumentId}`, () => {
