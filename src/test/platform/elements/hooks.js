@@ -6,7 +6,9 @@ const common = require('./assets/common.js');
 const schema = require('./assets/element.hook.schema.json');
 const listSchema = require('./assets/element.hooks.schema.json');
 
-suite.forPlatform('elements/hooks', common.genHook({}), schema, (test) => {
+const opts = { payload: common.genHook({}), schema: schema };
+
+suite.forPlatform('elements/hooks', opts, (test) => {
   let element, keyUrl, idUrl;
   before(() => common.deleteElementByKey('churros')
     .then(r => cloud.post('elements', common.genElement({})))

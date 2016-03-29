@@ -15,7 +15,8 @@ const crudConfig = (idOrKey, payload, updatePayload, schema, listSchema) => {
     .then(r => cloud.delete('elements/' + idOrKey + '/configuration/' + config.key));
 };
 
-suite.forPlatform('elements/configuration', common.genConfig({}), schema, (test) => {
+const opts = { payload: common.genConfig({}), schema: schema };
+suite.forPlatform('elements/configuration', opts, (test) => {
   let element;
   before(() => common.deleteElementByKey('churros')
     .then(r => cloud.post('elements', common.genElement({})))

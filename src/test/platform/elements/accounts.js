@@ -24,7 +24,8 @@ const genAccount = () => ({
   externalId: 'churros'
 });
 
-suite.forPlatform('elements/parameters', common.genParameter({}), schema, (test) => {
+const opts = { payload: common.genParameter({}), schema: schema };
+suite.forPlatform('elements/parameters', opts, (test) => {
   let element, keyUrl, idUrl, subAccountId;
   before(() => common.deleteElementByKey('churros')
     .then(r => cloud.post('elements', common.genElement({})))
