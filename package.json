@@ -30,7 +30,7 @@
     "localtunnel": "^1.8.1",
     "mocha": "^2.3.4",
     "mockery": "^1.4.0",
-    "nock": "^7.0.2",
+    "nock": "7.7.0",
     "optimist": "^0.6.1",
     "replacestream": "^4.0.0",
     "selenium-webdriver": "^2.48.2",

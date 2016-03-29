@@ -5,6 +5,7 @@ const payload = require('./assets/activities');
 const chakram = require('chakram');
 
 suite.forElement('crm', 'activities', payload, (test) => {
-  test.withOptions({ qs: { type: 'calls' } }).should.supportCruds(chakram.put);
-  test.withOptions({ qs: { type: 'calls' } }).should.supportPagination();
+  const opts = { qs: { type: 'calls' } };
+  test.withOptions(opts).should.supportCruds(chakram.put);
+  test.withOptions(opts).should.supportPagination();
 });

@@ -1,5 +1,17 @@
-## v0.5.0 <sub><sup>(TBD)</sup></sub>
+## v0.5.0 <sub><sup>(2016-03-25)</sup></sub>
 #### Highlights
+* element tests:
+ * jira
+ * dropboxforbusiness
+ * sage200
+ * shopify
+ * hubspotcrm
+* platform tests:
+ * instance events
+ * `id` based `/elements` tests
+ * formula `v2` scripting engine tests
+* increased resiliency with a handful of test suites for more reliability
+* tests can run through `stoplight` proxy
 
 ## v0.4.0 <sub><sup>(2016-03-11)</sup></sub>
 #### Highlights

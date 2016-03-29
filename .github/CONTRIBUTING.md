@@ -1,3 +1,13 @@
+## Best Practices
+In order to keep `churros` consistent, here are some common patterns that are followed in `churros`:
+* need to make tests as resilient as possible.  some common mistakes to avoid:
+ * make sure to clean up any API resources that are created
+ * in `before` blocks, be as defensive as possible.  if this fails all tests will fail...
+ * handle `before` and `after` failures elegantly so the test suite does not hang until a timeout
+* use `.jshintrc` and `.jsbeautifyrc` files in the root of the project in your editor or IDE of choice, so there is consistency with formatting
+* use ES6 string templates when concatenating strings
+* prefer returning promises out of mocha `before` and `after` blocks instead of using the `done` callback
+
 ## Creating Test Suites
 
 ### New Element Suite:
