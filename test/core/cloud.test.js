@@ -230,6 +230,9 @@ describe('cloud', () => {
   it('should support sr', () => cloud.sr('/foo', (r) => expect(r).to.have.statusCode(200)));
   it('should support sr with options', () => cloud.withOptions({ json: true }).sr('/foo', (r) => expect(r).to.have.statusCode(200)));
 
+  it('should support crs', () => cloud.crs('/foo', genPayload(), genSchema()));
+  it('should support crs with options', () => cloud.withOptions({ json: true }).crs('/foo', genPayload(), genSchema()));
+
   it('should support post file', () => {
     // should really NOT depend on the file system here :/
     const filePath = '.tmp';
