@@ -220,5 +220,42 @@
       "path": "id",
       "type": "string"
       }]
+  },
+  "groups":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "widgets":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "transient-documents":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "library-documents":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }
+    ]
+  },
+  "documents":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "workflows":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
