@@ -17,6 +17,6 @@ suite.forElement('documents', 'members', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/${memberId}/suspend/false`))
       .then(r => cloud.patch(`${test.api}/${memberId}/unsuspend`))
       .then(r => cloud.patch(`${test.api}/${memberId}/suspend/true`))
-      .then(r => cloud.patch(`${test.api}/${memberId}/unsuspend`))
+      .then(r => cloud.patch(`${test.api}/${memberId}/unsuspend`));
   });
 });

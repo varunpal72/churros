@@ -62,7 +62,7 @@ Whenever building out new test cases, it is good to leverage as much functionali
 For examples on what is available in the `test` object that is passed in at the top of your test file, look at the unit tests in `suite.test.js`.  Here are some basic examples of how to use it:
 ```javascript
 // The payload and schema passed in here are what will be used if not overridden for a given test.
-suite.forPlatform('foo', payload, schema, (test) => {
+suite.forPlatform('foo', {payload: payload, schema: schema}, (test) => {
   // NOTE: these first five are all equivalent
   test.should.return200OnPost(); // using the default api, payload and schema
   test.withApi('/foo').should.return200OnPost(); // customizing the api, but using default payload and schema
@@ -136,6 +136,8 @@ it('should allow CRUDS for ' + api, () => {
 Whenever adding any new code to the `src/core` directory, ensure that these changes are unit-tested in `test/core`.
 
 ## Pull Requests
+
+Before submitting a PR, make sure to run `npm test` locally to ensure that all tests pass, code coverage remains the same or is higher, and that all JS complies with our `.jshintrc` file.
 
 All PRs submitted to the `churros` repository will have *all* of the unit tests run before they're able to be merged into `master`.  When creating a PR, please refrain from assigning it to someone else until all GitHub status checks have been completed and you have that nice little :white_check_mark:.
 

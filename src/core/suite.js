@@ -202,7 +202,7 @@ const run = (api, resource, options, defaultValidation, tests) => {
 
  * @param  {string} hub       The hub that this element is in (i.e. crm, marketing, etc.)
  * @param  {string} resource  The name of the elements API resource this test suite is for
- * @param  {object} options   The suite options object
+ * @param  {object} options   The, optional, suite options
  * @param  {function} tests   A function, containing all test
  */
 exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, resource, options, (r) => expect(r).to.have.statusCode(200), tests);
@@ -212,7 +212,7 @@ exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${reso
  * provides a bunch of convenience functions inside of the given tests under the 'test' object.
 
  * @param  {string} resource     The name of the platform API resource this test suite is for
- * @param  {object} options      The suite options object
+ * @param  {object} options      The, optional, suite options
  * @param  {function} tests      A function, containing all tests
  */
-exports.forPlatform = (resource, options, tests) => run(`${resource}`, resource, options, options.schema, tests);
+exports.forPlatform = (resource, options, tests) => run(`/${resource}`, resource, options, options.schema, tests);

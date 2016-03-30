@@ -4,6 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 
+/* jshint unused:false */
 const createLibraryDocuments = (transientDocumentId) => ({
   "libraryDocumentCreationInfo": {
     "libraryTemplateTypes": "DOCUMENT",

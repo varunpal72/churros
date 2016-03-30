@@ -186,15 +186,15 @@ describe('suite', () => {
       .reply(200, (uri, requestBody) => ({}));
   });
 
-  suite.forElement('fakehub', 'resource', null, (test) => {
+  suite.forElement('fakehub', 'resource', (test) => {
     it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
   });
 
-  suite.forPlatform('platformresource', null, null, (test) => {
+  suite.forPlatform('platformresource', (test) => {
     it('should support suite for platform', () => expect(test.api).to.equal('/platformresource'));
   });
 
-  suite.forPlatform('foo', genPayload(), genSchema(), (test) => {
+  suite.forPlatform('foo', { payload: genPayload(), schema: genSchema() }, (test) => {
     // *****************************************
     // NOTE: all of these are equivalent just as examples
     // *****************************************

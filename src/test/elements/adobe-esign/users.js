@@ -34,6 +34,6 @@ suite.forElement('esignature', 'users', (test) => {
     let userId;
     return cloud.get(test.api)
       .then(r => userId = r.body[0].id)
-      .then(r => cloud.put(`${test.api}/${userId}`, updateUsers()))
+      .then(r => cloud.put(`${test.api}/${userId}`, updateUsers()));
   });
 });
