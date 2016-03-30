@@ -71,4 +71,10 @@ describe('server', () => {
       .then(s => server.stop())
       .then(s => server.start(port));
   });
+
+  it('should allow stopping a server that has open connections', () => {
+    return server.start(port)
+      .then(s => chakram.post(`http://localhost:${port}`, {}, { headers: { 'Connection': 'keep-alive' } }))
+      .then(s => server.stop());
+  });
 });
