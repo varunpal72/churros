@@ -186,63 +186,100 @@ describe('suite', () => {
       .reply(200, (uri, requestBody) => ({}));
   });
 
+  /* Not passing in any suite options */
   suite.forElement('fakehub', 'resource', (test) => {
     it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
   });
 
+  /* Not passing in any suite options */
   suite.forPlatform('platformresource', (test) => {
     it('should support suite for platform', () => expect(test.api).to.equal('/platformresource'));
   });
 
+  /* Passing in payload and schema options, which are the defaults used, unless overridden, for all tests inside suite */
   suite.forPlatform('foo', { payload: genPayload(), schema: genSchema() }, (test) => {
-    // *****************************************
-    // NOTE: all of these are equivalent just as examples
-    // *****************************************
+    /* all of these are equivalent just as examples */
     test.should.return200OnPost();
-    test.withApi('/foo').should.return200OnPost();
-    test.withJson(genPayload()).should.return200OnPost();
-    test.withValidation(genSchema()).should.return200OnPost();
-    test.withApi('/foo').withJson(genPayload()).withValidation(genSchema()).should.return200OnPost();
-    test.withJson(genPayload()).withValidation(genSchema()).withApi('/foo').should.return200OnPost();
-    test.withOptions({}).should.return200OnPost();
-    test.withApi('/foo').withOptions({}).should.return200OnPost();
-    // *****************************************
+    test
+      .withApi('/foo')
+      .should.return200OnPost();
+    test
+      .withJson(genPayload())
+      .should.return200OnPost();
+    test
+      .withValidation(genSchema())
+      .should.return200OnPost();
+    test
+      .withApi('/foo')
+      .withJson(genPayload())
+      .withValidation(genSchema())
+      .should.return200OnPost();
+    test
+      .withJson(genPayload())
+      .withValidation(genSchema())
+      .withApi('/foo')
+      .should.return200OnPost();
+    test
+      .withOptions({})
+      .should.return200OnPost();
+    test
+      .withApi('/foo')
+      .withOptions({})
+      .should.return200OnPost();
 
-    // *****************************************
-    // NOTE: all of these are equivalent just as examples
-    // *****************************************
+    /* all of these are equivalent just as examples */
     test.should.return404OnPatch(456);
-    test.withApi(test.api + '/456').should.return404OnPatch();
-    // *****************************************
+    test
+      .withApi(`${test.api}/456`)
+      .should.return404OnPatch();
 
-    // with options, extends the request libraries options object
-    test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
+    /* with options, extends the request libraries options object */
+    test
+      .withOptions({ qs: { page: 1, pageSize: 1 } })
+      .should.return200OnGet();
 
-    // no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above
+    /* withApi overrides the default api that was passed in to the `suite.forPlatform` above */
+    test
+      .withApi(`${test.api}/456`)
+      .should.return404OnGet();
+    test
+      .withApi('/foo/456')
+      .should.return404OnPut();
+    test
+      .withApi('/foo/456')
+      .should.return404OnDelete();
+    test
+      .withApi('/foo/pagination')
+      .should.supportNextPagePagination(1);
+
+    /* no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above */
     test.should.return200OnPost();
     test.should.return404OnGet(456);
-    test.withApi(test.api + '/456').should.return404OnGet();
-    test.withApi('/foo/456').should.return404OnPut();
-    test.withApi('/foo/456').should.return404OnDelete();
-    test.withOptions({ json: true }).should.supportSr();
-    test.withOptions({ json: true }).should.supportCruds();
-    test.withOptions({ json: true }).should.supportCruds(chakram.put);
-    test.withOptions({ json: true }).should.supportCrud();
-    test.withOptions({ json: true }).should.supportCrus();
-    test.withOptions({ json: true }).should.supportCrd();
-    test.withOptions({ json: true }).should.supportCd();
-    test.withOptions({ json: true }).should.supportCrds();
-    test.withOptions({ json: true }).should.supportCrs();
+    test.should.supportSr();
+    test.should.supportCruds();
+    test.should.supportCruds(chakram.put);
+    test.should.supportCrud();
+    test.should.supportCrus();
+    test.should.supportCrd();
+    test.should.supportCd();
+    test.should.supportCrds();
+    test.should.supportCrs();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
-    test.withApi('/foo/pagination').should.supportNextPagePagination(1);
 
-    // overriding the default API that was passed in as the default in the `suite.forPlatform`
-    test.withApi('/foo/bad').should.return400OnPost();
+    /* overriding the default API that was passed in as the default in the `suite.forPlatform` */
+    test
+      .withApi('/foo/bad')
+      .should.return400OnPost();
 
-    // examples of using .withName(...) which will set the name of the test to be whatever string is passed in
-    test.withName('this should be the name of the test').should.return200OnPost();
-    test.withApi('/foo/bad').withName('this should be the name of the test').should.return400OnPost();
+    /* examples of using .withName(...) which will set the name of the test to be whatever string is passed in */
+    test
+      .withName('this should be the name of the test')
+      .should.return200OnPost();
+    test
+      .withApi('/foo/bad')
+      .withName('this should be the name of the test')
+      .should.return400OnPost();
 
     test
       .withName('should allow overriding the api and the options with new values')
@@ -252,8 +289,10 @@ describe('suite', () => {
   });
 });
 
-suite.forPlatform('foo', { name: 'custom describe mocha name' }, (test) => {
-  test
-    .withJson(genPayload())
-    .should.return200OnPost();
-});
+/* This test exercises all of the available optional suite options */
+const opts = {
+  name: 'this will override the resource that was passed in',
+  payload: genPayload(),
+  schema: genSchema()
+};
+suite.forPlatform('exampleResourceName', opts, (test) => {});
