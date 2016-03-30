@@ -5,7 +5,9 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const metadataSchema = require('./assets/element.metadata.schema.json');
 
-suite.forPlatform('elements/metadata', metadataSchema, null, (test) => {
+const opts = { schema: metadataSchema };
+
+suite.forPlatform('elements/metadata', opts, (test) => {
 
   it('should return element metadata', () => {
     return cloud.get('elements/sfdc')

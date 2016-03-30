@@ -5,7 +5,7 @@ const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('documents', 'files', null, (test) => {
+suite.forElement('documents', 'files', (test) => {
   it('should allow uploading and downloading a file', () => {
     let fileId = -1;
     let query = { path: `/brady-${tools.random()}.jpg` };

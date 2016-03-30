@@ -28,7 +28,9 @@ const genSub = (opts) => new Object({
 
 const genSettings = (policy) => ({ 'notification.webhook.failure.policy': policy });
 
-suite.forPlatform('notifications/subscriptions/deliveries', genSub({}), schema, (test) => {
+const opts = { payload: genSub({}), schema: schema };
+
+suite.forPlatform('notifications/subscriptions/deliveries', opts, (test) => {
   before(() => persister.snapshot());
   after(() => persister.restore());
 

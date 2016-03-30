@@ -1,12 +1,11 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 const incidentsPayload = require('./assets/incidents');
 
 
-suite.forElement('helpdesk', 'attachments', incidentsPayload, (test) => {
+suite.forElement('helpdesk', 'attachments', { payload: incidentsPayload }, (test) => {
   let incidentId;
   let attachmentId;
   it('should create an incident and then an attachment for that id', () => {

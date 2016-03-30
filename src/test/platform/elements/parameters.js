@@ -6,7 +6,9 @@ const common = require('./assets/common.js');
 const schema = require('./assets/element.parameter.schema.json');
 const listSchema = require('./assets/element.parameters.schema.json');
 
-suite.forPlatform('elements/parameters', common.genParameter({}), schema, (test) => {
+const opts = { payload: common.genParameter({}), schema: schema };
+
+suite.forPlatform('elements/parameters', opts, (test) => {
   let element, keyUrl, idUrl;
   before(() => common.deleteElementByKey('churros')
     .then(r => cloud.post('elements', common.genElement({})))

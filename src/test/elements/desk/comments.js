@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 const incidentsPayload = require('./assets/incidents');
 const commentsPayload = require('./assets/comments');
@@ -11,7 +10,7 @@ const commentsUpdate = () => ({
   "status": "sent"
 });
 
-suite.forElement('helpdesk', 'comments', commentsPayload, (test) => {
+suite.forElement('helpdesk', 'comments', { payload: commentsPayload }, (test) => {
   let incidentId;
   let commentId;
   it('should create an incident and then comments for that id', () => {

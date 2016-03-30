@@ -13,7 +13,9 @@ const cleanup = (eiId, fId, fiId) => {
     .then(r => provisioner.delete(eiId));
 };
 
-suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
+const opts = { name: 'formula instances', payload: common.genFormula({}), schema: schema };
+
+suite.forPlatform('formulas', opts, (test) => {
   /* Create a formula instance to use in the tests below */
   let elementInstanceId, formulaId, formulaInstanceId;
   before(() => {

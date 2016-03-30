@@ -8,13 +8,9 @@ const contactUpdate = () => ({
   "last_name": "cloud"
 });
 
-const options = {
-  churros: {
-    updatePayload: contactUpdate()
-  }
-};
+const options = { churros: { updatePayload: contactUpdate() } };
 
-suite.forElement('helpdesk', 'contacts', payload, (test) => {
+suite.forElement('helpdesk', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCrus();
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'email=\'support@desk.com\'' } }).should.return200OnGet();

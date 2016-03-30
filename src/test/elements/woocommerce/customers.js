@@ -11,7 +11,7 @@ const customer = (custom) => ({
   password: tools.random()
 });
 
-suite.forElement('ecommerce', 'customers', customer({}), (test) => {
+suite.forElement('ecommerce', 'customers', { payload: customer({}) }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
 });

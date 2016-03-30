@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 
-suite.forElement('ecommerce', 'bulk/query', null, (test) => {
+suite.forElement('ecommerce', 'bulk/query', (test) => {
   test.withOptions({ qs: { q: 'select * from customers' } }).should.return200OnPost();
   test.withOptions({ qs: { q: 'select id, email from customers' } }).should.return200OnPost();
   test.withOptions({ qs: { q: 'select * from orders' } }).should.return200OnPost();

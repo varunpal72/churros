@@ -46,7 +46,9 @@ const testOAuthUrl = (idOrKey) => {
   });
 };
 
-suite.forPlatform('elements', common.genElement({}), schema, (test) => {
+const opts = { payload: common.genElement({}), schema: schema };
+
+suite.forPlatform('elements', opts, (test) => {
 
   it('should support search', () => cloud.get('elements', listSchema));
   it('should support get keys', () => cloud.get('elements/keys', keysSchema));

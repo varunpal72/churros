@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const winston = require('winston');
 
 const organizationsUpdate = (rando) => ({
   "name": "Cloud-Elements update" + rando,
@@ -19,9 +18,9 @@ const organizationsCreate = (rando) => ({
     "acmeinc.com",
     "acmeinc.net"
   ]
-})
+});
 
-suite.forElement('helpdesk', 'organizations', organizationsCreate(), (test) => {
+suite.forElement('helpdesk', 'organizations', { payload: organizationsCreate() }, (test) => {
   let organiztionId;
   it('should allow CRUS for organizations', () => {
     return cloud.post(test.api, organizationsCreate(tools.randomInt().toString()))

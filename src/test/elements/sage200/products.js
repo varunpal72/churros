@@ -9,9 +9,8 @@ const createProducts = (productGroupId) => ({
   "code": "CE006"
 });
 
-suite.forElement('finance', 'products', createProducts(), (test) => {
-  let productGroupId;
-  let productId;
+suite.forElement('finance', 'products', { payload: createProducts() }, (test) => {
+  let productGroupId, productId;
   it('should create a product', () => {
     return cloud.get(test.api + '/groups')
       .then(r => productGroupId = r.body[0].id)
@@ -23,7 +22,7 @@ suite.forElement('finance', 'products', createProducts(), (test) => {
       .then(r => cloud.delete(test.api + '/' + productId));
   });
   test.should.supportPagination();
-  test.withApi(test.api +'/prices').should.supportPagination();
-  test.withApi(test.api +'/groups').should.supportPagination();
-  test.withOptions({qs: {where: 'date_time_updated>\'2015-10-22T16:40:09.563\''}}).should.return200OnGet();
+  test.withApi(test.api + '/prices').should.supportPagination();
+  test.withApi(test.api + '/groups').should.supportPagination();
+  test.withOptions({ qs: { where: 'date_time_updated>\'2015-10-22T16:40:09.563\'' } }).should.return200OnGet();
 });

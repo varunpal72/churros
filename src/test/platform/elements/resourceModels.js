@@ -14,7 +14,9 @@ const crudModels = (url, schema) => {
     .then(r => cloud.delete(url));
 };
 
-suite.forPlatform('elements/resources/models', common.genParameter({}), schema, (test) => {
+const opts = { paylod: common.genParameter({}), schema: schema };
+
+suite.forPlatform('elements/resources/models', opts, (test) => {
   let element, resource, keyUrl, idUrl;
   before(() => common.deleteElementByKey('churros')
     .then(r => cloud.post('elements', common.genElement({})))

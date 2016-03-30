@@ -25,10 +25,9 @@ const createOrder = (customerId, productId) => {
   return newOrder;
 };
 
-suite.forElement('ecommerce', 'orders', order, (test) => {
+suite.forElement('ecommerce', 'orders', { payload: order }, (test) => {
   it('should allow CRUDS for ' + test.api, () => {
-    let customerId;
-    let productId;
+    let customerId, productId;
     return cloud.post('/hubs/ecommerce/customers', customer())
       .then(r => customerId = r.body.id)
       .then(r => cloud.post('/hubs/ecommerce/products', product))

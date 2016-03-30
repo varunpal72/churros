@@ -7,7 +7,7 @@ const options = {
   qs: {}
 };
 
-suite.forElement('ecommerce', 'reports', null, (test) => {
+suite.forElement('ecommerce', 'reports', (test) => {
   it('should allow retrieval of reports and report names', () => {
     let reportName;
     return cloud.get('/hubs/ecommerce/reports/names')
