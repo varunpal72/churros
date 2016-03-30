@@ -251,3 +251,9 @@ describe('suite', () => {
       .should.return200OnGet();
   });
 });
+
+suite.forPlatform('foo', { name: 'custom describe mocha name' }, (test) => {
+  test
+    .withJson(genPayload())
+    .should.return200OnPost();
+});
