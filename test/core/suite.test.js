@@ -2,9 +2,11 @@
 
 require('core/assertions');
 const suite = require('core/suite');
-const nock = require('nock');
 const chakram = require('chakram');
 const expect = chakram.expect;
+const helper = require('./assets/suite-helper');
+const genPayload = helper.genPayload;
+const genSchema = helper.genSchema;
 
 const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 const auth = 'User fake, Organization fake';
@@ -19,172 +21,17 @@ const eventHeaders = () => new Object({
   }
 });
 
-const genPayload = (opts) => {
-  opts = opts || {};
-  return new Object({
-    id: (opts.id || null),
-    foo: (opts.foo || 'bar')
-  });
-};
-
-const genSchema = () => new Object({
-  type: ['object', 'array'],
-  properties: {
-    id: { type: "number" },
-    foo: { type: "string" }
-  },
-  required: ['id', 'foo']
-});
-
 describe('suite', () => {
-  beforeEach(() => {
+  /** Before tests run, set up the default chakram headers */
+  before(() => {
     chakram.setRequestDefaults({
       baseUrl: baseUrl,
       headers: { Authorization: auth }
     });
-
-    /** MOCKING OUT HTTP ENDPOINTS **/
-    /** https://github.com/pgte/nock#specifying-hostname **/
-
-    /** POST **/
-    nock(baseUrl, headers())
-      .post('/foo')
-      .reply(200, (uri, requestBody) => {
-        requestBody.id = 123;
-        return requestBody;
-      })
-      .post('/foo/bad')
-      .reply(400, (uri, requestBody) => {
-        return { message: 'Invalid JSON body' };
-      })
-      .post('/foo/file')
-      .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
-      .post('/foo/bad/file')
-      .reply(404, (uri, requestBody) => {
-        return { message: 'No resource found at /foo/bad/file' };
-      });
-
-    nock(baseUrl, eventHeaders())
-      .post('/events/myelement')
-      .reply(200, (uri, requestBody) => requestBody);
-
-    /** GET **/
-    nock(baseUrl, headers())
-      .get('/foo/123')
-      .reply(200, () => genPayload({ id: 123 }))
-      .get('/foo/456')
-      .reply(404, () => {
-        return { message: 'No foo found with the given ID' };
-      })
-      .get('/foo/bad')
-      .reply(404, () => {
-        return { message: 'No resource found with name /foo/bad' };
-      })
-      .get('/foo')
-      .reply(200, (uri, requestBody) => [genPayload({ id: 123 }), genPayload({ id: 456 })])
-      .get('/foo')
-      .query({ page: '1', pageSize: '1' })
-      .reply(200, () => genPayload({ id: 123 }))
-      .get('/foo')
-      .query({ where: 'id=\'123\'' })
-      .reply(200, () => [genPayload({ id: 123 })])
-      .get('/foo/search')
-      .query({ foo: 'bar' })
-      .reply(200, () => [genPayload({ id: 123 })]);
-
-    /** PATCH && PUT **/
-    nock(baseUrl, headers())
-      .patch('/foo/123')
-      .reply(200, (uri, requestBody) => {
-        requestBody.id = 123;
-        return requestBody;
-      })
-      .patch('/foo/123')
-      .reply(200, (uri, requestBody) => {
-        requestBody.id = 123;
-        return requestBody;
-      })
-      .patch('/foo/456')
-      .reply(404, (uri, requestBody) => {
-        return { message: 'No foo found with the given ID' };
-      })
-      .put('/foo/123')
-      .reply(200, (uri, requestBody) => {
-        requestBody.id = 123;
-        return requestBody;
-      })
-      .put('/foo/456')
-      .reply(404, (uri, requestBody) => {
-        return { message: 'No foo found with the given ID' };
-      });
-
-    /** MOCKING OUT HTTP ENDPOINTS **/
-    /** https://github.com/pgte/nock#specifying-hostname **/
-
-    /** POST **/
-    nock(baseUrl, headers())
-      .post('/foo')
-      .reply(200, (uri, requestBody) => {
-        requestBody.id = 123;
-        return requestBody;
-      })
-      .post('/foo/bad')
-      .reply(400, (uri, requestBody) => ({ message: 'Invalid JSON body' }))
-      .post('/foo/file')
-      .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
-      .post('/foo/bad/file')
-      .reply(404, (uri, requestBody) => ({ message: 'No resource found at /foo/bad/file' }))
-      .post('/events/myelement')
-      .reply(200, (uri, requestBody) => requestBody)
-      .post('/foo/pagination')
-      .reply(200, (uri, requestBody) => genPayload({ id: 123 }));
-
-    /** GET **/
-    nock(baseUrl, headers())
-      .get('/foo/123')
-      .reply(200, () => genPayload({ id: 123 }))
-      .get('/foo/456')
-      .reply(404, () => ({ message: 'No foo found with the given ID' }))
-      .get('/foo/bad')
-      .reply(404, () => ({ message: 'No resource found with name /foo/bad' }))
-      .get('/foo')
-      .reply(200, (uri, requestBody) => [genPayload({ id: 123 }), genPayload({ id: 456 })])
-      .get('/foo')
-      .query({ page: '1', pageSize: '1' })
-      .reply(200, () => genPayload({ id: 123 }))
-      .get('/foo')
-      .query({ where: 'id=\'123\'' })
-      .reply(200, () => [genPayload({ id: 123 })])
-      .get('/foo/pagination')
-      .query(true)
-      .reply(200, () => [genPayload({ id: 123 })]);
-
-    /** PATCH && PUT **/
-    nock(baseUrl, headers())
-      .patch('/foo/123')
-      .reply(200, (uri, requestBody) => {
-        requestBody.id = 123;
-        return requestBody;
-      })
-      .patch('/foo/456')
-      .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }))
-      .put('/foo/123')
-      .reply(200, (uri, requestBody) => {
-        requestBody.id = 123;
-        return requestBody;
-      })
-      .put('/foo/456')
-      .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }));
-
-    /** DELETE **/
-    nock(baseUrl, headers())
-      .delete('/foo/123')
-      .reply(200, (uri, requestBody) => ({}))
-      .delete('/foo/456')
-      .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }))
-      .delete('/foo/pagination/123')
-      .reply(200, (uri, requestBody) => ({}));
   });
+
+  /** Before each, reset the nock endpoints...have to do it beforeEach because: https://github.com/pgte/nock#specifying-hostname */
+  beforeEach(() => helper.mock(baseUrl, headers, eventHeaders));
 
   /* Not passing in any suite options */
   suite.forElement('fakehub', 'resource', (test) => {
