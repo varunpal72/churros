@@ -1,3 +1,19 @@
+## Branching Model
+
+[GitHub Flow](https://guides.github.com/introduction/flow) branching workflow model.
+
+## Core Changes
+
+Whenever adding any new code to the `src/core` directory, ensure that these changes are unit-tested in `test/core`.
+
+## Pull Requests
+
+Before submitting a PR, make sure to run `npm test` locally to ensure that all tests pass, code coverage remains the same or is higher, and that all JS complies with our `.jshintrc` file.
+
+All PRs submitted to the `churros` repository will have *all* of the unit tests run before they're able to be merged into `master`.  When creating a PR, please refrain from assigning it to someone else until all GitHub status checks have been completed and you have that nice little :white_check_mark:.
+
+> __NOTE:__ When all tests have passed then you can assign the PR out.  Make sure the label at this point is `in review`.
+
 ## Best Practices
 In order to keep `churros` consistent, here are some common patterns that are followed in `churros`:
 * need to make tests as resilient as possible.  some common mistakes to avoid:
@@ -59,41 +75,18 @@ Whenever building out new test cases, it is good to leverage as much functionali
 
 ### `test`
 
-For examples on what is available in the `test` object that is passed in at the top of your test file, look at the unit tests in `suite.test.js`.  Here are some basic examples of how to use it:
-```javascript
-// The payload and schema passed in here are what will be used if not overridden for a given test.
-suite.forPlatform('foo', {payload: payload, schema: schema}, (test) => {
-  // NOTE: these first five are all equivalent
-  test.should.return200OnPost(); // using the default api, payload and schema
-  test.withApi('/foo').should.return200OnPost(); // customizing the api, but using default payload and schema
-  test.withJson(payload).should.return200OnPost(); // get it by now?
-  test.withValidation(schema).should.return200OnPost(); // now?
-  test.withApi('/foo').withJson(payload).withValidation(schema).should.return200OnPost(); // customize them all
+For examples on what is available in the `test` object that is passed in at the top of your test file, look at the unit tests in `suite.test.js`.  These tests exercise everything available and are the most up-to-date documentation.
 
-  test.should.return404OnPatch(456);
-  test.should.return404OnGet(456);
-  test.should.return200OnPost();
-  test.should.supportCruds();
-  test.should.supportCruds(chakram.put);
-  test.should.supportCrud();
-  test.should.supportCrd();
-  test.should.supportCrds();
-  test.should.supportPagination();
-  test.should.supportCeqlSearch('id');
-  test.withApi('/foo/bad').should.return400OnPost();
-});
-```
-
-> __PROPTIP:__ All of these functions create the `mocha` `it(...)` BDD function for you so you do *not* need to wrap these functions in an `it` block yourself.
+> __PROPTIP:__ All of the `.should` functions in the `test` object, create the `mocha` `it(...)` BDD function for you so you do *not* need to wrap these functions in an `it` block yourself.
 
 #### Adding a New Test to `test`
 If something is missing from `test` that seems like it could be a re-usable test in other suites, feel free to contribute to this library of tests.  All of the functions underneath `test` are simply using the utility functions in the `cloud` module and wrapping them in an `it(...)` `mocha` BDD function.  For example, here is the implementation for `test.should.supportCruds`:
 ```javascript
 const cloud = require('core/cloud');
 
-const itCruds = (api, payload, schema, updateCb) => {
-  const name = util.format('should allow CRUDS for %s', api);
-  it(name, () => cloud.cruds(api, payload, schema, updateCb));
+const itCruds = (name, api, payload, schema, updateCb) => {
+  const n = name || `should allow CRUDS for ${api}`;
+  it(n, () => cloud.cruds(api, payload, schema, updateCb));
 };
 ```
 
@@ -119,26 +112,10 @@ it('should allow CRUDS for ' + api, () => {
     // Runs a full CRUDs cycle on a contact
     .then(r => cloud.cruds(api, gen({ lead_id: accountId }), schema))
     // Cleans up the created account
-    .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
+    .then(r => cloud.delete(`/hubs/crm/accounts/${accountId}`));
 });
 ```
 
 > __PROTIP:__ Each test should be self-contained and should *not* rely on anything from a previous test.
 
 > __PROTIP:__ Validate JSON payloads against JSON schemas as opposed to validating each field individually, etc.  These JSON schemas are then what we will use to feed our developer docs so when we use them to validate our APIs, we are not only testing our APIs but also testing our documentation.
-
-## Branching Model
-
-[GitHub Flow](https://guides.github.com/introduction/flow) branching workflow model.
-
-## Core Changes
-
-Whenever adding any new code to the `src/core` directory, ensure that these changes are unit-tested in `test/core`.
-
-## Pull Requests
-
-Before submitting a PR, make sure to run `npm test` locally to ensure that all tests pass, code coverage remains the same or is higher, and that all JS complies with our `.jshintrc` file.
-
-All PRs submitted to the `churros` repository will have *all* of the unit tests run before they're able to be merged into `master`.  When creating a PR, please refrain from assigning it to someone else until all GitHub status checks have been completed and you have that nice little :white_check_mark:.
-
-> __NOTE:__ When all tests have passed then you can assign the PR out.  Make sure the label at this point is `in review`.
