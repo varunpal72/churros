@@ -12,7 +12,9 @@ const triggerSchema = require('./assets/formula.trigger.schema');
 const instanceSchema = require('./assets/formula.instance.schema');
 const common = require('./assets/common');
 
-suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
+const opts = { payload: common.genFormula({}), schema: schema };
+
+suite.forPlatform('formulas', opts, (test) => {
 
   test.should.supportCrud(chakram.put);
 

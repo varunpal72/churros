@@ -14,7 +14,9 @@ const genNotif = (opts) => new Object({
   from: (opts.from || 'churros')
 });
 
-suite.forPlatform('notifications', genNotif({}), schema, (test) => {
+const opts = { payload: genNotif({}), schema: schema };
+
+suite.forPlatform('notifications', opts, (test) => {
   test.should.supportCrd();
   test.should.return404OnGet(-1);
   test

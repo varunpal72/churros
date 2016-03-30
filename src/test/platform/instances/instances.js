@@ -1,5 +1,5 @@
 'use strict';
-const expect = require('chakram').expect;
+
 const suite = require('core/suite');
 const payload = require('./assets/instances');
 const schema = require('./assets/instances.schema');
@@ -9,14 +9,16 @@ const transformationPayload = require('./assets/accountTransformation');
 const objDefPayload = require('./assets/accountObjectDefinition');
 const sfdcSwaggerSchema = require('./assets/sfdcSwagger.schema');
 
-suite.forPlatform('instances', schema, payload, (test) => {
+const opts = { schema: schema, payload: payload };
+
+suite.forPlatform('instances', opts, (test) => {
   /** before - provision element to use throughout */
   const elementKey = 'sfdc';
   let sfdcId;
   before(() => provisioner.create(elementKey)
     .then(r => {
-      sfdcId = r.body.id
-        //create the object definitions on the instance
+      sfdcId = r.body.id;
+      //create the object definitions on the instance
       return cloud.post(`instances/${sfdcId}/objects/myaccounts/definitions`, objDefPayload);
     })
     .then(r => {
@@ -29,5 +31,4 @@ suite.forPlatform('instances', schema, payload, (test) => {
   after(() => provisioner.delete(sfdcId));
 
   it('should support get instance specific docs', () => cloud.get(`instances/${sfdcId}/docs`, sfdcSwaggerSchema));
-
 });

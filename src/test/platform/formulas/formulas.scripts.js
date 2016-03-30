@@ -41,7 +41,7 @@ const gen = (genStep) => (genScript) => {
  * Handles validating that formula script steps that are trying to be created have the right error handling capabilities
  * around them
  */
-suite.forPlatform('formulas', null, schema, (test) => {
+suite.forPlatform('formulas', { name: 'formula script steps', schema: schema }, (test) => {
   test
     .withName('should allow creating a script step with the v1 engine')
     .withJson(gen(genV1Step)(genGoodV1Script))
