@@ -1,3 +1,6 @@
+## v0.6.0 <sub><sup>(TBD)</sup></sub>
+#### Highlights
+
 ## v0.5.0 <sub><sup>(2016-03-25)</sup></sub>
 #### Highlights
 * element tests:
