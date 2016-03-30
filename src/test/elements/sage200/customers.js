@@ -13,7 +13,7 @@ const options = {
   }
 };
 
-suite.forElement('finance', 'customers', payload, (test) => {
+suite.forElement('finance', 'customers', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
   test.should.supportCeqlSearch('id');

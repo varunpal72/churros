@@ -13,7 +13,9 @@ const common = require('./assets/common');
 const props = require('core/props');
 const logger = require('winston');
 
-suite.forPlatform('formulas', common.genFormula({}), schema, (test) => {
+const opts = { payload: common.genFormula({}), schema: schema };
+
+suite.forPlatform('formulas', opts, (test) => {
 
   test.should.supportCrud(chakram.put);
 

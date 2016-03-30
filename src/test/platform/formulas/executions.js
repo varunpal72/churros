@@ -99,7 +99,7 @@ const validateSimpleSuccessfulStepExecutions = {
   forScheduled: validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulScheduledTrigger)
 };
 
-suite.forPlatform('formulas', null, null, (test) => {
+suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let sfdcId;
   before(done => provisionSfdcWithPolling().then(r => {
     sfdcId = r.body.id;

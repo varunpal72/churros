@@ -1,13 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/groups');
-const chakram = require('chakram');
-const cloud = require('core/cloud');
-const tools = require('core/tools');
-const expect = chakram.expect;
 
-suite.forElement('esignature', 'agreement-asset-events', null, (test) => {
+suite.forElement('esignature', 'agreement-asset-events', (test) => {
   let date = new Date();
   let startIndex = 0;
   let endIndex = 19;
@@ -16,11 +11,7 @@ suite.forElement('esignature', 'agreement-asset-events', null, (test) => {
   let oldDate = new Date(startDate);
   startDate = oldDate.toISOString().substring(startIndex, endIndex);
 
-  it(`should allow GET for ${test.api}`, () => {
-    return cloud.withOptions({
-      qs: {
-        where: `startDate = '${startDate}' and endDate = '${currentDate}'`
-      }
-    }).get(test.api);
-  });
+  test
+    .withOptions({ qs: { where: `startDate = '${startDate}' and endDate = '${currentDate}'` } })
+    .should.return200OnGet();
 });

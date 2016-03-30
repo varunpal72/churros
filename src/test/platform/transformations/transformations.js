@@ -144,11 +144,12 @@ const testTransformationForInstance = (objectName, objDefUrl, transUrl) => {
 
 const testTransformation = (instanceId, objectName, objDefUrl, transUrl) => testTransformationForInstance(objectName, objDefUrl, transUrl);
 
-suite.forPlatform('transformations', schema, null, (test) => {
+suite.forPlatform('transformations', { schema: schema }, (test) => {
   /** before - provision element to use throughout */
   const elementKey = 'sfdc';
   let sfdcId, elementId;
-  before(() => provisioner.create(elementKey).then(r => { sfdcId = r.body.id; elementId = r.body.element.id; }));
+  before(() => provisioner.create(elementKey).then(r => { sfdcId = r.body.id;
+    elementId = r.body.element.id; }));
 
   /** after - clean up element */
   after(() => provisioner.delete(sfdcId));

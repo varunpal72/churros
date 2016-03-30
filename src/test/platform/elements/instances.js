@@ -27,7 +27,9 @@ const crudInstance = (baseUrl, schema) => {
     .then(r => provisioner.delete(id, baseUrl));
 };
 
-suite.forPlatform('elements/instances', instanceSchema, null, (test) => {
+const opts = { schema: instanceSchema };
+
+suite.forPlatform('elements/instances', opts, (test) => {
   it('should support CRUD by key', () => crudInstance('elements/jira/instances', instanceSchema));
   it('should support CRUD by ID', () => {
     return cloud.get('elements/jira')

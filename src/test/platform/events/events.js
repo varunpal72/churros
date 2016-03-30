@@ -27,7 +27,7 @@ const loadPayload = (element) => {
   }
 };
 
-suite.forPlatform('events', null, null, (test) => {
+suite.forPlatform('events', (test) => {
   let instanceId;
   const element = props.getForKey('events', 'element');
   before(done => provisioner.create(element, gen({}, props.getForKey('events', 'url')))

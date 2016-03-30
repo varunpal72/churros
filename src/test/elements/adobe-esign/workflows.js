@@ -1,11 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const chakram = require('chakram');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const expect = chakram.expect;
-
 
 const createWorkflows = (transientDocumentId) => ({
   "documentCreationInfo": {
@@ -28,7 +25,7 @@ const createWorkflows = (transientDocumentId) => ({
   }
 });
 
-suite.forElement('esignature', 'workflows', null, (test) => {
+suite.forElement('esignature', 'workflows', (test) => {
   test.should.supportSr();
   it(`should allow POST for ${test.api}/{workflowId}/agreements`, () => {
     let workflowId;
@@ -37,6 +34,6 @@ suite.forElement('esignature', 'workflows', null, (test) => {
       .then(r => workflowId = r.body[0].id)
       .then(r => cloud.postFile(`/hubs/esignature/transient-documents`, `${__dirname}/assets/attach.txt`))
       .then(r => transientDocumentId = r.body.id)
-      .then(r => cloud.post(`${test.api}/${workflowId}/agreements`, createWorkflows(transientDocumentId)))
+      .then(r => cloud.post(`${test.api}/${workflowId}/agreements`, createWorkflows(transientDocumentId)));
   });
 });

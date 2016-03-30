@@ -1,11 +1,11 @@
 'use strict';
 
-const util = require('util');
 const expect = require('chakram').expect;
 const tools = require('core/tools');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const schema = require('./assets/notification.schema.json');
+const pluralSchema = require('./assets/notifications.schema.json');
 
 const genNotif = (opts) => new Object({
   severity: (opts.severity || 'low'),
@@ -14,7 +14,9 @@ const genNotif = (opts) => new Object({
   from: (opts.from || 'churros')
 });
 
-suite.forPlatform('notifications', genNotif({}), schema, (test) => {
+const opts = { payload: genNotif({}), schema: schema };
+
+suite.forPlatform('notifications', opts, (test) => {
   test.should.supportCrd();
   test.should.return404OnGet(-1);
   test
@@ -39,12 +41,12 @@ suite.forPlatform('notifications', genNotif({}), schema, (test) => {
       .then(r => {
         const options = { qs: { 'topics[]': n.topic } };
         return cloud.withOptions(options).get(test.api, (r) => {
-          expect(r).to.have.schemaAnd200(schema);
+          expect(r).to.have.schemaAnd200(pluralSchema);
           expect(r.body).to.not.be.empty;
           expect(r.body.length).to.equal(1);
         });
       })
-      .then(r => cloud.delete(test.api + '/' + r.body[0].id));
+      .then(r => cloud.delete(`${test.api}/${r.body[0].id}`));
   });
 
   it('should allow acknowledging a notification', () => {
@@ -55,7 +57,7 @@ suite.forPlatform('notifications', genNotif({}), schema, (test) => {
         expect(r.body.acknowledged).to.equal(false);
       })
       .then(r => {
-        const url = util.format('%s/%s/acknowledge', test.api, r.body.id);
+        const url = `${test.api}/${r.body.id}/acknowledge`;
         return cloud.put(url, schema, (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
@@ -65,13 +67,11 @@ suite.forPlatform('notifications', genNotif({}), schema, (test) => {
       .then(r => cloud.delete(test.api + '/' + r.body.id));
   });
 
-  it('should return an empty array if no notifications are found with the given topic', () => {
-    const options = { qs: { 'topics[]': 'fake-topic-name-with-no-notifications' } };
-    return cloud.withOptions(options).get(test.api, (r) => {
-      expect(r).to.have.statusCode(200);
-      expect(r.body).to.be.empty;
-    });
-  });
+  test
+    .withName('should return an empty array if no notifications are found with the given topic')
+    .withOptions({ qs: { 'topics[]': 'fake-topic-name-with-no-notifications' } })
+    .withValidation((r) => expect(r.body).to.be.empty)
+    .should.return200OnGet();
 
   it('should throw a 400 if missing search query', () => cloud.get(test.api, (r) => expect(r).to.have.statusCode(400)));
 });
