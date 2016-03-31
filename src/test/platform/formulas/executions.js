@@ -8,16 +8,8 @@ const cloud = require('core/cloud');
 const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
 const chakram = require('chakram');
-const tools = require('core/tools');
-const b64 = tools.base64Encode;
-const sleep = require('sleep');
 const expect = require('chakram').expect;
-
-const provisionSfdcWithPolling = () => provisioner.create('sfdc', {
-  'event.notification.enabled': true,
-  'event.vendor.type': 'polling',
-  'event.poller.refresh_interval': 999999999
-});
+const tools = require('core/tools');
 
 const flattenStepExecutionValues = sevs =>
   sevs.reduce((flat, curr) => {
@@ -182,23 +174,14 @@ const getEventsForInstance = id =>
 const manuallyTriggerInstanceExecution = (fId, fiId, ev) =>
   chakram.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
 
-const generateSfdcPollingEvent = (instanceId, payload) => {
-  const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
-  const encodedId = b64(instanceId.toString());
-
-  payload.instance_id = instanceId;
-
-  return chakram.post('/events/sfdcPolling/' + encodedId, payload, { 'headers': headers });
-};
-
 const generateTripleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/triple-event-sfdc');
-  return generateSfdcPollingEvent(instanceId, payload);
+  return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const generateSingleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/single-event-sfdc');
-  return generateSfdcPollingEvent(instanceId, payload);
+  return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const validateTriggerBodyEvents = (tb, num) => {
@@ -258,7 +241,7 @@ const validateLargePayloadSuccessfulStepExecutions = {
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let sfdcId;
-  before(done => provisionSfdcWithPolling().then(r => {
+  before(done => common.provisionSfdcWithPolling().then(r => {
     sfdcId = r.body.id;
     done();
   }));
@@ -278,7 +261,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(5))
+                  .then(() => tools.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -308,7 +291,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateTripleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(5))
+                  .then(() => tools.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
@@ -338,7 +321,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(5))
+                  .then(() => tools.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -369,7 +352,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateTripleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(10))
+                  .then(() => tools.sleep(10))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
@@ -399,7 +382,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(40))
+                  .then(() => tools.sleep(40))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -429,7 +412,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(5))
+                  .then(() => tools.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -459,7 +442,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(5))
+                  .then(() => tools.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -490,7 +473,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateTripleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(5))
+                  .then(() => tools.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
@@ -515,7 +498,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         formulaInstance.configuration['trigger-instance'] = sfdcId;
 
         return generateSingleSfdcPollingEvent(sfdcId)
-          .then(() => sleep.sleep(5)) // Let the event flow through
+          .then(() => tools.sleep(5)) // Let the event flow through
           .then(() => cloud.post(test.api, formula, fSchema))
           .then(r => {
             const formulaId = r.body.id;
@@ -524,7 +507,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
                 const formulaInstanceId = r.body.id;
                 return getEventsForInstance(sfdcId)
                   .then(r => manuallyTriggerInstanceExecution(formulaId, formulaInstanceId, r.body[0].notifiedData[0]))
-                  .then(() => sleep.sleep(5))
+                  .then(() => tools.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -555,7 +538,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return chakram.get('/hubs/crm/accounts')
-                  .then(() => sleep.sleep(5))
+                  .then(() => tools.sleep(5))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -592,7 +575,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
             return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
               .then(r => {
                 const formulaInstanceId = r.body.id;
-                  return Promise.all([sleep.sleep(35)])
+                  return Promise.all([tools.sleep(35)])
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -622,7 +605,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(15))
+                  .then(() => tools.sleep(15))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -652,7 +635,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(10))
+                  .then(() => tools.sleep(10))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -682,7 +665,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               .then(r => {
                 const formulaInstanceId = r.body.id;
                 return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => sleep.sleep(20))
+                  .then(() => tools.sleep(20))
                   .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
                   .then(r => {
                     expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);

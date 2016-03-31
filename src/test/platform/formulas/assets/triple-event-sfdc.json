@@ -1,5 +1,6 @@
 {
     "instance_id": "",
+    "objectType": "accounts",
     "accounts": [
         {
             "LastModifiedDate": "2015-12-15T05:34:58.000+0000",
@@ -49,6 +50,5 @@
             "Id": "001i000001hB60bAAC3",
             "LastModifiedById": "005i0000001VNdeAAG2"
         }
-    ],
-    "objectType": "accounts"
+    ]
 }

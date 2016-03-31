@@ -1,7 +1,9 @@
 'use strict';
 
 const tools = require('core/tools');
+const b64 = tools.base64Encode;
 const chakram = require('chakram');
+const expect = chakram.expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
 const cloud = require('core/cloud');
@@ -32,8 +34,32 @@ exports.provisionSfdcWithPolling = () => provisioner.create('sfdc', {
   'event.poller.refresh_interval': 999999999
 });
 
+exports.provisionSfdcWithWebhook = () => provisioner.create('sfdc', {
+  'event.notification.enabled': true,
+  'event.vendor.type': 'webhook'
+});
+
+exports.generateSfdcEvent = (instanceId, payload) => {
+  const url = `/events/sfdc`;
+  const opts = { headers: { 'Element-Instances': instanceId } };
+  return cloud
+    .withOptions(opts)
+    .post(url, payload);
+};
+
+exports.generateSfdcPollingEvent = (instanceId, payload) => {
+  const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
+  const encodedId = b64(instanceId.toString());
+
+  payload.instance_id = instanceId;
+
+  return cloud
+    .withOptions({ 'headers': headers })
+    .post('/events/sfdcPolling/' + encodedId, payload);
+};
+
 const deleteFormulaInstance = (fId, fiId) =>
-  chakram.delete(util.format('/formulas/%s/instances/%s', fId, fiId));
+  cloud.delete(util.format('/formulas/%s/instances/%s', fId, fiId));
 
 const getInstancesForFormula = (fId) =>
   chakram.get(util.format('/formulas/%s/instances', fId))
@@ -43,7 +69,7 @@ const getInstancesForFormulas = (fs) =>
   Promise.all(fs.map(f => getInstancesForFormula(f.id)));
 
 const deleteFormula = (fId) =>
-  chakram.delete(util.format('/formulas/%s', fId));
+  cloud.delete(util.format('/formulas/%s', fId));
 
 const deleteFormulas = (fs) =>
   Promise.all(fs.map(f => deleteFormula(f.id)));
@@ -64,11 +90,24 @@ const deleteFormulasByName = (api, name) =>
     .then(() => deleteFormulas(fs)));
 exports.deleteFormulasByName = deleteFormulasByName;
 
-exports.getFormulaInstanceExecutions = (fId, fiId) =>
-  chakram.get(util.format('/formulas/%s/instances/%s/executions', fId, fiId));
+const getAllExecutions = (fId, fiId, nextPage, all) => {
+  all = all || [];
+  const options = { qs: { nextPage: nextPage, pageSize: 200 } };
+  return cloud.withOptions(options).get(`/formulas/${fId}/instances/${fiId}/executions`)
+    .then(r => {
+      expect(r.body).to.not.be.null;
+      all = all.concat(r.body);
+      const npt = r.response.headers['elements-next-page-token'];
+      return npt === undefined ? all : getAllExecutions(fId, fiId, npt, all);
+    });
+};
+exports.getAllExecutions = getAllExecutions;
 
-exports.getFormulaInstanceExecution = (fId, fiId, fieId) =>
-  chakram.get(util.format('/formulas/%s/instances/%s/executions/%s', fId, fiId, fieId));
+exports.getFormulaInstanceExecutions = (fId, fiId) => {
+  return cloud.get(`/formulas/${fId}/instances/${fiId}/executions`);
+};
+
+exports.getFormulaInstanceExecution = (fId, fiId, fieId) => chakram.get(`/formulas/${fId}/instances/${fiId}/executions/${fieId}`);
 
 exports.deleteFormulaInstance = deleteFormulaInstance;
 exports.deleteFormula = deleteFormula;
