@@ -3,10 +3,7 @@
   "properties": {
     "id": {
       "type": "number"
-    },
-    "name": {
-      "type": "string"
     }
   },
-  "required": ["id", "name"]
+  "required": ["id"]
 }

@@ -3,7 +3,6 @@
 const path = require('path');
 const fs = require('fs');
 const commander = require('commander');
-const util = require('util');
 const shell = require('shelljs');
 const prompter = require('./assets/prompter');
 
@@ -58,13 +57,13 @@ const run = (suite, options, cliArgs) => {
 
   let element = null;
   if (suite.startsWith('elements') || suite.startsWith('element')) {
-    const elementSetup = util.format('%s/%s/%s', rootTestDir, 'elements', 'lifecycle');
+    const elementSetup = `${rootTestDir}/elements/lifecycle`;
     element = suite.split('/')[1]; // i.e 'elements/box' would get 'box' here
     mochaPaths.push(elementSetup);
   }
 
   // validate the root suite path before continuing
-  let testPath = util.format('%s/%s', rootTestDir, suite);
+  let testPath = `${rootTestDir}/${suite}`;
   if (!fs.existsSync(testPath)) {
     console.log('Invalid suite: %s', suite);
     process.exit(1);
@@ -83,19 +82,19 @@ const run = (suite, options, cliArgs) => {
     });
   }
 
-  let args = util.format('--timeout 600000 --reporter spec --ui bdd');
-  if (test) args += util.format(" --grep '%s'", test);
-  if (element) args += util.format(" --element %s", element);
-  if (cliArgs.url) args += util.format(" --url %s", cliArgs.url);
-  if (cliArgs.user) args += util.format(" --user %s", cliArgs.user);
-  if (cliArgs.password) args += util.format(" --password %s", cliArgs.password);
-  if (cliArgs.load) args += util.format(" --load %s", cliArgs.load);
-  if (cliArgs.wait) args += util.format(" --wait %s", cliArgs.wait);
-  if (cliArgs.loadElement) args += util.format(" --loadElement %s", cliArgs.loadElement);
-  if (cliArgs.verbose) args += util.format(" --verbose %s", cliArgs.verbose);
-  if (cliArgs.browser) args += util.format(" --browser %s", cliArgs.browser);
+  let args = `--timeout 600000 --reporter spec --ui bdd`;
+  if (test) args += ` --grep '${test}'`;
+  if (element) args += ` --element ${element}`;
+  if (cliArgs.url) args += ` --url ${cliArgs.url}`;
+  if (cliArgs.user) args += ` --user ${cliArgs.user}`;
+  if (cliArgs.password) args += ` --password ${cliArgs.password}`;
+  if (cliArgs.load) args += ` --load ${cliArgs.load}`;
+  if (cliArgs.wait) args += ` --wait ${cliArgs.wait}`;
+  if (cliArgs.loadElement) args += ` --loadElement ${cliArgs.loadElement}`;
+  if (cliArgs.verbose) args += ` --verbose ${cliArgs.verbose}`;
+  if (cliArgs.browser) args += ` --browser ${cliArgs.browser}`;
 
-  let cmd = util.format(rootDir + '/../../node_modules/.bin/mocha %s %s', mochaPaths.join(' '), args);
+  let cmd = `${rootDir}/../../node_modules/.bin/mocha ${mochaPaths.join(' ')} ${args}`;
   process.exit(shell.exec(cmd).code); // execute the cmd and make our exit code the same as 'churros test' code
 };
 

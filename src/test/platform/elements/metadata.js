@@ -1,16 +1,17 @@
 'use strict';
 
-const util = require('util');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const metadataSchema = require('./assets/element.metadata.schema.json');
 
-suite.forPlatform('elements/metadata', metadataSchema, null, (test) => {
+const opts = { schema: metadataSchema };
+
+suite.forPlatform('elements/metadata', opts, (test) => {
 
   it('should return element metadata', () => {
     return cloud.get('elements/sfdc')
-      .then(r => cloud.get(util.format('elements/%s/metadata', r.body.id), metadataSchema));
+      .then(r => cloud.get(`elements/${r.body.id}/metadata`, metadataSchema));
   });
 
   it('should return 404 for invalid element ID', () => {
@@ -20,7 +21,7 @@ suite.forPlatform('elements/metadata', metadataSchema, null, (test) => {
   it('should return polling event metadata for polling element', () => {
     return cloud.get('elements/netsuitecrm')
       .then(r => {
-        return cloud.get(util.format('elements/%s/metadata', r.body.id), (r) => {
+        return cloud.get(`elements/${r.body.id}/metadata`, (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.events.supported).to.equal(true);
@@ -33,7 +34,7 @@ suite.forPlatform('elements/metadata', metadataSchema, null, (test) => {
   it('should return webhook event metadata for webhook element', () => {
     return cloud.get('elements/dropbox')
       .then(r => {
-        return cloud.get(util.format('elements/%s/metadata', r.body.id), (r) => {
+        return cloud.get(`elements/${r.body.id}/metadata`, (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body).to.not.be.empty;
           expect(r.body.events.supported).to.equal(true);

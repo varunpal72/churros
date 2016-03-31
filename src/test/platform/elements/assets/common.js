@@ -1,19 +1,21 @@
 'use strict';
 
-const tools = require('core/tools');
-const chakram = require('chakram');
-const util = require('util');
 const cloud = require('core/cloud');
 
 var exports = module.exports = {};
 
-exports.genElement = (opts) => new Object({
+/**
+ * Delete by key and ignore the response
+ * @param  {string}  key The element key
+ * @return {promise} A JS promise   
+ */
+exports.deleteElementByKey = (key) => cloud.delete(`/elements/${key}`, () => {});
+
+exports.genElement = (opts) => ({
   name: (opts.name || 'Churros'),
   description: (opts.description || "A Churros element"),
-  authentication: (opts.authentication) || {
-    type: 'basic'
-  },
-  configuration: (opts.configuration) || [ exports.genBaseUrlConfig({}) ]
+  authentication: (opts.authentication) || { type: 'basic' },
+  configuration: (opts.configuration) || [exports.genBaseUrlConfig({})]
 });
 
 exports.genConfig = (opts) => new Object({

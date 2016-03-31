@@ -9,6 +9,6 @@ const customer = (custom) => ({
   email: custom.email || tools.randomEmail()
 });
 
-suite.forElement('ecommerce', 'customers', customer({}), (test) => {
+suite.forElement('ecommerce', 'customers', { payload: customer({}) }, (test) => {
   test.should.supportCruds();
 });

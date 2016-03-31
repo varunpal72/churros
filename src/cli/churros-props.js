@@ -2,15 +2,14 @@
 
 const fs = require('fs');
 const commander = require('commander');
-const util = require('util');
-const file = util.format('%s/%s', process.env.HOME, '.churros/sauce.json');
+const file = `${process.env.HOME}/.churros/sauce.json`;
 
 const loadFile = () => {
   return new Promise((resolve, reject) => {
     const config = require(file);
     config ?
       resolve(config) :
-      reject(util.format('No config found in \'%s\'', file));
+      reject(`No config found in '${file}'`);
   });
 };
 
