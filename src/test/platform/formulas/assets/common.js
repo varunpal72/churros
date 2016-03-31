@@ -26,6 +26,12 @@ exports.genInstance = (opts) => new Object({
   name: (opts.name || 'churros-formula-instance-name')
 });
 
+exports.provisionSfdcWithPolling = () => provisioner.create('sfdc', {
+  'event.notification.enabled': true,
+  'event.vendor.type': 'polling',
+  'event.poller.refresh_interval': 999999999
+});
+
 const deleteFormulaInstance = (fId, fiId) =>
   chakram.delete(util.format('/formulas/%s/instances/%s', fId, fiId));
 
