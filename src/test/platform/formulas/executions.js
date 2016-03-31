@@ -129,7 +129,7 @@ const validateLoopSuccessfulLoopStepExecution = se => {
 
   validateSuccessfulStepExecution(se);
   expect(flat['loop.entry']).to.contain('{"val":0.');
-}
+};
 
 const validateLoopSuccessfulEmailStepExecution = se => {
   validateSuccessfulStepExecution(se);
@@ -139,7 +139,7 @@ const validateLoopSuccessfulEmailStepExecution = se => {
   expect(flat['create-email-body.to']).to.equal('devnull@cloud-elements.com');
   expect(flat['create-email-body.subject']).to.equal('Formula Email');
   expect(flat['create-email-body.message']).to.contain('Loopy val: 0.');
-}
+};
 
 const validateLoopSuccessfulStepExecutionsForEvents = tValidator => ses => {
   expect(ses).to.have.length(103);
@@ -225,35 +225,35 @@ const validateSimpleSuccessfulStepExecutions = {
 
 const validateScriptContextSuccessfulStepExecutions = {
   forEvents: (num) => validateScriptContextSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-}
+};
 
 const validateSimpleTimeoutStepExecutions = {
   forEvents: (num) => validateSimpleTimeoutStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-}
+};
 
 const validateSimpleNoReturnStepExecutions = {
   forEvents: (num) => validateSimpleNoReturnStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-}
+};
 
 const validateSimpleErrorStepExecutions = {
   forEvents: (num) => validateSimpleErrorStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-}
+};
 
 const validateSimpleSuccessfulScheduledStepExecutions = {
   forScheduled: (num) => validateSimpleSuccessfulScheduledStepExecutionsForScheduled(validateSuccessfulScheduledTrigger(num))
-}
+};
 
 const validateLoopSuccessfulStepExecutions = {
   forEvents: (num) => validateLoopSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-}
+};
 
 const validateElementRequestSuccessfulStepExecutions = {
   forEvents: (num) => validateElementRequestSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-}
+};
 
 const validateLargePayloadSuccessfulStepExecutions = {
   forEvents: (num) => validateLargePayloadSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-}
+};
 
 suite.forPlatform('formulas', null, null, (test) => {
   let sfdcId;
@@ -695,5 +695,6 @@ suite.forPlatform('formulas', null, null, (test) => {
           });
       });
   });
+
   after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
 });
