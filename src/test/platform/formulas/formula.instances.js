@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const common = require('./assets/common');
-const schema = require('./assets/formula.schema.json');
+const schema = require('./assets/schemas/formula.schema.json');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 const provisioner = require('core/provisioner');
