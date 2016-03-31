@@ -1,10 +1,9 @@
 {
     "formula": {
         "active": true,
-        "singleThreaded": false,
-        "scriptEngine": "v2"
+        "singleThreaded": false
     },
-    "name": "simple-successful-inst",
+    "name": "large-payload-successful-inst",
     "configuration": {
         "notification.email": "",
         "trigger-instance": "<replace-me>"
