@@ -1,10 +1,5 @@
 {
-    "formula": {
-        "active": true,
-        "singleThreaded": false,
-        "scriptEngine": "v2"
-    },
-    "name": "simple-successful-inst",
+    "name": "simple-error-inst",
     "configuration": {
         "notification.email": "",
         "trigger-instance": "<replace-me>"

@@ -1,0 +1,53 @@
+{
+    "name": "large-payload-successful",
+    "steps": [
+        {
+            "onSuccess": ["end"],
+            "onFailure": [],
+            "name": "simple-script",
+            "type": "script",
+            "properties": {
+                "mimeType": "application/javascript",
+                "body": "var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\"; var bigstring = ''; for (i = 0; i < 10000; ++i) {  bigstring += possible.charAt(Math.floor(Math.random() * possible.length));} var container = {}; for (i = 0; i < 500; ++i) {  container['prop' + i] = {     'a': bigstring,    'b': 'otherstring',    'c': i * 2  }} return container;"
+            }
+        },
+        {
+            "onSuccess": [],
+            "onFailure": [],
+            "name": "end",
+            "type": "script",
+            "properties": {
+                "mimeType": "application/javascript",
+                "body": "return { 'triggerobjectid': trigger.event.objectId, 'prop100': steps['simple-script'].prop100.a, 'done': 'true' };"
+            }
+        }
+    ],
+    "triggers": [
+        {
+            "type": "event",
+            "async": true,
+            "onSuccess": ["simple-script"],
+            "onFailure": [],
+            "properties": {
+                "elementInstanceId": "${trigger-instance}"
+            }
+        }
+    ],
+    "active": true,
+    "singleThreaded": false,
+    "configuration": [
+        {
+            "key": "notification.email",
+            "name": "Notification Email",
+            "type": "value",
+            "description": "Optional email where formula errors and notification steps will be sent (If more than one email is needed, separate each email with a comma)",
+            "required": false
+        },
+        {
+            "key": "trigger-instance",
+            "name": "trigger-instance",
+            "type": "elementInstance",
+            "required": true
+        }
+    ]
+}
