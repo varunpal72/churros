@@ -1,0 +1,18 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "count": {
+        "type": "number"
+      },
+      "timestamp": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "count",
+      "timestamp"
+    ]
+  }
+}
