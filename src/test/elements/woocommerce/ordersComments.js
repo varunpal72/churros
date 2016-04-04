@@ -5,6 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const order = require('./assets/orders');
 const product = require('./assets/products');
+const comment = require('./assets/comments');
 
 const customer = () => ({
   first_name: 'Bill',
@@ -25,21 +26,29 @@ const createOrder = (customerId, productId) => {
   return newOrder;
 };
 
-suite.forElement('ecommerce', 'orders', { payload: order }, (test) => {
+const commentsApi = (orderId, commentId) => {
+  if(commentId === null || commentId === undefined) {
+    return '/hubs/ecommerce/orders/' + orderId+ '/comments';
+  }
+
+  return '/hubs/ecommerce/orders/' + orderId+ '/comments/'+commentId;
+};
+
+suite.forElement('ecommerce', 'ordersComments', { payload: order }, (test) => {
   it('should allow CRUDS for ' + test.api, () => {
     let customerId, productId, orderId;
     return cloud.post('/hubs/ecommerce/customers', customer())
       .then(r => customerId = r.body.id)
       .then(r => cloud.post('/hubs/ecommerce/products', product))
       .then(r => productId = r.body.id)
-      .then(r => cloud.post(test.api, createOrder(customerId, productId)))
+      .then(r => cloud.post('/hubs/ecommerce/orders', createOrder(customerId, productId)))
       .then(r => orderId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + orderId))
-      .then(r => cloud.update(test.api + '/' + orderId, order))
-      .then(r => cloud.get('/hubs/ecommerce/products/' + productId+'/orders'))
+      .then(r => cloud.post(commentsApi(orderId), comment))
+      .then(r => cloud.get(commentsApi(orderId, r.body.id)))
+      .then(r => cloud.update(commentsApi(orderId, r.body.id), comment))
+      .then(r => cloud.delete(commentsApi(orderId, r.body.id)))
       .then(r => cloud.delete('/hubs/ecommerce/orders/' + orderId))
       .then(r => cloud.delete('/hubs/ecommerce/customers/' + customerId))
       .then(r => cloud.delete('/hubs/ecommerce/products/' + productId));
   });
-  test.should.supportPagination();
 });
