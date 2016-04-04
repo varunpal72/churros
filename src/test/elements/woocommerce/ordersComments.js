@@ -26,14 +26,6 @@ const createOrder = (customerId, productId) => {
   return newOrder;
 };
 
-const commentsApi = (orderId, commentId) => {
-  if(commentId === null || commentId === undefined) {
-    return '/hubs/ecommerce/orders/' + orderId+ '/comments';
-  }
-
-  return '/hubs/ecommerce/orders/' + orderId+ '/comments/'+commentId;
-};
-
 suite.forElement('ecommerce', 'ordersComments', { payload: order }, (test) => {
   it('should allow CRUDS for ' + test.api, () => {
     let customerId, productId, orderId;
@@ -43,10 +35,7 @@ suite.forElement('ecommerce', 'ordersComments', { payload: order }, (test) => {
       .then(r => productId = r.body.id)
       .then(r => cloud.post('/hubs/ecommerce/orders', createOrder(customerId, productId)))
       .then(r => orderId = r.body.id)
-      .then(r => cloud.post(commentsApi(orderId), comment))
-      .then(r => cloud.get(commentsApi(orderId, r.body.id)))
-      .then(r => cloud.update(commentsApi(orderId, r.body.id), comment))
-      .then(r => cloud.delete(commentsApi(orderId, r.body.id)))
+      .then(r => test.withApi('/hubs/ecommerce/orders/' + orderId+ '/comments').should.supportCruds())
       .then(r => cloud.delete('/hubs/ecommerce/orders/' + orderId))
       .then(r => cloud.delete('/hubs/ecommerce/customers/' + customerId))
       .then(r => cloud.delete('/hubs/ecommerce/products/' + productId));
