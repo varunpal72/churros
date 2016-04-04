@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const expect = require('chakram').expect;
 const moment = require('moment');
 const usageSchema = require('./assets/usage.schema');
 const analyticsSchema = require('./assets/analytics.schema');
@@ -17,7 +16,7 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
 
   it('should support usage search', () => {
     return cloud.get('usage', usageSchema)
-      .then(r => trafficId = r.body[0]['traffic_id'])
+      .then(r => trafficId = r.body[0].traffic_id);
   });
   it('should support usage by ID', () => cloud.get(`usage/${trafficId}`));
   it('should support offset pagination', () => {
