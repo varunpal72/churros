@@ -5,7 +5,6 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const order = require('./assets/orders');
 const product = require('./assets/products');
-const comment = require('./assets/comments');
 
 const customer = () => ({
   first_name: 'Bill',
