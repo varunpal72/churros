@@ -7,6 +7,7 @@ const cloud = require('core/cloud');
 const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
 const chakram = require('chakram');
+const expect = chakram.expect;
 const logger = require('winston');
 const tools = require('core/tools');
 
@@ -21,13 +22,22 @@ const tools = require('core/tools');
  *   ]
  * }
  */
-const genEvent = (instanceId, type, num) => {
-  const event = require('./assets/events/raw-sfdc');
+const genPollingEvent = (instanceId, type, num) => {
+  const event = require('./assets/events/large-event');
   const events = [];
   for (let i = 0; i < num; i++) {
     events.push(event);
   }
   return { objectType: type, instance_id: instanceId, type: events };
+};
+
+const genWebhookEvent = (action, num) => {
+  const event = require('./assets/events/raw-webhook');
+  const events = [];
+  for (let i = 0; i < num; i++) {
+    events.push(event);
+  }
+  return { action: action, objects: events };
 };
 
 const simulateTrigger = (num, instanceId, payload, simulateCb) => {
@@ -60,13 +70,20 @@ const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) =
 };
 
 const createXInstances = (x, formulaId, formulaInstance) => {
+  const ids = [];
   return cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema)
     .then(r => {
+      expect(r).to.have.statusCode(200);
+      ids.push(r.body.id);
       const all = [];
       for (let i = 0; i < x - 1; i++) {
         all.push(cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema));
       }
       return chakram.all(all);
+    })
+    .then(rs => {
+      rs.map(r => ids.push(r.body.id));
+      return ids;
     });
 };
 
@@ -90,14 +107,14 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     formulaInstance.configuration['trigger-instance'] = sfdcId;
 
     const numInOneEvent = 200;
-    const numEvents = 1;
+    const numEvents = 5;
     let formulaId;
     let formulaInstances = [];
     return cloud.post(test.api, formula, fSchema)
       .then(r => formulaId = r.body.id)
       .then(() => createXInstances(4, formulaId, formulaInstance))
-      .then(rs => rs.map(r => formulaInstances.push(r.body.id)))
-      .then(r => simulateTrigger(numEvents, sfdcId, require('./assets/events/raw-sfdc'), common.generateSfdcEvent))
+      .then(ids => ids.map(id => formulaInstances.push(id)))
+      .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', 200), common.generateSfdcEvent))
       .then(r => pollExecutions(formulaId, formulaInstances[0], numInOneEvent * numEvents, 1))
       .then(r => formulaInstances.map(id => cloud.delete(`/formulas/${formulaId}/instances/${id}`)))
       .then(r => common.deleteFormula(formulaId));
