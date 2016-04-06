@@ -13,7 +13,7 @@ const eventsSchema = require('./assets/events.schema.json');
 
 const signatureKey = 'abcd1234efgh5678';
 const gen = (opts, url) => ({
-  'event.notification.enabled': opts[ 'event.notification.enabled' ] || true,
+  'event.notification.enabled': opts['event.notification.enabled'] || true,
   'event.notification.callback.url': url,
   'event.notification.signature.key': signatureKey
 });
@@ -60,7 +60,7 @@ suite.forPlatform('events', (test) => {
       }))
       .then(r => eventId = eventIds[0])
       .then(r => cloud.get(`instances/${instanceId}/events`, eventsSchema))
-      .then(r => cloud.get('instances/events', eventsSchema))
+      .then(r => cloud.withOptions({ qs: { pageSize: 10 } }).get('instances/events', eventsSchema))
       .then(r => cloud.get(`instances/events/${eventId}`, event => {
         expect(event).to.have.schemaAnd200(eventSchema);
         expect(event.body.status).to.equal('NOTIFIED');
