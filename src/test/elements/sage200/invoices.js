@@ -5,8 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const createInvoices = (customerId) => ({
-  "customer_id": customerId,
-  "due_date": "2016-04-02T00:00:00"
+  "customer_id": customerId
 });
 
 const createCustomer = (rando) => ({
