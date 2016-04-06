@@ -41,7 +41,9 @@ before(() => {
    * @return {Promise} A promise that, when resolved, contains the tunnel that was started
    */
   const setupEventsTunnel = () => {
-    return tunnel.start(props.getForKey('events', 'port'))
+    const port = props.getForKey('events', 'port');
+    const token = props.getOptional('ngrok.auth.token');
+    return tunnel.start(port, token)
       .then(url => props.setForKey('events', 'url', url));
   };
 
