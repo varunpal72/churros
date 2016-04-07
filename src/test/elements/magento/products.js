@@ -3,10 +3,8 @@
 const suite = require('core/suite');
 const payload = require('./assets/products');
 
-suite.forElement('ecommerce', 'products', null, (test) => {
+suite.forElement('ecommerce', 'products', payload, (test) => {
   test.should.return200OnGet();
   test.should.supportPagination();
-  test.should.return400OnPost();
-  test.should.supportSr();
-
+  test.should.supportCruds();
 });
