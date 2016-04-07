@@ -25,6 +25,8 @@ var exports = module.exports = (initConfig) => {
     throw Error(msg);
   };
 
+  exports.getOptional = (key) => config[key];
+
   exports.getForKey = (rootKey, key) => {
     const elementProps = config[rootKey];
     if (!elementProps) missingPropForRootKey(rootKey);
