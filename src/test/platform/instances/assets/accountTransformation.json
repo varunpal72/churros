@@ -1,0 +1,30 @@
+{
+  "vendorName": "Account",
+  "configuration": [
+    {
+      "type": "passThrough",
+      "properties": {
+        "fromVendor": false,
+        "toVendor": false
+      }
+    }
+  ],
+  "fields": [
+    {
+      "path": "companyName",
+      "vendorPath": "Name"
+    },
+    {
+      "path": "number",
+      "vendorPath": "AccountNumber"
+    },
+    {
+      "path": "id",
+      "vendorPath": "Id"
+    },
+    {
+      "path": "description",
+      "vendorPath": "Description"
+    }
+  ]
+}

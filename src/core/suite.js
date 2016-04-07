@@ -52,6 +52,11 @@ const itSr = (name, api, validationCb, options) => {
   it(n, () => cloud.withOptions(options).get(api).then(r => cloud.get(api + '/' + r.body[0].id)));
 };
 
+const itCrs = (name, api, payload, validationCb, options) => {
+  const n = name || `should allow CRS for ${api}`;
+  it(n, () => cloud.withOptions(options).crs(api, payload, validationCb));
+};
+
 const itPagination = (name, api, validationCb) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
   const options = { qs: { page: 1, pageSize: 1 } };
@@ -99,20 +104,20 @@ const itNextPagePagination = (name, api, payload, amount, options, validationCb)
   });
 };
 
-const itGet404 = (name, api, invalidId) => {
-  const n = name || `should throw a 404 when trying to retrieve a(n) ${api} with an ID that does not exist`;
+const it404 = (name, api, invalidId, method, cloudCb) => {
+  const n = name || `should throw a 404 when trying to ${method} ${api} with an ID that does not exist`;
   if (invalidId) api = api + '/' + invalidId;
-  it(n, () => cloud.get(api, (r) => expect(r).to.have.statusCode(404)));
+  it(n, () => cloudCb(api, (r) => expect(r).to.have.statusCode(404)));
 };
 
-const itPatch404 = (name, api, payload, invalidId) => {
-  const n = name || `should throw a 404 when trying to update a(n) ${api} with an ID that does not exist`;
+const itUpdate404 = (name, api, payload, invalidId, method, chakramUpdateCb) => {
+  const n = name || `should throw a 404 when trying to ${method} ${api} with an ID that does not exist`;
   if (invalidId) api = api + '/' + invalidId;
-  it(n, () => cloud.update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakram.patch));
+  it(n, () => cloud.update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakramUpdateCb));
 };
 
 const itPost400 = (name, api, payload) => {
-  let n = name || `should throw a 400 when trying to create a(n) ${api} with an`;
+  let n = name || `should throw a 400 when trying to create a(n) ${api} with an `;
   n += payload ? 'invalid JSON body' : 'empty JSON body';
   it(n, () => cloud.post(api, payload, (r) => expect(r).to.have.statusCode(400)));
 };
@@ -138,8 +143,10 @@ const itCeqlSearch = (name, api, payload, field) => {
 const runTests = (api, payload, validationCb, tests) => {
   const should = (api, validationCb, payload, options, name) => ({
     return400OnPost: () => itPost400(name, api, payload),
-    return404OnPatch: (invalidId) => itPatch404(name, api, payload, invalidId),
-    return404OnGet: (invalidId) => itGet404(name, api, invalidId),
+    return404OnPatch: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PATCH', chakram.patch),
+    return404OnPut: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PUT', chakram.put),
+    return404OnGet: (invalidId) => it404(name, api, invalidId, 'GET', cloud.get),
+    return404OnDelete: (invalidId) => it404(name, api, invalidId, 'DELETE', cloud.delete),
     return200OnPost: () => itPost(name, api, payload, options, validationCb),
     return200OnGet: () => itGet(name, api, options, validationCb),
     supportPagination: () => itPagination(name, api, validationCb),
@@ -152,6 +159,7 @@ const runTests = (api, payload, validationCb, tests) => {
     supportCd: () => itCd(name, api, payload, validationCb, options),
     supportCrds: () => itCrds(name, api, payload, validationCb, options),
     supportSr: () => itSr(name, api, validationCb, options),
+    supportCrs: () => itCrs(name, api, payload, validationCb, options),
   });
 
   const using = (myApi, myValidationCb, myPayload, myOptions, myName) => ({
@@ -160,7 +168,7 @@ const runTests = (api, payload, validationCb, tests) => {
     withApi: (myApi) => using(myApi, myValidationCb, myPayload, myOptions, myName),
     withValidation: (myValidationCb) => using(myApi, myValidationCb, myPayload, myOptions, myName),
     withJson: (myPayload) => using(myApi, myValidationCb, myPayload, myOptions, myName),
-    withOptions: (myOptions) => using(api, validationCb, payload, myOptions, myName)
+    withOptions: (myOptions) => using(myApi, myValidationCb, myPayload, myOptions, myName)
   });
 
   const test = {
@@ -176,19 +184,45 @@ const runTests = (api, payload, validationCb, tests) => {
   tests ? tests(test) : it('add some tests to me!!!', () => true);
 };
 
-exports.forElement = (hub, resource, payload, tests) => {
-  describe(resource, () => runTests(`/hubs/${hub}/${resource}`, payload, (r) => expect(r).to.have.statusCode(200), tests));
+const run = (api, resource, options, defaultValidation, tests) => {
+  // if options is a function, we're assuming those are the tests
+  if (typeof options === 'function') {
+    tests = options;
+    options = {};
+  }
+
+  options = options || {};
+  const name = options.name || resource;
+  describe(name, () => runTests(api, options.payload, defaultValidation, tests));
 };
+
+/**
+ * Starts up a new test suite for an element.  This wraps all of the given tests in a mocha describe block, and provides
+ * a bunch of convenience functions inside of the given tests under the 'test' object.
+
+ * @param  {string} hub       The hub that this element is in (i.e. crm, marketing, etc.)
+ * @param  {string} resource  The name of the elements API resource this test suite is for
+ * @param  {object} options   The, optional, suite options:
+ * {
+ *   name: mochaDescribeNameThatOverridesTheResourceName,
+ *   payload: defaultPaylodThatWillBeUsedOnPostCalls,
+ *   schema: defaultValidationThatWillHappenOnAllApiCallsExceptDeletes
+ * }
+ * @param  {function} tests   A function, containing all test
+ */
+exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, resource, options, (r) => expect(r).to.have.statusCode(200), tests);
 
 /**
  * Starts up a new test suite for a platform resource.  This wraps all of the given tests in a mocha describe block, and
  * provides a bunch of convenience functions inside of the given tests under the 'test' object.
 
- * @param  {string} resource     The name of the platform resource you're testing
- * @param  {object} payload      The default JSON payload to go about creating one of these resources
- * @param  {function} schema     The schema to validate responses against
+ * @param  {string} resource     The name of the platform API resource this test suite is for
+ * @param  {object} options      The, optional, suite options:
+ * {
+ *   name: mochaDescribeNameThatOverridesTheResourceName,
+ *   payload: defaultPaylodThatWillBeUsedOnPostCalls,
+ *   schema: defaultValidationThatWillHappenOnAllApiCallsExceptDeletes
+ * }
  * @param  {function} tests      A function, containing all tests
  */
-exports.forPlatform = (resource, payload, schema, tests) => {
-  describe(resource, () => runTests(`/${resource}`, payload, schema, tests));
-};
+exports.forPlatform = (resource, options, tests) => run(`/${resource}`, resource, options, options.schema, tests);

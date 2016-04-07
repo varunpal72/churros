@@ -1,0 +1,42 @@
+{
+    "name": "simple-successful",
+    "steps": [
+        {
+            "onSuccess": [],
+            "onFailure": [],
+            "name": "simple-script",
+            "type": "script",
+            "properties": {
+                "mimeType": "application/javascript",
+                "body": "var id = 'some-val'; var test = { \"integration-test-1\": 1,\n               \"integration-test-2\": true,\n             \"integration-test-3\": \"integration-value\",  \"trigger-test\": id };\n      \nreturn test;" }
+        }
+    ],
+    "triggers": [
+        {
+            "type": "scheduled",
+            "async": true,
+            "onSuccess": ["simple-script"],
+            "onFailure": [],
+            "properties": {
+                "cron": "<replace-me>"
+            }
+        }
+    ],
+    "active": true,
+    "singleThreaded": false,
+    "configuration": [
+        {
+            "key": "notification.email",
+            "name": "Notification Email",
+            "type": "value",
+            "description": "Optional email where formula errors and notification steps will be sent (If more than one email is needed, separate each email with a comma)",
+            "required": false
+        },
+        {
+            "key": "trigger-instance",
+            "name": "trigger-instance",
+            "type": "elementInstance",
+            "required": true
+        }
+    ]
+}

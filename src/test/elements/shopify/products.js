@@ -8,6 +8,6 @@ const products = (custom) => ({
   product_type: custom.product_type || tools.random()
 });
 
-suite.forElement('ecommerce', 'products', products({}), (test) => {
+suite.forElement('ecommerce', 'products', { payload: products({}) }, (test) => {
   test.should.supportCruds();
 });

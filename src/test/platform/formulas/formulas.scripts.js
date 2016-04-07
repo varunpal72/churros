@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const schema = require('./assets/formula.schema');
+const schema = require('./assets/schemas/formula.schema');
 const common = require('./assets/common');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
@@ -41,7 +41,7 @@ const gen = (genStep) => (genScript) => {
  * Handles validating that formula script steps that are trying to be created have the right error handling capabilities
  * around them
  */
-suite.forPlatform('formulas', null, schema, (test) => {
+suite.forPlatform('formulas', { name: 'formula script steps', schema: schema }, (test) => {
   test
     .withName('should allow creating a script step with the v1 engine')
     .withJson(gen(genV1Step)(genGoodV1Script))
@@ -51,11 +51,6 @@ suite.forPlatform('formulas', null, schema, (test) => {
     .withName('should allow creating a script step with the v2 engine')
     .withJson(gen(genV2Step)(genGoodV2Script))
     .should.supportCd();
-
-  test
-    .withName('should not allow creating a script without a return statement in the v1 engine')
-    .withJson(gen(genV1Step)(genGoodV2Script))
-    .should.return400OnPost();
 
   test
     .withName('should allow creating a script with a helper function that has a return statement in the v2 engine')

@@ -14,7 +14,7 @@ const gen = (opts) => {
   });
 };
 
-suite.forElement('crm', 'contacts', gen(), (test) => {
+suite.forElement('crm', 'contacts', { payload: gen() }, (test) => {
   it('should allow CRUDS for ' + test.api, () => {
     let accountId;
     return cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' })

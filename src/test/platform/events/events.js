@@ -9,6 +9,7 @@ const props = require('core/props');
 const logger = require('winston');
 const crypto = require('crypto');
 const eventSchema = require('./assets/event.schema.json');
+const eventsSchema = require('./assets/events.schema.json');
 
 const signatureKey = 'abcd1234efgh5678';
 const gen = (opts, url) => ({
@@ -26,18 +27,23 @@ const loadPayload = (element) => {
   }
 };
 
-suite.forPlatform('events', null, null, (test) => {
+suite.forPlatform('events', (test) => {
+  let instanceId;
+  const element = props.getForKey('events', 'element');
+  before(done => provisioner.create(element, gen({}, props.getForKey('events', 'url')))
+    .then(r => instanceId = r.body.id)
+    .then(r => done()));
+
+  after(done => provisioner.delete(instanceId)
+    .then(r => done()));
+
   it('should handle receiving x number of events for an element instance', () => {
-    const element = props.getForKey('events', 'element');
     const payload = loadPayload(element);
     const load = props.getForKey('events', 'load');
     const wait = props.getForKey('events', 'wait');
-    const url = props.getForKey('events', 'url');
 
-    let instanceId;
-    return provisioner.create(element, gen({}, url))
-      .then(r => instanceId = r.body.id)
-      .then(r => cloud.createEvents(element, instanceId, payload, load))
+    let eventId, eventIds = [];
+    return cloud.createEvents(element, instanceId, payload, load)
       .then(s => server.listen(load, wait))
       .then(r => r.forEach(event => {
         // basic event header and body validation
@@ -49,9 +55,20 @@ suite.forPlatform('events', null, null, (test) => {
         const signature = event.headers['elements-webhook-signature'];
         const hash = 'sha256=' + crypto.createHmac('sha256', signatureKey).update(event.body).digest('base64');
         expect(signature).to.equal(hash);
+        let eventJson = JSON.parse(event.body);
+        eventIds.push(eventJson.message.eventId);
       }))
-      .then(r => cloud.get(`instances/${instanceId}/events`, eventSchema))
-      .then(r => provisioner.delete(instanceId));
+      .then(r => eventId = eventIds[0])
+      .then(r => cloud.get(`instances/${instanceId}/events`, eventsSchema))
+      .then(r => cloud.withOptions({ qs: { pageSize: 10 } }).get('instances/events', eventsSchema))
+      .then(r => cloud.get(`instances/events/${eventId}`, event => {
+        expect(event).to.have.schemaAnd200(eventSchema);
+        expect(event.body.status).to.equal('NOTIFIED');
+      }))
+      .then(r => cloud.get(`instances/${instanceId}/events/${eventId}`, event => {
+        expect(event).to.have.schemaAnd200(eventSchema);
+        expect(event.body.status).to.equal('NOTIFIED');
+      }));
   });
 
 });

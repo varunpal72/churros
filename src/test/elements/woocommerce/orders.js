@@ -25,18 +25,19 @@ const createOrder = (customerId, productId) => {
   return newOrder;
 };
 
-suite.forElement('ecommerce', 'orders', order, (test) => {
+suite.forElement('ecommerce', 'orders', { payload: order }, (test) => {
   it('should allow CRUDS for ' + test.api, () => {
-    let customerId;
-    let productId;
+    let customerId, productId, orderId;
     return cloud.post('/hubs/ecommerce/customers', customer())
       .then(r => customerId = r.body.id)
       .then(r => cloud.post('/hubs/ecommerce/products', product))
       .then(r => productId = r.body.id)
       .then(r => cloud.post(test.api, createOrder(customerId, productId)))
-      .then(r => cloud.get(test.api + '/' + r.body.id))
-      .then(r => cloud.update(test.api + '/' + r.body.id, order))
-      .then(r => cloud.delete('/hubs/ecommerce/orders/' + r.body.id))
+      .then(r => orderId = r.body.id)
+      .then(r => cloud.get(test.api + '/' + orderId))
+      .then(r => cloud.update(test.api + '/' + orderId, order))
+      .then(r => cloud.get('/hubs/ecommerce/products/' + productId+'/orders'))
+      .then(r => cloud.delete('/hubs/ecommerce/orders/' + orderId))
       .then(r => cloud.delete('/hubs/ecommerce/customers/' + customerId))
       .then(r => cloud.delete('/hubs/ecommerce/products/' + productId));
   });

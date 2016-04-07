@@ -36,32 +36,31 @@ before(() => {
   const options = { jar: true, form: { j_username: props.get('user'), j_password: props.get('password') } };
 
   /**
-   * Sets up our localtunnel instead and whatever random URL localtunnel assigns to us, we set that
+   * Sets up our publicly available HTTP listener and whatever URL we're given, we set that
    * in our events:url property to be used as our webhook callback URL elsewhere
    * @return {Promise} A promise that, when resolved, contains the tunnel that was started
    */
   const setupEventsTunnel = () => {
-    return tunnel.start(props.getForKey('events', 'port'))
-      .then(tunnel => props.setForKey('events', 'url', tunnel.url));
+    const port = props.getForKey('events', 'port');
+    const token = props.getOptional('ngrok.auth.token');
+    return tunnel.start(port, token)
+      .then(url => props.setForKey('events', 'url', url));
   };
 
   /**
    * Sets up our HTTP server listener
    * @return {Promise} A promise that, when resolved, contains the server that was started
    */
-  const setupServer = () => {
-    return server.start(props.getForKey('events', 'port'));
-  };
+  const setupServer = () => server.start(props.getForKey('events', 'port'));
 
   return chakram.post(secUrl, null, options)
     .then(r => {
-      const secretOptions = { jar: true };
       expect(r).to.have.statusCode(200);
-      return chakram.get(url + '/elements/api-v1/ui/getSecrets', secretOptions);
+      return chakram.get(`${url}/elements/api-v1/ui/getSecrets`, { jar: true });
     })
     .then(r => {
       expect(r).to.have.statusCode(200);
-      defaults(url + '/elements/api-v2', r.body.user, r.body.company, props.get('user'));
+      defaults(`${url}/elements/api-v2`, r.body.user, r.body.company, props.get('user'));
     })
     .then(r => setupEventsTunnel())
     .then(r => setupServer())

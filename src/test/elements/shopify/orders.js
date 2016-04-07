@@ -10,6 +10,6 @@ const order = (custom) => ({
   }]
 });
 
-suite.forElement('ecommerce', 'orders', order({}), (test) => {
+suite.forElement('ecommerce', 'orders', { payload: order({}) }, (test) => {
   test.should.supportCruds();
 });
