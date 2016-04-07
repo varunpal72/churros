@@ -5,7 +5,7 @@ const payload = require('./assets/customers');
 const tools = require('core/tools');
 payload.email = tools.randomEmail();
 
-suite.forElement('ecommerce', 'customers', payload, (test) => {
+suite.forElement('ecommerce', 'customers', {payload: payload}, (test) => {
   test.should.return200OnGet();
   test.should.supportPagination();
   test.should.supportCruds();
