@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const payload = require('./assets/orders');
 const cloud = require('core/cloud');
-const winston = require('winston');
 
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
   test.should.return200OnGet();
@@ -20,6 +19,7 @@ suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
       return cloud.get(`${test.api}/${orderId}`);
     })
     .then(r => cloud.get(`${test.api}/${orderId}/addresses`))
+    .then(r => cloud.get(`${test.api}/${orderId}/comments`))
     .then(r => cloud.get(`${test.api}/${orderId}/items`));
   });
 });

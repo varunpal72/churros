@@ -7,7 +7,7 @@ const cloud = require('core/cloud');
 suite.forElement('ecommerce', 'inventory', {payload: payload}, (test) => {
   test.should.return200OnGet();
   test.should.supportPagination();
-  it('should allow CRUDS for inventory with PUT', () => {
+  it('should allow RUS for inventory with PUT', () => {
     let inventoryItem;
     let inventoryId;
     return cloud.get(test.api)
