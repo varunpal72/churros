@@ -201,15 +201,11 @@ const generateSingleSfdcPollingEvent = (instanceId) => {
   return generateSfdcPollingEvent(instanceId, payload);
 };
 
-const generateXSingleSfdcPollingEvents = (instanceId, x) => {
-  const p = Promise.all(Array(x).fill().reduce((p, c) => {
+const generateXSingleSfdcPollingEvents = (instanceId, x) =>
+  Promise.all(Array(x).fill().reduce((p, c) => {
     p.push(generateSingleSfdcPollingEvent(instanceId));
     return p;
   }, []));
-
-  console.log(p);
-  return p;
-};
 
 const validateTriggerBodyEvents = (tb, num) => {
   expect(tb.message.events).to.have.length(num);
@@ -805,14 +801,14 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateXSingleSfdcPollingEvents(sfdcId, 100))
-      .then(() => sleep.sleep(20))
+      .then(() => sleep.sleep(60))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(100);
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(100))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
