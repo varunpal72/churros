@@ -107,7 +107,7 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     formulaInstance.configuration['trigger-instance'] = sfdcId;
 
     const numInOneEvent = 200;
-    const numEvents = 5;
+    const numEvents = 1;
     let formulaId;
     let formulaInstances = [];
     return cloud.post(test.api, formula, fSchema)
