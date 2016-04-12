@@ -843,8 +843,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 1))
-      .then(() => sleep.sleep(30))
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 100))
+      .then(() => sleep.sleep(600))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
