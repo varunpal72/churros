@@ -69,6 +69,21 @@ const validateSimpleSuccessfulScheduledStepExecutionsForScheduled = tValidator =
   ses.filter(se => se.stepName !== 'trigger').map(validateSuccessfulStepExecution);
 };
 
+const validateComplexSuccessfulStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(30);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName === 'invalid-request-step')
+    .map(se => expect(se.status).to.equal('failed'));
+  ses.filter(se => se.stepName === 'looper' &&
+      flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] !== '10')
+    .map(validateSuccessfulStepExecution);
+  ses.filter(se => se.stepName === 'looper' &&
+      flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] === '10')
+    .map(validateErrorStepExecution);
+  ses.filter(se => se.stepName !== 'invalid-request-step' && se.stepName !== 'looper')
+    .map(validateSuccessfulStepExecution);
+};
+
 const validateScriptContextSuccessfulStepExecutionsForEvents = tValidator => ses => {
   expect(ses).to.have.length(4);
   ses.map(se => validateSuccessfulStepExecution(se));
@@ -228,6 +243,10 @@ const validateSimpleSuccessfulStepExecutions = {
   forEvents: (num) => validateSimpleSuccessfulStepExecutionsForType(validateSuccessfulEventTrigger(num)),
   forRequest: validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulRequestTrigger),
   forScheduled: validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulScheduledTrigger)
+};
+
+const validateComplexSuccessfulStepExecutions = {
+  forEvents: (num) => validateComplexSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
 const validateScriptContextSuccessfulStepExecutions = {
@@ -789,7 +808,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => common.deleteFormula(formulaId3));
   });
 
-  it('should successfully execute one formula instance x number of times for x events', () => {
+  it('should successfully execute one simple formula instance x number of times for x events', () => {
     const formula = require('./assets/simple-successful-formula');
     const formulaInstance = require('./assets/simple-successful-formula-instance');
 
@@ -813,6 +832,29 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => common.deleteFormula(formulaId));
   });
 
+  it('should successfully execute one complex formula instance x number of times for x events', () => {
+    const formula = require('./assets/complex-successful-formula');
+    const formulaInstance = require('./assets/complex-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'complex-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 1))
+      .then(() => sleep.sleep(30))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateComplexSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
   /** Clean up */
   after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
 });
