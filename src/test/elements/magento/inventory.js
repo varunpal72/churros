@@ -12,7 +12,7 @@ suite.forElement('ecommerce', 'inventory', {payload: payload}, (test) => {
     let inventoryId;
     return cloud.get(test.api)
     .then((r) => {
-      if (r.body.length === 0) {
+      if (r.body.length <= 0) {
         return;
       }
       inventoryItem = r.body[0];
