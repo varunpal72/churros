@@ -182,6 +182,14 @@ const validateLargePayloadSuccessfulStepExecutionsForEvents = tValidator => ses 
   expect(consolidated['end.done']).to.equal('true');
 };
 
+const validateScriptOnFailureStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(3);
+  const consolidated = consolidateStepExecutionValues(ses);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName !== 'trigger' && se.stepName !== 'bad-script-step')
+    .map(validateSuccessfulStepExecution);
+};
+
 const validateStepExecutions = ses => {
   ses.map(se => validateSuccessfulStepExecution(se));
 };
@@ -279,6 +287,10 @@ const validateElementRequestSuccessfulStepExecutions = {
 
 const validateLargePayloadSuccessfulStepExecutions = {
   forEvents: (num) => validateLargePayloadSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+};
+
+const validateScriptOnFailureStepExecutions = {
+  forEvents: (num) => validateScriptOnFailureStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
@@ -852,6 +864,30 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
       .then(rs => rs.map(r => validateExecution(r.body)(validateComplexSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should support an on failure for a script step', () => {
+    const formula = require('./assets/script-with-on-failure-successful-formula');
+    const formulaInstance = require('./assets/script-with-on-failure-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'script-with-on-failure-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(60))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateScriptOnFailureStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
