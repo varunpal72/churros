@@ -112,7 +112,7 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     let formulaInstances = [];
     return cloud.post(test.api, formula, fSchema)
       .then(r => formulaId = r.body.id)
-      .then(() => createXInstances(4, formulaId, formulaInstance))
+      .then(() => createXInstances(1, formulaId, formulaInstance))
       .then(ids => ids.map(id => formulaInstances.push(id)))
       .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', 200), common.generateSfdcEvent))
       .then(r => pollExecutions(formulaId, formulaInstances[0], numInOneEvent * numEvents, 1))
