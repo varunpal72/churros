@@ -83,3 +83,16 @@ exports.createFAndFI = () => {
     .then(r => formulaInstanceId = r.body.id)
     .then(r => ({ formulaInstanceId: formulaInstanceId, formulaId: formulaId, elementInstanceId: elementInstanceId }));
 };
+
+exports.allExecutionsCompleted = (fId, fiId, num) => cb =>
+  exports.getFormulaInstanceExecutions(fId, fiId)
+  .then(r => {
+    if (r.body.length === num) {
+      Promise.all(r.body.map(fie => exports.getFormulaInstanceExecution(fId, fiId, fie.id)))
+      .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)) //rs.filter(r => r.body.status === 'pending'))
+      .then(fieses => fieses.map(fiese => fiese.filter(se => se.status === 'pending')))
+      .then(ses => {
+        if ([].concat.apply([], ses).length === 0) { cb(); }
+      }));
+    }
+  });

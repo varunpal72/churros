@@ -184,7 +184,6 @@ const validateLargePayloadSuccessfulStepExecutionsForEvents = tValidator => ses 
 
 const validateScriptOnFailureStepExecutionsForEvents = tValidator => ses => {
   expect(ses).to.have.length(3);
-  const consolidated = consolidateStepExecutionValues(ses);
   ses.filter(se => se.stepName === 'trigger').map(tValidator);
   ses.filter(se => se.stepName !== 'trigger' && se.stepName !== 'bad-script-step')
     .map(validateSuccessfulStepExecution);
@@ -855,11 +854,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 100))
-      .then(() => sleep.sleep(600))
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
+      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
@@ -880,7 +879,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateSingleSfdcPollingEvent(sfdcId))
-      .then(() => sleep.sleep(60))
+      .then(() => tools.wait.upTo(30000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -891,6 +890,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
+
   /** Clean up */
   after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
 });
