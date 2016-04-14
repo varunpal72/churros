@@ -239,6 +239,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'sfdcservicecloud':
     case 'sfdcmarketingcloud':
     case 'sfdcdocuments':
+    case 'sfdclibraries':
       browser.get(r.body.oauthUrl);
       // wait for username to show up
       browser.wait(webdriver.until.elementLocated(webdriver.By.name('username')), 10000);
