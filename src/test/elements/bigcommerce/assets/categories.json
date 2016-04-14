@@ -1,0 +1,8 @@
+{
+  "name": "Xmen toys",
+  "is_visible": true,
+  "page_title": "X-Men Toys",
+  "description": "xmen are awesome",
+  "layout_file": "category.html",
+  "search_keywords": "xmen"
+}
