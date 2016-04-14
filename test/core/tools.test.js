@@ -62,7 +62,7 @@ describe('tools', () => {
     var i = 0;
 
     const pred = (cb) => {
-      if(++i > 2) cb(true);
+      if (++i > 2) cb(true);
     };
 
     return expect(tools.wait.upTo(6000).for(pred)).to.eventually.equal(true);
@@ -80,7 +80,7 @@ describe('tools', () => {
     var i = 0;
 
     const pred = (cb) => {
-      if(++i > 2) cb(true);
+      if (++i > 2) cb(true);
     };
 
     return expect(tools.wait.for(pred)).to.eventually.equal(true);
