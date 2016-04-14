@@ -565,14 +565,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => chakram.get('/hubs/crm/ping'))
       .then(r => {
         const currentDt = r.body.dateTime;
-        console.log(`currentDt: ${currentDt}`);
         const dt = moment.parseZone(currentDt);
-        console.log(`Date: ${dt}`);
         dt.add(1, 'minute');
-        console.log(`New Date: ${dt}`);
 
         formula.triggers[0].properties.cron = `${dt.seconds()} ${dt.minutes()} ${dt.hours()} ${dt.date()} ${dt.month() + 1} ? ${dt.year()}`;
-        console.log(`CRON: ${formula.triggers[0].properties.cron}`);
         formulaInstance.configuration['trigger-instance'] = sfdcId;
       })
       .then(() => cloud.post(test.api, formula, fSchema))
