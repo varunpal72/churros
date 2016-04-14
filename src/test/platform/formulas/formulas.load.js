@@ -98,7 +98,7 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
 
   /** Clean up */
   after(() => {
-    if (sfdcId) return provisioner.delete(sfdcId);
+    // if (sfdcId) return provisioner.delete(sfdcId);
   });
 
   it('should handle a very large event payload repeatedly', () => {
@@ -106,17 +106,20 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     const formulaInstance = require('./assets/complex-successful-formula-instance');
     formulaInstance.configuration['trigger-instance'] = sfdcId;
 
-    const numInOneEvent = 200;
+    const numFormulaInstances = 1;
     const numEvents = 1;
+    const numInOneEvent = 1;
+
     let formulaId;
     let formulaInstances = [];
     return cloud.post(test.api, formula, fSchema)
       .then(r => formulaId = r.body.id)
-      .then(() => createXInstances(1, formulaId, formulaInstance))
+      .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
       .then(ids => ids.map(id => formulaInstances.push(id)))
-      .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', 200), common.generateSfdcEvent))
+      .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
       .then(r => pollExecutions(formulaId, formulaInstances[0], numInOneEvent * numEvents, 1))
-      .then(r => formulaInstances.map(id => cloud.delete(`/formulas/${formulaId}/instances/${id}`)))
-      .then(r => common.deleteFormula(formulaId));
+      .then(r => console.log('Done'));
+      // .then(r => formulaInstances.map(id => cloud.delete(`/formulas/${formulaId}/instances/${id}`)))
+      // .then(r => common.deleteFormula(formulaId));
   });
 });
