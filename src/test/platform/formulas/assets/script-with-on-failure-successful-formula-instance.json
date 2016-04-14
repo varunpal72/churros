@@ -1,0 +1,6 @@
+{
+    "name": "script-with-on-failure-successful",
+    "configuration": {
+        "trigger-instance": "<replace-me>"
+    }
+}

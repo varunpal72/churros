@@ -1,7 +1,9 @@
 'use strict';
 
-const chakram = require('chakram');
-const expect = chakram.expect;
+const chai = require('chai');
+const chaiAsPromised = require("chai-as-promised");
+chai.use(chaiAsPromised);
+const expect = chai.expect;
 const tools = require('core/tools');
 
 describe('tools', () => {
@@ -54,5 +56,41 @@ describe('tools', () => {
 
   it('should support sleeping for x seconds', () => {
     tools.sleep(1);
+  });
+
+  it('should support waiting a specific time for a succesful predicate', () => {
+    var i = 0;
+
+    const pred = (cb) => {
+      if (++i > 2) cb(true);
+    };
+
+    return expect(tools.wait.upTo(10000).for(pred)).to.eventually.equal(true);
+  });
+
+  it('should support waiting for a specifc time for an unsuccesful predicate', () => {
+    const pred = (cb) => {
+      return false;
+    };
+
+    return expect(tools.wait.upTo(10000).for(pred)).to.be.rejected;
+  });
+
+  it('should support waiting the default time for a succesful predicate', () => {
+    var i = 0;
+
+    const pred = (cb) => {
+      if (++i > 2) cb(true);
+    };
+
+    return expect(tools.wait.for(pred)).to.eventually.equal(true);
+  });
+
+  it('should support waiting for the default time for an unsuccesful predicate', () => {
+    const pred = (cb) => {
+      return false;
+    };
+
+    return expect(tools.wait.for(pred)).to.be.rejected;
   });
 });
