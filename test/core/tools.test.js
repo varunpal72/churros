@@ -5,6 +5,7 @@ const chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 const tools = require('core/tools');
+const moment = require('moment');
 
 describe('tools', () => {
   it('should support generating a random string', () => {
@@ -92,5 +93,11 @@ describe('tools', () => {
     };
 
     return expect(tools.wait.for(pred)).to.be.rejected;
+  });
+
+  it('should work with time', () => {
+    const dt = '2016-04-13T23:07:03Z';
+    const m = moment.parseZone(dt);
+    console.log(m.format());
   });
 });

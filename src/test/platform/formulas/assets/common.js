@@ -3,6 +3,7 @@
 const tools = require('core/tools');
 const chakram = require('chakram');
 const util = require('util');
+const logger = require('winston');
 const provisioner = require('core/provisioner');
 const cloud = require('core/cloud');
 const fSchema = require('./schemas/formula.schema');
@@ -84,15 +85,22 @@ exports.createFAndFI = () => {
     .then(r => ({ formulaInstanceId: formulaInstanceId, formulaId: formulaId, elementInstanceId: elementInstanceId }));
 };
 
-exports.allExecutionsCompleted = (fId, fiId, num) => cb =>
+exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
   exports.getFormulaInstanceExecutions(fId, fiId)
   .then(r => {
-    if (r.body.length === num) {
+    if (r.body.length === numExecs) {
       Promise.all(r.body.map(fie => exports.getFormulaInstanceExecution(fId, fiId, fie.id)))
-      .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)) //rs.filter(r => r.body.status === 'pending'))
-      .then(fieses => fieses.map(fiese => fiese.filter(se => se.status === 'pending')))
+      .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
+      .then(fieses => [].concat.apply([], fieses))
       .then(ses => {
-        if ([].concat.apply([], ses).length === 0) { cb(); }
-      }));
+        if (ses.length === (numExecVals * numExecs) && ses.filter(se => se.status === 'pending' === 0)) {
+          logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
+          cb();
+        }
+        else {
+          logger.debug(`Not all ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}; ${ses.length} total execution values found so far.`);
+        }
+      });
     }
   });
+};

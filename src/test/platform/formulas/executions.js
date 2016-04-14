@@ -12,6 +12,7 @@ const tools = require('core/tools');
 const b64 = tools.base64Encode;
 const sleep = require('sleep');
 const expect = require('chakram').expect;
+const moment = require('moment');
 
 const provisionSfdcWithPolling = () => provisioner.create('sfdc', {
   'event.notification.enabled': true,
@@ -564,17 +565,21 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => chakram.get('/hubs/crm/ping'))
       .then(r => {
         const currentDt = r.body.dateTime;
-        const dt = new Date(currentDt);
-        dt.setSeconds(dt.getSeconds() + 30);
+        console.log(`currentDt: ${currentDt}`);
+        const dt = moment.parseZone(currentDt);
+        console.log(`Date: ${dt}`);
+        dt.add(1, 'minute');
+        console.log(`New Date: ${dt}`);
 
-        formula.triggers[0].properties.cron = `${dt.getSeconds()} ${dt.getMinutes()} ${dt.getHours()} ${dt.getDate()} ${dt.getMonth() + 1} ? ${dt.getFullYear()}`;
+        formula.triggers[0].properties.cron = `${dt.seconds()} ${dt.minutes()} ${dt.hours()} ${dt.date()} ${dt.month() + 1} ? ${dt.year()}`;
+        console.log(`CRON: ${formula.triggers[0].properties.cron}`);
         formulaInstance.configuration['trigger-instance'] = sfdcId;
       })
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => Promise.all([sleep.sleep(35)]))
+      .then(() => tools.wait.upTo(90000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, 2)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
@@ -831,7 +836,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateXSingleSfdcPollingEvents(sfdcId, 100))
-      .then(() => sleep.sleep(60))
+      .then(() => tools.wait.for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 100, 2)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(100);
@@ -855,7 +860,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
-      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10)))
+      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10, 30)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
@@ -879,7 +884,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateSingleSfdcPollingEvent(sfdcId))
-      .then(() => tools.wait.upTo(30000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1)))
+      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, 3)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
