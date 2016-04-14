@@ -65,7 +65,7 @@ describe('tools', () => {
       if (++i > 2) cb(true);
     };
 
-    return expect(tools.wait.upTo(6000).for(pred)).to.eventually.equal(true);
+    return expect(tools.wait.upTo(10000).for(pred)).to.eventually.equal(true);
   });
 
   it('should support waiting for a specifc time for an unsuccesful predicate', () => {
@@ -73,7 +73,7 @@ describe('tools', () => {
       return false;
     };
 
-    return expect(tools.wait.upTo(6000).for(pred)).to.be.rejected;
+    return expect(tools.wait.upTo(10000).for(pred)).to.be.rejected;
   });
 
   it('should support waiting the default time for a succesful predicate', () => {
