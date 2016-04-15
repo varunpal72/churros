@@ -33,7 +33,6 @@ suite.forElement('ecommerce', 'payments', (test) => {
     return cloud.post(`/hubs/ecommerce/orders/${orderId}/payments`, capture);
   });
   it(`should allow POST for /hubs/ecommerce/orders/{orderId}/payments to refund`, () => {
-    let paymentId;
     return cloud.post(`/hubs/ecommerce/orders/${orderId}/payments`, refund);
   });
   it(`should allow GET for /hubs/ecommerce/orders/{orderId}/payments/{paymentId}`, () => {

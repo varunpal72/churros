@@ -23,7 +23,7 @@ const order = () => ({
 });
 let objectName = 'orders';
 suite.forElement('ecommerce', 'metafields', { payload: payload }, (test) => {
-  let orderId, lineId, fulfillmentId;
+  let orderId;
   before(() => cloud.post(`/hubs/ecommerce/orders`, order())
     .then(r => orderId = r.body.id)
   );

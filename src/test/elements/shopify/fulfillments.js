@@ -40,13 +40,13 @@ suite.forElement('ecommerce', 'fulfillments', { payload: createFulfillment({}) }
     return cloud.get(`/hubs/ecommerce/orders/${orderId}/fulfillments-count`);
   });
   it(`should allow GET for /hubs/ecommerce/orders/{orderId}/fulfillments/{fulfillmentId}`, () => {
-    return cloud.get(`/hubs/ecommerce/orders/${orderId}/fulfillments/${fulfillmentId}`)
+    return cloud.get(`/hubs/ecommerce/orders/${orderId}/fulfillments/${fulfillmentId}`);
   });
   it(`should allow PATCH for /hubs/ecommerce/orders/{orderId}/fulfillments/{fulfillmentId}`, () => {
-    return cloud.patch(`/hubs/ecommerce/orders/${orderId}/fulfillments/${fulfillmentId}`, updateFulfillment(fulfillmentId))
+    return cloud.patch(`/hubs/ecommerce/orders/${orderId}/fulfillments/${fulfillmentId}`, updateFulfillment(fulfillmentId));
   });
   it(`should allow PATCH for /hubs/ecommerce/orders/{orderId}/fulfillments/{fulfillmentId}/status-cancel`, () => {
-    return cloud.patch(`/hubs/ecommerce/orders/${orderId}/fulfillments/${fulfillmentId}/status-cancel`)
+    return cloud.patch(`/hubs/ecommerce/orders/${orderId}/fulfillments/${fulfillmentId}/status-cancel`);
   });
   it(`should allow DELETE for /hubs/ecommerce/orders/{orderId}`, () => {
     return cloud.delete(`/hubs/ecommerce/orders/${orderId}`);
