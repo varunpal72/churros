@@ -36,6 +36,10 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(400, (uri, requestBody) => {
       return { message: 'Invalid JSON body' };
     })
+    .post('/foo/conflict')
+    .reply(409, (uri, requestBody) => {
+      return { message: 'Already exists' };
+    })
     .post('/foo/file')
     .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
     .post('/foo/bad/file')

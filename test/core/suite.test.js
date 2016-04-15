@@ -118,6 +118,9 @@ describe('suite', () => {
     test
       .withApi('/foo/bad')
       .should.return400OnPost();
+    test
+      .withApi('/foo/conflict')
+      .should.return409OnPost();
 
     /* examples of using .withName(...) which will set the name of the test to be whatever string is passed in */
     test
