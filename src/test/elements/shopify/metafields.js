@@ -21,8 +21,8 @@ const order = () => ({
     price: tools.randomInt()
   }]
 });
-let objectName = 'orders';
 suite.forElement('ecommerce', 'metafields', { payload: payload }, (test) => {
+  const objectName = 'orders';
   let orderId;
   before(() => cloud.post(`/hubs/ecommerce/orders`, order())
     .then(r => orderId = r.body.id)
