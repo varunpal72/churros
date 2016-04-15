@@ -117,8 +117,8 @@ const itUpdate404 = (name, api, payload, invalidId, method, chakramUpdateCb) => 
 };
 
 const itPost400 = (name, api, payload) => {
-  let n = name || `should throw a 400 when trying to create a(n) ${api} with an `;
-  n += payload ? 'invalid JSON body' : 'empty JSON body';
+  const suffix = payload ? 'invalid JSON body' : 'empty JSON body';
+  let n = name || `should throw a 400 when trying to create a(n) ${api} with an ${suffix}`;
   it(n, () => cloud.post(api, payload, (r) => expect(r).to.have.statusCode(400)));
 };
 
