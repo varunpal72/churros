@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/orders');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const ordersUpdate = () => ({
@@ -28,7 +27,7 @@ const shipmentsCreate = (addressId, productId) => ({
 
 const shipmentsUpdate = () => ({
   "comments": "UpdateThis"
-})
+});
 
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();

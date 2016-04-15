@@ -7,7 +7,6 @@ const categoriesPayload = require('./assets/categories');
 const fieldsPayload = require('./assets/fields');
 const imagesPayload = require('./assets/images');
 const skusPayload = require('./assets/skus');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const productsUpdate = () => ({
@@ -35,7 +34,7 @@ const fieldsUpdate = () => ({
 
 const imagesUpdate = () => ({
   "description": "Cloud Elements"
-})
+});
 
 const skusUpdate = () => ({
   "upc": "Updated"

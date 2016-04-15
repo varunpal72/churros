@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/customers');
-const addressPayload = require('./assets/address')
+const addressPayload = require('./assets/address');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 
