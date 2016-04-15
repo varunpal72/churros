@@ -17,12 +17,10 @@ const options = {
 };
 
 const shipmentsCreate = (addressId, productId) => ({
-  "items": [
-    {
-      "quantity": 1,
-      "order_product_id": productId
-    }
-  ],
+  "items": [{
+    "quantity": 1,
+    "order_product_id": productId
+  }],
   "comments": "TestThis",
   "tracking_number": "EJ958083578US",
   "order_address_id": addressId
@@ -34,7 +32,7 @@ const shipmentsUpdate = () => ({
 
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
-  test.withOptions({ qs: { where: 'fetchShippingAddresses=\'true\''}}).should.return200OnGet();
+  test.withOptions({ qs: { where: 'fetchShippingAddresses=\'true\'' } }).should.return200OnGet();
   test.withApi(`${test.api}/count`).should.return200OnGet();
   test.withApi(`${test.api}/products/count`).should.return200OnGet();
   test.withApi(`${test.api}/shipments/count`).should.return200OnGet();
@@ -79,7 +77,7 @@ suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
       .then(r => cloud.post(`${test.api}/${orderId}/shipments`, shipmentsCreate(addressId.toString(), productId.toString())))
       .then(r => shipmentId = r.body.id)
       .then(r => cloud.get(`${test.api}/${orderId}/shipments`))
-      .then(r => cloud.withOptions({ qs: { page:1, pageSize:1 }}).get(`${test.api}/${orderId}/shipments`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${orderId}/shipments`))
       .then(r => cloud.get(`${test.api}/${orderId}/shipments/${shipmentId}`))
       .then(r => cloud.patch(`${test.api}/${orderId}/shipments/${shipmentId}`, shipmentsUpdate()))
       .then(r => cloud.get(`${test.api}/${orderId}/shipments/count`))

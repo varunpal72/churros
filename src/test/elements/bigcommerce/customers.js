@@ -37,7 +37,7 @@ const groupUpdate = () => ({
 suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.withApi(`${test.api}/count`).should.return200OnGet();
-  test.withOptions({ qs: { where: 'fetchShippingAddresses=\'true\''}}).should.return200OnGet();
+  test.withOptions({ qs: { where: 'fetchShippingAddresses=\'true\'' } }).should.return200OnGet();
   test.should.supportPagination();
   test.should.supportCeqlSearch('email');
   it('should allow CRUDS for customer/addresses', () => {

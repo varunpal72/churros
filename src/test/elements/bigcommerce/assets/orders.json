@@ -1,12 +1,10 @@
 {
-  "products": [
-    {
-      "name": "CE Product",
-      "quantity": 3,
-      "price_ex_tax": 10,
-      "price_inc_tax": 10.8
-    }
-  ],
+  "products": [{
+    "name": "CE Product",
+    "quantity": 3,
+    "price_ex_tax": 10,
+    "price_inc_tax": 10.8
+  }],
   "payment_method": "CLOUD",
   "billing_address": {
     "zip": "11111",
@@ -20,8 +18,7 @@
     "first_name": "Peter",
     "country_iso2": "US"
   },
-  "shipping_addresses": [
-  {
+  "shipping_addresses": [{
     "zip": "11111",
     "country": "United States",
     "email": "petey@example.com",

@@ -59,8 +59,8 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
     return cloud.post(`${test.api}/brands`, brandsPayload)
       .then(r => brandId = r.body.id)
       .then(r => cloud.get(`${test.api}/brands`))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 }}).get(`${test.api}/brands`))
-      .then(r => cloud.withOptions({ qs: { where: 'name=\'Xmen\'' }}).get(`${test.api}/brands`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/brands`))
+      .then(r => cloud.withOptions({ qs: { where: 'name=\'Xmen\'' } }).get(`${test.api}/brands`))
       .then(r => cloud.get(`${test.api}/brands/${brandId}`))
       .then(r => cloud.patch(`${test.api}/brands/${brandId}`, brandsUpdate()))
       .then(r => cloud.delete(`${test.api}/brands/${brandId}`));
@@ -70,8 +70,8 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
     return cloud.post(`${test.api}/categories`, categoriesPayload)
       .then(r => categoryId = r.body.id)
       .then(r => cloud.get(`${test.api}/categories`))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 }}).get(`${test.api}/categories`))
-      .then(r => cloud.withOptions({ qs: { where: 'name=\'Xmen toys\'' }}).get(`${test.api}/categories`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/categories`))
+      .then(r => cloud.withOptions({ qs: { where: 'name=\'Xmen toys\'' } }).get(`${test.api}/categories`))
       .then(r => cloud.get(`${test.api}/categories/${categoryId}`))
       .then(r => cloud.patch(`${test.api}/categories/${categoryId}`, categoriesUpdate()))
       .then(r => cloud.delete(`${test.api}/categories/${categoryId}`));
@@ -81,7 +81,7 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
     return cloud.post(`${test.api}/${productId}/fields`, fieldsPayload)
       .then(r => fieldId = r.body.id)
       .then(r => cloud.get(`${test.api}/${productId}/fields`))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 }}).get(`${test.api}/${productId}/fields`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${productId}/fields`))
       .then(r => cloud.get(`${test.api}/${productId}/fields/${fieldId}`))
       .then(r => cloud.patch(`${test.api}/${productId}/fields/${fieldId}`, fieldsUpdate()))
       .then(r => cloud.delete(`${test.api}/${productId}/fields/${fieldId}`));
@@ -91,7 +91,7 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
     return cloud.post(`${test.api}/${productId}/images`, imagesPayload)
       .then(r => imageId = r.body.id)
       .then(r => cloud.get(`${test.api}/${productId}/images`))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 }}).get(`${test.api}/${productId}/images`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${productId}/images`))
       .then(r => cloud.get(`${test.api}/${productId}/images/${imageId}`))
       .then(r => cloud.patch(`${test.api}/${productId}/images/${imageId}`, imagesUpdate()))
       .then(r => cloud.delete(`${test.api}/${productId}/images/${imageId}`));
@@ -101,10 +101,10 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
     return cloud.post(`${test.api}/${productId}/skus`, skusPayload)
       .then(r => skuId = r.body.id)
       .then(r => cloud.get(`${test.api}/${productId}/skus`))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 }}).get(`${test.api}/${productId}/skus`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${productId}/skus`))
       .then(r => cloud.get(`${test.api}/${productId}/skus/${skuId}`))
       .then(r => cloud.patch(`${test.api}/${productId}/skus/${skuId}`, skusUpdate()))
-      .then(r => cloud.withOptions({ qs: { where: 'upc=\'Updated\'' }}).get(`${test.api}/${productId}/skus`))
+      .then(r => cloud.withOptions({ qs: { where: 'upc=\'Updated\'' } }).get(`${test.api}/${productId}/skus`))
       .then(r => cloud.delete(`${test.api}/${productId}/skus/${skuId}`));
   });
   after(() => cloud.delete(`${test.api}/${productId}`));
