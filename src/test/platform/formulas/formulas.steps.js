@@ -3,12 +3,11 @@
 const cloud = require('core/cloud');
 const common = require('./assets/common');
 const expect = require('chakram').expect;
-const invalidJson = require('./assets/invalid.formula');
+const invalidJson = require('./assets/formula-with-invalid-step-properties');
 const suite = require('core/suite');
 const schema = require('./assets/schemas/formula.schema');
 
-const opts = { name: 'formula steps', schema: schema };
-suite.forPlatform('formulas', opts, (test) => {
+suite.forPlatform('formulas', { name: 'formula steps', schema: schema }, (test) => {
   before(() => common.deleteFormulasByName('formulas', invalidJson.name));
 
   /* make sure step properties are being validated properly when creating a formula with steps*/

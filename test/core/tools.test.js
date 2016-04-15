@@ -68,7 +68,7 @@ describe('tools', () => {
     return expect(tools.wait.upTo(10000).for(pred)).to.eventually.equal(true);
   });
 
-  it('should support waiting for a specifc time for an unsuccesful predicate', () => {
+  it('should support waiting for a specific time for an unsuccesful predicate', () => {
     const pred = (cb) => {
       return false;
     };
