@@ -9,6 +9,6 @@ suite.forElement('payment', 'transactions', (test) => {
     let transactionId;
     return cloud.get(`${test.api}`)
       .then(r => transactionId = r.body[0].transaction.id)
-      .then(r => cloud.get(`${test.api}/${transactionId}`))
+      .then(r => cloud.get(`${test.api}/${transactionId}`));
   });
 });
