@@ -9,6 +9,6 @@ const payload = () => ({
   "email": tools.randomEmail()
 });
 
-suite.forElement('payment', 'customers', { payload: payload({})}, (test) => {
+suite.forElement('payment', 'customers', {payload:payload()}, (test) => {
   test.should.supportCruds();
 });
