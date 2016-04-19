@@ -1,0 +1,29 @@
+{
+  "customers": {
+    "vendorName": "customer",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "plans": {
+    "vendorName": "plans",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "transactions": {
+    "vendorName": "transactions",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
