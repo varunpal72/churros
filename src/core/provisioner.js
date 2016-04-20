@@ -111,6 +111,10 @@ exports.create = (element, args, baseApi) => {
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
         .then(r => oauth(element, r, config))
         .then(r => createInstance(element, config, r, baseApi));
+    case 'custom':
+      // looks for the custom provisioner in the test directory
+      const cp = `${__dirname}/../test/elements/${element}/provisioner`;
+      return require(cp);
     default:
       return createInstance(element, config, undefined, baseApi);
   }
