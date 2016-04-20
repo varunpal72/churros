@@ -42,6 +42,12 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => expect(r.body.active).to.equal(true));
   });
 
+  it('should allow updating a formula instance', () => {
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    formulaInstance.configuration['trigger-instance'] = elementInstanceId;
+    return cloud.put(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance);
+  });
+
   /* 404 on PUT where formula and formula instance do not exist */
   test
     .withApi('/formulas/-1/instances/-1/active')
