@@ -1,0 +1,11 @@
+{
+  "mobi-events": {
+    "vendorName": "events",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "event_name"
+      }
+    ]
+  }
+}
