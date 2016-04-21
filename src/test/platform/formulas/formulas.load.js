@@ -51,7 +51,11 @@ const simulateTrigger = (num, instanceId, payload, simulateCb) => {
 const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) => {
   return common.getAllExecutions(formulaId, formulaInstanceId)
     .then(executions => {
-      if (executions.length < numExpected) {
+      let startedExecutions = executions.length;
+      let successfulExecutions = executions.filter(e => e.status === 'success').length;
+      let failedExecutions = executions.filter(e => e.status === 'failed').length;
+      let pendingExecutions = executions.filter(e => e.status === 'pending').length;
+      if (successfulExecutions + failedExecutions < numExpected) {
         if (attemptNum > 100) {
           // return common.deleteFormulaInstance(formulaId, formulaInstanceId)
           //   .then(r => {
@@ -59,12 +63,15 @@ const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) =
           // });
         }
 
-        logger.debug(`Attempt number ${attemptNum} only found ${executions.length}/${numExpected} executions so far, polling...`);
+        logger.debug(`Attempt number ${attemptNum}: found ${startedExecutions} started, ${pendingExecutions} pending, ${successfulExecutions} successful, ${failedExecutions} failed so far, polling...`);
         tools.sleep(5);
         return pollExecutions(formulaId, formulaInstanceId, numExpected, attemptNum + 1);
       }
 
-      logger.debug(`All ${numExpected} executions started`);
+      logger.debug(`All ${numExpected} executions finished. ${successfulExecutions} successful, ${failedExecutions} failed.`);
+      if (failedExecutions > 0) {
+        //throw Error(`Some ${failedExecutions}/${startedExecutions} formula executions failed`);
+      }
       return executions;
     });
 };
@@ -106,8 +113,8 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     const formulaInstance = require('./assets/complex-successful-formula-instance');
     formulaInstance.configuration['trigger-instance'] = sfdcId;
 
-    const numFormulaInstances = 1;
-    const numEvents = 1;
+    const numFormulaInstances = 5;
+    const numEvents = 50;
     const numInOneEvent = 1;
 
     let formulaId;
