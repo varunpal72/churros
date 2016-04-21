@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const common = require('./assets/common');
-const provisioner = require('core/provisioner');
 const cloud = require('core/cloud');
 const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
@@ -48,31 +47,33 @@ const simulateTrigger = (num, instanceId, payload, simulateCb) => {
   return chakram.all(all);
 };
 
-const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) => {
-  return common.getAllExecutions(formulaId, formulaInstanceId)
-    .then(executions => {
-      let startedExecutions = executions.length;
-      let successfulExecutions = executions.filter(e => e.status === 'success').length;
-      let failedExecutions = executions.filter(e => e.status === 'failed').length;
-      let pendingExecutions = executions.filter(e => e.status === 'pending').length;
-      if (successfulExecutions + failedExecutions < numExpected) {
-        if (attemptNum > 100) {
-          // return common.deleteFormulaInstance(formulaId, formulaInstanceId)
-          //   .then(r => {
-          throw Error(`Attempt limit of 100 exceeded, quitting`);
-          // });
+const pollExecutions = (formulaId, formulaInstanceIds, numExpected, attemptNum) => {
+  const execs = [];
+  formulaInstanceIds.forEach(id => execs.push(common.getAllExecutions(formulaId, id)));
+  return chakram.all(execs)
+    .then(es => {
+      return es.map(executions => {
+        console.log('exs: ' + executions.length);
+        let startedExecutions = executions.length;
+        let successfulExecutions = executions.filter(e => e.status === 'success').length;
+        let failedExecutions = executions.filter(e => e.status === 'failed').length;
+        let pendingExecutions = executions.filter(e => e.status === 'pending').length;
+        if (successfulExecutions + failedExecutions < numExpected) {
+          if (attemptNum > 100) {
+            throw Error(`Attempt limit of 100 exceeded, quitting`);
+          }
+
+          logger.debug(`Attempt number ${attemptNum}: found ${startedExecutions} started, ${pendingExecutions} pending, ${successfulExecutions} successful, ${failedExecutions} failed so far, polling...`);
+          tools.sleep(5);
+          return pollExecutions(formulaId, formulaInstanceIds, numExpected, attemptNum + 1);
         }
 
-        logger.debug(`Attempt number ${attemptNum}: found ${startedExecutions} started, ${pendingExecutions} pending, ${successfulExecutions} successful, ${failedExecutions} failed so far, polling...`);
-        tools.sleep(5);
-        return pollExecutions(formulaId, formulaInstanceId, numExpected, attemptNum + 1);
-      }
-
-      logger.debug(`All ${numExpected} executions finished. ${successfulExecutions} successful, ${failedExecutions} failed.`);
-      if (failedExecutions > 0) {
-        //throw Error(`Some ${failedExecutions}/${startedExecutions} formula executions failed`);
-      }
-      return executions;
+        logger.debug(`All ${numExpected} executions finished. ${successfulExecutions} successful, ${failedExecutions} failed.`);
+        if (failedExecutions > 0) {
+          // throw Error(`Some ${failedExecutions}/${startedExecutions} formula executions failed`);
+        }
+        return executions;
+      });
     });
 };
 
@@ -113,8 +114,8 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     const formulaInstance = require('./assets/complex-successful-formula-instance');
     formulaInstance.configuration['trigger-instance'] = sfdcId;
 
-    const numFormulaInstances = 5;
-    const numEvents = 50;
+    const numFormulaInstances = 1;
+    const numEvents = 10;
     const numInOneEvent = 1;
 
     let formulaId;
@@ -124,9 +125,8 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
       .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
       .then(ids => ids.map(id => formulaInstances.push(id)))
       .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
-      .then(r => pollExecutions(formulaId, formulaInstances[0], numInOneEvent * numEvents, 1))
-      .then(r => console.log('Done'));
-      // .then(r => formulaInstances.map(id => cloud.delete(`/formulas/${formulaId}/instances/${id}`)))
-      // .then(r => common.deleteFormula(formulaId));
+      .then(r => pollExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
+      .then(r => formulaInstances.map(id => cloud.delete(`/formulas/${formulaId}/instances/${id}`)))
+      .then(r => common.deleteFormula(formulaId));
   });
 });
