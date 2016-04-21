@@ -56,7 +56,7 @@ suite.forPlatform('events', (test) => {
         const hash = 'sha256=' + crypto.createHmac('sha256', signatureKey).update(event.body).digest('base64');
         expect(signature).to.equal(hash);
         let eventJson = JSON.parse(event.body);
-        let eventId = eventJson.message.eventId
+        let eventId = eventJson.message.eventId;
         eventIds.push(eventId);
         expect(eventMap[eventId]).to.be.empty;
         eventMap[eventId] = eventJson;
