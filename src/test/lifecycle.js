@@ -22,13 +22,19 @@ config.password = (argv.password || config.password);
 config.url = (argv.url || config.url);
 config.browser = (argv.browser || 'firefox'); // long term, want to change this to phantom...this is helpful for debugging now in the early stages of churros
 
+// this happens once
+const props = require('core/props')(config);
+
+if (argv.externalAuth) {
+  const element = argv.element;
+  props.setForKey(element, 'provisioning', 'custom');
+}
+
 if (!config.events) config.events = {};
 config.events.wait = (argv.wait || config.events.wait);
 config.events.load = (argv.load || config.events.load);
 config.events.element = (argv.loadElement || config.events.element);
 
-// this happens once
-const props = require('core/props')(config);
 
 before(() => {
   const url = props.get('url');
