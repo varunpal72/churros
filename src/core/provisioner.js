@@ -7,6 +7,7 @@ const props = require('core/props');
 const urlParser = require('url');
 const logger = require('winston');
 const o = require('core/oauth');
+const r = require('request');
 const defaults = require('core/defaults');
 
 var exports = module.exports = {};
@@ -49,10 +50,54 @@ const createInstance = (element, config, providerData, baseApi) => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
-      defaults.token(r.body.token);
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
+};
+
+const createExternalInstance = (element, config, providerData) => {
+  const tokenUrl = config.tokenUrl;
+  const apiKey = config['oauth.api.key'];
+  const apiSecret = config['oauth.api.secret'];
+  const callbackUrl = props.get('oauth.callback.url');
+  const code = providerData.code;
+  let instanceBody;
+
+  if (!tokenUrl) {
+    throw Error("Token URL must be present in the element props as 'tokenUrl'");
+  }
+
+  return new Promise((res, rej) => {
+    r.post({
+      url: tokenUrl,
+      form: {
+        client_id: apiKey,
+        client_secret: apiSecret,
+        grant_type: 'authorization_code',
+        redirect_uri: callbackUrl,
+        code: code
+      }
+    }, (e, r, b) => {
+      let body = JSON.parse(b);
+      let refreshToken = body.refresh_token;
+      instanceBody = {
+        "element": {
+          "key": element
+        },
+        "configuration": {
+          "oauth.user.refresh_token": refreshToken,
+          "oauth.api.key": apiKey,
+          "oauth.api.secret": apiSecret,
+          "oauth.resource.url": props.getOptionalForKey(element, 'site.address'),
+          "site.url": props.getOptionalForKey(element, 'site.address'),
+          "site.address": props.getOptionalForKey(element, 'site.address')
+        },
+        "name": `${element} external auth churros`,
+        "externalAuthentication": "initial"
+      };
+      res(chakram.post('/instances', instanceBody));
+    });
+  });
 };
 
 const oauth = (element, args, config) => {
@@ -96,6 +141,7 @@ const oauth1 = (element, args) => {
 
 exports.create = (element, args, baseApi) => {
   const type = props.getOptionalForKey(element, 'provisioning');
+  const external = props.getOptionalForKey(element, 'external');
   const config = genConfig(props.all(element), args);
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
@@ -110,7 +156,18 @@ exports.create = (element, args, baseApi) => {
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
         .then(r => oauth(element, r, config))
-        .then(r => createInstance(element, config, r, baseApi));
+        .then(r => {
+          if (external && type === 'oauth2') {
+            return createExternalInstance(element, config, r);
+          } else if (external && type === 'oauth1') {
+            throw Error('External Authentication via churros is not yet implemented for OAuth1');
+          } else {
+            return createInstance(element, config, r, baseApi);
+          }
+        });
+    case 'custom':
+      const cp = `${__dirname}/../test/elements/${element}/provisioner`;
+      return require(cp).create(config);
     default:
       return createInstance(element, config, undefined, baseApi);
   }
