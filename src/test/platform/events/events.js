@@ -42,7 +42,7 @@ suite.forPlatform('events', (test) => {
     const load = props.getForKey('events', 'load');
     const wait = props.getForKey('events', 'wait');
 
-    let eventId, eventIds = [];
+    let eventId, eventIds = [], eventMap = {};
     return cloud.createEvents(element, instanceId, payload, load)
       .then(s => server.listen(load, wait))
       .then(r => r.forEach(event => {
@@ -56,7 +56,10 @@ suite.forPlatform('events', (test) => {
         const hash = 'sha256=' + crypto.createHmac('sha256', signatureKey).update(event.body).digest('base64');
         expect(signature).to.equal(hash);
         let eventJson = JSON.parse(event.body);
-        eventIds.push(eventJson.message.eventId);
+        let eventId = eventJson.message.eventId;
+        eventIds.push(eventId);
+        expect(eventMap[eventId]).to.be.empty;
+        eventMap[eventId] = eventJson;
       }))
       .then(r => eventId = eventIds[0])
       .then(r => cloud.get(`instances/${instanceId}/events`, eventsSchema))
