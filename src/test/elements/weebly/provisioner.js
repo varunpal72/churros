@@ -14,9 +14,7 @@ exports.create = (config) => {
       .build();
 
   return browser.get(config['login.url'])
-    .then(() => {
-      return browser.findElement(webdriver.By.name('user'));
-    })
+    .then(() => {return browser.findElement(webdriver.By.name('user'));})
     .then(e => {
       e.sendKeys(config.username);
       return browser.findElement(webdriver.By.name('pass'));
@@ -25,9 +23,7 @@ exports.create = (config) => {
       e.sendKeys(config.password);
       return browser.findElement(webdriver.By.className('login-btn submit-btn'));
     })
-    .then(e => {
-      e.click();
-    })
+    .then(e => {e.click();})
     .then(() => {
       return browser.wait(webdriver.until.elementLocated(webdriver.By.className('app-title')), 5000);
     })
@@ -36,21 +32,13 @@ exports.create = (config) => {
       .then(() => {
         return browser.wait(webdriver.until.elementLocated(webdriver.By.className('topbar__action topbar__forward  ')), 3000);
       })
-      .then(() => {
-        return browser.findElement(webdriver.By.className('topbar__action topbar__forward  '));
-      })
-      .then(e => {
-        e.click();
-      })
+      .then(() => {return browser.findElement(webdriver.By.className('topbar__action topbar__forward  '));})
+      .then(e => {e.click();})
       .then(() => {
         return browser.wait(webdriver.until.elementLocated(webdriver.By.className('menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children no-mega-menu')), 5000);
       })
-      .then(() => {
-        return browser.getCurrentUrl();
-      })
-      .thenCatch(e => {
-        return browser.getCurrentUrl();
-      });
+      .then(() => {return browser.getCurrentUrl();})
+      .thenCatch(e => {return browser.getCurrentUrl();});
     })
     .then((e) => {
       // parse the authorization_code out of user_login
