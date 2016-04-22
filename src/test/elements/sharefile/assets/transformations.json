@@ -1,0 +1,11 @@
+{
+  "sharefile": {
+    "vendorName": "sharefile",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
+  }
+}
