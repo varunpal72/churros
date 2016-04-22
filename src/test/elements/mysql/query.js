@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const chakram = require('chakram');
 
 const groupQuery = () => {
   return "select count(*), state from contact group by state order by 1 desc limit 5";
