@@ -167,8 +167,7 @@ exports.create = (element, args, baseApi) => {
         });
     case 'custom':
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
-      const customProvisioner = require(cp);
-      return customProvisioner.create(config);
+      return require(cp).create(config);
     default:
       return createInstance(element, config, undefined, baseApi);
   }
