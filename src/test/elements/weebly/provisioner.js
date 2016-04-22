@@ -3,7 +3,6 @@ const webdriver = require('selenium-webdriver');
 const cloud = require('core/cloud');
 const props = require('core/props');
 const defaults = require('core/defaults');
-const wait = (browser, ms) => browser.wait(() => false, ms);
 const b = props.get('browser');
 const urlParser = require('url');
 
@@ -19,11 +18,11 @@ exports.create = (config) => {
       return browser.findElement(webdriver.By.name('user'));
     })
     .then(e => {
-      e.sendKeys(config['username']);
+      e.sendKeys(config.username);
       return browser.findElement(webdriver.By.name('pass'));
     })
     .then(e => {
-      e.sendKeys(config['password']);
+      e.sendKeys(config.password);
       return browser.findElement(webdriver.By.className('login-btn submit-btn'));
     })
     .then(e => {
@@ -51,7 +50,7 @@ exports.create = (config) => {
       })
       .thenCatch(e => {
         return browser.getCurrentUrl();
-      })
+      });
     })
     .then((e) => {
       // parse the authorization_code out of user_login
@@ -77,4 +76,4 @@ exports.create = (config) => {
       });
     });
 
-  }
+  };
