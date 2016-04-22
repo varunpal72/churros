@@ -13,14 +13,14 @@ suite.forElement('general', 'mobi-events', { payload: payload }, (test) => {
   let attendeesSectionId = 165533;
 
   it('should allow RU for /mobi-events/:id', () => {
-    return cloud.put('/hubs/event-conferencing/mobi-events/' + eventName, payload)
-      .then(r => cloud.get('hubs/event-conferencing/mobi-events/' + eventName));
+    return cloud.put(`/hubs/event-conferencing/mobi-events/${eventName}`, payload)
+      .then(r => cloud.get(`hubs/event-conferencing/mobi-events/${eventName}`));
   });
 
-  test.withApi('/hubs/event-conferencing/mobi-events/' + eventName + "/sections").should.supportSr();
+  test.withApi(`/hubs/event-conferencing/mobi-events/${eventName}/sections`).should.supportSr();
 
-  itemsPayload.attendee_email =  `${tools.random()}@cetest.com`;
-  test.withApi('/hubs/event-conferencing/mobi-events/' + eventName + "/sections/" + attendeesSectionId + "/items")
+  itemsPayload.attendee_email =  tools.randomEmail();
+  test.withApi(`/hubs/event-conferencing/mobi-events/${eventName}/sections/${attendeesSectionId}/items`)
       .withJson(itemsPayload)
       .should.supportCrs();
 
