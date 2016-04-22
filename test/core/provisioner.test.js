@@ -45,6 +45,32 @@ const setupProps = () => {
       'password': 'ricard',
       'oauth.api.key': 'he gon do one',
       'oauth.api.secret': 'fill it up again'
+    },
+    'myoauth2external': {
+      'provisioning': 'oauth2',
+      'external': true,
+      'username': 'frank',
+      'password': 'ricard',
+      'oauth.api.key': 'he gon do one',
+      'oauth.api.secret': 'fill it up again',
+      'tokenUrl': 'http://pvenkman.ghostbuster.com/token'
+    },
+    'myoauth1external': {
+      'provisioning': 'oauth1',
+      'external': true,
+      'username': 'frank',
+      'password': 'ricard',
+      'oauth.api.key': 'he gon do one',
+      'oauth.api.secret': 'fill it up again',
+      'tokenUrl': 'http://pvenkman.ghostbuster.com/token'
+    },
+    'noTokenUrl': {
+      'provisioning': 'oauth2',
+      'external': true,
+      'username': 'frank',
+      'password': 'ricard',
+      'oauth.api.key': 'he gon do one',
+      'oauth.api.secret': 'fill it up again'
     }
   });
 };
@@ -96,6 +122,41 @@ describe('provisioner', () => {
       .reply(200, () => new Object({
         oauthUrl: 'http://frankthetanksoauthurl.com'
       }));
+
+    nock(baseUrl, headers())
+      .get('/elements/myoauth2external/oauth/url')
+      .query(true)
+      .reply(200, () => new Object({
+        oauthUrl: 'http://frankthetanksoauthurl.com'
+      }));
+
+    nock(baseUrl, headers())
+      .get('/elements/myoauth1external/oauth/token')
+      .query(true)
+      .reply(200, () => new Object({
+        oauthUrl: 'http://frankthetanksoauthurl.com'
+      }));
+
+    nock(baseUrl, headers())
+      .get('/elements/myoauth1external/oauth/url')
+      .query(true)
+      .reply(200, () => new Object({
+        oauthUrl: 'http://frankthetanksoauthurl.com'
+      }));
+
+    nock(baseUrl, headers())
+      .get('/elements/noTokenUrl/oauth/url')
+      .query(true)
+      .reply(200, () => new Object({
+        oauthUrl: 'http://frankthetanksoauthurl.com'
+      }));
+
+    nock('http://pvenkman.ghostbuster.com')
+      .post('/token')
+      .reply(200, () => new Object({
+        refresh_token: 'peters refresh token'
+      }));
+
   });
 
   it('should allow creating a standard element instance', () => {
@@ -144,6 +205,39 @@ describe('provisioner', () => {
         expect(r.body.providerData.code).to.equal('speakercity');
       })
       .then(r => mockery.disable());
+  });
+
+  it('should allow creating an oauth2 external instance', () => {
+    setupProps();
+    return provisioner.create('myoauth2external')
+      .then(r => {
+        expect(r).not.to.be.null;
+        expect(r.body).not.to.be.null;
+        expect(r.body.id).to.equal(123);
+        expect(r.body.configuration).to.not.be.null;
+        expect(r.body.configuration['oauth.api.key']).to.equal('he gon do one');
+        expect(r.body.configuration['oauth.api.secret']).to.equal('fill it up again');
+        expect(r.body.configuration['oauth.user.refresh_token']).to.equal('peters refresh token');
+      })
+      .then(r => mockery.disable());
+  });
+
+  it('should throw an error for provisioning an oauth1 element with external', () => {
+    setupProps();
+    return provisioner.create('myoauth1external')
+      .catch(e => {
+        expect(e).to.not.be.null;
+        expect(e.message).to.equal('External Authentication via churros is not yet implemented for OAuth1');
+      });
+  });
+
+  it('should throw an error for provisioning an oauth2 element with no token url', () => {
+    setupProps();
+    return provisioner.create('noTokenUrl')
+      .catch(e => {
+        expect(e).to.not.be.null;
+        expect(e.message).to.equal(`Token URL must be present in the element props as 'tokenUrl'`);
+      });
   });
 
   it('should throw an error if creating an element instance does not return a 200', () => {
