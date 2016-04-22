@@ -27,7 +27,7 @@ const props = require('core/props')(config);
 
 if (argv.externalAuth) {
   const element = argv.element;
-  props.setForKey(element, 'provisioning', 'custom');
+  props.setForKey(element, 'external', true);
 }
 
 if (!config.events) config.events = {};

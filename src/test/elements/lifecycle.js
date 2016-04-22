@@ -7,6 +7,7 @@ const provisioner = require('core/provisioner');
 const argv = require('optimist').demand('element').argv;
 const fs = require('fs');
 const logger = require('winston');
+let defaults = require('core/defaults');
 
 const createAll = (urlTemplate, list) => {
   let promises = [];
@@ -30,6 +31,7 @@ before(done => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       instanceId = r.body.id;
+      defaults.token(r.body.token);
       // object definitions file exists? create the object definitions on the instance
       const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
       if (fs.existsSync(objectDefinitionsFile + '.json')) {
