@@ -16,15 +16,15 @@ exports.create = (config) => {
 
   return browser.get(config['login.url'])
     .then(() => {
-      return browser.findElement(webdriver.By.name('user'))
+      return browser.findElement(webdriver.By.name('user'));
     })
     .then(e => {
       e.sendKeys(config['username']);
-      return browser.findElement(webdriver.By.name('pass'))
+      return browser.findElement(webdriver.By.name('pass'));
     })
     .then(e => {
       e.sendKeys(config['password']);
-      return browser.findElement(webdriver.By.className('login-btn submit-btn'))
+      return browser.findElement(webdriver.By.className('login-btn submit-btn'));
     })
     .then(e => {
       e.click();
@@ -38,7 +38,7 @@ exports.create = (config) => {
         return browser.wait(webdriver.until.elementLocated(webdriver.By.className('topbar__action topbar__forward  ')), 3000);
       })
       .then(() => {
-        return browser.findElement(webdriver.By.className('topbar__action topbar__forward  '))
+        return browser.findElement(webdriver.By.className('topbar__action topbar__forward  '));
       })
       .then(e => {
         e.click();

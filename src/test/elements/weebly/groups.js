@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const payload = require('./assets/groups');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
 
 const groupPatch = () => ({
   member_ids : [
@@ -16,7 +15,7 @@ suite.forElement('ecommerce', 'groups', { payload: payload }, (test) => {
   it('should allow CRUDS for /groups', () => {
     let groupId;
     return cloud.post(test.api, payload)
-      .then(r => groupId = r.body['group_id'])
+      .then(r => groupId = r.body.group_id)
       .then(r => cloud.get(test.api + '/' + groupId))
       .then(r => cloud.get(test.api + '?name = \'Churros Group\''))
       .then(r => cloud.patch(test.api + '/' + groupId, groupPatch()))
