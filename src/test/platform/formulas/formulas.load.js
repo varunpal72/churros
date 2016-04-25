@@ -47,33 +47,41 @@ const simulateTrigger = (num, instanceId, payload, simulateCb) => {
   return chakram.all(all);
 };
 
-const pollExecutions = (formulaId, formulaInstanceIds, numExpected, attemptNum) => {
-  const execs = [];
-  formulaInstanceIds.forEach(id => execs.push(common.getAllExecutions(formulaId, id)));
-  return chakram.all(execs)
-    .then(es => {
-      return es.map(executions => {
-        console.log('exs: ' + executions.length);
-        let startedExecutions = executions.length;
-        let successfulExecutions = executions.filter(e => e.status === 'success').length;
-        let failedExecutions = executions.filter(e => e.status === 'failed').length;
-        let pendingExecutions = executions.filter(e => e.status === 'pending').length;
-        if (successfulExecutions + failedExecutions < numExpected) {
+const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) => {
+  return new Promise((res, rej) => {
+    return common.getAllExecutions(formulaId, formulaInstanceId)
+      .then(executions => {
+        let status = {
+          started: executions.length,
+          success: executions.filter(e => e.status === 'success').length,
+          failed: executions.filter(e => e.status === 'failed').length,
+          pending: executions.filter(e => e.status === 'pending').length
+        };
+        if (status.success + status.failed < numExpected) {
           if (attemptNum > 100) {
             throw Error(`Attempt limit of 100 exceeded, quitting`);
           }
 
-          logger.debug(`Attempt number ${attemptNum}: found ${startedExecutions} started, ${pendingExecutions} pending, ${successfulExecutions} successful, ${failedExecutions} failed so far, polling...`);
-          tools.sleep(5);
-          return pollExecutions(formulaId, formulaInstanceIds, numExpected, attemptNum + 1);
+          logger.debug(`Formula ${formulaId} instance ${formulaInstanceId}: Attempt ${attemptNum}: ${status.started} started, ${status.pending} pending, ${status.success} success, ${status.failed} failed`);
+          // pause this formula instance's polling for a bit
+          setTimeout(() => {
+            return pollExecutions(formulaId, formulaInstanceId, numExpected, attemptNum + 1)
+              .then(s => res(s));
+          }, 5000);
+        } else {
+          logger.debug(`Formula ${formulaId} instance ${formulaInstanceId}: All ${numExpected} executions finished. ${status.success} success, ${status.failed} failed`);
+          return res(status);
         }
-
-        logger.debug(`All ${numExpected} executions finished. ${successfulExecutions} successful, ${failedExecutions} failed.`);
-        if (failedExecutions > 0) {
-          // throw Error(`Some ${failedExecutions}/${startedExecutions} formula executions failed`);
-        }
-        return executions;
       });
+  });
+};
+
+const pollAllExecutions = (formulaId, formulaInstanceIds, numExpected, attemptNum) => {
+  const execs = [];
+  formulaInstanceIds.forEach(id => execs.push(pollExecutions(formulaId, id, numExpected, attemptNum)));
+  return chakram.all(execs)
+    .then(es => {
+      es.forEach(ex => expect(ex.failed).to.equal(0));
     });
 };
 
@@ -112,21 +120,23 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
   it('should handle a very large event payload repeatedly', () => {
     const formula = require('./assets/complex-successful-formula');
     const formulaInstance = require('./assets/complex-successful-formula-instance');
-    formulaInstance.configuration['trigger-instance'] = sfdcId;
+    formulaInstance.configuration[ 'trigger-instance' ] = sfdcId;
 
-    const numFormulaInstances = 1;
-    const numEvents = 10;
+    const numFormulaInstances = 2;
+    const numEvents = 5;
     const numInOneEvent = 1;
 
     let formulaId;
     let formulaInstances = [];
+    let deletes = [];
     return cloud.post(test.api, formula, fSchema)
       .then(r => formulaId = r.body.id)
       .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
       .then(ids => ids.map(id => formulaInstances.push(id)))
       .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
-      .then(r => pollExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
-      .then(r => formulaInstances.map(id => cloud.delete(`/formulas/${formulaId}/instances/${id}`)))
+      .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
+      .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
+      .then(r => chakram.all(deletes))
       .then(r => common.deleteFormula(formulaId));
   });
 });
