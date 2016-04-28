@@ -1,0 +1,20 @@
+{
+  "plans": {
+    "vendorName": "plans",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "payment-methods": {
+    "vendorName": "sources",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
