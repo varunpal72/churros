@@ -1,0 +1,20 @@
+{
+  "triggers": {
+    "vendorName": "trigger",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "trigger_id"
+      }
+    ]
+  },
+  "templates": {
+    "vendorName": "template",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "template"
+      }
+    ]
+  }
+}
