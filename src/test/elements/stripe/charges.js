@@ -26,6 +26,6 @@ suite.forElement('payment', 'charges', { payload: payload }, (test) => {
   it(`should allow Patch for ${test.api}`, () => {
     return cloud.get(`${test.api}`)
       .then(r => chargeId = r.body[0].id)
-    cloud.patch(`${test.api}/${chargeId}`,updateCharges());
+      .then(r => cloud.patch(`${test.api}/${chargeId}`,updateCharges()));
   });
 });
