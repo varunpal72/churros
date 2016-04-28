@@ -230,16 +230,16 @@ const generateXSingleSfdcPollingEvents = (instanceId, x) =>
     return p;
   }, []));
 
-const validateTriggerBodyEvents = (tb, num) => {
-  expect(tb.message.events).to.have.length(num);
-};
+// const validateTriggerBodyEvents = (tb, num) => {
+//   expect(tb.message.events).to.have.length(num);
+// };
 
 const validateSuccessfulEventTrigger = num => t => {
   const flat = flattenStepExecutionValues(t.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('event');
   expect(flat['trigger.event']).to.exist;
   expect(flat['trigger.eventId']).to.exist;
-  validateTriggerBodyEvents(JSON.parse(flat['trigger.body']), num);
+  // validateTriggerBodyEvents(JSON.parse(flat['trigger.body']), num);
 };
 
 const validateSuccessfulScheduledTrigger = num => t => {
