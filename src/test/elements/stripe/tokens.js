@@ -1,10 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');
 
 /* Commenting out the POST of Tokens as it creates a new Token ID everytime and there is no way to delete it.
 //So, the value of tokenID has been hardcoded
+const cloud = require('core/cloud');
 const payload = require('./assets/tokens');
 
 suite.forElement('payment', 'tokens', { payload:payload }, (test) => {

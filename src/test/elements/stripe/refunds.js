@@ -1,8 +1,9 @@
 'use strict';
 
 const suite = require('core/suite');
+/* // Commented out since we are not doing POSTs
 const charge = require('./assets/charges');
-const refund = require('./assets/refunds');
+const refund = require('./assets/refunds');*/
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 
