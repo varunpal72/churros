@@ -71,6 +71,10 @@ const setupProps = () => {
       'password': 'ricard',
       'oauth.api.key': 'he gon do one',
       'oauth.api.secret': 'fill it up again'
+    },
+    'customProvisioning': {
+      'provisioning': 'custom',
+      'username': 'frank'
     }
   });
 };
@@ -261,5 +265,24 @@ describe('provisioner', () => {
         throw Error('Where my error at?');
       })
       .catch(r => true);
+  });
+
+  it('should allow creating an element instance with custom provisioning', () => {
+    setupProps();
+    const mockProvisioner = {
+      create: (config) => new Promise((res, rej) => res({ token: 123 }))
+    };
+    const s = `${__dirname}`.split('/');
+    const root = s.filter((i) => i !== 'test' && i !== 'core').reduce((fullPath, item) => fullPath + '/' + item);
+    const reqPath = `${root}/src/core/../test/elements/customProvisioning/provisioner`;
+    mockery.registerMock(reqPath, mockProvisioner);
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    });
+    return provisioner.create('customProvisioning')
+      .then(r => {
+        mockery.disable();
+      });
   });
 });
