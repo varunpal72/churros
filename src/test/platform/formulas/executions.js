@@ -831,11 +831,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 100))
-      .then(() => tools.wait.for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 100, 2)))
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
+      .then(() => tools.wait.for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10, 2)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(100);
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
@@ -855,11 +855,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
-      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10, 30)))
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 3))
+      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 3, 30)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
