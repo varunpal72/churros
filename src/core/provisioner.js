@@ -161,9 +161,8 @@ exports.create = (element, args, baseApi) => {
             return createExternalInstance(element, config, r);
           } else if (external && type === 'oauth1') {
             throw Error('External Authentication via churros is not yet implemented for OAuth1');
-          } else {
-            return createInstance(element, config, r, baseApi);
           }
+          return createInstance(element, config, r, baseApi);
         });
     case 'custom':
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
