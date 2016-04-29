@@ -184,7 +184,6 @@ const orchestrateCreate = (element, args, baseApi) => {
 exports.create = (element, args, baseApi) => {
   return orchestrateCreate(element, args, baseApi)
     .then(r => {
-      console.log(r.body.token);
       defaults.token(r.body.token); // update defaults with token to add to requests
       return r;
     });
