@@ -270,7 +270,7 @@ describe('provisioner', () => {
   it('should allow creating an element instance with custom provisioning', () => {
     setupProps();
     const mockProvisioner = {
-      create: (config) => new Promise((res, rej) => res({ token: 123 }))
+      create: (config) => new Promise((res, rej) => res({ body: { token: 123 } }))
     };
     const s = `${__dirname}`.split('/');
     const root = s.filter((i) => i !== 'test' && i !== 'core').reduce((fullPath, item) => fullPath + '/' + item);
