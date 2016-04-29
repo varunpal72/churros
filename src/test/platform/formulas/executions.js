@@ -200,10 +200,10 @@ const validateExecution = e => validator => {
 };
 
 const getEventsForInstance = id =>
-  chakram.get(`/instances/${id}/events`);
+  cloud.get(`/instances/${id}/events`);
 
 const manuallyTriggerInstanceExecution = (fId, fiId, ev) =>
-  chakram.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
+  cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
 
 const generateSfdcPollingEvent = (instanceId, payload) => {
   const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
@@ -539,11 +539,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
       })
-      .then(() =>cloud.post(test.api, formula, fSchema))
+      .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => chakram.get('/hubs/crm/accounts'))
+      .then(() => cloud.get('/hubs/crm/accounts'))
       .then(() => sleep.sleep(5))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
@@ -562,7 +562,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
-      .then(r => chakram.get('/hubs/crm/ping'))
+      .then(r => cloud.get('/hubs/crm/ping'))
       .then(r => {
         const currentDt = r.body.dateTime;
         const dt = moment.parseZone(currentDt);
@@ -893,5 +893,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   /** Clean up */
-  after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
+  after(done => {
+    if (!sfdcId) done();
+    return provisioner.delete(sfdcId)
+      .then(() => done())
+      .catch(e => {
+        console.log(`Crap! ${e}`);
+        done();
+      });
+  });
 });
