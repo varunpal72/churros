@@ -26,7 +26,5 @@ suite.forElement('payment', 'payment-methods', (test) => {
       .then(r => cloud.patch(`/hubs/payment/customers/${customerId}/payment-methods/${paymentId}`, updatePaymentMethod()))
       .then(r => cloud.delete(`/hubs/payment/customers/${customerId}/payment-methods/${paymentId}`));
   });
-  it(`should allow DELETE for /hubs/payment/customers/{customerId}`, () => {
-    return cloud.delete(`/hubs/payment/customers/${customerId}`);
-  });
+  after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));
 });

@@ -14,7 +14,7 @@ const updateRefunds = () => ({
 });
 
 suite.forElement('payment', 'refunds', (test) => {
-/* // Commented out the POSTs since there are no DELETE APIs for the same. Instead hardcoded a value to run other APIs
+/* // Commented out the POSTs since there are no DELETE APIs for the same.
   let chargeId;
   before(() => cloud.post(`/hubs/payment/charges`,charge)
     .then(r => chargeId = r.body.id)
@@ -26,10 +26,12 @@ suite.forElement('payment', 'refunds', (test) => {
       .then(r => cloud.get(`${test.api}/${refundId}`))
       .then(r => cloud.patch(`${test.api}/${refundId}`, updateRefunds()));
   });*/
-  let refundId = "re_184b9DGdZbyQGmEeAbIgMMYZ";
   test.should.return200OnGet();
   it(`should allow RU for /hubs/payment/charges/{chargeId}/refunds`, () => {
-    return cloud.get(`${test.api}/${refundId}`)
+    let refundId;
+    return cloud.get(`${test.api}`)
+      .then(r => refundId = r.body[0].id)
+      .then(r => cloud.get(`${test.api}/${refundId}`))
       .then(r => cloud.patch(`${test.api}/${refundId}`, updateRefunds()));
   });
 });
