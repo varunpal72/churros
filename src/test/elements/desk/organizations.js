@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const organizationsUpdate = (rando) => ({
-  "name": "Cloud-Elements update" + rando,
+  "name": "CE-" + rando,
   "domains": [
     "acmeinc.com",
     "acmeinc.net"
@@ -13,7 +13,7 @@ const organizationsUpdate = (rando) => ({
 });
 
 const organizationsCreate = (rando) => ({
-  "name": "Cloud-Elements " + rando,
+  "name": "CE " + rando,
   "domains": [
     "acmeinc.com",
     "acmeinc.net"

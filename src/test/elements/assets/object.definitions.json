@@ -257,5 +257,11 @@
       "path": "id",
       "type": "string"
     }]
+  },
+  "payment-methods":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }

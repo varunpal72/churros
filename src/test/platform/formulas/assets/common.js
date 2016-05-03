@@ -1,7 +1,6 @@
 'use strict';
 
 const tools = require('core/tools');
-const chakram = require('chakram');
 const util = require('util');
 const logger = require('winston');
 const provisioner = require('core/provisioner');
@@ -28,23 +27,23 @@ exports.genInstance = (opts) => new Object({
 });
 
 const deleteFormulaInstance = (fId, fiId) =>
-  chakram.delete(util.format('/formulas/%s/instances/%s', fId, fiId));
+  cloud.delete(util.format('/formulas/%s/instances/%s', fId, fiId));
 
 const getInstancesForFormula = (fId) =>
-  chakram.get(util.format('/formulas/%s/instances', fId))
+  cloud.get(util.format('/formulas/%s/instances', fId))
   .then(r => r.body);
 
 const getInstancesForFormulas = (fs) =>
   Promise.all(fs.map(f => getInstancesForFormula(f.id)));
 
 const deleteFormula = (fId) =>
-  chakram.delete(util.format('/formulas/%s', fId));
+  cloud.delete(util.format('/formulas/%s', fId));
 
 const deleteFormulas = (fs) =>
   Promise.all(fs.map(f => deleteFormula(f.id)));
 
 const getFormulasByName = (api, name) =>
-  chakram.get(api)
+  cloud.get(api)
   .then(r => r.body.filter(f => f.name === name));
 
 const deleteInstancesForFormulas = (is) =>
@@ -60,10 +59,10 @@ const deleteFormulasByName = (api, name) =>
 exports.deleteFormulasByName = deleteFormulasByName;
 
 exports.getFormulaInstanceExecutions = (fId, fiId) =>
-  chakram.get(util.format('/formulas/%s/instances/%s/executions', fId, fiId));
+  cloud.get(util.format('/formulas/%s/instances/%s/executions', fId, fiId));
 
 exports.getFormulaInstanceExecution = (fId, fiId, fieId) =>
-  chakram.get(util.format('/formulas/%s/instances/%s/executions/%s', fId, fiId, fieId));
+  cloud.get(util.format('/formulas/%s/instances/%s/executions/%s', fId, fiId, fieId));
 
 exports.deleteFormulaInstance = deleteFormulaInstance;
 exports.deleteFormula = deleteFormula;

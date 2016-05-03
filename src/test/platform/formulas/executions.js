@@ -200,10 +200,10 @@ const validateExecution = e => validator => {
 };
 
 const getEventsForInstance = id =>
-  chakram.get(`/instances/${id}/events`);
+  cloud.get(`/instances/${id}/events`);
 
 const manuallyTriggerInstanceExecution = (fId, fiId, ev) =>
-  chakram.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
+  cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
 
 const generateSfdcPollingEvent = (instanceId, payload) => {
   const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
@@ -539,11 +539,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
       })
-      .then(() =>cloud.post(test.api, formula, fSchema))
+      .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => chakram.get('/hubs/crm/accounts'))
+      .then(() => cloud.get('/hubs/crm/accounts'))
       .then(() => sleep.sleep(5))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
@@ -562,7 +562,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
-      .then(r => chakram.get('/hubs/crm/ping'))
+      .then(r => cloud.get('/hubs/crm/ping'))
       .then(r => {
         const currentDt = r.body.dateTime;
         const dt = moment.parseZone(currentDt);
@@ -831,11 +831,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 100))
-      .then(() => tools.wait.for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 100, 2)))
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
+      .then(() => tools.wait.for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10, 2)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(100);
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
@@ -855,11 +855,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
-      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10, 30)))
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 3))
+      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 3, 30)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
@@ -893,5 +893,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   /** Clean up */
-  after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
+  after(done => {
+    if (!sfdcId) done();
+    return provisioner.delete(sfdcId)
+      .then(() => done())
+      .catch(e => {
+        console.log(`Crap! ${e}`);
+        done();
+      });
+  });
 });
