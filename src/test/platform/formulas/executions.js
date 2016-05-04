@@ -230,16 +230,11 @@ const generateXSingleSfdcPollingEvents = (instanceId, x) =>
     return p;
   }, []));
 
-const validateTriggerBodyEvents = (tb, num) => {
-  expect(tb.message.events).to.have.length(num);
-};
-
 const validateSuccessfulEventTrigger = num => t => {
   const flat = flattenStepExecutionValues(t.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('event');
   expect(flat['trigger.event']).to.exist;
   expect(flat['trigger.eventId']).to.exist;
-  validateTriggerBodyEvents(JSON.parse(flat['trigger.body']), num);
 };
 
 const validateSuccessfulScheduledTrigger = num => t => {
@@ -373,7 +368,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully execute a single threaded formula triggered by an event with three objects', () => {
-    const formula = require('./assets/simple-successful-formula');
+    const formula = require('./assets/simple-successful-formula-single-threaded');
     const formulaInstance = require('./assets/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
@@ -387,7 +382,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateTripleSfdcPollingEvent(sfdcId))
-      .then(() => sleep.sleep(10))
+      .then(() => sleep.sleep(20))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
