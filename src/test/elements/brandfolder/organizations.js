@@ -5,19 +5,25 @@ const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
+const updatePayload = () => ({
+  "type": "organizations",
+  "attributes": {
+    "name": "Demo Sandbox"
+  }
+});
+
 suite.forElement('general', 'organizations', null, (test) => {
-  it('should support SR and sub-resources', () => {
+  it('should support RUS and sub-resources', () => {
     let orgId = -1;
     return cloud.get(test.api)
       .then(r => orgId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${orgId}`))
+      .then(r => cloud.patch(`${test.api}/${orgId}`, updatePayload()))
       .then(r => cloud.get(`${test.api}/${orgId}/assets`))
       .then(r => cloud.get(`${test.api}/${orgId}/brandfolders`));
   });
   it('should support cursor pagination', () => {
-    const options = {};
-    options.qs = {};
-    options.qs.pageSize = 1;
+    const options = { qs: { pageSize: 1}};
     return cloud.withOptions(options).get(test.api)
       .then(r => {
         expect(r.body).to.not.be.null;

@@ -4,6 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const chakram = require('chakram');
 const assetsPayload = require('./assets/assets');
+const brandfolderPayload = require('./assets/brandfolders2');
 const payload = require('./assets/attachments');
 const payload2 = require('./assets/attachments2');
 const expect = chakram.expect;
@@ -19,10 +20,8 @@ suite.forElement('general', 'attachments', { payload: payload }, (test) => {
   let orgId = -1, brandFolderId = -1, sectionId = -1, assetId = -1, attachmentId = -1;
   before(() => cloud.get(`hubs/general/organizations`)
     .then(r => orgId = r.body[0].id)
-    .then(r => cloud.get(`hubs/general/organizations/${orgId}/brandfolders`))
-    .then(r => brandFolderId = r.body[0].id)
-    .then(r => cloud.get(`hubs/general/brandfolders/${brandFolderId}`))
-    .then(r => expect(r.body.attributes.name).to.equal(`demo-cloud-elements`))
+    .then(r => cloud.post(`hubs/general/organizations/${orgId}/brandfolders`, brandfolderPayload))
+    .then(r => brandFolderId = r.body.id)
     .then(r => cloud.get(`hubs/general/brandfolders/${brandFolderId}/sections`))
     .then(r => sectionId = r.body[0].id)
     .then(r => cloud.post(`hubs/general/sections/${sectionId}/assets`, assetsPayload))
@@ -40,9 +39,7 @@ suite.forElement('general', 'attachments', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${attachment2Id}`));
   });
   it('should support cursor pagination for assets/{id}/attachments', () => {
-    const options = {};
-    options.qs = {};
-    options.qs.pageSize = 1;
+    const options = { qs: { pageSize: 1}};
     return cloud.withOptions(options).get(`hubs/general/assets/${assetId}/attachments`)
       .then(r => {
         expect(r.body).to.not.be.null;
@@ -50,5 +47,5 @@ suite.forElement('general', 'attachments', { payload: payload }, (test) => {
         return cloud.withOptions(options).get(`hubs/general/assets/${assetId}/attachments`);
       });
   });
-    after(() => cloud.delete(`hubs/general/assets/${assetId}`));
+  after(() => cloud.delete(`/hubs/general/brandfolders/${brandFolderId}`));
 });
