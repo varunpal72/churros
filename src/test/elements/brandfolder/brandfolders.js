@@ -5,7 +5,6 @@ const cloud = require('core/cloud');
 const chakram = require('chakram');
 const payload = require('./assets/brandfolders');
 const expect = chakram.expect;
-const options = {};
 
 suite.forElement('general', 'brandfolders', { payload: payload }, (test) => {
   let orgId = -1;
@@ -13,7 +12,7 @@ suite.forElement('general', 'brandfolders', { payload: payload }, (test) => {
     .then(r => orgId = r.body[0].id)
     .then(r => cloud.get(`hubs/general/organizations/${orgId}`))
   );
-  it('should support Sur and sub-resources', () => {
+  it('should support SUR and sub-resources', () => {
     let brandFolderId = -1;
     return cloud.get(`hubs/general/organizations/${orgId}/brandfolders`)
       .then(r => brandFolderId = r.body[0].id)
@@ -25,9 +24,10 @@ suite.forElement('general', 'brandfolders', { payload: payload }, (test) => {
       .then(r => cloud.get(`${test.api}/${brandFolderId}/collections`))
       .then(r => cloud.get(`${test.api}/${brandFolderId}/sections`));
   });
-  options.qs = {};
-  options.qs.pageSize = 1;
-  it('should support cursor pagination', () => {
+  it('should support cursor pagination for organizations/{id}/brandfolders', () => {
+    const options = {};
+    options.qs = {};
+    options.qs.pageSize = 1;
     return cloud.withOptions(options).get(`hubs/general/organizations/${orgId}/brandfolders`)
       .then(r => {
         expect(r.body).to.not.be.null;

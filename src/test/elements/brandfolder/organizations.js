@@ -4,10 +4,9 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const options = {};
 
 suite.forElement('general', 'organizations', null, (test) => {
-  it('should support Sr and sub-resources', () => {
+  it('should support SR and sub-resources', () => {
     let orgId = -1;
     return cloud.get(test.api)
       .then(r => orgId = r.body[0].id)
@@ -15,9 +14,10 @@ suite.forElement('general', 'organizations', null, (test) => {
       .then(r => cloud.get(`${test.api}/${orgId}/assets`))
       .then(r => cloud.get(`${test.api}/${orgId}/brandfolders`));
   });
-  options.qs = {};
-  options.qs.pageSize = 1;
   it('should support cursor pagination', () => {
+    const options = {};
+    options.qs = {};
+    options.qs.pageSize = 1;
     return cloud.withOptions(options).get(test.api)
       .then(r => {
         expect(r.body).to.not.be.null;
