@@ -5,7 +5,6 @@ const cloud = require('core/cloud');
 const chakram = require('chakram');
 const payload = require('./assets/collections');
 const brandfolderPayload = require('./assets/brandfolders2');
-const expect = chakram.expect;
 
 const updatePayload = () => ({
     "type" : "collections",
@@ -35,6 +34,7 @@ suite.forElement('general', 'collections', { payload: payload }, (test) => {
   // They are returning a 500 from this request ... notified
   // it('should support cursor pagination for brandfolders/{id}/collections', () => {
   //   const options = { qs: { pageSize: 1}};
+  //   const expect = chakram.expect;
   //   return cloud.withOptions(options).get(`hubs/general/brandfolders/${brandFolderId}/collections`)
   //     .then(r => {
   //       expect(r.body).to.not.be.null;
