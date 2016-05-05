@@ -7,10 +7,8 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
-const chakram = require('chakram');
-const tools = require('core/tools');
-const b64 = tools.base64Encode;
 const sleep = require('sleep');
+const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
 
@@ -205,23 +203,14 @@ const getEventsForInstance = id =>
 const manuallyTriggerInstanceExecution = (fId, fiId, ev) =>
   cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
 
-const generateSfdcPollingEvent = (instanceId, payload) => {
-  const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
-  const encodedId = b64(instanceId.toString());
-
-  payload.instance_id = instanceId;
-
-  return chakram.post('/events/sfdcPolling/' + encodedId, payload, { 'headers': headers });
-};
-
 const generateTripleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/triple-event-sfdc');
-  return generateSfdcPollingEvent(instanceId, payload);
+  return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const generateSingleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/single-event-sfdc');
-  return generateSfdcPollingEvent(instanceId, payload);
+  return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const generateXSingleSfdcPollingEvents = (instanceId, x) =>
