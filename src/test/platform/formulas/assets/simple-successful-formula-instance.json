@@ -1,9 +1,4 @@
 {
-    "formula": {
-        "active": true,
-        "singleThreaded": false,
-        "scriptEngine": "v2"
-    },
     "name": "simple-successful-inst",
     "configuration": {
         "notification.email": "",
