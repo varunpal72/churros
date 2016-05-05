@@ -26,6 +26,12 @@
       "type":"string"
     }]
   },
+  "assets": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "attachments":{
     "fields":[{
       "path": "id",
