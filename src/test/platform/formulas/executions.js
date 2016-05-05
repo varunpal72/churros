@@ -9,7 +9,13 @@ const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
 const chakram = require('chakram');
 const expect = require('chakram').expect;
-const tools = require('core/tools');
+const moment = require('moment');
+
+const provisionSfdcWithPolling = () => provisioner.create('sfdc', {
+  'event.notification.enabled': true,
+  'event.vendor.type': 'polling',
+  'event.poller.refresh_interval': 999999999
+});
 
 const flattenStepExecutionValues = sevs =>
   sevs.reduce((flat, curr) => {
@@ -59,6 +65,21 @@ const validateSimpleSuccessfulScheduledStepExecutionsForScheduled = tValidator =
   expect(ses).to.have.length(2);
   ses.filter(se => se.stepName === 'trigger').map(tValidator);
   ses.filter(se => se.stepName !== 'trigger').map(validateSuccessfulStepExecution);
+};
+
+const validateComplexSuccessfulStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(30);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName === 'invalid-request-step')
+    .map(se => expect(se.status).to.equal('failed'));
+  ses.filter(se => se.stepName === 'looper' &&
+      flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] !== '10')
+    .map(validateSuccessfulStepExecution);
+  ses.filter(se => se.stepName === 'looper' &&
+      flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] === '10')
+    .map(validateErrorStepExecution);
+  ses.filter(se => se.stepName !== 'invalid-request-step' && se.stepName !== 'looper')
+    .map(validateSuccessfulStepExecution);
 };
 
 const validateScriptContextSuccessfulStepExecutionsForEvents = tValidator => ses => {
@@ -159,6 +180,13 @@ const validateLargePayloadSuccessfulStepExecutionsForEvents = tValidator => ses 
   expect(consolidated['end.done']).to.equal('true');
 };
 
+const validateScriptOnFailureStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(3);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName !== 'trigger' && se.stepName !== 'bad-script-step')
+    .map(validateSuccessfulStepExecution);
+};
+
 const validateStepExecutions = ses => {
   ses.map(se => validateSuccessfulStepExecution(se));
 };
@@ -169,10 +197,10 @@ const validateExecution = e => validator => {
 };
 
 const getEventsForInstance = id =>
-  chakram.get(`/instances/${id}/events`);
+  cloud.get(`/instances/${id}/events`);
 
 const manuallyTriggerInstanceExecution = (fId, fiId, ev) =>
-  chakram.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
+  cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
 
 const generateTripleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/triple-event-sfdc');
@@ -184,16 +212,17 @@ const generateSingleSfdcPollingEvent = (instanceId) => {
   return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
-const validateTriggerBodyEvents = (tb, num) => {
-  expect(tb.message.events).to.have.length(num);
-};
+const generateXSingleSfdcPollingEvents = (instanceId, x) =>
+  Promise.all(Array(x).fill().reduce((p, c) => {
+    p.push(generateSingleSfdcPollingEvent(instanceId));
+    return p;
+  }, []));
 
 const validateSuccessfulEventTrigger = num => t => {
   const flat = flattenStepExecutionValues(t.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('event');
   expect(flat['trigger.event']).to.exist;
   expect(flat['trigger.eventId']).to.exist;
-  validateTriggerBodyEvents(JSON.parse(flat['trigger.body']), num);
 };
 
 const validateSuccessfulScheduledTrigger = num => t => {
@@ -205,6 +234,10 @@ const validateSimpleSuccessfulStepExecutions = {
   forEvents: (num) => validateSimpleSuccessfulStepExecutionsForType(validateSuccessfulEventTrigger(num)),
   forRequest: validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulRequestTrigger),
   forScheduled: validateSimpleSuccessfulStepExecutionsForType(validateSimpleSuccessfulScheduledTrigger)
+};
+
+const validateComplexSuccessfulStepExecutions = {
+  forEvents: (num) => validateComplexSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
 const validateScriptContextSuccessfulStepExecutions = {
@@ -239,445 +272,380 @@ const validateLargePayloadSuccessfulStepExecutions = {
   forEvents: (num) => validateLargePayloadSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
+const validateScriptOnFailureStepExecutions = {
+  forEvents: (num) => validateScriptOnFailureStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+};
+
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let sfdcId;
-  before(done => common.provisionSfdcWithPolling().then(r => {
-    sfdcId = r.body.id;
-    done();
-  }));
+  before(() => {
+    return provisionSfdcWithPolling()
+      .then(r => {
+        sfdcId = r.body.id;
+      })
+      .catch(r => {
+        console.log(`Rats...${r}`);
+        process.exit(1);
+      });
+  });
 
   it('should successfully execute a simple formula triggered by a single event', () => {
+    const formula = require('./assets/simple-successful-formula');
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/simple-successful-formula');
-        const formulaInstance = require('./assets/simple-successful-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(5))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a simple formula triggered by a triple event', () => {
+    const formula = require('./assets/simple-successful-formula');
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateTripleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/simple-successful-formula');
-        const formulaInstance = require('./assets/simple-successful-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateTripleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(5))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a formula and properly handle context between steps', () => {
+    const formula = require('./assets/script-context-successful-formula');
+    const formulaInstance = require('./assets/script-context-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'script-context-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/script-context-successful-formula');
-        const formulaInstance = require('./assets/script-context-successful-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(5))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateScriptContextSuccessfulStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateScriptContextSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a single threaded formula triggered by an event with three objects', () => {
+    const formula = require('./assets/simple-successful-formula-single-threaded');
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
       .then(r => {
-        const formula = require('./assets/simple-successful-formula');
         formula.singleThreaded = true;
-        const formulaInstance = require('./assets/simple-successful-formula-instance');
-
         formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateTripleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(10))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+      })
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateTripleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(20))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should properly handle a formula with a step that times out', () => {
+    const formula = require('./assets/simple-timeout-formula');
+    const formulaInstance = require('./assets/simple-timeout-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-timeout')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(40))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/simple-timeout-formula');
-        const formulaInstance = require('./assets/simple-timeout-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(40))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleTimeoutStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleTimeoutStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should properly handle a formula with a step that returns no values', () => {
+    const formula = require('./assets/simple-no-return-formula');
+    const formulaInstance = require('./assets/simple-no-return-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-no-return')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/simple-no-return-formula');
-        const formulaInstance = require('./assets/simple-no-return-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(5))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleNoReturnStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleNoReturnStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should properly handle a formula with a step that contains invalid json', () => {
+    const formula = require('./assets/simple-error-formula');
+    const formulaInstance = require('./assets/simple-error-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-error')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/simple-error-formula');
-        const formulaInstance = require('./assets/simple-error-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(5))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should properly handle a single threaded formula with a step that contains invalid json, triggered by an event with three objects', () => {
+    const formula = require('./assets/simple-error-formula');
+    const formulaInstance = require('./assets/simple-error-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-error')
       .then(r => {
-        const formula = require('./assets/simple-error-formula');
-        const formulaInstance = require('./assets/simple-error-formula-instance');
-
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateTripleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(5))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forEvents(3))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+      })
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateTripleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forEvents(3))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a simple formula triggered manually', () => {
+    const formula = require('./assets/simple-successful-formula');
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
       .then(r => {
-        const formula = require('./assets/simple-successful-formula');
-        const formulaInstance = require('./assets/simple-successful-formula-instance');
 
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return generateSingleSfdcPollingEvent(sfdcId)
-          .then(() => tools.sleep(5)) // Let the event flow through
-          .then(() => cloud.post(test.api, formula, fSchema))
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return getEventsForInstance(sfdcId)
-                  .then(r => manuallyTriggerInstanceExecution(formulaId, formulaInstanceId, r.body[0].notifiedData[0]))
-                  .then(() => tools.sleep(5))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+      })
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5)) // Let the event flow through
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => getEventsForInstance(sfdcId))
+      .then(r => manuallyTriggerInstanceExecution(formulaId, formulaInstanceId, r.body[0].notifiedData[0]))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a simple formula triggered by a request', () => {
+    const formula = require('./assets/simple-successful-request-trigger-formula');
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
       .then(r => {
-        const formula = require('./assets/simple-successful-request-trigger-formula');
-        const formulaInstance = require('./assets/simple-successful-formula-instance');
-
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return chakram.get('/hubs/crm/accounts')
-                  .then(() => tools.sleep(5))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forRequest)))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+      })
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => cloud.get('/hubs/crm/accounts'))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forRequest)))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a simple formula triggered by schedule', () => {
+    const formula = require('./assets/simple-successful-scheduled-trigger-formula');
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
-      .then(r => chakram.get('/hubs/crm/ping'))
+      .then(r => cloud.get('/hubs/crm/ping'))
       .then(r => {
         const currentDt = r.body.dateTime;
-        const dt = new Date(currentDt);
-        dt.setSeconds(dt.getSeconds() + 30);
+        const dt = moment.parseZone(currentDt);
+        dt.add(1, 'minute');
 
-        const formula = require('./assets/simple-successful-scheduled-trigger-formula');
-
-        formula.triggers[0].properties.cron = `${dt.getSeconds()} ${dt.getMinutes()} ${dt.getHours()} ${dt.getDate()} ${dt.getMonth() + 1} ? ${dt.getFullYear()}`;
-
-        const formulaInstance = require('./assets/simple-successful-formula-instance');
-
+        formula.triggers[0].properties.cron = `${dt.seconds()} ${dt.minutes()} ${dt.hours()} ${dt.date()} ${dt.month() + 1} ? ${dt.year()}`;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                  return Promise.all([tools.sleep(35)])
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulScheduledStepExecutions.forScheduled())))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+      })
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => tools.wait.upTo(90000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, 2)))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulScheduledStepExecutions.forScheduled())))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a simple loop formula triggered by a single event', () => {
+    const formula = require('./assets/loop-successful-formula');
+    const formulaInstance = require('./assets/loop-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'loop-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(15))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/loop-successful-formula');
-        const formulaInstance = require('./assets/loop-successful-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(15))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateLoopSuccessfulStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateLoopSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a simple element request formula triggered by a single event', () => {
+    const formula = require('./assets/element-request-successful-formula');
+    const formulaInstance = require('./assets/element-request-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'element-request-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(10))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/element-request-successful-formula');
-        const formulaInstance = require('./assets/element-request-successful-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(10))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateElementRequestSuccessfulStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateElementRequestSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should successfully execute a large payload formula triggered by a single event', () => {
+    const formula = require('./assets/large-payload-successful-formula');
+    const formulaInstance = require('./assets/large-payload-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'large-payload-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(20))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        const formula = require('./assets/large-payload-successful-formula');
-        const formulaInstance = require('./assets/large-payload-successful-formula-instance');
-
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-
-        return cloud.post(test.api, formula, fSchema)
-          .then(r => {
-            const formulaId = r.body.id;
-            return cloud.post(util.format('/formulas/%s/instances', formulaId), formulaInstance, fiSchema)
-              .then(r => {
-                const formulaInstanceId = r.body.id;
-                return generateSingleSfdcPollingEvent(sfdcId)
-                  .then(() => tools.sleep(20))
-                  .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
-                  .then(r => {
-                    expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-                    return r;
-                  })
-                  .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
-                  .then(rs => rs.map(r => validateExecution(r.body)(validateLargePayloadSuccessfulStepExecutions.forEvents(1))))
-                  .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-                  .then(() => common.deleteFormula(formulaId));
-              });
-          });
-      });
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateLargePayloadSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
   });
 
   it('should terminate an execution if the deactivate API is called during execution', () => {
@@ -735,6 +703,214 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => common.deleteFormula(formulaId));
   });
 
+  it('should successfully execute three simple formula instances triggered by a single event', () => {
+    const formula = require('./assets/simple-successful-formula');
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+    let formulaId, formulaInstanceId1, formulaInstanceId2, formulaInstanceId3;
+    return common.deleteFormulasByName(test.api, 'simple-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId1 = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId2 = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId3 = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(20))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId1))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId1, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId2))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId2, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId3))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId3, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId1))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId2))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId3))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should successfully execute three different formula instances triggered by a single event', () => {
+    const formula1 = require('./assets/simple-successful-formula');
+    const formulaInstance1 = require('./assets/simple-successful-formula-instance');
+
+    const formula2 = require('./assets/element-request-successful-formula');
+    const formulaInstance2 = require('./assets/element-request-successful-formula-instance');
+
+    const formula3 = require('./assets/loop-successful-formula');
+    const formulaInstance3 = require('./assets/loop-successful-formula-instance');
+
+    let formulaId1, formulaId2, formulaId3, formulaInstanceId1, formulaInstanceId2, formulaInstanceId3;
+    return common.deleteFormulasByName(test.api, 'simple-successful')
+      .then(() => common.deleteFormulasByName(test.api, 'element-request-successful'))
+      .then(() => common.deleteFormulasByName(test.api, 'loop-successful'))
+      .then(r => {
+        formulaInstance1.configuration['trigger-instance'] = sfdcId;
+        formulaInstance2.configuration['trigger-instance'] = sfdcId;
+        formulaInstance3.configuration['trigger-instance'] = sfdcId;
+      })
+      .then(() => cloud.post(test.api, formula1, fSchema))
+      .then(r => formulaId1 = r.body.id)
+      .then(() => cloud.post(test.api, formula2, fSchema))
+      .then(r => formulaId2 = r.body.id)
+      .then(() => cloud.post(test.api, formula3, fSchema))
+      .then(r => formulaId3 = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId1}/instances`, formulaInstance1, fiSchema))
+      .then(r => formulaInstanceId1 = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId2}/instances`, formulaInstance2, fiSchema))
+      .then(r => formulaInstanceId2 = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId3}/instances`, formulaInstance3, fiSchema))
+      .then(r => formulaInstanceId3 = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(10))
+      .then(() => common.getFormulaInstanceExecutions(formulaId1, formulaInstanceId1))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId1, formulaInstanceId1, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.getFormulaInstanceExecutions(formulaId2, formulaInstanceId2))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId2, formulaInstanceId2, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateElementRequestSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.getFormulaInstanceExecutions(formulaId3, formulaInstanceId3))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId3, formulaInstanceId3, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateLoopSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId1, formulaInstanceId1))
+      .then(() => common.deleteFormulaInstance(formulaId2, formulaInstanceId2))
+      .then(() => common.deleteFormulaInstance(formulaId3, formulaInstanceId3))
+      .then(() => common.deleteFormula(formulaId1))
+      .then(() => common.deleteFormula(formulaId2))
+      .then(() => common.deleteFormula(formulaId3));
+  });
+
+  it('should successfully execute one simple formula instance x number of times for x events', () => {
+    const formula = require('./assets/simple-successful-formula');
+    const formulaInstance = require('./assets/simple-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'simple-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
+      .then(() => tools.wait.for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10, 2)))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should successfully execute one complex formula instance x number of times for x events', () => {
+    const formula = require('./assets/complex-successful-formula');
+    const formulaInstance = require('./assets/complex-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'complex-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 3))
+      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 3, 30)))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateComplexSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should support an on failure for a script step', () => {
+    const formula = require('./assets/script-with-on-failure-successful-formula');
+    const formulaInstance = require('./assets/script-with-on-failure-successful-formula-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'script-with-on-failure-successful')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, 3)))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
+      .then(rs => rs.map(r => validateExecution(r.body)(validateScriptOnFailureStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should show a successful execution, even if the last step is a filter step that returns false', () => {
+    const formula = require('./assets/filter-returns-false');
+    const formulaInstance = require('./assets/filter-returns-false-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'filter-returns-false')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, 2)))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body).to.have.length(1);
+        const execution = r.body[0];
+        expect(execution.status).to.equal('success');
+      });
+  });
+
   /** Clean up */
-  after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
+  after(done => {
+    if (!sfdcId) done();
+    return provisioner.delete(sfdcId)
+      .then(() => done())
+      .catch(e => {
+        console.log(`Crap! ${e}`);
+        done();
+      });
+  });
 });

@@ -7,7 +7,9 @@ const props = require('core/props');
 const urlParser = require('url');
 const logger = require('winston');
 const o = require('core/oauth');
+const r = require('request');
 const defaults = require('core/defaults');
+const cloud = require('core/cloud');
 
 var exports = module.exports = {};
 
@@ -45,20 +47,64 @@ const createInstance = (element, config, providerData, baseApi) => {
 
   if (providerData) instance.providerData = providerData;
 
-  return chakram.post(baseApi, instance)
+  return cloud.post(baseApi, instance)
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
-      defaults.token(r.body.token);
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
 };
 
+const createExternalInstance = (element, config, providerData) => {
+  const tokenUrl = config.tokenUrl;
+  const apiKey = config['oauth.api.key'];
+  const apiSecret = config['oauth.api.secret'];
+  const callbackUrl = props.get('oauth.callback.url');
+  const code = providerData.code;
+  let instanceBody;
+
+  if (!tokenUrl) {
+    throw Error("Token URL must be present in the element props as 'tokenUrl'");
+  }
+
+  return new Promise((res, rej) => {
+    r.post({
+      url: tokenUrl,
+      form: {
+        client_id: apiKey,
+        client_secret: apiSecret,
+        grant_type: 'authorization_code',
+        redirect_uri: callbackUrl,
+        code: code
+      }
+    }, (e, r, b) => {
+      let body = JSON.parse(b);
+      let refreshToken = body.refresh_token;
+      instanceBody = {
+        "element": {
+          "key": element
+        },
+        "configuration": {
+          "oauth.user.refresh_token": refreshToken,
+          "oauth.api.key": apiKey,
+          "oauth.api.secret": apiSecret,
+          "oauth.resource.url": props.getOptionalForKey(element, 'site.address'),
+          "site.url": props.getOptionalForKey(element, 'site.address'),
+          "site.address": props.getOptionalForKey(element, 'site.address')
+        },
+        "name": `${element} external auth churros`,
+        "externalAuthentication": "initial"
+      };
+      res(cloud.post('/instances', instanceBody));
+    });
+  });
+};
+
 const oauth = (element, args, config) => {
   const url = `/elements/${element}/oauth/url`;
   logger.debug('GET %s with options %s', url, args.options);
-  return chakram.get(url, args.options)
+  return cloud.withOptions(args.options).get(url)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return o(element, r, args.username, args.password, config);
@@ -85,7 +131,7 @@ const oauth = (element, args, config) => {
 
 const oauth1 = (element, args) => {
   const oauthTokenUrl = `/elements/${element}/oauth/token`;
-  return chakram.get(oauthTokenUrl, args.options)
+  return cloud.withOptions(args.options).get(oauthTokenUrl)
     .then(r => {
       expect(r).to.have.statusCode(200);
       args.options.qs.requestToken = r.body.token;
@@ -94,8 +140,17 @@ const oauth1 = (element, args) => {
     });
 };
 
-exports.create = (element, args, baseApi) => {
+/**
+ * Handles orchestrating this create, which can flow different ways depending on what type of
+ * provisioning this element support
+ * @param  {string} element  The element key
+ * @param  {object} args     The args to pass on the create instance call
+ * @param  {string} baseApi  The base API
+ * @return {Promise}         JS promise that resolves to the instance created
+ */
+const orchestrateCreate = (element, args, baseApi) => {
   const type = props.getOptionalForKey(element, 'provisioning');
+  const external = props.getOptionalForKey(element, 'external');
   const config = genConfig(props.all(element), args);
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
@@ -110,15 +165,33 @@ exports.create = (element, args, baseApi) => {
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
         .then(r => oauth(element, r, config))
-        .then(r => createInstance(element, config, r, baseApi));
+        .then(r => {
+          if (external && type === 'oauth2') {
+            return createExternalInstance(element, config, r);
+          } else if (external && type === 'oauth1') {
+            throw Error('External Authentication via churros is not yet implemented for OAuth1');
+          }
+          return createInstance(element, config, r, baseApi);
+        });
+    case 'custom':
+      const cp = `${__dirname}/../test/elements/${element}/provisioner`;
+      return require(cp).create(config);
     default:
       return createInstance(element, config, undefined, baseApi);
   }
 };
 
+exports.create = (element, args, baseApi) => {
+  return orchestrateCreate(element, args, baseApi)
+    .then(r => {
+      defaults.token(r.body.token); // update defaults with token to add to requests
+      return r;
+    });
+};
+
 exports.delete = (id, baseApi) => {
   baseApi = (baseApi) ? baseApi : '/instances';
-  return chakram.delete(baseApi + '/' + id)
+  return cloud.delete(`${baseApi}/${id}`)
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Deleted element instance with ID: ' + id);

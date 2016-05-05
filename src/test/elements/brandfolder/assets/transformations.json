@@ -1,0 +1,20 @@
+{
+  "organizations": {
+    "vendorName": "organizations",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "assets": {
+    "vendorName": "assets",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}

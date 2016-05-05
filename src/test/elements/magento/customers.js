@@ -2,8 +2,12 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/customers');
-suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
+const tools = require('core/tools');
+payload.email = tools.randomEmail();
+
+suite.forElement('ecommerce', 'customers', {payload: payload}, (test) => {
   test.should.return200OnGet();
   test.should.supportPagination();
-  test.should.supportSr();
+  test.should.supportCruds();
+  test.should.supportCeqlSearch("email");
 });

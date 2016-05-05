@@ -116,10 +116,10 @@ const itUpdate404 = (name, api, payload, invalidId, method, chakramUpdateCb) => 
   it(n, () => cloud.update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakramUpdateCb));
 };
 
-const itPost400 = (name, api, payload) => {
-  let n = name || `should throw a 400 when trying to create a(n) ${api} with an `;
-  n += payload ? 'invalid JSON body' : 'empty JSON body';
-  it(n, () => cloud.post(api, payload, (r) => expect(r).to.have.statusCode(400)));
+const itPostError = (name, httpCode, api, payload) => {
+  const suffix = payload ? 'invalid JSON body' : 'empty JSON body';
+  let n = name || `should throw a ${httpCode} when trying to create a(n) ${api} with an ${suffix}`;
+  it(n, () => cloud.post(api, payload, (r) => expect(r).to.have.statusCode(httpCode)));
 };
 
 const itCeqlSearch = (name, api, payload, field) => {
@@ -142,7 +142,8 @@ const itCeqlSearch = (name, api, payload, field) => {
 
 const runTests = (api, payload, validationCb, tests) => {
   const should = (api, validationCb, payload, options, name) => ({
-    return400OnPost: () => itPost400(name, api, payload),
+    return400OnPost: () => itPostError(name, 400, api, payload),
+    return409OnPost: () => itPostError(name, 409, api, payload),
     return404OnPatch: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PATCH', chakram.patch),
     return404OnPut: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PUT', chakram.put),
     return404OnGet: (invalidId) => it404(name, api, invalidId, 'GET', cloud.get),

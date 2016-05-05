@@ -1,0 +1,37 @@
+{
+    "name": "simple-successful",
+    "steps": [
+        {
+            "onSuccess": [],
+            "onFailure": [],
+            "name": "get-accounts",
+            "type": "elementRequest",
+            "properties": {
+                "elementInstanceId": "${trigger-instance}",
+                "method": "GET",
+                "api": "/hubs/crm/accounts"
+            }
+        }
+    ],
+    "triggers": [
+        {
+            "type": "event",
+            "async": true,
+            "onSuccess": ["get-accounts"],
+            "onFailure": [],
+            "properties": {
+                "elementInstanceId": "${trigger-instance}"
+            }
+        }
+    ],
+    "active": true,
+    "singleThreaded": false,
+    "configuration": [
+        {
+            "key": "trigger-instance",
+            "name": "trigger-instance",
+            "type": "elementInstance",
+            "required": true
+        }
+    ]
+}

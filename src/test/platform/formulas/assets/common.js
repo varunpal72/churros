@@ -5,6 +5,7 @@ const b64 = tools.base64Encode;
 const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
+const logger = require('winston');
 const provisioner = require('core/provisioner');
 const cloud = require('core/cloud');
 const fSchema = require('./schemas/formula.schema');
@@ -62,7 +63,7 @@ const deleteFormulaInstance = (fId, fiId) =>
   cloud.delete(util.format('/formulas/%s/instances/%s', fId, fiId));
 
 const getInstancesForFormula = (fId) =>
-  chakram.get(util.format('/formulas/%s/instances', fId))
+  cloud.get(util.format('/formulas/%s/instances', fId))
   .then(r => r.body);
 
 const getInstancesForFormulas = (fs) =>
@@ -75,7 +76,7 @@ const deleteFormulas = (fs) =>
   Promise.all(fs.map(f => deleteFormula(f.id)));
 
 const getFormulasByName = (api, name) =>
-  chakram.get(api)
+  cloud.get(api)
   .then(r => r.body.filter(f => f.name === name));
 
 const deleteInstancesForFormulas = (is) =>
@@ -127,4 +128,24 @@ exports.createFAndFI = () => {
     })
     .then(r => formulaInstanceId = r.body.id)
     .then(r => ({ formulaInstanceId: formulaInstanceId, formulaId: formulaId, elementInstanceId: elementInstanceId }));
+};
+
+exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
+  exports.getFormulaInstanceExecutions(fId, fiId)
+  .then(r => {
+    if (r.body.length === numExecs) {
+      Promise.all(r.body.map(fie => exports.getFormulaInstanceExecution(fId, fiId, fie.id)))
+      .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
+      .then(fieses => [].concat.apply([], fieses))
+      .then(ses => {
+        if (ses.length === (numExecVals * numExecs) && ses.filter(se => se.status === 'pending' === 0)) {
+          logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
+          cb();
+        }
+        else {
+          logger.debug(`Not all ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}; ${ses.length} total execution values found so far.`);
+        }
+      });
+    }
+  });
 };

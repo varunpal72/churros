@@ -26,6 +26,12 @@
       "type":"string"
     }]
   },
+  "assets": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "attachments":{
     "fields":[{
       "path": "id",
@@ -253,6 +259,12 @@
     }]
   },
   "workflows":{
+    "fields":[{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "payment-methods":{
     "fields":[{
       "path": "id",
       "type": "string"

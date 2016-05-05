@@ -1,0 +1,6 @@
+{
+  "name":"Churros Test",
+  "email":"churros@cloud-elements.com",
+  "password":"password",
+  "send_welcome_message":false
+}

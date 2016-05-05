@@ -23,7 +23,8 @@ const fromOptions = (url, options) => {
       load: options.load,
       loadElement: options.element,
       browser: options.browser,
-      verbose: options.verbose === undefined ? false : options.verbose // hack...i can't figure out why it's not default to false
+      verbose: options.verbose === undefined ? false : options.verbose, // hack...i can't figure out why it's not default to false
+      externalAuth: options.externalAuth
     });
   });
 };
@@ -93,6 +94,7 @@ const run = (suite, options, cliArgs) => {
   if (cliArgs.loadElement) args += ` --loadElement ${cliArgs.loadElement}`;
   if (cliArgs.verbose) args += ` --verbose ${cliArgs.verbose}`;
   if (cliArgs.browser) args += ` --browser ${cliArgs.browser}`;
+  if (cliArgs.externalAuth) args += ` --externalAuth`;
 
   let cmd = `${rootDir}/../../node_modules/.bin/mocha ${mochaPaths.join(' ')} ${args}`;
   process.exit(shell.exec(cmd).code); // execute the cmd and make our exit code the same as 'churros test' code
@@ -118,6 +120,7 @@ commander
   .option('-r, --url [url]', 'overrides the default URL setup during initialization')
   .option('-u, --user <user>', 'overrides the default user setup during initialization')
   .option('-p, --password', 'overrides the default password setup during initialization (this will prompt you for your password)')
+  .option('-x, --externalAuth', 'provision using external authentication. only for elements tests')
   .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'firefox') // will change this to phantomjs as churros becomes more mature
   .option('-V, --verbose', 'logging verbose mode')
   .on('--help', () => {
