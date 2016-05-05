@@ -7,7 +7,8 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
-const chakram = require('chakram');
+const sleep = require('sleep');
+const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
 

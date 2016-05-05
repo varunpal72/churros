@@ -8,27 +8,6 @@ const fiSchema = require('./assets/schemas/formula.instance.schema');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
-const tools = require('core/tools');
-
-/**
- * {
- *   "objectType": type,
- *   "instance_id": elementInstanceId,
- *   type: [
- *     {
- *       objects
- *     }
- *   ]
- * }
- */
-const genPollingEvent = (instanceId, type, num) => {
-  const event = require('./assets/events/large-event');
-  const events = [];
-  for (let i = 0; i < num; i++) {
-    events.push(event);
-  }
-  return { objectType: type, instance_id: instanceId, type: events };
-};
 
 const genWebhookEvent = (action, num) => {
   const event = require('./assets/events/raw-webhook');
