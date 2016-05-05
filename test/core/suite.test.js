@@ -139,10 +139,15 @@ describe('suite', () => {
   });
 });
 
-/* This test exercises all of the available optional suite options */
+/* This test exercises some of the available optional suite options */
 const opts = {
   name: 'this will override the resource that was passed in',
   payload: genPayload(),
   schema: genSchema()
 };
 suite.forPlatform('exampleResourceName', opts, (test) => {});
+
+const optsWithSkip = {
+  skip: true
+};
+suite.forPlatform('resourceNameThatWillBeSkipped', optsWithSkip, (test) => {});

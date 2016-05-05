@@ -7,10 +7,8 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
-const chakram = require('chakram');
-const tools = require('core/tools');
-const b64 = tools.base64Encode;
 const sleep = require('sleep');
+const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
 
@@ -205,23 +203,14 @@ const getEventsForInstance = id =>
 const manuallyTriggerInstanceExecution = (fId, fiId, ev) =>
   cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
 
-const generateSfdcPollingEvent = (instanceId, payload) => {
-  const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
-  const encodedId = b64(instanceId.toString());
-
-  payload.instance_id = instanceId;
-
-  return chakram.post('/events/sfdcPolling/' + encodedId, payload, { 'headers': headers });
-};
-
 const generateTripleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/triple-event-sfdc');
-  return generateSfdcPollingEvent(instanceId, payload);
+  return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const generateSingleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/single-event-sfdc');
-  return generateSfdcPollingEvent(instanceId, payload);
+  return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const generateXSingleSfdcPollingEvents = (instanceId, x) =>
@@ -290,10 +279,16 @@ const validateScriptOnFailureStepExecutions = {
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let sfdcId;
-  before(done => provisionSfdcWithPolling().then(r => {
-    sfdcId = r.body.id;
-    done();
-  }));
+  before(() => {
+    return provisionSfdcWithPolling()
+      .then(r => {
+        sfdcId = r.body.id;
+      })
+      .catch(r => {
+        console.log(`Rats...${r}`);
+        process.exit(1);
+      });
+  });
 
   it('should successfully execute a simple formula triggered by a single event', () => {
     const formula = require('./assets/simple-successful-formula');
@@ -885,6 +880,28 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(rs => rs.map(r => validateExecution(r.body)(validateScriptOnFailureStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should show a successful execution, even if the last step is a filter step that returns false', () => {
+    const formula = require('./assets/filter-returns-false');
+    const formulaInstance = require('./assets/filter-returns-false-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'filter-returns-false')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, 2)))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body).to.have.length(1);
+        const execution = r.body[0];
+        expect(execution.status).to.equal('success');
+      });
   });
 
   /** Clean up */
