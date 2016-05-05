@@ -194,7 +194,11 @@ const run = (api, resource, options, defaultValidation, tests) => {
 
   options = options || {};
   const name = options.name || resource;
-  describe(name, () => runTests(api, options.payload, defaultValidation, tests));
+  if (options.skip) {
+    describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests));
+  } else {
+    describe(name, () => runTests(api, options.payload, defaultValidation, tests));
+  }
 };
 
 /**

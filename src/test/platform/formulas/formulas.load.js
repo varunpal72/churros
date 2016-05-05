@@ -85,7 +85,7 @@ const createXInstances = (x, formulaId, formulaInstance) => {
 /**
  * Tests formula executions under heavy load (number of events, size of events, etc.)
  */
-suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
+suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   let sfdcId;
   before(() => common.deleteFormulasByName(test.api, 'complex-successful')
     .then(r => common.provisionSfdcWithWebhook())
