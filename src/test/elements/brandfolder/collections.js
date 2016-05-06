@@ -4,6 +4,8 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/collections');
 const brandfolderPayload = require('./assets/brandfolders2');
+const chakram = require('chakram');
+const expect = chakram.expect;
 
 const updatePayload = () => ({
     "type" : "collections",
@@ -30,17 +32,14 @@ suite.forElement('general', 'collections', { payload: payload }, (test) => {
       .then(r => cloud.get(`${test.api}/${collectionId}/sections`))
       .then(r => cloud.delete(`${test.api}/${collectionId}`));
   });
-  // They are returning a 500 from this request ... notified
-  // it('should support cursor pagination for brandfolders/{id}/collections', () => {
-  //   const options = { qs: { pageSize: 1}};
-  //   const chakram = require('chakram');
-  //   const expect = chakram.expect;
-  //   return cloud.withOptions(options).get(`hubs/general/brandfolders/${brandFolderId}/collections`)
-  //     .then(r => {
-  //       expect(r.body).to.not.be.null;
-  //       options.qs.nextPage = r.response.headers['elements-next-page-token'];
-  //       return cloud.withOptions(options).get(`hubs/general/brandfolders/${brandFolderId}/collections`);
-  //     });
-  // });
+  it('should support cursor pagination for brandfolders/{id}/collections', () => {
+    const options = { qs: { pageSize: 1}};
+    return cloud.withOptions(options).get(`hubs/general/brandfolders/${brandFolderId}/collections`)
+      .then(r => {
+        expect(r.body).to.not.be.null;
+        options.qs.nextPage = r.response.headers['elements-next-page-token'];
+        return cloud.withOptions(options).get(`hubs/general/brandfolders/${brandFolderId}/collections`);
+      });
+  });
   after(() => cloud.delete(`/hubs/general/brandfolders/${brandFolderId}`));
 });
