@@ -8,7 +8,5 @@ const groupQuery = () => ({
 });
 
 suite.forElement('db', 'query', {}, (test) => {
-  it('should allow POST for ' + test.api, () => {
-    return cloud.post('/hubs/db/query', groupQuery());
-  });
+  test.withJson(groupQuery()).should.return200OnPost();
 });
