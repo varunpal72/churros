@@ -16,7 +16,7 @@ suite.forElement('messaging', 'usage', {payload: payload}, (test) => {
 
   it('should allow query by Category', () => {
     let query = { where: "Category='totalprice'"};
-    return cloud.withOptions({ qs: query }).get('/hubs/messaging/usage');
+    return cloud.withOptions({ qs: query }).get('/hubs/messaging/usage')
     .then(r => expect(r.body.length).to.eq(1));
   });
 });
