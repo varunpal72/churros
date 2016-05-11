@@ -7,10 +7,8 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
-const chakram = require('chakram');
-const tools = require('core/tools');
-const b64 = tools.base64Encode;
 const sleep = require('sleep');
+const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
 
@@ -200,28 +198,19 @@ const validateExecution = e => validator => {
 };
 
 const getEventsForInstance = id =>
-  chakram.get(`/instances/${id}/events`);
+  cloud.get(`/instances/${id}/events`);
 
 const manuallyTriggerInstanceExecution = (fId, fiId, ev) =>
-  chakram.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
-
-const generateSfdcPollingEvent = (instanceId, payload) => {
-  const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
-  const encodedId = b64(instanceId.toString());
-
-  payload.instance_id = instanceId;
-
-  return chakram.post('/events/sfdcPolling/' + encodedId, payload, { 'headers': headers });
-};
+  cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
 
 const generateTripleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/triple-event-sfdc');
-  return generateSfdcPollingEvent(instanceId, payload);
+  return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const generateSingleSfdcPollingEvent = (instanceId) => {
   const payload = require('./assets/single-event-sfdc');
-  return generateSfdcPollingEvent(instanceId, payload);
+  return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const generateXSingleSfdcPollingEvents = (instanceId, x) =>
@@ -230,16 +219,11 @@ const generateXSingleSfdcPollingEvents = (instanceId, x) =>
     return p;
   }, []));
 
-const validateTriggerBodyEvents = (tb, num) => {
-  expect(tb.message.events).to.have.length(num);
-};
-
 const validateSuccessfulEventTrigger = num => t => {
   const flat = flattenStepExecutionValues(t.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('event');
   expect(flat['trigger.event']).to.exist;
   expect(flat['trigger.eventId']).to.exist;
-  validateTriggerBodyEvents(JSON.parse(flat['trigger.body']), num);
 };
 
 const validateSuccessfulScheduledTrigger = num => t => {
@@ -295,10 +279,16 @@ const validateScriptOnFailureStepExecutions = {
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let sfdcId;
-  before(done => provisionSfdcWithPolling().then(r => {
-    sfdcId = r.body.id;
-    done();
-  }));
+  before(() => {
+    return provisionSfdcWithPolling()
+      .then(r => {
+        sfdcId = r.body.id;
+      })
+      .catch(r => {
+        console.log(`Rats...${r}`);
+        process.exit(1);
+      });
+  });
 
   it('should successfully execute a simple formula triggered by a single event', () => {
     const formula = require('./assets/simple-successful-formula');
@@ -373,7 +363,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully execute a single threaded formula triggered by an event with three objects', () => {
-    const formula = require('./assets/simple-successful-formula');
+    const formula = require('./assets/simple-successful-formula-single-threaded');
     const formulaInstance = require('./assets/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
@@ -387,7 +377,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateTripleSfdcPollingEvent(sfdcId))
-      .then(() => sleep.sleep(10))
+      .then(() => sleep.sleep(20))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
@@ -539,11 +529,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
       })
-      .then(() =>cloud.post(test.api, formula, fSchema))
+      .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => chakram.get('/hubs/crm/accounts'))
+      .then(() => cloud.get('/hubs/crm/accounts'))
       .then(() => sleep.sleep(5))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
@@ -562,7 +552,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
-      .then(r => chakram.get('/hubs/crm/ping'))
+      .then(r => cloud.get('/hubs/crm/ping'))
       .then(r => {
         const currentDt = r.body.dateTime;
         const dt = moment.parseZone(currentDt);
@@ -831,11 +821,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 100))
-      .then(() => tools.wait.for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 100, 2)))
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
+      .then(() => tools.wait.for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10, 2)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(100);
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
@@ -855,11 +845,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 10))
-      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 10, 30)))
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 3))
+      .then(() => tools.wait.upTo(300000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 3, 30)))
       .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
       .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, fie.id))))
@@ -892,6 +882,36 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => common.deleteFormula(formulaId));
   });
 
+  it('should show a successful execution, even if the last step is a filter step that returns false', () => {
+    const formula = require('./assets/filter-returns-false');
+    const formulaInstance = require('./assets/filter-returns-false-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'filter-returns-false')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, 2)))
+      .then(() => common.getFormulaInstanceExecutions(formulaId, formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body).to.have.length(1);
+        const execution = r.body[0];
+        expect(execution.status).to.equal('success');
+      });
+  });
+
   /** Clean up */
-  after(done => provisioner.delete(sfdcId).then(() => done()).catch(e => { console.log(`Crap! ${e}`); done(); }));
+  after(done => {
+    if (!sfdcId) done();
+    return provisioner.delete(sfdcId)
+      .then(() => done())
+      .catch(e => {
+        console.log(`Crap! ${e}`);
+        done();
+      });
+  });
 });
