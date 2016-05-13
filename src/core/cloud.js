@@ -9,7 +9,6 @@ const logger = require('winston');
 var exports = module.exports = {};
 
 const validator = (validationCb) => {
-  console.log('validator' + validationCb);
   if (typeof validationCb === 'function') {
     return (r) => {
       validationCb(r);
@@ -38,7 +37,6 @@ const post = (api, payload, validationCb, options) => {
 exports.post = (api, payload, validationCb) => post(api, payload, validationCb, null);
 
 const get = (api, validationCb, options) => {
-  console.log('get' + validationCb);
   logger.debug('GET %s with options %s', api, options);
   return chakram.get(api, options)
     .then(r => validator(validationCb)(r))

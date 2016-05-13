@@ -104,9 +104,7 @@ const getAllExecutions = (fId, fiId, nextPage, all) => {
 };
 exports.getAllExecutions = getAllExecutions;
 
-exports.getFormulaInstanceExecutions = (fId, fiId) => {
-  return cloud.get(`/formulas/${fId}/instances/${fiId}/executions`);
-};
+exports.getFormulaInstanceExecutions = (fId, fiId) => cloud.get(`/formulas/${fId}/instances/${fiId}/executions`);
 
 exports.getFormulaInstanceExecution = (fId, fiId, fieId) => chakram.get(`/formulas/${fId}/instances/${fiId}/executions/${fieId}`);
 
