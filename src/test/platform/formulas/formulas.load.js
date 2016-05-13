@@ -101,9 +101,9 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
     const formulaInstance = require('./assets/complex-successful-formula-instance');
     formulaInstance.configuration[ 'trigger-instance' ] = sfdcId;
 
-    const numFormulaInstances = 2;
-    const numEvents = 5;
-    const numInOneEvent = 1;
+    const numFormulaInstances = 1;
+    const numEvents = 1;
+    const numInOneEvent = 200;
 
     let formulaId;
     let formulaInstances = [];
@@ -115,7 +115,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
       .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
       .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
       .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
-      .then(r => chakram.all(deletes))
-      .then(r => common.deleteFormula(formulaId));
+      .then(r => chakram.all(deletes));
+      // .then(r => common.deleteFormula(formulaId));
   });
 });
