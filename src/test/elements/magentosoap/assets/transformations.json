@@ -1,0 +1,11 @@
+{
+  "customers": {
+    "vendorName": "customers",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
