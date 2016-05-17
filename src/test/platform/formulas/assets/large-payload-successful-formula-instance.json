@@ -1,13 +1,7 @@
 {
-    "formula": {
-        "active": true,
-        "singleThreaded": false
-    },
     "name": "large-payload-successful-inst",
     "configuration": {
         "notification.email": "",
         "trigger-instance": "<replace-me>"
-    },
-    "debugMode": true,
-    "active": true
+    }
 }
