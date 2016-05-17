@@ -101,8 +101,8 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
     const formulaInstance = require('./assets/complex-successful-formula-instance');
     formulaInstance.configuration[ 'trigger-instance' ] = sfdcId;
 
-    const numFormulaInstances = 2;
-    const numEvents = 5;
+    const numFormulaInstances = 1;
+    const numEvents = 1;
     const numInOneEvent = 1;
 
     let formulaId;
