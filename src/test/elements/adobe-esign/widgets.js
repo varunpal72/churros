@@ -66,7 +66,7 @@ suite.forElement('esignature', 'widgets', (test) => {
   it(`should allow GET ${test.api}/{widgetId}/documents/{documentId}`, () => {
     let documentId;
     return cloud.get(`${test.api}/${widgetId}/documents`)
-      .then(r => documentId = r.body.documentId)
+      .then(r => documentId = r.body.id)
       .then(r => cloud.get(`${test.api}/${widgetId}/documents/${documentId}`));
   });
   it(`should allow GET ${test.api}/{widgetId}/data`, () => {
