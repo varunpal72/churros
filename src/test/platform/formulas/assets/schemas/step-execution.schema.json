@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "integer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "failed",
+        "success",
+        "pending",
+        "queued",
+        "unknown"
+      ]
+    },
+    "createdDate": {
+      "type": "integer"
+    }
+  },
+  "required": ["id", "status", "createdDate"]
+}
