@@ -1,0 +1,29 @@
+{
+  "accounts": {
+    "vendorName": "companies",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "incidents": {
+    "vendorName": "tickets",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "contacts": {
+    "vendorName": "contacts",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}

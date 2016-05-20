@@ -58,7 +58,7 @@ suite.forElement('esignature', 'library-documents', (test) => {
   it(`should allow GET ${test.api}/{libraryDocumentId}/documents/{documentId}`, () => {
     let documentId;
     return cloud.get(`${test.api}/${libraryDocumentId}/documents`)
-      .then(r => documentId = r.body.documentId)
+      .then(r => documentId = r.body.id)
       .then(r => cloud.get(`${test.api}/${libraryDocumentId}/documents/${documentId}`));
   });
 });
