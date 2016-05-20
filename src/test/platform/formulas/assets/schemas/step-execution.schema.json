@@ -15,8 +15,11 @@
       ]
     },
     "createdDate": {
-      "type": "integer"
+      "type": "string"
+    },
+    "stepName": {
+      "type": "string"
     }
   },
-  "required": ["id", "status", "createdDate"]
+  "required": ["id", "status", "createdDate", "stepName"]
 }
