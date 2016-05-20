@@ -92,17 +92,53 @@
       "type": "string"
     }]
   },
-  "customers":{
-    "fields":[{
+  "customers": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }]
+    }, {
+      "path": "postId",
+      "type": "string"
+    }]
   },
-  "employees":{
-    "fields":[{
+  "credit-memos": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }]
+    }]
+  },
+  "stores": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "shipments": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "result",
+      "type": "string"
+    }]
+  },
+  "addresses": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "postId",
+      "type": "string"
+    }]
+  },
+  "employees": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "postId",
+      "type": "string"
+    } ]
   },
   "incidents":{
     "fields":[{
@@ -207,7 +243,10 @@
     "fields":[{
       "path": "id",
       "type": "string"
-      }]
+      }, {
+      "path": "result",
+      "type": "string"
+    }]
   },
   "tasks":{
     "fields":[{
