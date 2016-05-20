@@ -59,3 +59,5 @@ const wait = {
 };
 
 exports.wait = wait;
+
+exports.stringify = (json) => JSON.stringify(json);

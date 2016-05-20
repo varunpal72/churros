@@ -73,7 +73,7 @@ describe('tools', () => {
       return false;
     };
 
-    return expect(tools.wait.upTo(10000).for(pred)).to.be.rejected;
+    return expect(tools.wait.upTo(1000).for(pred)).to.be.rejected;
   });
 
   it('should support waiting the default time for a succesful predicate', () => {
@@ -93,4 +93,6 @@ describe('tools', () => {
 
     return expect(tools.wait.for(pred)).to.be.rejected;
   });
+
+  it('should allow stringifying an object', () => tools.stringify({ foo: 'bar' }));
 });
