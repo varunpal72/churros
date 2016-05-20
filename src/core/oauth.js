@@ -286,6 +286,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 10000);
       browser.findElement(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow')).click();
       return browser.getCurrentUrl();
+    case 'wrike':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('emailField')).sendKeys(username);
+      browser.findElement(webdriver.By.id('passwordField')).sendKeys(password);
+      browser.findElement(webdriver.By.id('submit-login-button')).click();
+      //Only needed first time
+      //browser.findElement(webdriver.By.id('user_oauth_approval')).click();
+      return browser.getCurrentUrl();
     case 'zendesk':
       // TODO - not quite working yet ...
       browser.get(r.body.oauthUrl);
