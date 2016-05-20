@@ -22,7 +22,7 @@ suite.forElement('helpdesk', 'comments', { payload: payload }, (test) => {
 
   it('should GET the root folder', () => {
     return cloud.get('/hubs/helpdesk/folders')
-    .then(r => {for (var i=0;i<r.body.length;i++){if (r.body[i].title === "Root") {rootFolderID = r.body[i].id}}});
+    .then(r => {for (var i=0;i<r.body.length;i++){if (r.body[i].title === "Root") {rootFolderID = r.body[i].id;}}});
   });
 
   it('should POST the test folder', () => {

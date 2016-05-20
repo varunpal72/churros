@@ -21,7 +21,7 @@ suite.forElement('helpdesk', 'timelogs', { payload: payload }, (test) => {
 
   it('should GET the root folder', () => {
     return cloud.get('/hubs/helpdesk/folders')
-    .then(r => {for (var i=0;i<r.body.length;i++){if (r.body[i].title === "Root") {rootFolderID = r.body[i].id}}});
+    .then(r => {for (var i=0;i<r.body.length;i++){if (r.body[i].title === "Root") {rootFolderID = r.body[i].id;}}});
   });
 
   it('should POST the test folder', () => {
@@ -65,7 +65,6 @@ suite.forElement('helpdesk', 'timelogs', { payload: payload }, (test) => {
   });
 
   it('should allow GET timelog by id', () => {
-    var isGreaterThan = false;
     return cloud.get('/hubs/helpdesk/timelogs/' + timelogID)
     .then(r => expect(r).to.have.statusCode(200));
   });
