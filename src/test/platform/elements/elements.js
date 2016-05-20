@@ -56,6 +56,9 @@ suite.forPlatform('elements', opts, (test) => {
   it('should support CRUD by key', () => crudElement('key', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
   it('should support CRUD by ID', () => crudElement('id', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
 
+  it('should support JDBC element CRUD by key', () => crudElement('key', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
+  it('should support JDBC element CRUD by ID', () => crudElement('id', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
+
   it('should support export by key', () => cloud.get('elements/freshdesk/export', schema));
   it('should support export by ID', () => {
     return getElementId('freshdesk')
