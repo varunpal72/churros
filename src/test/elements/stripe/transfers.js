@@ -10,7 +10,7 @@ const updateTransfers = () => ({
 
 suite.forElement('payment', 'transfers', (test) => {
   test.should.supportSr();
-  it(`should allow Patch for ${test.api}`, () => {
+  it(`should allow PATCH for ${test.api}`, () => {
     let transferId;
     return cloud.get(`${test.api}`)
       .then(r => transferId = r.body[0].id)
