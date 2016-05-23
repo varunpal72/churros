@@ -97,13 +97,13 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   });
 
   it('should handle a very large event payload repeatedly', () => {
-    const formula = require('./assets/complex-successful-formula');
-    const formulaInstance = require('./assets/complex-successful-formula-instance');
+    const formula = require('./assets/formulas/complex-successful-formula');
+    const formulaInstance = require('./assets/formulas/complex-successful-formula-instance');
     formulaInstance.configuration[ 'trigger-instance' ] = sfdcId;
 
     const numFormulaInstances = 1;
     const numEvents = 1;
-    const numInOneEvent = 1;
+    const numInOneEvent = 200;
 
     let formulaId;
     let formulaInstances = [];

@@ -36,7 +36,7 @@ suite.forPlatform('formulas', opts, (test) => {
   });
 
   it('should allow updating a formula instance', () => {
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
     formulaInstance.configuration['trigger-instance'] = elementInstanceId;
     return cloud.put(`${test.api}/instances/${formulaInstanceId}`, formulaInstance);
   });

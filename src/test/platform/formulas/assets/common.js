@@ -114,14 +114,14 @@ exports.deleteFormula = deleteFormula;
 exports.createFAndFI = (element, config) => {
   element = element || 'closio';
   let elementInstanceId, formulaId, formulaInstanceId;
-  const formula = require('./simple-successful-formula');
+  const formula = require('./formulas/simple-successful-formula');
   return deleteFormulasByName('/formulas', 'simple-successful')
     .then(r => cloud.post('/formulas', formula, fSchema))
     .then(r => formulaId = r.body.id)
-    .then(r => provisioner.create(element, config)) 
+    .then(r => provisioner.create(element, config))
     .then(r => elementInstanceId = r.body.id)
     .then(r => {
-      const formulaInstance = require('./simple-successful-formula-instance');
+      const formulaInstance = require('./formulas/simple-successful-formula-instance');
       formulaInstance.configuration['trigger-instance'] = elementInstanceId;
       return cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema);
     })

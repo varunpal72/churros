@@ -204,12 +204,12 @@ const manuallyTriggerInstanceExecution = (fId, fiId, ev) =>
   cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, ev);
 
 const generateTripleSfdcPollingEvent = (instanceId) => {
-  const payload = require('./assets/triple-event-sfdc');
+  const payload = require('./assets/events/triple-event-sfdc');
   return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
 const generateSingleSfdcPollingEvent = (instanceId) => {
-  const payload = require('./assets/single-event-sfdc');
+  const payload = require('./assets/events/single-event-sfdc');
   return common.generateSfdcPollingEvent(instanceId, payload);
 };
 
@@ -291,8 +291,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a simple formula triggered by a single event', () => {
-    const formula = require('./assets/simple-successful-formula');
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formula = require('./assets/formulas/simple-successful-formula');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -315,8 +315,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a simple formula triggered by a triple event', () => {
-    const formula = require('./assets/simple-successful-formula');
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formula = require('./assets/formulas/simple-successful-formula');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -339,8 +339,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a formula and properly handle context between steps', () => {
-    const formula = require('./assets/script-context-successful-formula');
-    const formulaInstance = require('./assets/script-context-successful-formula-instance');
+    const formula = require('./assets/formulas/script-context-successful-formula');
+    const formulaInstance = require('./assets/formulas/script-context-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'script-context-successful')
@@ -363,8 +363,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a single threaded formula triggered by an event with three objects', () => {
-    const formula = require('./assets/simple-successful-formula-single-threaded');
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formula = require('./assets/formulas/simple-successful-formula-single-threaded');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -390,8 +390,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should properly handle a formula with a step that times out', () => {
-    const formula = require('./assets/simple-timeout-formula');
-    const formulaInstance = require('./assets/simple-timeout-formula-instance');
+    const formula = require('./assets/formulas/simple-timeout-formula');
+    const formulaInstance = require('./assets/formulas/simple-timeout-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-timeout')
@@ -414,8 +414,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should properly handle a formula with a step that returns no values', () => {
-    const formula = require('./assets/simple-no-return-formula');
-    const formulaInstance = require('./assets/simple-no-return-formula-instance');
+    const formula = require('./assets/formulas/simple-no-return-formula');
+    const formulaInstance = require('./assets/formulas/simple-no-return-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-no-return')
@@ -438,8 +438,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should properly handle a formula with a step that contains invalid json', () => {
-    const formula = require('./assets/simple-error-formula');
-    const formulaInstance = require('./assets/simple-error-formula-instance');
+    const formula = require('./assets/formulas/simple-error-formula');
+    const formulaInstance = require('./assets/formulas/simple-error-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-error')
@@ -462,8 +462,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should properly handle a single threaded formula with a step that contains invalid json, triggered by an event with three objects', () => {
-    const formula = require('./assets/simple-error-formula');
-    const formulaInstance = require('./assets/simple-error-formula-instance');
+    const formula = require('./assets/formulas/simple-error-formula');
+    const formulaInstance = require('./assets/formulas/simple-error-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-error')
@@ -489,8 +489,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a simple formula triggered manually', () => {
-    const formula = require('./assets/simple-successful-formula');
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formula = require('./assets/formulas/simple-successful-formula');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -520,8 +520,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a simple formula triggered by a request', () => {
-    const formula = require('./assets/simple-successful-request-trigger-formula');
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formula = require('./assets/formulas/simple-successful-request-trigger-formula');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -547,8 +547,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a simple formula triggered by schedule', () => {
-    const formula = require('./assets/simple-successful-scheduled-trigger-formula');
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formula = require('./assets/formulas/simple-successful-scheduled-trigger-formula');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -578,8 +578,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a simple loop formula triggered by a single event', () => {
-    const formula = require('./assets/loop-successful-formula');
-    const formulaInstance = require('./assets/loop-successful-formula-instance');
+    const formula = require('./assets/formulas/loop-successful-formula');
+    const formulaInstance = require('./assets/formulas/loop-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'loop-successful')
@@ -602,8 +602,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a simple element request formula triggered by a single event', () => {
-    const formula = require('./assets/element-request-successful-formula');
-    const formulaInstance = require('./assets/element-request-successful-formula-instance');
+    const formula = require('./assets/formulas/element-request-successful-formula');
+    const formulaInstance = require('./assets/formulas/element-request-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'element-request-successful')
@@ -626,8 +626,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute a large payload formula triggered by a single event', () => {
-    const formula = require('./assets/large-payload-successful-formula');
-    const formulaInstance = require('./assets/large-payload-successful-formula-instance');
+    const formula = require('./assets/formulas/large-payload-successful-formula');
+    const formulaInstance = require('./assets/formulas/large-payload-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'large-payload-successful')
@@ -650,8 +650,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should terminate an execution if the deactivate API is called during execution', () => {
-    const formula = require('./assets/loop-formula');
-    const formulaInstance = require('./assets/loop-formula-instance');
+    const formula = require('./assets/formulas/loop-formula');
+    const formulaInstance = require('./assets/formulas/loop-formula-instance');
     formulaInstance.configuration['sfdc.instance.id'] = sfdcId;
 
     const isActiveValidation = (r) => {
@@ -705,8 +705,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute three simple formula instances triggered by a single event', () => {
-    const formula = require('./assets/simple-successful-formula');
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formula = require('./assets/formulas/simple-successful-formula');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId1, formulaInstanceId2, formulaInstanceId3;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -749,14 +749,14 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute three different formula instances triggered by a single event', () => {
-    const formula1 = require('./assets/simple-successful-formula');
-    const formulaInstance1 = require('./assets/simple-successful-formula-instance');
+    const formula1 = require('./assets/formulas/simple-successful-formula');
+    const formulaInstance1 = require('./assets/formulas/simple-successful-formula-instance');
 
-    const formula2 = require('./assets/element-request-successful-formula');
-    const formulaInstance2 = require('./assets/element-request-successful-formula-instance');
+    const formula2 = require('./assets/formulas/element-request-successful-formula');
+    const formulaInstance2 = require('./assets/formulas/element-request-successful-formula-instance');
 
-    const formula3 = require('./assets/loop-successful-formula');
-    const formulaInstance3 = require('./assets/loop-successful-formula-instance');
+    const formula3 = require('./assets/formulas/loop-successful-formula');
+    const formulaInstance3 = require('./assets/formulas/loop-successful-formula-instance');
 
     let formulaId1, formulaId2, formulaId3, formulaInstanceId1, formulaInstanceId2, formulaInstanceId3;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -811,8 +811,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute one simple formula instance x number of times for x events', () => {
-    const formula = require('./assets/simple-successful-formula');
-    const formulaInstance = require('./assets/simple-successful-formula-instance');
+    const formula = require('./assets/formulas/simple-successful-formula');
+    const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-successful')
@@ -835,8 +835,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should successfully execute one complex formula instance x number of times for x events', () => {
-    const formula = require('./assets/complex-successful-formula');
-    const formulaInstance = require('./assets/complex-successful-formula-instance');
+    const formula = require('./assets/formulas/complex-successful-formula');
+    const formulaInstance = require('./assets/formulas/complex-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'complex-successful')
@@ -859,8 +859,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should support an on failure for a script step', () => {
-    const formula = require('./assets/script-with-on-failure-successful-formula');
-    const formulaInstance = require('./assets/script-with-on-failure-successful-formula-instance');
+    const formula = require('./assets/formulas/script-with-on-failure-successful-formula');
+    const formulaInstance = require('./assets/formulas/script-with-on-failure-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'script-with-on-failure-successful')
@@ -883,8 +883,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test)
   });
 
   it('should show a successful execution, even if the last step is a filter step that returns false', () => {
-    const formula = require('./assets/filter-returns-false');
-    const formulaInstance = require('./assets/filter-returns-false-instance');
+    const formula = require('./assets/formulas/filter-returns-false');
+    const formulaInstance = require('./assets/formulas/filter-returns-false-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'filter-returns-false')

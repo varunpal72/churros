@@ -22,14 +22,16 @@ suite.forPlatform('pagination', { name: 'formula execution pagination' }, (test)
   let formulaId, formulaInstanceId, elementInstanceId;
   before(() => {
     const config = { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 };
+    const e = require('./assets/events/single-event-sfdc');
+
     return common.createFAndFI('sfdc', config)
       .then(r => {
         formulaId = r.formulaId;
         formulaInstanceId = r.formulaInstanceId;
         elementInstanceId = r.elementInstanceId;
       })
-      .then(r => common.generateSfdcEvent(elementInstanceId, require('./assets/single-event-sfdc')))
-      .then(r => common.generateSfdcEvent(elementInstanceId, require('./assets/single-event-sfdc')))
+      .then(r => common.generateSfdcEvent(elementInstanceId, e))
+      .then(r => common.generateSfdcEvent(elementInstanceId, e))
       .then(r => tools.sleep(5))
       .catch(r => terminate(r));
   });
