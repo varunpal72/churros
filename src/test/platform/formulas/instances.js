@@ -5,13 +5,6 @@ const common = require('./assets/common');
 const schema = require('./assets/schemas/formula.schema.json');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
-const provisioner = require('core/provisioner');
-
-const cleanup = (eiId, fId, fiId) => {
-  return cloud.delete(`/formulas/${fId}/instances/${fiId}`)
-    .then(r => cloud.delete(`/formulas/${fId}`))
-    .then(r => provisioner.delete(eiId));
-};
 
 const opts = { name: 'formula instances', payload: common.genFormula({}), schema: schema };
 
@@ -28,11 +21,11 @@ suite.forPlatform('formulas', opts, (test) => {
   });
 
   /* Cleanup */
-  after(() => cleanup(elementInstanceId, formulaId, formulaInstanceId));
+  after(() => common.cleanup(elementInstanceId, formulaId, formulaInstanceId));
 
   /* 200 on DELETE and PUT to /formulas/:id/instances/:id/active to activate and deactivate instance */
   it('should allow activating and deactivating formula instance', () => {
-    const baseApi = `/formulas/${formulaId}/instances/${formulaInstanceId}`;
+    const baseApi = `/formulas/instances/${formulaInstanceId}`;
     const api = `${baseApi}/active`;
     return cloud.delete(api)
       .then(r => cloud.get(baseApi))
@@ -45,7 +38,7 @@ suite.forPlatform('formulas', opts, (test) => {
   it('should allow updating a formula instance', () => {
     const formulaInstance = require('./assets/simple-successful-formula-instance');
     formulaInstance.configuration['trigger-instance'] = elementInstanceId;
-    return cloud.put(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance);
+    return cloud.put(`${test.api}/instances/${formulaInstanceId}`, formulaInstance);
   });
 
   /* 404 on PUT where formula and formula instance do not exist */
