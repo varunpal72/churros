@@ -7,7 +7,7 @@ var exports = module.exports = {};
 /**
  * Delete by key and ignore the response
  * @param  {string}  key The element key
- * @return {promise} A JS promise   
+ * @return {promise} A JS promise
  */
 exports.deleteElementByKey = (key) => cloud.delete(`/elements/${key}`, () => {});
 
@@ -16,6 +16,14 @@ exports.genElement = (opts) => ({
   description: (opts.description || "A Churros element"),
   authentication: (opts.authentication) || { type: 'basic' },
   configuration: (opts.configuration) || [exports.genBaseUrlConfig({})]
+});
+
+exports.genDBElement = (opts) => ({
+  name: (opts.name || 'Churros DB element'),
+  description: (opts.description || "A Churros database element"),
+  authentication: (opts.authentication) || { type: 'custom' },
+  protocolType: (opts.protocolType) || 'jdbc',
+  configuration: (opts.configuration) || [exports.genJdbcBaseUrlConfig({})]
 });
 
 exports.genConfig = (opts) => new Object({
@@ -30,6 +38,14 @@ exports.genBaseUrlConfig = (opts) => new Object({
   key: 'base.url',
   description: (opts.description || 'The base URL'),
   defaultValue: 'http://fake.churros.url.com',
+  type: 'TEXTFIELD_1000'
+});
+
+exports.genJdbcBaseUrlConfig = (opts) => new Object({
+  name: (opts.name || 'Base URL'),
+  key: 'base.url',
+  description: (opts.description || 'The Jdbc base URL'),
+  defaultValue: 'jdbc:postgresql://{db.host}/{db.name}',
   type: 'TEXTFIELD_1000'
 });
 
