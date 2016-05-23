@@ -277,7 +277,7 @@ const validateScriptOnFailureStepExecutions = {
   forEvents: (num) => validateScriptOnFailureStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
-suite.forPlatform('formulas', { name: 'formula executions', skip: true }, (test) => {
+suite.forPlatform('formulas', { name: 'formula executions', skip: false}, (test) => {
   let sfdcId;
   before(() => {
     return provisionSfdcWithPolling()
@@ -697,7 +697,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: true }, (test)
       .then(r => isStartedValidation(r)) // make sure execution started
       .then(r => formulaInstanceExecutionId = r.body[0].id)
       .then(r => cloud.delete(`/formulas/${formulaId}/instances/${formulaInstanceId}/active`)) // deactivate formula instance
-      .then(() => tools.sleep(10)) // wait for the formula to be terminated
+      .then(() => tools.sleep(20)) // wait for the formula to be terminated
       .then(r => common.getFormulaInstanceExecution(formulaId, formulaInstanceId, formulaInstanceExecutionId))
       .then(r => validateTerminatedExecution(r.body)) // make sure that the formula was actually deactivated
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
