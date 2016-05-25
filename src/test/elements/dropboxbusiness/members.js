@@ -10,7 +10,7 @@ suite.forElement('documents', 'members', { payload: payload }, (test) => {
   let external_id = 'company_id:342432';
 
   test.should.return200OnGet();
-  it('should support CD for members', () => {
+  it('should support CD for ${test.api}', () => {
     let newMemberId;
     return cloud.post(test.api, payload)
       .then(r => newMemberId = r.body.complete[0].profile.team_member_id)
