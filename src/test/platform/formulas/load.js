@@ -37,7 +37,7 @@ const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) =
           pending: executions.filter(e => e.status === 'pending').length
         };
         if (status.success + status.failed < numExpected) {
-          if (attemptNum > 100) {
+          if (attemptNum > 500) {
             throw Error(`Attempt limit of 100 exceeded, quitting`);
           }
 
@@ -85,7 +85,7 @@ const createXInstances = (x, formulaId, formulaInstance) => {
 /**
  * Tests formula executions under heavy load (number of events, size of events, etc.)
  */
-suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
+suite.forPlatform('formulas', { name: 'formulas load', skip: false }, (test) => {
   let sfdcId;
   before(() => common.deleteFormulasByName(test.api, 'complex-successful')
     .then(r => common.provisionSfdcWithWebhook())

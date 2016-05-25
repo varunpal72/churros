@@ -25,7 +25,7 @@ suite.forPlatform('formulas', opts, (test) => {
 
   /* 200 on DELETE and PUT to /formulas/:id/instances/:id/active to activate and deactivate instance */
   it('should allow activating and deactivating formula instance', () => {
-    const baseApi = `/formulas/instances/${formulaInstanceId}`;
+    const baseApi = `/formulas/${formulaId}/instances/${formulaInstanceId}`;
     const api = `${baseApi}/active`;
     return cloud.delete(api)
       .then(r => cloud.get(baseApi))
@@ -38,7 +38,7 @@ suite.forPlatform('formulas', opts, (test) => {
   it('should allow updating a formula instance', () => {
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
     formulaInstance.configuration['trigger-instance'] = elementInstanceId;
-    return cloud.put(`${test.api}/instances/${formulaInstanceId}`, formulaInstance);
+    return cloud.put(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance);
   });
 
   /* 404 on PUT where formula and formula instance do not exist */

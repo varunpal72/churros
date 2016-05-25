@@ -112,7 +112,7 @@ exports.deleteFormulaInstance = deleteFormulaInstance;
 exports.deleteFormula = deleteFormula;
 
 exports.createFAndFI = (element, config) => {
-  element = element || 'closio';
+  element = element || 'closeio';
   let elementInstanceId, formulaId, formulaInstanceId;
   const formula = require('./formulas/simple-successful-formula');
   return deleteFormulasByName('/formulas', 'simple-successful')
