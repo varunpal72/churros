@@ -277,7 +277,7 @@ const validateScriptOnFailureStepExecutions = {
   forEvents: (num) => validateScriptOnFailureStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
-suite.forPlatform('formulas', { name: 'formula executions', skip: true }, (test) => {
+suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test) => {
   let sfdcId;
   before(() => {
     return provisionSfdcWithPolling()

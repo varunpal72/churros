@@ -7,7 +7,6 @@ const executionSchema = require('./assets/schemas/execution.schema');
 const executionsSchema = require('./assets/schemas/executions.schema');
 const stepExecutionSchema = require('./assets/schemas/step-execution.schema');
 const stepExecutionsSchema = require('./assets/schemas/step-executions.schema');
-const stepExecutionValueSchema = require('./assets/schemas/step-execution-value.schema');
 const stepExecutionValuesSchema = require('./assets/schemas/step-execution-values.schema');
 const suite = require('core/suite');
 const tools = require('core/tools');
@@ -66,7 +65,6 @@ suite.forPlatform('pagination', { name: 'formula execution pagination' }, (test)
       .then(r => cloud.get(`/formulas/instances/executions/${r.body[0].id}`, executionSchema))
       .then(r => cloud.withOptions(options).get(`/formulas/instances/executions/${r.body.id}/steps`, validator(stepExecutionsSchema)))
       .then(r => cloud.get(`/formulas/instances/executions/steps/${r.body[0].id}`, stepExecutionSchema))
-      .then(r => cloud.withOptions(options).get(`/formulas/instances/executions/steps/${r.body.id}/values`, validator(stepExecutionValuesSchema)))
-      .then(r => cloud.withOptions(options).get(`/formulas/instances/executions/steps/values/${r.body[0].id}`, stepExecutionValueSchema));
+      .then(r => cloud.withOptions(options).get(`/formulas/instances/executions/steps/${r.body.id}/values`, validator(stepExecutionValuesSchema)));
   });
 });
