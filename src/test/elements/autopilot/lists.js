@@ -14,11 +14,20 @@ const contactPayload = (email) => ({
 });
 
 suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
-  let testListId = -1;
-  before(() => cloud.get(test.api)
-    .then(r => testListId = r.body[0].listId)
-    .then(r => expect(r.body[0].attributes.title).to.equal('Test List'))
-  );
+  let testListId;
+  before(() => {
+    return cloud.get(test.api)
+    .then(r => {
+      var match = r.body.filter(function(list) {
+        return list.title === 'Test List';
+      });
+      if (match.length === 1) {
+        testListId = match[0].listId;
+      } else {
+        // bail
+      }
+    })
+  });
   it('should allow cursor pagination for /hubs/marketing/lists/{id}/contacts', () => {
     const options = { qs: { pageSize: 100}};
     return cloud.withOptions(options).get(`${test.api}/${testListId}/contacts`)
@@ -28,19 +37,18 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
         return cloud.withOptions(options).get(`${test.api}/${testListId}/contacts`);
       });
   });
-  // it('should allow CS for /hubs/marketing/lists and CDS for lists/{id}/contacts', () => {
-  //   let email = tools.randomEmail().toString();
-  //   let contactId = -1;
-  //   let listId = -1;
-  //   return cloud.post(test.api, payload)
-  //     .then(r => listId = r.body.id)
-  //     .then(r => cloud.get(test.api))
-  //     .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
-  //     .then(r => cloud.post('/hubs/marketing/contacts', contactPayload(email)))
-  //     .then(r => contactId = r.body.contactId)
-  //     .then(r => cloud.post(`${test.api}/${listId}/contacts/${contactId}`))
-  //     .then(r => cloud.get(`${test.api}/${listId}/contacts`))
-  //     .then(r => cloud.delete(`${test.api}/${listId}/contacts/${contactId}`));
-  // });
-
+  it('should allow CS for /hubs/marketing/lists and CDS for lists/{id}/contacts', () => {
+    let email = tools.randomEmail().toString();
+    let contactId = -1;
+    let listId = -1;
+    return cloud.post(test.api, payload)
+      .then(r => listId = r.body.listId)
+      .then(r => cloud.get(test.api))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
+      .then(r => cloud.post('/hubs/marketing/contacts', contactPayload(email)))
+      .then(r => contactId = r.body.id)
+      .then(r => cloud.post(`${test.api}/${listId}/contacts/${contactId}`))
+      .then(r => cloud.get(`${test.api}/${listId}/contacts`))
+      .then(r => cloud.delete(`${test.api}/${listId}/contacts/${contactId}`));
+  });
 });
