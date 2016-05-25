@@ -29,7 +29,7 @@ suite.forElement('marketing', 'contacts', null, (test) => {
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
   it('should allow cursor pagination for /hubs/marketing/contacts', () => {
-    const options = { qs: { pageSize: 100}};
+    const options = { qs: { pageSize: 100 } };
     return cloud.withOptions(options).get(test.api)
       .then(r => {
         expect(r.body).to.not.be.null;

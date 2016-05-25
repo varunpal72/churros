@@ -3,8 +3,6 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const chakram = require('chakram');
-const expect = chakram.expect;
 
 const contactPayload = (email) => ({
   "FirstName": "Mr.",

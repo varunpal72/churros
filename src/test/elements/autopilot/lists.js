@@ -17,19 +17,19 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
   let testListId;
   before(() => {
     return cloud.get(test.api)
-    .then(r => {
-      var match = r.body.filter(function(list) {
-        return list.title === 'Test List';
+      .then(r => {
+        var match = r.body.filter(function(list) {
+          return list.title === 'Test List';
+        });
+        if (match.length === 1) {
+          testListId = match[0].listId;
+        } else {
+          // bail
+        }
       });
-      if (match.length === 1) {
-        testListId = match[0].listId;
-      } else {
-        // bail
-      }
-    })
   });
   it('should allow cursor pagination for /hubs/marketing/lists/{id}/contacts', () => {
-    const options = { qs: { pageSize: 100}};
+    const options = { qs: { pageSize: 100 } };
     return cloud.withOptions(options).get(`${test.api}/${testListId}/contacts`)
       .then(r => {
         expect(r.body).to.not.be.null;
