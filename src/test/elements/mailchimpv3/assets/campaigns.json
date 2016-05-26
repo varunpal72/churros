@@ -1,0 +1,11 @@
+{
+  "recipients": {
+    "list_id": "7c11127640"
+  },
+  "type": "regular",
+  "settings": {
+    "subject_line": "Churros",
+    "reply_to": "churros@example.com",
+    "from_name": "Senor Churro"
+  }
+}
