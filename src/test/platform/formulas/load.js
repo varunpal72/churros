@@ -28,7 +28,7 @@ const simulateTrigger = (num, instanceId, payload, simulateCb) => {
 
 const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) => {
   return new Promise((res, rej) => {
-    return common.getAllExecutions(formulaId, formulaInstanceId)
+    return common.getAllExecutions(formulaInstanceId)
       .then(executions => {
         let status = {
           started: executions.length,

@@ -91,22 +91,22 @@ const deleteFormulasByName = (api, name) =>
     .then(() => deleteFormulas(fs)));
 exports.deleteFormulasByName = deleteFormulasByName;
 
-const getAllExecutions = (fId, fiId, nextPage, all) => {
+const getAllExecutions = (fiId, nextPage, all) => {
   all = all || [];
   const options = { qs: { nextPage: nextPage, pageSize: 200 } };
-  return cloud.withOptions(options).get(`/formulas/${fId}/instances/${fiId}/executions`)
+  return cloud.withOptions(options).get(`/formulas/instances/${fiId}/executions`)
     .then(r => {
       expect(r.body).to.not.be.null;
       all = all.concat(r.body);
       const npt = r.response.headers['elements-next-page-token'];
-      return npt === undefined ? all : getAllExecutions(fId, fiId, npt, all);
+      return npt === undefined ? all : getAllExecutions(fiId, npt, all);
     });
 };
 exports.getAllExecutions = getAllExecutions;
 
-exports.getFormulaInstanceExecutions = (fId, fiId) => cloud.get(`/formulas/${fId}/instances/${fiId}/executions`);
+exports.getFormulaInstanceExecutions = (fiId) => cloud.get(`/formulas/instances/${fiId}/executions`);
 
-exports.getFormulaInstanceExecution = (fId, fiId, fieId) => cloud.get(`/formulas/${fId}/instances/${fiId}/executions/${fieId}`);
+exports.getFormulaInstanceExecution = (fieId) => cloud.get(`/formulas/instances/executions/${fieId}`);
 
 exports.deleteFormulaInstance = deleteFormulaInstance;
 exports.deleteFormula = deleteFormula;
@@ -130,10 +130,10 @@ exports.createFAndFI = (element, config) => {
 };
 
 exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
-  exports.getFormulaInstanceExecutions(fId, fiId)
+  exports.getFormulaInstanceExecutions(fiId)
     .then(r => {
       if (r.body.length === numExecs) {
-        Promise.all(r.body.map(fie => exports.getFormulaInstanceExecution(fId, fiId, fie.id)))
+        Promise.all(r.body.map(fie => exports.getFormulaInstanceExecution(fie.id)))
           .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
           .then(fieses => [].concat.apply([], fieses))
           .then(ses => {
