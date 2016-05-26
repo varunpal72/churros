@@ -6,11 +6,11 @@ const tools = require('core/tools');
 const expect = require('chakram').expect;
 
 suite.forElement('documents', 'files', (test) => {
-  let query = { path: `/top/My files & Folders/file-${tools.random()}.txt` };
+  let query = { path: `/My files & Folders/file-${tools.random()}.txt` };
   let fileId;
   let copyId1;
   let copyId2;
-  let copyPath = { path: `/top/My Files & Folders`};
+  let copyPath = { path: `/My Files & Folders`};
 
   it('Testing file uploading/downloading', () => {
     let resbody;
@@ -30,7 +30,7 @@ suite.forElement('documents', 'files', (test) => {
 
   it('Testing file copy and delete', () => {
     return cloud.get('/hubs/documents/files/' + copyId1 + '/metadata')
-    .then(r =>   cloud.withOptions({ qs: {path : r.body['path'] } }).post('/hubs/documents/files/copy', {"path":"/top/My Files & Folders"}))
+    .then(r =>   cloud.withOptions({ qs: {path : r.body['path'] } }).post('/hubs/documents/files/copy', {"path":"/My Files & Folders"}))
     .then(r => copyPath = r.body['path'])
     .then(r => cloud.withOptions({qs: {path: copyPath}}).delete('/hubs/documents/files'));
   })

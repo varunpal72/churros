@@ -11,7 +11,7 @@ suite.forElement('documents', 'folders', payload, (test) => {
   it('Testing folder creating/deleting', () => {
     let folderId;
     let copyPath;
-    let folderpath = `/top/My Files & Folders`;
+    let folderpath = `/My Files & Folders`;
     return cloud.post('/hubs/documents/folders', payload)
     .then(r => folderId = r.body.id)
     .then(r => cloud.get('hubs/documents/folders/'+ folderId +'/contents' ))
@@ -21,12 +21,12 @@ suite.forElement('documents', 'folders', payload, (test) => {
     .then(r => cloud.delete('/hubs/documents/folders/' + folderId))
     .then(r => cloud.withOptions({qs:{path:copyPath}}).delete('/hubs/documents/folders'));
   })
-  test.withOptions({qs:{path:'/top'}}).withApi('/hubs/documents/folders/metadata').should.return200OnGet();
+  test.withOptions({qs:{path:'/'}}).withApi('/hubs/documents/folders/metadata').should.return200OnGet();
   it('Testing folder updating', () => {
-    return cloud.withOptions({qs:{path:'/top/My Files & Folders'}}).get('/hubs/documents/folders/contents')
+    return cloud.withOptions({qs:{path:'/My Files & Folders'}}).get('/hubs/documents/folders/contents')
     .then(r => cloud.withOptions({qs:{path:r.body[0]['path']}}).patch('/hubs/documents/folders/metadata', r.body[0]))
     .then(r => cloud.patch('/hubs/documents/folders/' + r.body.id +'/metadata', r.body))
-    .then(r => cloud.withOptions({qs:{path:r.body['path']}}).post('/hubs/documents/folders/copy',{path:`/top/My Files & Folders`}))
+    .then(r => cloud.withOptions({qs:{path:r.body['path']}}).post('/hubs/documents/folders/copy',{path:`/My Files & Folders`}))
     .then(r => cloud.withOptions({qs:{path:r.body['path']}}).post('hubs/documents/folders/favorites'))
     .then(r => cloud.delete('/hubs/documents/folders/' + r.body.id));
   })
