@@ -27,7 +27,7 @@ suite.forPlatform('notifications', opts, (test) => {
   test
     .withOptions({ qs: { 'topics[]': a.topic } })
     .withJson(a)
-    .should.supportNextPagePagination();
+    .should.supportNextPagePagination(5, true);
 
   // test with missing topic should be bad too
   const n = genNotif({});
