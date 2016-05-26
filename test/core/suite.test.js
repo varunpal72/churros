@@ -97,6 +97,9 @@ describe('suite', () => {
       .should.return404OnDelete();
     test
       .withApi('/foo/pagination')
+      .should.supportNextPagePagination(1, true);
+    test
+      .withApi('/foo/pagination')
       .should.supportNextPagePagination(1);
 
     /* no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above */

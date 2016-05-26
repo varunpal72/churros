@@ -135,7 +135,20 @@
     "fields":[{
       "path": "id",
       "type": "string"
-      }]
+      }, {
+      "path": "listId",
+      "type": "string"
+      }, {
+      "path": "contactId",
+      "type": "string"
+      }
+    ]
+  },
+  "fields": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
   },
   "notes":{
     "fields":[{

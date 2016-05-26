@@ -64,7 +64,7 @@ const itPagination = (name, api, validationCb) => {
   it(n, () => cloud.withOptions(options).get(api, validationCb));
 };
 
-const paginate = (api, options, nextPage, page, max, all) => {
+const paginate = (api, options, validationCb, nextPage, page, max, all) => {
   if (page > max) return all;
   logger.debug(`finding page ${page} of results for ${api} using ${nextPage}`);
 
@@ -73,23 +73,22 @@ const paginate = (api, options, nextPage, page, max, all) => {
   options.qs.nextPage = nextPage;
   options.qs.pageSize = 1;
 
-  return cloud.withOptions(options).get(api)
+  return cloud.withOptions(options).get(api, validationCb)
     .then(r => {
       expect(r.body).to.not.be.null;
       all = all.concat(r.body);
-      return paginate(api, options, r.response.headers['elements-next-page-token'], page + 1, max, all);
+      return paginate(api, options, validationCb, r.response.headers['elements-next-page-token'], page + 1, max, all);
     });
 };
 
 /**
- * Creates a few objects, and then, using our ?pageSize=x&nextPage=y pagination, tests out paginating this resource
+ * If 'shouldCreate', creates a few objects, and then, using our ?pageSize=x&nextPage=y pagination, tests out paginating this resource
  * @param  {string} name         The optional test name
  * @param  {string} api          The API resource
  * @param  {function} validationCb The optional validation CB
  */
-const itNextPagePagination = (name, api, payload, amount, options, validationCb) => {
-  const n = name || `should allow paginating with page and nextPage ${api}`;
-  it(n, () => {
+const itNextPagePagination = (name, api, payload, amount, shouldCreate, options, validationCb) => {
+  const itNextPagePaginationCreate = () => {
     const ids = [];
     const promises = [];
     amount = amount || 5;
@@ -98,9 +97,21 @@ const itNextPagePagination = (name, api, payload, amount, options, validationCb)
 
     return chakram.all(promises)
       .then(r => r.forEach(o => ids.push(o.body.id)))
-      .then(r => paginate(api, options, null, 1, amount, []))
+      .then(r => paginate(api, options, validationCb, null, 1, amount, []))
       .then(r => expect(r).to.have.length(amount))
       .then(r => ids.forEach(id => cloud.delete(`${api}/${id}`)));
+  };
+
+  const itNextPagePagination = () => {
+    return paginate(api, options, validationCb, null, 1, amount, [])
+      .then(r => expect(r).to.have.length(amount));
+  };
+
+  const n = name || `should allow paginating with page and nextPage ${api}`;
+  it(n, () => {
+    return shouldCreate ?
+      itNextPagePaginationCreate() :
+      itNextPagePagination();
   });
 };
 
@@ -151,7 +162,7 @@ const runTests = (api, payload, validationCb, tests) => {
     return200OnPost: () => itPost(name, api, payload, options, validationCb),
     return200OnGet: () => itGet(name, api, options, validationCb),
     supportPagination: () => itPagination(name, api, validationCb),
-    supportNextPagePagination: (amount) => itNextPagePagination(name, api, payload, amount, options, validationCb),
+    supportNextPagePagination: (amount, shouldCreate) => itNextPagePagination(name, api, payload, amount, shouldCreate, options, validationCb),
     supportCeqlSearch: (field) => itCeqlSearch(name, api, payload, field),
     supportCruds: (updateCb) => itCruds(name, api, payload, validationCb, updateCb, options),
     supportCrud: (updateCb) => itCrud(name, api, payload, validationCb, updateCb, options),

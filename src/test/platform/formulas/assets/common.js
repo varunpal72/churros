@@ -111,13 +111,14 @@ exports.getFormulaInstanceExecution = (fId, fiId, fieId) => cloud.get(`/formulas
 exports.deleteFormulaInstance = deleteFormulaInstance;
 exports.deleteFormula = deleteFormula;
 
-exports.createFAndFI = () => {
+exports.createFAndFI = (element, config) => {
+  element = element || 'closio';
   let elementInstanceId, formulaId, formulaInstanceId;
   const formula = require('./simple-successful-formula');
   return deleteFormulasByName('/formulas', 'simple-successful')
     .then(r => cloud.post('/formulas', formula, fSchema))
     .then(r => formulaId = r.body.id)
-    .then(r => provisioner.create('closeio')) // just chose a random element, as i just need a valid ID
+    .then(r => provisioner.create(element, config)) 
     .then(r => elementInstanceId = r.body.id)
     .then(r => {
       const formulaInstance = require('./simple-successful-formula-instance');
@@ -145,4 +146,10 @@ exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
           });
       }
     });
+};
+
+exports.cleanup = (eiId, fId, fiId) => {
+  return cloud.delete(`/formulas/${fId}/instances/${fiId}`)
+    .then(r => cloud.delete(`/formulas/${fId}`))
+    .then(r => provisioner.delete(eiId));
 };
