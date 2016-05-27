@@ -27,6 +27,7 @@ suite.forPlatform('notifications', opts, (test) => {
   test
     .withOptions({ qs: { 'topics[]': a.topic } })
     .withJson(a)
+    .withValidation(pluralSchema)
     .should.supportNextPagePagination(5, true);
 
   // test with missing topic should be bad too
