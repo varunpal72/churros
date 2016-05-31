@@ -107,7 +107,17 @@ exports.getAllExecutions = getAllExecutions;
 
 exports.getFormulaInstanceExecutions = (fiId) => cloud.get(`/formulas/instances/${fiId}/executions`);
 
-exports.getFormulaInstanceExecution = (fieId) => cloud.get(`/formulas/instances/executions/${fieId}`);
+const getFormulaInstanceExecution = (fieId) => cloud.get(`/formulas/instances/executions/${fieId}`);
+
+exports.getFormulaInstanceExecutionWithSteps = (fieId) => {
+  return getFormulaInstanceExecution(fieId)
+    .then(r => {
+      const fie = r.body;
+      return cloud.withOptions({ qs: { includeValues: true } }).get(`/formulas/instances/executions/${fieId}/steps`)
+        .then(r => fie.stepExecutions = r.body)
+        .then(r => fie);
+    });
+};
 
 exports.deleteFormulaInstance = deleteFormulaInstance;
 exports.deleteFormula = deleteFormula;
@@ -131,15 +141,15 @@ exports.createFAndFI = (element, config) => {
 };
 
 exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
-  exports.getFormulaInstanceExecutions(fiId)
+  return exports.getFormulaInstanceExecutions(fiId)
     .then(r => {
       if (r.body.length === numExecs) {
-        Promise.all(r.body.map(fie => exports.getFormulaInstanceExecution(fie.id)))
+        Promise.all(r.body.map(fie => getFormulaInstanceExecution(fie.id)))
           .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
           .then(fieses => [].concat.apply([], fieses))
           .then(ses => {
             const numPending = ses.filter(se => se.status === 'pending').length;
-            if (ses.length === (numExecVals * numExecs) &&  numPending === 0) {
+            if (ses.length === (numExecVals * numExecs) && numPending === 0) {
               logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
               cb();
             } else {

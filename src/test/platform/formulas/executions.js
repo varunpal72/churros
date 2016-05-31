@@ -309,8 +309,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -333,8 +333,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -357,8 +357,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateScriptContextSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateScriptContextSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -384,8 +384,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -408,8 +408,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleTimeoutStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleTimeoutStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -432,8 +432,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleNoReturnStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleNoReturnStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -456,8 +456,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleErrorStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -483,8 +483,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forEvents(3))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleErrorStepExecutions.forEvents(3))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -514,8 +514,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -541,8 +541,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleErrorStepExecutions.forRequest)))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleErrorStepExecutions.forRequest)))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -572,8 +572,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulScheduledStepExecutions.forScheduled())))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulScheduledStepExecutions.forScheduled())))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -596,8 +596,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateLoopSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateLoopSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -620,8 +620,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateElementRequestSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateElementRequestSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -644,8 +644,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateLargePayloadSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateLargePayloadSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -699,8 +699,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(r => formulaInstanceExecutionId = r.body[0].id)
       .then(r => cloud.delete(`/formulas/${formulaId}/instances/${formulaInstanceId}/active`)) // deactivate formula instance
       .then(() => tools.sleep(20)) // wait for the formula to be terminated
-      .then(r => common.getFormulaInstanceExecution(formulaInstanceExecutionId))
-      .then(r => validateTerminatedExecution(r.body)) // make sure that the formula was actually deactivated
+      .then(r => common.getFormulaInstanceExecutionWithSteps(formulaInstanceExecutionId))
+      .then(r => validateTerminatedExecution(r)) // make sure that the formula was actually deactivated
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -727,22 +727,22 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.getFormulaInstanceExecutions(formulaInstanceId2))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.getFormulaInstanceExecutions(formulaInstanceId3))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId1))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId2))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId3))
@@ -787,22 +787,22 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.getFormulaInstanceExecutions(formulaInstanceId2))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateElementRequestSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateElementRequestSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.getFormulaInstanceExecutions(formulaInstanceId3))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateLoopSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateLoopSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId1, formulaInstanceId1))
       .then(() => common.deleteFormulaInstance(formulaId2, formulaInstanceId2))
       .then(() => common.deleteFormulaInstance(formulaId3, formulaInstanceId3))
@@ -829,8 +829,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(10);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -853,8 +853,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateComplexSuccessfulStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateComplexSuccessfulStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -877,8 +877,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
         return r;
       })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecution(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r.body)(validateScriptOnFailureStepExecutions.forEvents(1))))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateScriptOnFailureStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
