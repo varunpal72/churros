@@ -47,8 +47,9 @@ const validateSimpleSuccessfulScheduledTrigger = t => {
   expect(flat['trigger.type']).to.equal('scheduled');
 };
 
-const validateStepExecutionStatus = (se, status) =>
+const validateStepExecutionStatus = (se, status) => {
   expect(se).to.have.property('status').and.equal(status);
+};
 
 const validateSuccessfulStepExecution = se =>
   validateStepExecutionStatus(se, 'success');

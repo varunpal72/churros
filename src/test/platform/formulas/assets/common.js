@@ -96,6 +96,7 @@ const getAllExecutions = (fiId, nextPage, all) => {
   const options = { qs: { nextPage: nextPage, pageSize: 200 } };
   return cloud.withOptions(options).get(`/formulas/instances/${fiId}/executions`)
     .then(r => {
+      expect(r).to.have.statusCode(200);
       expect(r.body).to.not.be.null;
       all = all.concat(r.body);
       const npt = r.response.headers['elements-next-page-token'];
@@ -137,7 +138,8 @@ exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
           .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
           .then(fieses => [].concat.apply([], fieses))
           .then(ses => {
-            if (ses.length === (numExecVals * numExecs) && ses.filter(se => se.status === 'pending' === 0)) {
+            const numPending = ses.filter(se => se.status === 'pending').length;
+            if (ses.length === (numExecVals * numExecs) &&  numPending === 0) {
               logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
               cb();
             } else {
