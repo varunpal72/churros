@@ -28,7 +28,7 @@ const simulateTrigger = (num, instanceId, payload, simulateCb) => {
 
 const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) => {
   return new Promise((res, rej) => {
-    return common.getAllExecutions(formulaId, formulaInstanceId)
+    return common.getAllExecutions(formulaInstanceId)
       .then(executions => {
         let status = {
           started: executions.length,
@@ -37,7 +37,7 @@ const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) =
           pending: executions.filter(e => e.status === 'pending').length
         };
         if (status.success + status.failed < numExpected) {
-          if (attemptNum > 100) {
+          if (attemptNum > 500) {
             throw Error(`Attempt limit of 100 exceeded, quitting`);
           }
 
@@ -97,13 +97,13 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   });
 
   it('should handle a very large event payload repeatedly', () => {
-    const formula = require('./assets/complex-successful-formula');
-    const formulaInstance = require('./assets/complex-successful-formula-instance');
+    const formula = require('./assets/formulas/complex-successful-formula');
+    const formulaInstance = require('./assets/formulas/complex-successful-formula-instance');
     formulaInstance.configuration[ 'trigger-instance' ] = sfdcId;
 
     const numFormulaInstances = 1;
     const numEvents = 1;
-    const numInOneEvent = 1;
+    const numInOneEvent = 200;
 
     let formulaId;
     let formulaInstances = [];

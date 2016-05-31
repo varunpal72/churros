@@ -3,7 +3,7 @@
 const cloud = require('core/cloud');
 const common = require('./assets/common');
 const expect = require('chakram').expect;
-const invalidJson = require('./assets/formula-with-invalid-step-properties');
+const invalidJson = require('./assets/formulas/formula-with-invalid-step-properties');
 const suite = require('core/suite');
 const schema = require('./assets/schemas/formula.schema');
 
