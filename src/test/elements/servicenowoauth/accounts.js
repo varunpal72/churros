@@ -3,17 +3,15 @@
 const suite = require('core/suite');
 const payload = require('./assets/accounts');
 
-const updatePayload = () => ({
-  "visibility": "pub",
-  "default_from_email": "ze-churros@cloud-elements.com",
-  "use_awesomebar": true,
-  "name": "Churros update the list",
-  "permission_reminder": "Because churros"
-});
-
 const options = {
   churros: {
-    updatePayload: updatePayload()
+    updatePayload: {
+      "visibility": "pub",
+      "default_from_email": "ze-churros@cloud-elements.com",
+      "use_awesomebar": true,
+      "name": "Churros update the list",
+      "permission_reminder": "Because churros"
+    }
   }
 };
 

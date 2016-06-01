@@ -4,13 +4,11 @@ const suite = require('core/suite');
 const payload = require('./assets/incidents');
 const cloud = require('core/cloud');
 
-const updatePayload = () => ({
-  "description": "I am an updated incident"
-});
-
 const options = {
   churros: {
-    updatePayload: updatePayload()
+    updatePayload: {
+      "description": "I am an updated incident"
+    }
   }
 };
 

@@ -3,28 +3,26 @@
 const suite = require('core/suite');
 const payload = require('./assets/agents');
 
-const updatePayload = () => ({
-  "manager": "",
-  "location": "",
-  "street": "123 Update Street",
-  "city": "Denver",
-  "web_service_access_only": "false",
-  "vip": "false",
-  "first_name": "Claude-UPDATE",
-  "middle_name": "P.",
-  "country": "US",
-  "user_name": "claude.elements",
-  "email": "claude@cloud-elements.com",
-  "roles": "",
-  "last_name": "Elements-UPDATE",
-  "active": "true",
-  "state": "CO",
-  "zip": "80203"
-});
-
 const options = {
   churros: {
-    updatePayload: updatePayload()
+    updatePayload: {
+      "manager": "",
+      "location": "",
+      "street": "123 Update Street",
+      "city": "Denver",
+      "web_service_access_only": "false",
+      "vip": "false",
+      "first_name": "Claude-UPDATE",
+      "middle_name": "P.",
+      "country": "US",
+      "user_name": "claude.elements",
+      "email": "claude@cloud-elements.com",
+      "roles": "",
+      "last_name": "Elements-UPDATE",
+      "active": "true",
+      "state": "CO",
+      "zip": "80203"
+    }
   }
 };
 
