@@ -3,6 +3,8 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/members');
+const chakram = require('chakram');
+const expect = chakram.expect;
 
 suite.forElement('documents', 'members', { payload: payload }, (test) => {
   let memberId = 'dbmid:AADkTHIEUNMxlMLbejOdxXt8bZsciJP1sRE';
@@ -29,9 +31,18 @@ suite.forElement('documents', 'members', { payload: payload }, (test) => {
   it('should allow PATCH for ${test.api}/members/{id}/unsuspend', () => {
     return cloud.patch(`${test.api}/${memberId}/unsuspend`);
   });
-  test.withOptions({ qs: {where: `team_member_id = \'${memberId}\'` } }).withApi(`/hubs/documents/members-information`).should.return200OnGet();
-  test.withOptions({ qs: {where: `email = \'${email}\'` } }).withApi(`/hubs/documents/members-information`).should.return200OnGet();
-  test.withOptions({ qs: {where: `external_id = \'${external_id}\'` } }).withApi(`/hubs/documents/members-information`).should.return200OnGet();
+  test.withOptions({ qs: {where: `team_member_id = \'${memberId}\'` } }).withApi(`/hubs/documents/members`).should.return200OnGet();
+  test.withOptions({ qs: {where: `email = \'${email}\'` } }).withApi(`/hubs/documents/members`).should.return200OnGet();
+  test.withOptions({ qs: {where: `external_id = \'${external_id}\'` } }).withApi(`/hubs/documents/members`).should.return200OnGet();
+  it('should support cursor pagination', () => {
+    const options = { qs: { pageSize: 1}};
+    return cloud.withOptions(options).get(test.api)
+      .then(r => {
+        expect(r.body).to.not.be.null;
+        options.qs.nextPage = r.response.headers['elements-next-page-token'];
+        return cloud.withOptions(options).get(test.api);
+      });
+  });
 });
 
 /* Commented out the old scripts as they do not support some worst case scenarios*/
