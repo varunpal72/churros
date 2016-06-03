@@ -91,36 +91,49 @@ const deleteFormulasByName = (api, name) =>
     .then(() => deleteFormulas(fs)));
 exports.deleteFormulasByName = deleteFormulasByName;
 
-const getAllExecutions = (fId, fiId, nextPage, all) => {
+const getAllExecutions = (fiId, nextPage, all) => {
   all = all || [];
   const options = { qs: { nextPage: nextPage, pageSize: 200 } };
-  return cloud.withOptions(options).get(`/formulas/${fId}/instances/${fiId}/executions`)
+  return cloud.withOptions(options).get(`/formulas/instances/${fiId}/executions`)
     .then(r => {
+      expect(r).to.have.statusCode(200);
       expect(r.body).to.not.be.null;
       all = all.concat(r.body);
       const npt = r.response.headers['elements-next-page-token'];
-      return npt === undefined ? all : getAllExecutions(fId, fiId, npt, all);
+      return npt === undefined ? all : getAllExecutions(fiId, npt, all);
     });
 };
 exports.getAllExecutions = getAllExecutions;
 
-exports.getFormulaInstanceExecutions = (fId, fiId) => cloud.get(`/formulas/${fId}/instances/${fiId}/executions`);
+const getFormulaInstanceExecutions = (fiId) => cloud.get(`/formulas/instances/${fiId}/executions`);
+exports.getFormulaInstanceExecutions = getFormulaInstanceExecutions;
 
-exports.getFormulaInstanceExecution = (fId, fiId, fieId) => cloud.get(`/formulas/${fId}/instances/${fiId}/executions/${fieId}`);
+const getFormulaInstanceExecution = (fieId) => cloud.get(`/formulas/instances/executions/${fieId}`);
+
+exports.getFormulaInstanceExecutionWithSteps = (fieId) => {
+  return getFormulaInstanceExecution(fieId)
+    .then(r => {
+      const fie = r.body;
+      return cloud.withOptions({ qs: { includeValues: true } }).get(`/formulas/instances/executions/${fieId}/steps`)
+        .then(r => fie.stepExecutions = r.body)
+        .then(r => fie);
+    });
+};
 
 exports.deleteFormulaInstance = deleteFormulaInstance;
 exports.deleteFormula = deleteFormula;
 
-exports.createFAndFI = () => {
+exports.createFAndFI = (element, config) => {
+  element = element || 'closeio';
   let elementInstanceId, formulaId, formulaInstanceId;
-  const formula = require('./simple-successful-formula');
+  const formula = require('./formulas/simple-successful-formula');
   return deleteFormulasByName('/formulas', 'simple-successful')
     .then(r => cloud.post('/formulas', formula, fSchema))
     .then(r => formulaId = r.body.id)
-    .then(r => provisioner.create('closeio')) // just chose a random element, as i just need a valid ID
+    .then(r => provisioner.create(element, config))
     .then(r => elementInstanceId = r.body.id)
     .then(r => {
-      const formulaInstance = require('./simple-successful-formula-instance');
+      const formulaInstance = require('./formulas/simple-successful-formula-instance');
       formulaInstance.configuration['trigger-instance'] = elementInstanceId;
       return cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema);
     })
@@ -129,14 +142,15 @@ exports.createFAndFI = () => {
 };
 
 exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
-  exports.getFormulaInstanceExecutions(fId, fiId)
+  return getFormulaInstanceExecutions(fiId)
     .then(r => {
       if (r.body.length === numExecs) {
-        Promise.all(r.body.map(fie => exports.getFormulaInstanceExecution(fId, fiId, fie.id)))
+        return Promise.all(r.body.map(fie => getFormulaInstanceExecution(fie.id)))
           .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
           .then(fieses => [].concat.apply([], fieses))
           .then(ses => {
-            if (ses.length === (numExecVals * numExecs) && ses.filter(se => se.status === 'pending' === 0)) {
+            const numPending = ses.filter(se => se.status === 'pending').length;
+            if (ses.length === (numExecVals * numExecs) && numPending === 0) {
               logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
               cb();
             } else {
@@ -145,4 +159,10 @@ exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
           });
       }
     });
+};
+
+exports.cleanup = (eiId, fId, fiId) => {
+  return cloud.delete(`/formulas/${fId}/instances/${fiId}`)
+    .then(r => cloud.delete(`/formulas/${fId}`))
+    .then(r => provisioner.delete(eiId));
 };

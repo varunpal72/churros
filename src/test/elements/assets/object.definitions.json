@@ -4,26 +4,32 @@
       "path": "id",
       "type": "string"
     }, {
-      "path":"name",
-      "type":"string"
+      "path": "name",
+      "type": "string"
     }, {
-      "path":"description",
-      "type":"string"
+      "path": "description",
+      "type": "string"
     }]
   },
-  "activities":{
-    "fields":[{
+  "agents": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }, {
-      "path":"body",
-      "type":"string"
+    }]
+  },
+  "activities": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
     }, {
-      "path":"type",
-      "type":"string"
+      "path": "body",
+      "type": "string"
     }, {
-      "path":"contactId",
-      "type":"string"
+      "path": "type",
+      "type": "string"
+    }, {
+      "path": "contactId",
+      "type": "string"
     }]
   },
   "assets": {
@@ -32,14 +38,14 @@
       "type": "string"
     }]
   },
-  "attachments":{
-    "fields":[{
+  "attachments": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-  "campaigns":{
-    "fields":[{
+  "campaigns": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]
@@ -92,32 +98,68 @@
       "type": "string"
     }]
   },
-  "customers":{
-    "fields":[{
+  "customers": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }]
+    }, {
+      "path": "postId",
+      "type": "string"
+    }]
   },
-  "employees":{
-    "fields":[{
+  "credit-memos": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }]
+    }]
   },
-  "incidents":{
-    "fields":[{
+  "stores": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }]
+    }]
   },
-  "invoices":{
-    "fields":[{
+  "shipments": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }]
+    }, {
+      "path": "result",
+      "type": "string"
+    }]
   },
-  "leads":{
-    "fields":[{
+  "addresses": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "postId",
+      "type": "string"
+    }]
+  },
+  "employees": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "postId",
+      "type": "string"
+    }]
+  },
+  "incidents": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "invoices": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "leads": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }, {
@@ -131,141 +173,155 @@
       "type": "string"
     }]
   },
-  "lists":{
-    "fields":[{
+  "lists": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }]
+    }, {
+      "path": "listId",
+      "type": "string"
+    }, {
+      "path": "contactId",
+      "type": "string"
+    }]
   },
-  "notes":{
-    "fields":[{
+  "fields": {
+    "fields": [{
       "path": "id",
       "type": "string"
-      }]
+    }]
   },
-  "opportunities":{
-    "fields":[{
+  "notes": {
+    "fields": [{
       "path": "id",
       "type": "string"
-    },{
+    }]
+  },
+  "opportunities": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
       "path": "name",
       "type": "Name"
-    },{
+    }, {
       "path": "accountId",
       "type": "string"
-    },{
+    }, {
       "path": "type",
       "type": "string"
-    },{
+    }, {
       "path": "source",
       "type": "string"
-    },{
+    }, {
       "path": "description",
       "type": "string"
-    },{
+    }, {
       "path": "amount",
       "type": "string"
-    },{
+    }, {
       "path": "closeDate",
       "type": "string"
-    },{
+    }, {
       "path": "stage",
       "type": "string"
-    },{
+    }, {
       "path": "probability",
       "type": "string"
     }]
   },
-  "orders":{
-    "fields":[{
-      "path": "id",
-      "type": "string"
-      }]
-  },
-  "organizations":{
-    "fields":[{
-      "path": "id",
-      "type": "string"
-      }]
-  },
-  "owners":{
-    "fields":[{
-      "path":"id",
-      "type":"string"
-      }, {
-      "path":"email",
-      "type":"string"
-    }]
-  },
-  "payments":{
-    "fields":[{
-      "path": "id",
-      "type": "string"
-      }]
-  },
-  "products":{
-    "fields":[{
-      "path": "id",
-      "type": "string"
-      }]
-  },
-  "tasks":{
-    "fields":[{
-      "path": "id",
-      "type": "string"
-      }]
-  },
-  "users":{
-    "fields":[{
+  "orders": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-  "vendors":{
-    "fields":[{
-      "path": "id",
-      "type": "string"
-      }]
-  },
-  "groups":{
-    "fields":[{
+  "organizations": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-  "widgets":{
-    "fields":[{
+  "owners": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "email",
+      "type": "string"
+    }]
+  },
+  "payments": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-  "transient-documents":{
-    "fields":[{
+  "products": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "result",
+      "type": "string"
+    }]
+  },
+  "tasks": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-  "library-documents":{
-    "fields":[{
-      "path": "id",
-      "type": "string"
-    }
-    ]
-  },
-  "documents":{
-    "fields":[{
+  "users": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-  "workflows":{
-    "fields":[{
+  "vendors": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-  "payment-methods":{
-    "fields":[{
+  "groups": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "widgets": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "transient-documents": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "library-documents": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "documents": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "workflows": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "payment-methods": {
+    "fields": [{
       "path": "id",
       "type": "string"
     }]

@@ -11,17 +11,20 @@ var exports = module.exports = {};
 const validator = (validationCb) => {
   if (typeof validationCb === 'function') {
     return (r) => {
+      logger.debug(`Validating response against validation callback.  Response body: ${tools.stringify(r.body)}`);
       validationCb(r);
       return r;
     };
   } else if (typeof validationCb === 'undefined' || (typeof validationCb === 'object' && validationCb === null)) {
     return (r) => {
+      logger.debug(`Validating that response is 200.  Response body: ${tools.stringify(r.body)}`);
       expect(r).to.have.statusCode(200);
       return r;
     };
   } else {
     // assuming this is an actual schema at this point...if it's not, this will fail miserably
     return (r) => {
+      logger.debug(`Validating response against JSON schema. Response body: ${tools.stringify(r.body)}`);
       expect(r).to.have.schemaAnd200(validationCb);
       return r;
     };
