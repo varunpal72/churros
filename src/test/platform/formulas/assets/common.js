@@ -105,7 +105,8 @@ const getAllExecutions = (fiId, nextPage, all) => {
 };
 exports.getAllExecutions = getAllExecutions;
 
-exports.getFormulaInstanceExecutions = (fiId) => cloud.get(`/formulas/instances/${fiId}/executions`);
+const getFormulaInstanceExecutions = (fiId) => cloud.get(`/formulas/instances/${fiId}/executions`);
+exports.getFormulaInstanceExecutions = getFormulaInstanceExecutions;
 
 const getFormulaInstanceExecution = (fieId) => cloud.get(`/formulas/instances/executions/${fieId}`);
 
@@ -141,10 +142,10 @@ exports.createFAndFI = (element, config) => {
 };
 
 exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
-  return exports.getFormulaInstanceExecutions(fiId)
+  return getFormulaInstanceExecutions(fiId)
     .then(r => {
       if (r.body.length === numExecs) {
-        Promise.all(r.body.map(fie => getFormulaInstanceExecution(fie.id)))
+        return Promise.all(r.body.map(fie => getFormulaInstanceExecution(fie.id)))
           .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
           .then(fieses => [].concat.apply([], fieses))
           .then(ses => {

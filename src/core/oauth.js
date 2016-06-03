@@ -240,6 +240,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         browser.findElement(webdriver.By.id('authorizeBtn')).click();
       } catch (e) {}
       return browser.getCurrentUrl();
+    case 'servicenowoauth':
+      return 'https://foo.bar.com?code=' + config.code; // they don't supply a code
     case 'servicemax':
     case 'sfdc':
     case 'sfdcservicecloud':
