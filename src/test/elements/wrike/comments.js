@@ -15,25 +15,20 @@ suite.forElement('helpdesk', 'comments', { payload: payload }, (test) => {
   var commentID;
   var taskCommentID;
 
-  it('should GET the associated account', () => {
+  before(function() {
     return cloud.get('/hubs/helpdesk/accounts')
-    .then(r => {accountID = r.body[0].id;});
-  });
-
-  it('should GET the root folder', () => {
-    return cloud.get('/hubs/helpdesk/folders')
-    .then(r => {for (var i=0;i<r.body.length;i++){if (r.body[i].title === "Root") {rootFolderID = r.body[i].id;}}});
-  });
-
-  it('should POST the test folder', () => {
-    let temp = {"title": "Test Folder"};
-    return cloud.post('/hubs/helpdesk/folders/' + rootFolderID + '/folders', temp)
-    .then(r => folderID = r.body.id);
-  });
-
-  it('should POST a new task', () => {
-    let temp = {"title": "Test Task"};
-    return cloud.post('/hubs/helpdesk/folders/' + folderID + '/tasks', temp)
+    .then(r => {accountID = r.body[0].id;})
+    .then(() => cloud.get('/hubs/helpdesk/folders'))
+    .then(r => {for (var i=0;i<r.body.length;i++){if (r.body[i].title === "Root") {rootFolderID = r.body[i].id;}}})
+    .then(() => {
+      let temp = {"title": "Test Folder"};
+      return cloud.post('/hubs/helpdesk/folders/' + rootFolderID + '/folders', temp)
+    })
+    .then(r => folderID = r.body.id)
+    .then(() => {
+      temp = {"title": "Test Task"};
+      return cloud.post('/hubs/helpdesk/folders/' + folderID + '/tasks', temp)
+    })
     .then(r => taskID = r.body.id);
   });
 

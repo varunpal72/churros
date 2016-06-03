@@ -12,7 +12,7 @@ suite.forElement('helpdesk', 'folders', { payload: payload }, (test) => {
   var folderID;
   var rootFolderID;
 
-  it('should GET the associated account', () => {
+  before(function() {
     return cloud.get('/hubs/helpdesk/accounts')
     .then(r => {accountID = r.body[0].id;});
   });

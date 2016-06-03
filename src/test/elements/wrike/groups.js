@@ -11,7 +11,7 @@ suite.forElement('helpdesk', 'groups', { payload: payload }, (test) => {
   var accountID;
   var groupID;
 
-  it('should GET the associated account', () => {
+  before(function() {
     return cloud.get('/hubs/helpdesk/accounts')
     .then(r => {accountID = r.body[0].id;});
   });
