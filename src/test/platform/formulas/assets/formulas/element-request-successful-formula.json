@@ -12,6 +12,7 @@
                 "path": "${delete-contact-path}",
                 "retry": "true",
                 "retryDelay": "200",
+                "retryStatusCodes": "400,500,503",
                 "elementInstanceId": "${trigger-instance}",
                 "api": "/hubs/crm/contacts/{id}",
                 "acceptableStatusCodes": "200"
@@ -42,6 +43,7 @@
                 "query": "${get-contact-query.query}",
                 "retry": "true",
                 "retryDelay": "200",
+                "retryStatusCodes": "400,500,503",
                 "elementInstanceId": "${trigger-instance}",
                 "api": "/hubs/crm/contacts",
                 "acceptableStatusCodes": "200"
@@ -72,6 +74,7 @@
                 "retryAttempts": "3",
                 "retry": "true",
                 "retryDelay": "200",
+                "retryStatusCodes": "400,500,503",
                 "elementInstanceId": "${trigger-instance}",
                 "api": "/hubs/crm/contacts"
             }
