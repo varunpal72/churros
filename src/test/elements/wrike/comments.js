@@ -22,12 +22,12 @@ suite.forElement('helpdesk', 'comments', { payload: payload }, (test) => {
     .then(r => {for (var i=0;i<r.body.length;i++){if (r.body[i].title === "Root") {rootFolderID = r.body[i].id;}}})
     .then(() => {
       let temp = {"title": "Test Folder"};
-      return cloud.post('/hubs/helpdesk/folders/' + rootFolderID + '/folders', temp)
+      return cloud.post('/hubs/helpdesk/folders/' + rootFolderID + '/folders', temp);
     })
     .then(r => folderID = r.body.id)
     .then(() => {
-      temp = {"title": "Test Task"};
-      return cloud.post('/hubs/helpdesk/folders/' + folderID + '/tasks', temp)
+      let temp = {"title": "Test Task"};
+      return cloud.post('/hubs/helpdesk/folders/' + folderID + '/tasks', temp);
     })
     .then(r => taskID = r.body.id);
   });
