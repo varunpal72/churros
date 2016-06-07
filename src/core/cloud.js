@@ -32,7 +32,7 @@ const validator = (validationCb) => {
 };
 
 const post = (api, payload, validationCb, options) => {
-  logger.debug('POST %s with options %s', api, options);
+  logger.debug('POST %s with options %s and body %s', api, options, payload);
   return chakram.post(api, payload, options)
     .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to create %s', r, api));

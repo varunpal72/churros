@@ -5,6 +5,7 @@ const schema = require('./assets/schemas/formula.schema');
 const common = require('./assets/common');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
+const tools = require('core/tools');
 
 const genGoodV1Script = () => "return {foo: 'bar'};";
 
@@ -15,14 +16,16 @@ const genGoodV2ScriptWithFunction = () => "const promiseMe = () => { return new 
 const genBadV2Script = () => "'use strict'; let name = 'foo';";
 
 const genBaseStep = (engine, genScript) => ({
-  name: "churros-script",
+  name: `churros-script-${tools.random()}`,
   type: "script",
   properties: {
     mimeType: "application/javascript",
-    scriptEngine: engine,
+    scriptEngine: engine || '',
     body: genScript()
   }
 });
+
+const genVersionlessStep = (genScript) => genBaseStep(null, genScript);
 
 const genV1Step = (genScript) => genBaseStep('v1', genScript);
 
@@ -79,6 +82,35 @@ suite.forPlatform('formulas', { name: 'formula script steps', schema: schema }, 
     return cloud.post(test.api, gen()())
       .then(r => formulaId = r.body.id)
       .then(r => cloud.post(`${test.api}/${formulaId}/steps`, genV2Step(genBadV2Script), validator))
+      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+  });
+
+  it('should set the script engine to v1 when adding a step to a formula that contains all v1 steps', () => {
+    const validator = (r) => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body).to.not.be.null;
+      expect(r.body.properties.scriptEngine).to.equal('v1');
+    };
+
+    let formulaId;
+    return cloud.post(test.api, gen(genV1Step)(genGoodV1Script))
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.post(`${test.api}/${formulaId}/steps`, genVersionlessStep(genGoodV1Script), validator))
+      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+  });
+
+  it('should not set the script engine property when adding a step to a formula that does not contain all v1 steps', () => {
+    const validator = (r) => {
+      expect(r).to.have.statusCode(200);
+      console.log(r.body);
+      expect(r.body).to.not.be.null;
+      expect(r.body.properties.scriptEngine).to.be.null;
+    };
+
+    let formulaId;
+    return cloud.post(test.api, gen(genVersionlessStep)(genGoodV2Script))
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.post(`${test.api}/${formulaId}/steps`, genVersionlessStep(genGoodV2Script), validator))
       .then(r => cloud.delete(`${test.api}/${formulaId}`));
   });
 });
