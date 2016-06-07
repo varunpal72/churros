@@ -20,7 +20,7 @@ const genBaseStep = (engine, genScript) => ({
   type: "script",
   properties: {
     mimeType: "application/javascript",
-    scriptEngine: engine || '',
+    scriptEngine: engine,
     body: genScript()
   }
 });
@@ -102,9 +102,8 @@ suite.forPlatform('formulas', { name: 'formula script steps', schema: schema }, 
   it('should not set the script engine property when adding a step to a formula that does not contain all v1 steps', () => {
     const validator = (r) => {
       expect(r).to.have.statusCode(200);
-      console.log(r.body);
       expect(r.body).to.not.be.null;
-      expect(r.body.properties.scriptEngine).to.be.null;
+      expect(r.body.properties.scriptEngine).to.be.undefined;
     };
 
     let formulaId;
