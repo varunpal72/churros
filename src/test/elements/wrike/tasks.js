@@ -2,70 +2,28 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/tasks');
-var chakram = require('chakram'),
-    expect = chakram.expect;
 
-suite.forElement('helpdesk', 'tasks', { payload: payload }, (test) => {
+suite.forElement('helpdesk', 'tasks', (test) => {
+  it('should all CRUDs for account tasks', () => {
+    let temp = { "title": "Test Task" };
+    let folderId, taskId;
+    return cloud.get('/hubs/helpdesk/folders')
+      .then(r => {
+        const rootFolderId = r.body.filter(i => i.title === 'Root')[0].id;
+        return cloud.post(`/hubs/helpdesk/folders/${rootFolderId}/folders`, { "title": "Test Folder" });
+      })
+      .then(r => folderId = r.body.id)
+      .then(r => cloud.post(`/hubs/helpdesk/folders/${folderId}/tasks`, temp))
+      .then(r => taskId = r.body.id)
+      .then(r => cloud.get(`/hubs/helpdesk/tasks/${taskId}`))
+      .then(r => cloud.get(`/hubs/helpdesk/folders/${folderId}/tasks`))
+      .then(r => cloud.put(`/hubs/helpdesk/tasks/${taskId}`, { "title": "Update Task" }))
+      .then(r => cloud.delete(`/hubs/helpdesk/tasks/${taskId}`))
+      .then(r => cloud.delete(`/hubs/helpdesk/folders/${folderId}`));
+  });
 
-  var accountID;
-  var folderID;
-  var rootFolderID;
-  var taskID;
-
-  before(function() {
+  it('should allow GET all tasks from an account', () => {
     return cloud.get('/hubs/helpdesk/accounts')
-    .then(r => {accountID = r.body[0].id;})
-    .then(() => cloud.get('/hubs/helpdesk/folders'))
-    .then(r => {for (var i=0;i<r.body.length;i++){if (r.body[i].title === "Root") {rootFolderID = r.body[i].id;}}})
-    .then(() => {
-      let temp = {"title": "Test Folder"};
-      return cloud.post('/hubs/helpdesk/folders/' + rootFolderID + '/folders', temp);
-    })
-    .then(r => folderID = r.body.id);
-  });
-
-  it('should POST a new task', () => {
-    let temp = {"title": "Test Task"};
-    return cloud.post('/hubs/helpdesk/folders/' + folderID + '/tasks', temp)
-    .then(r => {taskID = r.body.id; return r;})
-    .then(r => expect(r).to.have.statusCode(200));
-  });
-
-  it('should GET a task by id', () => {
-    return cloud.get('/hubs/helpdesk/tasks/' + taskID)
-    .then(r => expect(r.body.id).to.eq(taskID));
-  });
-
-  it('should PUT a task', () => {
-    let temp = {"title": "Update Task"};
-    return cloud.put('/hubs/helpdesk/tasks/' + taskID, temp)
-    .then(r => expect(r.body.title).to.eq("Update Task"));
-  });
-
-  it('should allow GET all from account', () => {
-    var isGreaterThan = false;
-    return cloud.get('/hubs/helpdesk/accounts/' + accountID + '/tasks')
-    .then(r => {if (r.body.length > 0) {isGreaterThan = true;}})
-    .then(r => expect(isGreaterThan).is.eq(true));
-  });
-
-  it('should allow GET all from folder', () => {
-    var isGreaterThan = false;
-    return cloud.get('/hubs/helpdesk/folders/' + folderID + '/tasks')
-    .then(r => {if (r.body.length > 0) {isGreaterThan = true;}})
-    .then(r => expect(isGreaterThan).is.eq(true));
-  });
-
-  //CLEANUP TASK
-  it('should delete the test task', () => {
-    return cloud.delete('/hubs/helpdesk/tasks/' + taskID)
-    .then(r => expect(r).to.have.statusCode(200));
-  });
-
-  //CLEANUP FOLDER
-  it('should delete the test folder', () => {
-    return cloud.delete('/hubs/helpdesk/folders/' + folderID)
-    .then(r => expect(r).to.have.statusCode(200));
+      .then(r => cloud.get(`/hubs/helpdesk/accounts/${r.body[0].id}/tasks`));
   });
 });

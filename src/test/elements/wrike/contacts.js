@@ -2,28 +2,13 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
-var chakram = require('chakram'),
-    expect = chakram.expect;
 
-suite.forElement('helpdesk', 'contacts', { payload: payload }, (test) => {
+suite.forElement('helpdesk', 'contacts', (test) => {
+  test.should.return200OnGet();
 
-  var contactID;
-
-  it('should allow GET all', () => {
-    return cloud.get('/hubs/helpdesk/contacts')
-    .then(r => expect(r).to.have.statusCode(200));
-  });
-
-  it('should allow GET by current user', () => {
-    let query = {"Current User": true};
+  it('should allow GET by current user and GET by ID', () => {
+    let query = { "Current User": true };
     return cloud.withOptions({ qs: query }).get('/hubs/helpdesk/contacts')
-    .then(r => {contactID = r.body[0].id; return r;})
-    .then(r => expect(r).to.have.statusCode(200));
-  });
-
-  it('should allow GET by contact id', () => {
-    return cloud.get('/hubs/helpdesk/contacts/' + contactID)
-    .then(r => expect(r.body.id).to.eq(contactID));
+      .then(r => cloud.get(`${test.api}/${r.body[0].id}`));
   });
 });
