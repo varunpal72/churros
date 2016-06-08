@@ -2,95 +2,28 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-var chakram = require('chakram'),
-  expect = chakram.expect;
 
 suite.forElement('helpdesk', 'timelogs', (test) => {
-
-  var accountID;
-  var folderID;
-  var rootFolderID;
-  var taskID;
-  var timelogID;
-
-  before(function() {
+  it('should allow CRUD for timelogs', () => {
+    let accountId, folderId, taskId, timelogId;
     return cloud.get('/hubs/helpdesk/accounts')
-      .then(r => { accountID = r.body[0].id; })
+      .then(r => accountId = r.body[0].id)
       .then(() => cloud.get('/hubs/helpdesk/folders'))
       .then(r => {
-        for (var i = 0; i < r.body.length; i++) {
-          if (r.body[i].title === "Root") { rootFolderID = r.body[i].id; }
-        }
+        const rootFolderId = r.body.filter(i => i.title === 'Root')[0].id;
+        return cloud.post(`/hubs/helpdesk/folders/${rootFolderId}/folders`, { "title": "Test Folder" });
       })
-      .then(() => {
-        let temp = { "title": "Test Folder" };
-        return cloud.post('/hubs/helpdesk/folders/' + rootFolderID + '/folders', temp);
-      })
-      .then(r => folderID = r.body.id)
-      .then(() => {
-        let temp = { "title": "Test Task" };
-        return cloud.post('/hubs/helpdesk/folders/' + folderID + '/tasks', temp);
-      })
-      .then(r => {
-        taskID = r.body.id;
-        return r;
-      });
-  });
-
-  it('should POST a timelog', () => {
-    let temp = { "hours": "0.5", "trackedDate": "2016-05-18" };
-    return cloud.post('/hubs/helpdesk/tasks/' + taskID + '/timelogs', temp)
-      .then(r => {
-        timelogID = r.body.id;
-        return r;
-      })
-      .then(r => expect(r.body.hours).to.eq(0.5));
-  });
-
-  it('should PUT a timelog', () => {
-    let temp = { "hours": "0.7" };
-    return cloud.put('/hubs/helpdesk/timelogs/' + timelogID, temp)
-      .then(r => expect(r.body.hours).to.eq(0.7));
-  });
-
-  it('should allow GET all from an account', () => {
-    var isGreaterThan = false;
-    return cloud.get('/hubs/helpdesk/accounts/' + accountID + '/timelogs')
-      .then(r => {
-        if (r.body.length > 0) { isGreaterThan = true; }
-      })
-      .then(r => expect(isGreaterThan).is.eq(true));
-  });
-
-  it('should allow GET all from a task', () => {
-    var isGreaterThan = false;
-    return cloud.get('/hubs/helpdesk/tasks/' + taskID + '/timelogs')
-      .then(r => {
-        if (r.body.length > 0) { isGreaterThan = true; }
-      })
-      .then(r => expect(isGreaterThan).is.eq(true));
-  });
-
-  it('should allow GET timelog by id', () => {
-    return cloud.get('/hubs/helpdesk/timelogs/' + timelogID)
-      .then(r => expect(r).to.have.statusCode(200));
-  });
-
-  //CLEANUP TASK
-  it('should delete the test timelogs', () => {
-    return cloud.delete('/hubs/helpdesk/timelogs/' + timelogID)
-      .then(r => expect(r).to.have.statusCode(200));
-  });
-
-  //CLEANUP FOLDER
-  it('should delete the test task', () => {
-    return cloud.delete('/hubs/helpdesk/tasks/' + taskID)
-      .then(r => expect(r).to.have.statusCode(200));
-  });
-
-  //CLEANUP FOLDER
-  it('should delete the test folder', () => {
-    return cloud.delete('/hubs/helpdesk/folders/' + folderID)
-      .then(r => expect(r).to.have.statusCode(200));
+      .then(r => folderId = r.body.id)
+      .then(() => cloud.post(`/hubs/helpdesk/folders/${folderId}/tasks`, { "title": "Test Task" }))
+      .then(r => taskId = r.body.id)
+      .then(r => cloud.post(`/hubs/helpdesk/tasks/${taskId}/timelogs`, { "hours": "0.5", "trackedDate": "2016-05-18" }))
+      .then(r => timelogId = r.body.id)
+      .then(r => cloud.put(`/hubs/helpdesk/timelogs/${timelogId}`, { "hours": "0.7" }))
+      .then(r => cloud.get(`/hubs/helpdesk/accounts/${accountId}/timelogs`))
+      .then(r => cloud.get(`/hubs/helpdesk/tasks/${taskId}/timelogs`))
+      .then(r => cloud.get(`/hubs/helpdesk/timelogs/${timelogId}`))
+      .then(r => cloud.delete(`/hubs/helpdesk/timelogs/${timelogId}`))
+      .then(r => cloud.delete(`/hubs/helpdesk/tasks/${taskId}`))
+      .then(r => cloud.delete(`/hubs/helpdesk/folders/${folderId}`));
   });
 });
