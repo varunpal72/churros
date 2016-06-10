@@ -24,7 +24,7 @@ suite.forElement('ecommerce', 'addresses', { payload: payload }, (test) => {
       .then(r => customerId = r.body[0].id)
       .then(r => cloud.get(`/hubs/ecommerce/customers/${customerId}`))
       .then(r => cloud.post(`/hubs/ecommerce/customers/${customerId}/addresses`, payload))
-      .then(r => addressId = r.body.postId)
+      .then(r => addressId = r.body.id)
       .then(r => cloud.get(`/hubs/ecommerce/customers/${customerId}/addresses`))
       .then(r => cloud.get(`${test.api}/${addressId}`))
       .then(r => cloud.patch(`${test.api}/${addressId}`, updatePayload()))

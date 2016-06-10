@@ -16,7 +16,7 @@ suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
     let customerId = -1;
     const options = { qs: { where: 'lastname=\'churros\'' } };
     return cloud.post(test.api, payload)
-      .then(r => customerId = r.body.postId)
+      .then(r => customerId = r.body.id)
       .then(r => cloud.get(`${test.api}/${customerId}`))
       .then(r => cloud.patch(`${test.api}/${customerId}`, updatePayload(tools.randomEmail())))
       .then(r => cloud.withOptions(options).get(test.api));

@@ -78,7 +78,7 @@ suite.forElement('ecommerce', 'products', { payload: updatePayload }, (test) => 
     let productId = -1;
     const options = { qs: { where: 'name=\'Super-Sweet Zipties\'' } };
     return cloud.post(test.api, payload(tools.random()))
-      .then(r => productId = r.body.result)
+      .then(r => productId = r.body.id)
       .then(r => cloud.get(`${test.api}/${productId}`))
       .then(r => cloud.patch(`${test.api}/${productId}`, updatePayload))
       .then(r => cloud.withOptions(options).get(test.api))
