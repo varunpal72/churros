@@ -61,7 +61,7 @@
     "vendorName": "products",
     "fields": [{
       "path": "id",
-      "vendorPath": "increment_id"
+      "vendorPath": "product_id"
     }, {
       "path": "result",
       "vendorPath": "result"
