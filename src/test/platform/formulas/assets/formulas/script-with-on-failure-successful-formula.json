@@ -9,7 +9,6 @@
             "name": "bad-script-step",
             "type": "script",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "This is an invalid script step;"
             }
         },

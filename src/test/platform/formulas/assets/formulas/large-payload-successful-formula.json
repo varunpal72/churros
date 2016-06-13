@@ -7,7 +7,6 @@
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\"; var bigstring = ''; for (i = 0; i < 10000; ++i) {  bigstring += possible.charAt(Math.floor(Math.random() * possible.length));} var container = {}; for (i = 0; i < 500; ++i) {  container['prop' + i] = {     'a': bigstring,    'b': 'otherstring',    'c': i * 2  }} return container;"
             }
         },
@@ -17,7 +16,6 @@
             "name": "end",
             "type": "script",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "return { 'triggerobjectid': trigger.event.objectId, 'prop100': steps['simple-script'].prop100.a, 'done': 'true' };"
             }
         }

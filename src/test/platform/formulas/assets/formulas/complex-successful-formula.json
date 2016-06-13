@@ -7,7 +7,6 @@
             "name": "end",
             "type": "filter",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "return true;"
             }
         },
@@ -58,7 +57,6 @@
             "name": "setup-page-parameters",
             "type": "script",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "return {page: 1, pageSize: 200};"
             }
         },
@@ -85,7 +83,6 @@
             "name": "return-true",
             "type": "filter",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "return true;"
             }
         },
@@ -97,7 +94,6 @@
             "name": "notify-me-always",
             "type": "notification",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "return true;"
             }
         },
@@ -125,8 +121,7 @@
             "name": "ten-ids-please",
             "type": "script",
             "properties": {
-                "body": "var contacts = steps['get-contacts'].response.body;\nvar response = {ids:[]};\n\n// only care about 10 of these bad boyz...\nfor (var i = 0; i < 10; i ++) {\n  var c = contacts[i];\n  response.ids.push(c.Id);\n}\n\nreturn response;",
-                "mimeType": "application/javascript"
+                "body": "var contacts = steps['get-contacts'].response.body;\nvar response = {ids:[]};\n\n// only care about 10 of these bad boyz...\nfor (var i = 0; i < 10; i ++) {\n  var c = contacts[i];\n  response.ids.push(c.Id);\n}\n\nreturn response;"
             }
         }
     ],
