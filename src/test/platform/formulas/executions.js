@@ -195,11 +195,7 @@ const validateStepExecutions = ses => {
 
 const validateExecution = (e, expectedStatus) => validator => {
   const fn = validator || validateStepExecutions;
-
-  console.log(`Expected status is ${expectedStatus}`);
   const es = expectedStatus || 'success';
-
-  console.log(`Expecting ${e.status} to equal ${es}`);
   expect(e.status).to.equal(es);
   fn(e.stepExecutions);
 };

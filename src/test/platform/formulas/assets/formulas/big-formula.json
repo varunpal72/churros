@@ -10,8 +10,7 @@
             "name": "1-campaignMember-filter-step",
             "type": "filter",
             "properties": {
-                "body": "var object = trigger.body.message.events[0].objectType;\nif (object.toUpperCase() == 'CAMPAIGNMEMBER'){ return true; } else { return false; }",
-                "mimeType": "application/javascript"
+                "body": "var object = trigger.body.message.events[0].objectType;\nif (object.toUpperCase() == 'CAMPAIGNMEMBER'){ return true; } else { return false; }"
             }
         },
         {
@@ -22,8 +21,7 @@
             "name": "2-create-filter-step",
             "type": "filter",
             "properties": {
-                "body": "var action = trigger.body.message.events[0].eventType;\nif (action.toUpperCase() == 'CREATED'){ return true; } else { return false; }",
-                "mimeType": "application/javascript"
+                "body": "var action = trigger.body.message.events[0].eventType;\nif (action.toUpperCase() == 'CREATED'){ return true; } else { return false; }"
             }
         },
         {
@@ -62,8 +60,7 @@
             "name": "5-trans-obj-name",
             "type": "script",
             "properties": {
-                "body": "var member = steps['3-get-campaignMember'].response.body; var transObject; var objectId; if(member.LeadId){transObject = 'leads'; objectId = member.LeadId;} \n else if (member.ContactId){transObject = 'contacts';  objectId = member.ContactId;} \n return {'objectId': objectId, 'objectName': transObject};",
-                "mimeType": "application/javascript"
+                "body": "var member = steps['3-get-campaignMember'].response.body; var transObject; var objectId; if(member.LeadId){transObject = 'leads'; objectId = member.LeadId;} \n else if (member.ContactId){transObject = 'contacts';  objectId = member.ContactId;} \n return {'objectId': objectId, 'objectName': transObject};"
             }
         },
         {
@@ -88,8 +85,7 @@
             "name": "7-synchable-st-id-filter",
             "type": "filter",
             "properties": {
-                "body": "return (steps['6-get-object'].response.body[config.synchableFieldName] && steps['6-get-object'].response.body[config.stIdFieldName] && steps['4-get-campaign'].response.body[config.synchableFieldName]);",
-                "mimeType": "application/javascript"
+                "body": "return (steps['6-get-object'].response.body[config.synchableFieldName] && steps['6-get-object'].response.body[config.stIdFieldName] && steps['4-get-campaign'].response.body[config.synchableFieldName]);"
             }
         },
         {
@@ -100,8 +96,7 @@
             "name": "7-2-get-st-user-id",
             "type": "script",
             "properties": {
-                "body": "return {'stUserId': steps['6-get-object'].response.body[config.stIdFieldName]};",
-                "mimeType": "application/javascript"
+                "body": "return {'stUserId': steps['6-get-object'].response.body[config.stIdFieldName]};"
             }
         },
         {
@@ -114,8 +109,7 @@
             "name": "8-sailthru-id-filter",
             "type": "filter",
             "properties": {
-                "body": "if(steps['4-get-campaign'].response.body[config.stIdFieldName]){ return true; } return false;",
-                "mimeType": "application/javascript"
+                "body": "if(steps['4-get-campaign'].response.body[config.stIdFieldName]){ return true; } return false;"
             }
         },
         {
@@ -126,8 +120,7 @@
             "name": "8-2-get-st-list-id",
             "type": "script",
             "properties": {
-                "body": "return {'stListId': steps['4-get-campaign'].response.body[config.stIdFieldName]};",
-                "mimeType": "application/javascript"
+                "body": "return {'stListId': steps['4-get-campaign'].response.body[config.stIdFieldName]};"
             }
         },
         {
@@ -152,8 +145,7 @@
             "name": "9-2-st-update-body",
             "type": "script",
             "properties": {
-                "body": "var name = steps['9-1-get-st-list'].response.body.list; var lists = {}; lists[name] = 1; return {'lists': lists};",
-                "mimeType": "application/javascript"
+                "body": "var name = steps['9-1-get-st-list'].response.body.list; var lists = {}; lists[name] = 1; return {'lists': lists};"
             }
         },
         {
@@ -177,8 +169,7 @@
             "name": "10-1-st-update-body",
             "type": "script",
             "properties": {
-                "body": "var name = steps['4-get-campaign'].response.body.Name; var lists = {}; lists[name] = 1; return {'lists': lists};",
-                "mimeType": "application/javascript"
+                "body": "var name = steps['4-get-campaign'].response.body.Name; var lists = {}; lists[name] = 1; return {'lists': lists};"
             }
         },
         {
@@ -204,8 +195,7 @@
             "name": "10-3-build-find-list-body",
             "type": "script",
             "properties": {
-                "body": "return {'where': \"list='\" + steps['4-get-campaign'].response.body.Name + \"'\"}",
-                "mimeType": "application/javascript"
+                "body": "return {'where': \"list='\" + steps['4-get-campaign'].response.body.Name + \"'\"}"
             }
         },
         {
@@ -230,8 +220,7 @@
             "name": "10-5-build-campaign-body",
             "type": "script",
             "properties": {
-                "body": "var key = config.stIdFieldName; var body = {}; body[key] = steps['10-4-find-list'].response.body[0].list_id; return body;",
-                "mimeType": "application/javascript"
+                "body": "var key = config.stIdFieldName; var body = {}; body[key] = steps['10-4-find-list'].response.body[0].list_id; return body;"
             }
         },
         {

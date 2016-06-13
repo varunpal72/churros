@@ -26,8 +26,7 @@
             "name": "delete-contact-path",
             "type": "script",
             "properties": {
-                "body": "var path = { \"id\": steps['get-contact'].response.body[0].Id }\n\nreturn path;",
-                "mimeType": "application/javascript"
+                "body": "var path = { \"id\": steps['get-contact'].response.body[0].Id }\n\nreturn path;"
             }
         },
         {
@@ -57,8 +56,7 @@
             "name": "get-contact-query",
             "type": "script",
             "properties": {
-                "body": "var contact = steps['post-contact'].response.body\n\nvar query = { \"query\": { \"where\": \"Id='\" + contact.Id + \"'\" } };\n\nreturn query;",
-                "mimeType": "application/javascript"
+                "body": "var contact = steps['post-contact'].response.body\n\nvar query = { \"query\": { \"where\": \"Id='\" + contact.Id + \"'\" } };\n\nreturn query;"
             }
         },
         {
@@ -87,8 +85,7 @@
             "name": "post-contact-payload",
             "type": "script",
             "properties": {
-                "body": "var contact = { \"contact\": {\n  \"Phone\": \"123-456-7890\",\n  \"Email\": \"devnull@cloud-elements.com\",\n  \"FirstName\": \"Dev\",\n  \"LastName\": \"Null\",\n  \"MobilePhone\": \"987-654-3210\",\n  \"Title\": \"Colonel\",\n  \"Salutation\": \"Mr.\",\n  \"Birthdate\": \"1977-01-01\"\n}};\n\nreturn contact;\n\n",
-                "mimeType": "application/javascript"
+                "body": "var contact = { \"contact\": {\n  \"Phone\": \"123-456-7890\",\n  \"Email\": \"devnull@cloud-elements.com\",\n  \"FirstName\": \"Dev\",\n  \"LastName\": \"Null\",\n  \"MobilePhone\": \"987-654-3210\",\n  \"Title\": \"Colonel\",\n  \"Salutation\": \"Mr.\",\n  \"Birthdate\": \"1977-01-01\"\n}};\n\nreturn contact;\n\n"
             }
         }
     ],

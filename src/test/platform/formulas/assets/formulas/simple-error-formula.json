@@ -7,7 +7,6 @@
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "var test = { \"integration-test-1\": 1,\n \"integration-test-2\": true,\n \"integration-test-3\": \"integration-value\" };\n \nreturn test; This here should  throw a nice error!"
             }
         }

@@ -7,7 +7,6 @@
             "name": "return-false",
             "type": "filter",
             "properties": {
-                "mimeType": "application/javascript",
                 "body": "return false;"
             }
         }

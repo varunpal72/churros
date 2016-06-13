@@ -19,7 +19,6 @@ const genBaseStep = (engine, genScript) => ({
   name: `churros-script-${tools.random()}`,
   type: "script",
   properties: {
-    mimeType: "application/javascript",
     scriptEngine: engine,
     body: genScript()
   }
@@ -92,7 +91,7 @@ suite.forPlatform('formulas', { name: 'formula script steps', schema: schema }, 
       expect(res.body.message).to.contain('done()'); // should warn about NOT calling the done() callback
       return res;
     };
-    
+
     return wrap(gen()(), genV2Step(genBadV2Script), validator);
   });
 
