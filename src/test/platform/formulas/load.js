@@ -103,7 +103,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
 
     const numFormulaInstances = 1;
     const numEvents = 1;
-    const numInOneEvent = 200;
+    const numInOneEvent = 1;
 
     let formulaId;
     let formulaInstances = [];

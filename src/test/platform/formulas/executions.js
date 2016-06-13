@@ -193,8 +193,14 @@ const validateStepExecutions = ses => {
   ses.map(se => validateSuccessfulStepExecution(se));
 };
 
-const validateExecution = e => validator => {
+const validateExecution = (e, expectedStatus) => validator => {
   const fn = validator || validateStepExecutions;
+
+  console.log(`Expected status is ${expectedStatus}`);
+  const es = expectedStatus || 'success';
+
+  console.log(`Expecting ${e.status} to equal ${es}`);
+  expect(e.status).to.equal(es);
   fn(e.stepExecutions);
 };
 
@@ -409,7 +415,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r)(validateSimpleTimeoutStepExecutions.forEvents(1))))
+      .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleTimeoutStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -433,7 +439,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r)(validateSimpleNoReturnStepExecutions.forEvents(1))))
+      .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleNoReturnStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -457,7 +463,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r)(validateSimpleErrorStepExecutions.forEvents(1))))
+      .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleErrorStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -484,7 +490,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r)(validateSimpleErrorStepExecutions.forEvents(3))))
+      .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleErrorStepExecutions.forEvents(3))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
