@@ -11,6 +11,7 @@ const crudModels = (url, schema) => {
     .then(r => model = r.body)
     .then(r => cloud.get(url, schema))
     .then(r => cloud.put(url, common.genModel({ name: 'updatedName' }), schema))
+    .then(r => cloud.put(url, common.genModelWithRequestSwagger({ name: 'updatedName', requestName: 'bodyName' }), schema))
     .then(r => cloud.delete(url));
 };
 
