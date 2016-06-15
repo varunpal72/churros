@@ -131,6 +131,16 @@ const validateSimpleV2NoReturnStepExecutionsForEvents = tValidator => ses => {
   expect(consolidated).to.not.contain.key('simple-script.error');
 };
 
+const validateSimpleNoReturnConsoleStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(2);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName !== 'trigger').map(validateSuccessfulStepExecution);
+
+  const consolidated = consolidateStepExecutionValues(ses);
+
+  expect(JSON.parse(consolidated['simple-script.console'])).to.have.length(1);
+};
+
 const validateSimpleErrorStepExecutionsForEvents = tValidator => ses => {
   expect(ses).to.have.length(2);
   ses.filter(se => se.stepName === 'trigger').map(tValidator);
@@ -268,6 +278,10 @@ const validateSimpleV1NoReturnStepExecutions = {
 
 const validateSimpleV2NoReturnStepExecutions = {
   forEvents: (num) => validateSimpleV2NoReturnStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+};
+
+const validateSimpleNoReturnConsoleStepExecutions = {
+  forEvents: (num) => validateSimpleNoReturnConsoleStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
 const validateSimpleErrorStepExecutions = {
@@ -474,6 +488,30 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
       .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleV2NoReturnStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should properly handle a formula with a step that returns no values but prints to the console log', () => {
+    const formula = require('./assets/formulas/simple-no-return-console-formula');
+    const formulaInstance = require('./assets/formulas/simple-no-return-console-formula-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'simple-no-return')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleNoReturnConsoleStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
