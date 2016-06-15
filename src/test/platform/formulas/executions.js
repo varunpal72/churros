@@ -111,7 +111,7 @@ const validateSimpleTimeoutStepExecutionsForEvents = tValidator => ses => {
   expect(consolidated['simple-script.error']).to.contain('Script timed out after');
 };
 
-const validateSimpleNoReturnStepExecutionsForEvents = tValidator => ses => {
+const validateSimpleV1NoReturnStepExecutionsForEvents = tValidator => ses => {
   expect(ses).to.have.length(2);
   ses.filter(se => se.stepName === 'trigger').map(tValidator);
   ses.filter(se => se.stepName !== 'trigger').map(validateErrorStepExecution);
@@ -119,6 +119,16 @@ const validateSimpleNoReturnStepExecutionsForEvents = tValidator => ses => {
   const consolidated = consolidateStepExecutionValues(ses);
 
   expect(consolidated['simple-script.error']).to.contain('The step did not return any values');
+};
+
+const validateSimpleV2NoReturnStepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(2);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName !== 'trigger').map(validateSuccessfulStepExecution);
+
+  const consolidated = consolidateStepExecutionValues(ses);
+
+  expect(consolidated).to.not.contain.key('simple-script.error');
 };
 
 const validateSimpleErrorStepExecutionsForEvents = tValidator => ses => {
@@ -252,8 +262,12 @@ const validateSimpleTimeoutStepExecutions = {
   forEvents: (num) => validateSimpleTimeoutStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
-const validateSimpleNoReturnStepExecutions = {
-  forEvents: (num) => validateSimpleNoReturnStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+const validateSimpleV1NoReturnStepExecutions = {
+  forEvents: (num) => validateSimpleV1NoReturnStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+};
+
+const validateSimpleV2NoReturnStepExecutions = {
+  forEvents: (num) => validateSimpleV2NoReturnStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
 const validateSimpleErrorStepExecutions = {
@@ -416,8 +430,32 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(() => common.deleteFormula(formulaId));
   });
 
-  it('should properly handle a formula with a step that returns no values', () => {
-    const formula = require('./assets/formulas/simple-no-return-formula');
+  it('should properly handle a formula with a v1 step that returns no values', () => {
+    const formula = require('./assets/formulas/simple-no-return-formula-v1');
+    const formulaInstance = require('./assets/formulas/simple-no-return-formula-instance-v1');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'simple-no-return')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleV1NoReturnStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should properly handle a formula with a v2 step that returns no values', () => {
+    const formula = require('./assets/formulas/simple-no-return-formula-v2');
     const formulaInstance = require('./assets/formulas/simple-no-return-formula-instance');
 
     let formulaId, formulaInstanceId;
@@ -435,7 +473,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleNoReturnStepExecutions.forEvents(1))))
+      .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleV2NoReturnStepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });

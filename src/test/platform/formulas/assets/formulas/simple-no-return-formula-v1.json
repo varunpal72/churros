@@ -1,5 +1,5 @@
 {
-    "name": "simple-successful",
+    "name": "simple-no-return",
     "steps": [
         {
             "onSuccess": [],
@@ -7,18 +7,19 @@
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "body": "var id = 'some-val'; var test = { \"integration-test-1\": 1,\n               \"integration-test-2\": true,\n             \"integration-test-3\": \"integration-value\",  \"trigger-test\": id };\n      \ndone(test);"
-            }
+                "body": "var start = new Date().getTime(); return ;"
+            },
+            "scriptEngine": "v1"
         }
     ],
     "triggers": [
         {
-            "type": "scheduled",
+            "type": "event",
             "async": true,
             "onSuccess": ["simple-script"],
             "onFailure": [],
             "properties": {
-                "cron": "<replace-me>"
+                "elementInstanceId": "${trigger-instance}"
             }
         }
     ],

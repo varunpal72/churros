@@ -7,8 +7,10 @@
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "body": "var start = new Date().getTime(); return ;"
-            }
+                "mimeType": "application/javascript",
+                "body": "var start = new Date().getTime(); done();"
+            },
+            "scriptEngine": "v2"
         }
     ],
     "triggers": [

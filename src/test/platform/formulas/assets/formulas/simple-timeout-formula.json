@@ -7,7 +7,7 @@
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "body": "var start = new Date().getTime(); while(true) {  if ((new Date().getTime() - start) > 32000) {    break;  }} return {\"a\": \"b\"};"
+                "body": "var start = new Date().getTime(); while(true) {  if ((new Date().getTime() - start) > 32000) {    break;  }} done({\"a\": \"b\"});"
             }
         }
     ],
