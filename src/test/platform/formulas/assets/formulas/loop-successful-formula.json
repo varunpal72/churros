@@ -9,7 +9,7 @@
             "name": "create-list",
             "type": "script",
             "properties": {
-                "body": "  var arr = [];  for (var i = 0; i < 50; i++) {    arr.push({ 'val': Math.random() });  }  var list = { 'list': arr };  return list;"
+                "body": "  var arr = [];  for (var i = 0; i < 50; i++) {    arr.push({ 'val': Math.random() });  }  var list = { 'list': arr };  done(list);"
             }
         },
         {
@@ -32,7 +32,7 @@
             "name": "create-email-body",
             "type": "script",
             "properties": {
-                "body": "var loopy = steps.loop.entry.val\n\nvar message = {\n  \"subject\": \"Formula Email\",\n  \"to\": \"devnull@cloud-elements.com\",\n  \"from\": \"devnull@cloud-elements.com\",\n  \"message\": \"Loopy val: \" + loopy\n};\nreturn message;"
+                "body": "var loopy = steps.loop.entry.val\n\nvar message = {\n  \"subject\": \"Formula Email\",\n  \"to\": \"devnull@cloud-elements.com\",\n  \"from\": \"devnull@cloud-elements.com\",\n  \"message\": \"Loopy val: \" + loopy\n};\ndone(message);"
             }
         }
     ],

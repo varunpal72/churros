@@ -9,8 +9,7 @@
             "properties": {
                 "mimeType": "application/javascript",
                 "body": "var start = new Date().getTime(); done();"
-            },
-            "scriptEngine": "v2"
+            }
         }
     ],
     "triggers": [

@@ -33,7 +33,7 @@ const consolidateStepExecutionValues = ses =>
 const validateSimpleSuccessfulRequestTrigger = t => {
   const flat = flattenStepExecutionValues(t.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('request');
-  expect(flat['trigger.request.body']).to.exist;
+  expect(flat).to.have.property('trigger.request.body');
   expect(flat['trigger.request.headers']).to.exist;
   expect(flat['trigger.request.method']).to.equal('GET');
   expect(flat['trigger.request.path']).to.exist;
@@ -42,6 +42,7 @@ const validateSimpleSuccessfulRequestTrigger = t => {
   expect(flat['trigger.response.code']).to.equal('200');
   expect(flat['trigger.response.headers']).to.exist;
 };
+
 const validateSimpleSuccessfulScheduledTrigger = t => {
   const flat = flattenStepExecutionValues(t.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('scheduled');
@@ -108,7 +109,7 @@ const validateSimpleTimeoutStepExecutionsForEvents = tValidator => ses => {
 
   const consolidated = consolidateStepExecutionValues(ses);
 
-  expect(consolidated['simple-script.error']).to.contain('Script timed out after');
+  expect(consolidated['simple-script.error']).to.contain('Script execution timed out');
 };
 
 const validateSimpleV1NoReturnStepExecutionsForEvents = tValidator => ses => {
@@ -149,6 +150,16 @@ const validateSimpleErrorStepExecutionsForEvents = tValidator => ses => {
   const consolidated = consolidateStepExecutionValues(ses);
 
   expect(consolidated['simple-script.error']).to.contain('Script execution failed with message:');
+};
+
+const validateSimpleErrorV2StepExecutionsForEvents = tValidator => ses => {
+  expect(ses).to.have.length(2);
+  ses.filter(se => se.stepName === 'trigger').map(tValidator);
+  ses.filter(se => se.stepName !== 'trigger').map(validateErrorStepExecution);
+
+  const consolidated = consolidateStepExecutionValues(ses);
+
+  expect(consolidated['simple-script.error']).to.contain('Unexpected identifier');
 };
 
 const validateLoopSuccessfulLoopStepExecution = se => {
@@ -286,6 +297,10 @@ const validateSimpleNoReturnConsoleStepExecutions = {
 
 const validateSimpleErrorStepExecutions = {
   forEvents: (num) => validateSimpleErrorStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
+};
+
+const validateSimpleErrorV2StepExecutions = {
+  forEvents: (num) => validateSimpleErrorV2StepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
 const validateSimpleSuccessfulScheduledStepExecutions = {
@@ -446,7 +461,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
 
   it('should properly handle a formula with a v1 step that returns no values', () => {
     const formula = require('./assets/formulas/simple-no-return-formula-v1');
-    const formulaInstance = require('./assets/formulas/simple-no-return-formula-instance-v1');
+    const formulaInstance = require('./assets/formulas/simple-no-return-formula-instance');
 
     let formulaId, formulaInstanceId;
     return common.deleteFormulasByName(test.api, 'simple-no-return')
@@ -516,8 +531,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(() => common.deleteFormula(formulaId));
   });
 
-  it('should properly handle a formula with a step that contains invalid json', () => {
-    const formula = require('./assets/formulas/simple-error-formula');
+  it('should properly handle a formula with a v1 step that contains invalid json', () => {
+    const formula = require('./assets/formulas/simple-error-formula-v1');
     const formulaInstance = require('./assets/formulas/simple-error-formula-instance');
 
     let formulaId, formulaInstanceId;
@@ -536,6 +551,30 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
       .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleErrorStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  });
+
+  it('should properly handle a formula with a v2 step that contains invalid json', () => {
+    const formula = require('./assets/formulas/simple-error-formula-v2');
+    const formulaInstance = require('./assets/formulas/simple-error-formula-instance');
+
+    let formulaId, formulaInstanceId;
+    return common.deleteFormulasByName(test.api, 'simple-error')
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateSingleSfdcPollingEvent(sfdcId))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleErrorV2StepExecutions.forEvents(1))))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
@@ -620,7 +659,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         return r;
       })
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r)(validateSimpleErrorStepExecutions.forRequest)))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forRequest)))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   });
