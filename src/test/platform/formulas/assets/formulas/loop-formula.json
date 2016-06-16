@@ -17,7 +17,7 @@
     "name": "create-list",
     "type": "script",
     "properties": {
-      "body": "\nvar list = [];\nfor (var i = 0; i < 50; i ++) {\n  list.push({\n    name: 'churros-name-' + i,\n    index: i\n  })\n}\n\nreturn {\n  list: list\n};"
+      "body": "\nvar list = [];\nfor (var i = 0; i < 50; i ++) {\n  list.push({\n    name: 'churros-name-' + i,\n    index: i\n  })\n};\n\ndone({\n  list: list\n});"
     },
     "onSuccess": ["looper"]
   }, {

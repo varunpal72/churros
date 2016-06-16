@@ -7,7 +7,7 @@
             "name": "customer-retrieve",
             "type": "script",
             "properties": {
-                "body": "var customer = steps['customer-update'];\n\nreturn customer;"
+                "body": "var customer = steps['customer-update'];\n\ndone(customer);"
             }
         },
         {
@@ -18,7 +18,7 @@
             "name": "customer",
             "type": "script",
             "properties": {
-                "body": "var customer = { \"name\": \"test\", \"id\": \"8000270E-1392053436\" };\nvar address = {\n    \"city\": \"city\",\n  \"state\": \"state\",\n    \"streetAddress\": \"asdfasdfasf\",\n    \"postalCode\": \"23423\"\n}\n\nreturn customer;"
+                "body": "var customer = { \"name\": \"test\", \"id\": \"8000270E-1392053436\" };\nvar address = {\n    \"city\": \"city\",\n  \"state\": \"state\",\n    \"streetAddress\": \"asdfasdfasf\",\n    \"postalCode\": \"23423\"\n}\n\ndone(customer);"
             }
         },
         {
@@ -29,7 +29,7 @@
             "name": "customer-update",
             "type": "script",
             "properties": {
-                "body": "var customer = steps.customer;\n\ncustomer.newthing = { \"some\": \"new thing\" };\n\nreturn customer;"
+                "body": "var customer = steps.customer;\n\ncustomer.newthing = { \"some\": \"new thing\" };\n\ndone(customer);"
             }
         }
     ],

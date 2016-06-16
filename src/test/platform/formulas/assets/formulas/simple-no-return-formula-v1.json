@@ -7,7 +7,8 @@
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "body": "var start = new Date().getTime(); return ;"
+                "body": "var start = new Date().getTime(); return ;",
+                "scriptEngine": "v1"
             }
         }
     ],

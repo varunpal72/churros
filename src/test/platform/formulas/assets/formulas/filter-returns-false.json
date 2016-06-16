@@ -7,7 +7,7 @@
             "name": "return-false",
             "type": "filter",
             "properties": {
-                "body": "return false;"
+                "body": "done(false);"
             }
         }
     ],

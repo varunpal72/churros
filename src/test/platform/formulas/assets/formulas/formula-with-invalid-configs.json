@@ -26,9 +26,8 @@
     "name": "should-not-matter",
     "type": "filter",
     "properties": {
-      "scriptEngine": "v1",
       "mimeType": "application/javascript",
-      "body": "return true;"
+      "body": "done(true);"
     }
   }]
 }
