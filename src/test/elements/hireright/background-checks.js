@@ -12,7 +12,7 @@ suite.forElement('screening', 'background-checks', { payload: payload }, (test) 
 
   it('should allow creating a background-check', () => {
     return cloud.post('/hubs/screening/background-checks', payload);
-  })
+  });
 
   it('should allow retrieving a background-check report and status', () => {
     return cloud.post('/hubs/screening/background-checks', payload)
