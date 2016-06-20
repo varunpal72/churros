@@ -1,0 +1,58 @@
+{
+  "expenses": {
+    "vendorName": "expenses",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "contacts": {
+    "vendorName": "contacts",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "expenses": {
+    "vendorName": "expenses",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "sales-invoices": {
+    "vendorName": "sales_invoices",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "products": {
+    "vendorName": "products",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "bankAccounts": {
+    "vendorName": "bank_accounts",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "contactTypes": {
+    "vendorName": "contact_types",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "taxRates": {
+    "vendorName": "tax_rates",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  }
+}
