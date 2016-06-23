@@ -284,9 +284,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
   let sfdcId;
   before(() => {
     return provisionSfdcWithPolling()
-      .then(r => {
-        sfdcId = r.body.id;
-      })
+      .then(r => sfdcId = r.body.id)
       .catch(r => {
         console.log(`Rats...${r}`);
         process.exit(1);
@@ -298,7 +296,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
+    return common.deleteFormulasByName('simple-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -322,7 +320,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
+    return common.deleteFormulasByName('simple-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -346,7 +344,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/script-context-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'script-context-successful')
+    return common.deleteFormulasByName('script-context-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -370,7 +368,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
+    return common.deleteFormulasByName('simple-successful')
       .then(r => {
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
@@ -397,7 +395,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-timeout-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-timeout')
+    return common.deleteFormulasByName('simple-timeout')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -421,7 +419,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-no-return-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-no-return')
+    return common.deleteFormulasByName('simple-no-return')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -445,7 +443,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-error-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-error')
+    return common.deleteFormulasByName('simple-error')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -469,7 +467,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-error-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-error')
+    return common.deleteFormulasByName('simple-error')
       .then(r => {
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
@@ -496,7 +494,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
+    return common.deleteFormulasByName('simple-successful')
       .then(r => {
 
         formula.singleThreaded = true;
@@ -527,7 +525,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
+    return common.deleteFormulasByName('simple-successful')
       .then(r => {
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
@@ -554,7 +552,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
+    return common.deleteFormulasByName('simple-successful')
       .then(r => cloud.get('/hubs/crm/ping'))
       .then(r => {
         const currentDt = r.body.dateTime;
@@ -585,7 +583,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/loop-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'loop-successful')
+    return common.deleteFormulasByName('loop-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -609,7 +607,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/element-request-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'element-request-successful')
+    return common.deleteFormulasByName('element-request-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -633,7 +631,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/large-payload-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'large-payload-successful')
+    return common.deleteFormulasByName('large-payload-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -688,7 +686,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     };
 
     let formulaId, formulaInstanceId, formulaInstanceExecutionId;
-    return common.deleteFormulasByName(test.api, 'loop-formula')
+    return common.deleteFormulasByName('loop-formula')
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
@@ -712,7 +710,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId1, formulaInstanceId2, formulaInstanceId3;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
+    return common.deleteFormulasByName('simple-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -762,9 +760,9 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance3 = require('./assets/formulas/loop-successful-formula-instance');
 
     let formulaId1, formulaId2, formulaId3, formulaInstanceId1, formulaInstanceId2, formulaInstanceId3;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
-      .then(() => common.deleteFormulasByName(test.api, 'element-request-successful'))
-      .then(() => common.deleteFormulasByName(test.api, 'loop-successful'))
+    return common.deleteFormulasByName('simple-successful')
+      .then(() => common.deleteFormulasByName('element-request-successful'))
+      .then(() => common.deleteFormulasByName('loop-successful'))
       .then(r => {
         formulaInstance1.configuration['trigger-instance'] = sfdcId;
         formulaInstance2.configuration['trigger-instance'] = sfdcId;
@@ -818,7 +816,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'simple-successful')
+    return common.deleteFormulasByName('simple-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -842,7 +840,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/complex-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'complex-successful')
+    return common.deleteFormulasByName('complex-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -866,7 +864,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/script-with-on-failure-successful-formula-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'script-with-on-failure-successful')
+    return common.deleteFormulasByName('script-with-on-failure-successful')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
@@ -890,7 +888,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance = require('./assets/formulas/filter-returns-false-instance');
 
     let formulaId, formulaInstanceId;
-    return common.deleteFormulasByName(test.api, 'filter-returns-false')
+    return common.deleteFormulasByName('filter-returns-false')
       .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)

@@ -8,8 +8,8 @@ const suite = require('core/suite');
 const schema = require('./assets/schemas/formula.schema');
 
 suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test) => {
-  before(() => common.deleteFormulasByName('formulas', invalid.name)
-    .then(r => common.deleteFormulasByName('formulas', 'complex-successful')));
+  before(() => common.deleteFormulasByName(invalid.name)
+    .then(r => common.deleteFormulasByName('complex-successful')));
 
   /* make sure config keys are being validated properly when creating a formula with config */
   test

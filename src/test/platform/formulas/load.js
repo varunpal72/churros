@@ -87,7 +87,7 @@ const createXInstances = (x, formulaId, formulaInstance) => {
  */
 suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   let sfdcId;
-  before(() => common.deleteFormulasByName(test.api, 'complex-successful')
+  before(() => common.deleteFormulasByName('complex-successful')
     .then(r => common.provisionSfdcWithWebhook())
     .then(r => sfdcId = r.body.id));
 

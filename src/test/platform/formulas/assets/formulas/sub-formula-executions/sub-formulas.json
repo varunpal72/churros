@@ -1,0 +1,118 @@
+[{
+    "name": "A-sub-formula",
+    "configuration": [{
+      "key": "trigger-instance",
+      "name": "trigger-instance",
+      "type": "elementInstance"
+    }],
+    "triggers": [{
+      "type": "event",
+      "onSuccess": ["A-filter"],
+      "properties": {
+        "elementInstanceId": "${trigger-instance}"
+      }
+    }],
+    "steps": [{
+      "name": "A-filter",
+      "type": "filter",
+      "properties": {
+        "body": "done(true);"
+      },
+      "onSuccess": ["A-sub-formula"]
+    }, {
+      "name": "A-sub-formula",
+      "type": "formula",
+      "onSuccess": ["A-another-sub-formula"],
+      "properties": {
+        "formulaId": "SUB_FORMULA_ID"
+      }
+    }, {
+      "name": "A-another-sub-formula",
+      "type": "formula",
+      "onSuccess": ["A-end"],
+      "properties": {
+        "formulaId": "SUB_FORMULA_ID"
+      }
+    }, {
+      "name": "A-end",
+      "type": "filter",
+      "properties": {
+        "body": "done(true);"
+      }
+    }]
+  },
+  {
+    "name": "B-sub-formula",
+    "configuration": [{
+      "key": "trigger-instance",
+      "name": "trigger-instance",
+      "type": "elementInstance"
+    }],
+    "triggers": [{
+      "type": "event",
+      "onSuccess": ["B-build-query"],
+      "properties": {
+        "elementInstanceId": "${trigger-instance}"
+      }
+    }],
+    "steps": [{
+      "name": "B-build-query",
+      "type": "script",
+      "onSuccess": ["B-request"],
+      "properties": {
+        "body": "done({query: {page: 1, pageSize: 1}});"
+      }
+    }, {
+      "name": "B-request",
+      "type": "elementRequest",
+      "onSuccess": ["B-script"],
+      "properties": {
+        "elementInstanceId": "${trigger-instance}",
+        "api": "/hubs/crm/contacts",
+        "method": "GET",
+        "query": "steps.B-build-query.query"
+      }
+    }, {
+      "name": "B-script",
+      "type": "script",
+      "onSuccess": ["B-sub-formula"],
+      "properties": {
+        "body": "done();"
+      }
+    }, {
+      "name": "B-sub-formula",
+      "type": "formula",
+      "onSuccess": ["B-end"],
+      "properties": {
+        "formulaId": "SUB_SUB_FORMULA_ID"
+      }
+    }, {
+      "name": "B-end",
+      "type": "filter",
+      "properties": {
+        "body": "done(true);"
+      }
+    }]
+  }, {
+    "name": "C-sub-formulas",
+    "configuration": [{
+      "key": "trigger-instance",
+      "name": "trigger-instance",
+      "type": "elementInstance"
+    }],
+    "triggers": [{
+      "type": "event",
+      "onSuccess": ["C-end"],
+      "properties": {
+        "elementInstanceId": "${trigger-instance}"
+      }
+    }],
+    "steps": [{
+      "name": "C-end",
+      "type": "filter",
+      "properties": {
+        "body": "done(true);"
+      }
+    }]
+  }
+]
