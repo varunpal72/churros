@@ -34,21 +34,21 @@
       "vendorPath": "id"
     }]
   },
-  "bankAccounts": {
+  "bank-accounts": {
     "vendorName": "bank_accounts",
     "fields": [{
       "path": "id",
       "vendorPath": "id"
     }]
   },
-  "contactTypes": {
+  "contact-types": {
     "vendorName": "contact_types",
     "fields": [{
       "path": "id",
       "vendorPath": "id"
     }]
   },
-  "taxRates": {
+  "tax-rates": {
     "vendorName": "tax_rates",
     "fields": [{
       "path": "id",
