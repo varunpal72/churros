@@ -1,15 +1,15 @@
 [{
     "name": "A-sub-formula-no-steps-after",
     "configuration": [{
-      "key": "trigger-instance",
-      "name": "trigger-instance",
+      "key": "crm.instance",
+      "name": "crm.instance",
       "type": "elementInstance"
     }],
     "triggers": [{
       "type": "event",
       "onSuccess": ["A-filter"],
       "properties": {
-        "elementInstanceId": "${trigger-instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{
@@ -38,15 +38,15 @@
   {
     "name": "B-sub-formula-no-steps-after",
     "configuration": [{
-      "key": "trigger-instance",
-      "name": "trigger-instance",
+      "key": "crm.instance",
+      "name": "crm.instance",
       "type": "elementInstance"
     }],
     "triggers": [{
       "type": "event",
       "onSuccess": ["B-request"],
       "properties": {
-        "elementInstanceId": "${trigger-instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{
@@ -54,7 +54,7 @@
       "type": "elementRequest",
       "onSuccess": ["B-sub-formula"],
       "properties": {
-        "elementInstanceId": "${trigger-instance}",
+        "elementInstanceId": "${crm.instance}",
         "api": "/hubs/crm/contacts",
         "method": "GET"
       }
@@ -68,15 +68,15 @@
   }, {
     "name": "C-sub-formula-no-steps-after",
     "configuration": [{
-      "key": "trigger-instance",
-      "name": "trigger-instance",
+      "key": "crm.instance",
+      "name": "crm.instance",
       "type": "elementInstance"
     }],
     "triggers": [{
       "type": "event",
       "onSuccess": ["C-end"],
       "properties": {
-        "elementInstanceId": "${trigger-instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{

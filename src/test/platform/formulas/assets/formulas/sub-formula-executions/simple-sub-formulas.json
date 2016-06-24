@@ -1,0 +1,53 @@
+[{
+    "name": "A-simple-formula",
+    "configuration": [{
+      "key": "crm.instance",
+      "name": "crm.instance",
+      "type": "elementInstance"
+    }],
+    "triggers": [{
+      "type": "event",
+      "onSuccess": ["A-build-args"],
+      "properties": {
+        "elementInstanceId": "${crm.instance}"
+      }
+    }],
+    "steps": [{
+      "name": "A-build-args",
+      "type": "script",
+      "onSuccess": ["A-sub-formula"],
+      "properties": {
+        "body": "done({foo: 'bar'});"
+      }
+    }, {
+      "name": "A-sub-formula",
+      "type": "formula",
+      "properties": {
+        "formulaId": "SUB_FORMULA_ID",
+        "args": "steps.A-build-args"
+      }
+    }]
+  },
+  {
+    "name": "B-simple-formula",
+    "configuration": [{
+      "key": "crm.instance",
+      "name": "crm.instance",
+      "type": "elementInstance"
+    }],
+    "triggers": [{
+      "type": "event",
+      "onSuccess": ["B-script"],
+      "properties": {
+        "elementInstanceId": "${crm.instance}"
+      }
+    }],
+    "steps": [{
+      "name": "B-script",
+      "type": "script",
+      "properties": {
+        "body": "done(trigger.args);"
+      }
+    }]
+  }
+]
