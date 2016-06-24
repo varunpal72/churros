@@ -72,6 +72,13 @@ exports.genModel = (opts) => new Object({
   swagger: (opts.swagger) || {}
 });
 
+exports.genModelWithRequestSwagger = (opts) => new Object({
+  name: (opts.name || 'model'),
+  swagger: (opts.swagger) || {},
+  requestName: (opts.requestName || 'body'),
+  requestSwagger: (opts.swagger) || {}
+});
+
 exports.genHook = (opts) => new Object({
   mimeType: (opts.mimeType || 'application/javascript'),
   type: (opts.type || 'preRequest'),

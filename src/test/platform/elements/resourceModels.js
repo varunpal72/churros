@@ -14,6 +14,15 @@ const crudModels = (url, schema) => {
     .then(r => cloud.delete(url));
 };
 
+const crudModelsWithRequest = (url, schema) => {
+  let model;
+  return cloud.post(url, common.genModelWithRequestSwagger({}), schema)
+    .then(r => model = r.body)
+    .then(r => cloud.get(url, schema))
+    .then(r => cloud.put(url, common.genModelWithRequestSwagger({ name: 'updatedName', requestName: 'bodyName' }), schema))
+    .then(r => cloud.delete(url));
+};
+
 const opts = { paylod: common.genParameter({}), schema: schema };
 
 suite.forPlatform('elements/resources/models', opts, (test) => {
@@ -28,6 +37,8 @@ suite.forPlatform('elements/resources/models', opts, (test) => {
 
   it('should support CRUD by key', () => crudModels(keyUrl, schema));
   it('should support CRUD by ID', () => crudModels(idUrl, schema));
+  it('request swagger should support CRUD by key', () => crudModelsWithRequest(keyUrl, schema));
+  it('request swagger should support CRUD by ID', () => crudModelsWithRequest(idUrl, schema));
 
   after(() => cloud.delete('elements/' + element.key));
 });

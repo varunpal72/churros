@@ -1,22 +1,14 @@
 {
-    "name": "large-payload-successful",
+    "name": "simple-no-return",
     "steps": [
         {
-            "onSuccess": ["end"],
+            "onSuccess": [],
             "onFailure": [],
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "body": "var possible = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789\"; var bigstring = ''; for (var i = 0; i < 10000; ++i) {  bigstring += possible.charAt(Math.floor(Math.random() * possible.length));} var container = {}; for (var i = 0; i < 500; ++i) {  container['prop' + i] = {     'a': bigstring,    'b': 'otherstring',    'c': i * 2  }}; done(container);"
-            }
-        },
-        {
-            "onSuccess": [],
-            "onFailure": [],
-            "name": "end",
-            "type": "script",
-            "properties": {
-                "body": "done({ 'triggerobjectid': trigger.event.objectId, 'prop100': steps['simple-script'].prop100.a, 'done': 'true' });"
+                "mimeType": "application/javascript",
+                "body": "var start = new Date().getTime(); console.log(start); done();"
             }
         }
     ],

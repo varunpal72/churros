@@ -7,7 +7,8 @@
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "body": "var id = trigger.response.body[0].Id; var test = { \"integration-test-1\": 1,\n \"integration-test-2\": true,\n             \"integration-test-3\": \"integration-value\",  \"trigger-test\": id };\n      \nreturn test;" }
+                "body": "var id = trigger.response.body[0].Id; var test = { \"integration-test-1\": 1,\n \"integration-test-2\": true,\n             \"integration-test-3\": \"integration-value\",  \"trigger-test\": id };\n      \ndone(test);" 
+            }
         }
     ],
     "triggers": [
