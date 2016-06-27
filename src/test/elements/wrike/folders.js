@@ -9,7 +9,7 @@ suite.forElement('helpdesk', 'folders', (test) => {
 
   it('should CRUD and copy for folders', () => {
     let rootFolderId, folderId, copyFolderId;
-    let temp = { "title": "update folder title" };
+    let temp = { "title": "update folder title", "project": {"status": "Red"}, "metadata": [{"key": "myMeta", "value": "meta data!"}]};
 
     return cloud.get('/hubs/helpdesk/folders')
       .then(r => rootFolderId = r.body.filter(i => i.title === 'Root')[0].id)
