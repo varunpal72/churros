@@ -14,6 +14,7 @@ const simpleFormulas = require('./assets/formulas/sub-formula-executions/simple-
 const twoSubFormulas = require('./assets/formulas/sub-formula-executions/two-sub-formulas');
 const twoSubFormulasNoAfter = require('./assets/formulas/sub-formula-executions/two-sub-formulas-no-steps-after');
 const manualSubFormulas = require('./assets/formulas/sub-formula-executions/manual-sub-formulas');
+const filterSubFormulas = require('./assets/formulas/sub-formula-executions/filter-sub-formulas');
 const event = require('./assets/events/single-event-sfdc');
 
 suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (test) => {
@@ -21,7 +22,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     const names = simpleFormulas.map(f => f.name)
       .concat(twoSubFormulas.map(f => f.name))
       .concat(twoSubFormulasNoAfter.map(f => f.name))
-      .concat(manualSubFormulas.map(f => f.name));
+      .concat(manualSubFormulas.map(f => f.name))
+      .concat(filterSubFormulas.map(f => f.name));
     return cleaner.formulas.withNames(names);
   };
 
@@ -158,6 +160,28 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     };
 
     return executionTest(setup, 8, validator);
+  });
+
+  it('should have onSuccess or onFailure to represent the entire sub-formulas execution status', () => {
+    const setup = () => {
+      return cloud.post(`/formulas`, single(filterSubFormulas, 'B-filter-sub-formula'))
+        .then(r => setProperty(filterSubFormulas, 'A-filter-sub-formula', 'A-sub-formula', r.body.id))
+        .then(r => cloud.post(`/formulas`, single(filterSubFormulas, 'A-filter-sub-formula')));
+    };
+
+    const validator = (executions) => {
+      console.log(`${executions}`);
+
+      const stepExecutions = executions[0].stepExecutions;
+
+      // sub-formula `filter` step should have "failed" (returned false) but the entire execution should be represented
+      // as successful and then go on to run the `A-end` step successfully
+      console.log(JSON.stringify(stepExecutions));
+      stepExecutions.filter(se => se.stepName === 'B-filter')[0].status === 'failed';
+      stepExecutions.filter(se => se.stepName === 'A-end')[0].status === 'success';
+    };
+
+    return executionTest(setup, 5, validator);
   });
 
   /* Cleanup any resources */
