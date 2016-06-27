@@ -59,12 +59,13 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     return formula;
   };
 
-  const successfulValidation = (executions) => {
+  const defaultValidator = (executions) => {
     expect(executions).to.have.length(1);
     const execution = executions[0];
     expect(execution.status).to.equal('success');
     const stepExecutions = execution.stepExecutions;
     expect(stepExecutions.filter(se => se.status !== 'success')).to.have.length(0);
+    return executions;
   };
 
   /**
@@ -76,11 +77,11 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
    * * ensures there is one execution of the formula
    * * validates the step execution values appropriately
    */
-  const executionTest = (setup, expectedNumSteps, executionValidator) => {
+  const executionTest = (setup, expectedNumSteps, customValidator) => {
     if (!setup) throw Error('No setup function found.  Need a setup function that returns the formula that we should create a formula instance of');
 
     // default step execution validator
-    executionValidator = executionValidator || ((executions) => logger.debug(`No validation of executions for: ${tools.stringify(executions)}`));
+    customValidator = customValidator || ((executions) => logger.debug(`No validation of executions for: ${tools.stringify(executions)}`));
 
     let formulaId, formulaInstanceId;
     return setup()
@@ -92,7 +93,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
       .then(executions => validateExecution(executions))
       .then(executions => Promise.all(executions.body.map(execution => common.getFormulaInstanceExecutionWithSteps(execution.id))))
-      .then(executions => executionValidator(executions));
+      .then(executions => defaultValidator(executions))
+      .then(executions => customValidator(executions));
   };
 
   it('should support a simple formula that contains a sub-formula', () => {
@@ -102,11 +104,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
         .then(r => cloud.post(`/formulas`, single(simpleFormulas, 'A-simple-formula')));
     };
 
-    const validator = (executions) => {
-      successfulValidation(executions);
-    };
-
-    return executionTest(setup, 4, validator);
+    return executionTest(setup, 4);
   });
 
   it('should support a formula having multiple sub-formulas', () => {
@@ -118,7 +116,15 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
         .then(() => cloud.post(`/formulas`, single(twoSubFormulas, 'A-formula')));
     };
 
-    return executionTest(setup, 17);
+    const validator = (executions) => {
+      const execution = executions[0];
+      const stepExecutions = execution.stepExecutions;
+      const lastStepExecution = stepExecutions.filter(se => se.stepName === 'A-end')[0];
+      expect(lastStepExecution.stepExecutionValues).to.have.length(1);
+      expect(lastStepExecution.stepExecutionValues[0].value).to.equal('{"b":"iamb","c":"iamc"}');
+    };
+
+    return executionTest(setup, 17, validator);
   });
 
   it('should support a formula multiple sub-formulas and no after steps', () => {
@@ -141,7 +147,6 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     };
 
     const validator = (executions) => {
-      successfulValidation(executions);
       const execution = executions[0];
       const stepExecutions = execution.stepExecutions;
       const lastStepExecution = stepExecutions.filter(se => se.stepName === 'A-end')[0];

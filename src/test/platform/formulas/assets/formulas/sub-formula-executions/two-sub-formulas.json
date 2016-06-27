@@ -35,9 +35,9 @@
       }
     }, {
       "name": "A-end",
-      "type": "filter",
+      "type": "script",
       "properties": {
-        "body": "done(true);"
+        "body": "done({sub: steps['A-sub-formula']});"
       }
     }]
   },
@@ -88,9 +88,9 @@
       }
     }, {
       "name": "B-end",
-      "type": "filter",
+      "type": "script",
       "properties": {
-        "body": "done(true);"
+        "body": "done({b: 'iamb', c: steps['B-sub-formula'].c});"
       }
     }]
   }, {
@@ -109,9 +109,9 @@
     }],
     "steps": [{
       "name": "C-end",
-      "type": "filter",
+      "type": "script",
       "properties": {
-        "body": "done(true);"
+        "body": "done({c: 'iamc'});"
       }
     }]
   }
