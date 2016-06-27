@@ -59,6 +59,14 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     return formula;
   };
 
+  const successfulValidation = (executions) => {
+    expect(executions).to.have.length(1);
+    const execution = executions[0];
+    expect(execution.status).to.equal('success');
+    const stepExecutions = execution.stepExecutions;
+    expect(stepExecutions.filter(se => se.status !== 'success')).to.have.length(0);
+  };
+
   /**
    * The standard execution test logic which:
    * * runs the setup function that *must* return the top-level parent formula that we will create a formula instance of
@@ -95,11 +103,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     };
 
     const validator = (executions) => {
-      expect(executions).to.have.length(1);
-      const execution = executions[0];
-      expect(execution.status).to.equal('success');
-      const stepExecutions = execution.stepExecutions;
-      expect(stepExecutions.filter(se => se.status !== 'success')).to.have.length(0);
+      successfulValidation(executions);
     };
 
     return executionTest(setup, 4, validator);
@@ -119,11 +123,11 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   it('should support a formula multiple sub-formulas and no after steps', () => {
     const setup = () => {
-      return cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'C-formula-no-steps-after'))
-        .then(formula => setProperty(twoSubFormulasNoAfter, 'B-formula-no-steps-after', 'B-sub-formula', formula.body.id))
-        .then(() => cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'B-formula-no-steps-after')))
-        .then(formula => setProperty(twoSubFormulasNoAfter, 'A-formula-no-steps-after', 'A-sub-formula', formula.body.id))
-        .then(() => cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'A-formula-no-steps-after')));
+      return cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'C-sub-formula-no-steps-after'))
+        .then(formula => setProperty(twoSubFormulasNoAfter, 'B-sub-formula-no-steps-after', 'B-sub-formula', formula.body.id))
+        .then(() => cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'B-sub-formula-no-steps-after')))
+        .then(formula => setProperty(twoSubFormulasNoAfter, 'A-sub-formula-no-steps-after', 'A-sub-formula', formula.body.id))
+        .then(() => cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'A-sub-formula-no-steps-after')));
     };
 
     return executionTest(setup, 7);
@@ -137,14 +141,23 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     };
 
     const validator = (executions) => {
-      console.log(`Executions: ${tools.stringify(executions)}`);
+      successfulValidation(executions);
+      const execution = executions[0];
+      const stepExecutions = execution.stepExecutions;
+      const lastStepExecution = stepExecutions.filter(se => se.stepName === 'A-end')[0];
+      expect(lastStepExecution.stepExecutionValues).to.have.length(1);
+
+      const value = lastStepExecution.stepExecutionValues[0];
+      expect(value.key).to.equal('A-end.createdId');
+      expect(value.value).to.be.a('string');
     };
 
-    return executionTest(setup, 7, validator);
+    return executionTest(setup, 8, validator);
   });
 
   /* Cleanup any resources */
   after(() => {
+    // TODO - JJW
     // return cleanFormulas()
     //   .then(r => provisioner.delete(sfdcId))
     //   .catch(e => tools.logAndThrow(`Failed to run after()`, e));
