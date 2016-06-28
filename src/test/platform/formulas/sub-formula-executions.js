@@ -137,7 +137,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     return executionTest(setup, 5, validator);
   });
 
-  it('should support a formula multiple sub-formulas and no after steps', () => {
+  it('should support a formula having multiple sub-formulas and no after steps', () => {
     const setup = () => {
       return createSetCreate(twoSubFormulasNoAfter, 'C-sub-formula-no-steps-after', 'B-sub-formula', 'B-sub-formula-no-steps-after')
         .then(formula => setProperty(twoSubFormulasNoAfter, 'A-sub-formula-no-steps-after', 'A-sub-formula', formula.body.id))

@@ -59,6 +59,9 @@ exports.generateSfdcPollingEvent = (instanceId, payload) => {
     .post('/events/sfdcPolling/' + encodedId, payload);
 };
 
+exports.deleteFormula = (fId) => cloud.delete(`/formulas/${fId}`);
+exports.deleteFormulaInstance = (fId, fiId) => cloud.delete(`/formulas/${fId}/instances/${fiId}`);
+
 const getAllExecutions = (fiId, nextPage, all) => {
   all = all || [];
   const options = { qs: { nextPage: nextPage, pageSize: 200 } };
@@ -69,6 +72,10 @@ const getAllExecutions = (fiId, nextPage, all) => {
       all = all.concat(r.body);
       const npt = r.response.headers['elements-next-page-token'];
       return npt === undefined ? all : getAllExecutions(fiId, npt, all);
+    })
+    .catch(e => {
+      logger.debug(`Failed to retrieve executions, returning current list.  Exception: ${e}`);
+      return all;
     });
 };
 exports.getAllExecutions = getAllExecutions;
