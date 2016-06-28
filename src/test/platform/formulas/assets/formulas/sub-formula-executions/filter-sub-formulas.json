@@ -17,7 +17,7 @@
     "type": "script",
     "onSuccess": ["A-sub-formula"],
     "properties": {
-      "body": "done( { boolean: false });"
+      "body": "done({boolean: false});"
     }
   }, {
     "name": "A-sub-formula",

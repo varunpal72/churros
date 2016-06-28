@@ -31,7 +31,7 @@
     "name": "A-end",
     "type": "script",
     "properties": {
-      "body": "const subFormulaValues = steps['A-sub-formula']; done({createdId: subFormulaValues.id})"
+      "body": "done({createdId: steps['A-sub-formula'].id});"
     }
   }]
 }, {
