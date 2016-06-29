@@ -5,7 +5,7 @@
 const commander = require('commander');
 
 commander
-  .version('1.0.0')
+  .version('0.6.0')
   .command('init', 'initalize churros')
   .command('add', 'add a new test suite')
   .command('test', 'run a test suite')
