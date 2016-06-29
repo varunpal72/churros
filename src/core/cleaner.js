@@ -14,6 +14,18 @@ const ignore = (response) => {
 };
 
 /**
+ * Filteres out the responses entries based on whether an entry has a field that matches at least one value in values
+ */
+const filter = (rs, field, values) => {
+  return rs.body.filter(r => {
+    let isFound = false;
+    logger.debug(`Looking to see if ${r[field]} is in ${values}`);
+    values.forEach(value => isFound = (isFound || r[field] === value));
+    return isFound;
+  });
+};
+
+/**
  * Slowly deletes things as opposed to doing them all at once, which can be painful
  */
 const deleteAll = (resource, ids) => {
@@ -22,15 +34,6 @@ const deleteAll = (resource, ids) => {
   return cloud.delete(`/${resource}/${ids[0]}`, ignore)
     .then(r => ids.shift())
     .then(r => deleteAll(resource, ids));
-};
-
-const filter = (rs, field, values) => {
-  return rs.body.filter(r => {
-    let isFound = false;
-    logger.debug(`Looking to see if ${r[field]} is in ${values}`);
-    values.forEach(value => isFound = (isFound || r[field] === value));
-    return isFound;
-  });
 };
 
 /**
@@ -46,6 +49,7 @@ const cleanFormulas = (field, values) => {
           // concat them all together
           let instances = [];
           rs.map(r => instances = instances.concat(r.body));
+          logger.debug(`Concatenated formulas instances into ${JSON.stringify(instances)}`);
           return instances;
         })
         .then(rs => Promise.all(rs.map(r => cloud.delete(`/formulas/${r.formula.id}/instances/${r.id}`))))
@@ -53,12 +57,14 @@ const cleanFormulas = (field, values) => {
     });
 };
 
+/**
+ * Cleans all element instances based on a given field
+ */
 const cleanElements = (field, values) => {
   logger.debug(`Cleaning element instances where ${field} is set to one of ${values}`);
   return cloud.get(`/instances`)
     .then(rs => filter(rs, field, values))
-    .then(rs => deleteAll('instances', rs.map(r => r.id)))
-    .catch(r => logger.debug(`Poop: ${r}`));
+    .then(rs => deleteAll('instances', rs.map(r => r.id)));
 };
 
 /**
@@ -67,7 +73,7 @@ const cleanElements = (field, values) => {
 const toArray = (value) => Array.isArray(value) ? value : [value];
 
 /**
- * Clean up resources with a given field
+ * Clean up formulas based on a given field
  */
 exports.formulas = {
   withName: (name) => {
@@ -75,6 +81,9 @@ exports.formulas = {
   }
 };
 
+/**
+ * Clean up element instances based on a field field
+ */
 exports.elements = {
   withName: (name) => {
     return cleanElements('name', toArray(name));
