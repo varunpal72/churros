@@ -4,13 +4,10 @@ const suite = require('core/suite');
 const payload = require('./assets/journals');
 const cloud = require('core/cloud');
 
-const options = {
-  "Name": "Churros update"
-};
-
 suite.forElement('sage', 'journals', { payload: payload }, (test) => {
-  let journalId;
   it('should allow CRUDS for journals', () => {
+    var options = { "Name": "Churros update" };
+    let journalId;
     return cloud.post(test.api, payload)
       .then(r => cloud.withOptions({ qs: { where: 'Name=\'ChurrosTest\'' } }).get(test.api))
       .then(r => journalId = r.body[0].Id)

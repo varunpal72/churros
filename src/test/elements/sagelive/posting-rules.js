@@ -4,8 +4,8 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('sage', 'posting-rules', null, (test) => {
-  let ruleId;
   it('should allow Sr for posting-rules', () => {
+    let ruleId;
     return cloud.get(test.api)
       .then(r => ruleId = r.body[0].Id)
       .then(r => cloud.get(`${test.api}/${ruleId}`));

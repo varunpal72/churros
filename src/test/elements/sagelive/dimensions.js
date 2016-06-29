@@ -4,14 +4,10 @@ const suite = require('core/suite');
 const payload = require('./assets/dimensions');
 const cloud = require('core/cloud');
 
-
-const options = {
-  "Name": "Churros update"
-};
-
 suite.forElement('sage', 'dimensions', { payload: payload }, (test) => {
-  let dimensionId;
   it('should allow CRUDS for dimensions', () => {
+    var options = { "Name": "Churros update" };
+    let dimensionId;
     return cloud.post(test.api, payload)
       .then(r => cloud.withOptions({ qs: { where: 'Name=\'ChurrosTest\'' } }).get(test.api))
       .then(r => dimensionId = r.body[0].Id)
