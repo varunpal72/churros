@@ -1,5 +1,6 @@
 'use strict';
 
+const cleaner = require('core/cleaner');
 const cloud = require('core/cloud');
 const common = require('./assets/common');
 const expect = require('chakram').expect;
@@ -8,7 +9,7 @@ const suite = require('core/suite');
 const schema = require('./assets/schemas/formula.schema');
 
 suite.forPlatform('formulas', { name: 'formula steps', schema: schema }, (test) => {
-  before(() => common.deleteFormulasByName('formulas', invalidJson.name));
+  before(() => cleaner.formulas.withName(invalidJson.name));
 
   /* make sure step properties are being validated properly when creating a formula with steps*/
   test

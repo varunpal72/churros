@@ -1,10 +1,10 @@
 'use strict';
 
+const cleaner = require('core/cleaner');
 const tools = require('core/tools');
 const b64 = tools.base64Encode;
 const chakram = require('chakram');
 const expect = chakram.expect;
-const util = require('util');
 const logger = require('winston');
 const provisioner = require('core/provisioner');
 const cloud = require('core/cloud');
@@ -59,37 +59,8 @@ exports.generateSfdcPollingEvent = (instanceId, payload) => {
     .post('/events/sfdcPolling/' + encodedId, payload);
 };
 
-const deleteFormulaInstance = (fId, fiId) =>
-  cloud.delete(util.format('/formulas/%s/instances/%s', fId, fiId));
-
-const getInstancesForFormula = (fId) =>
-  cloud.get(`/formulas/${fId}/instances`, r => r)
-  .then(r => r.body);
-
-const getInstancesForFormulas = (fs) =>
-  Promise.all(fs.map(f => getInstancesForFormula(f.id)));
-
-const deleteFormula = (fId) =>
-  cloud.delete(util.format('/formulas/%s', fId));
-
-const deleteFormulas = (fs) =>
-  Promise.all(fs.map(f => deleteFormula(f.id)));
-
-const getFormulasByName = (api, name) =>
-  cloud.get(api, r => r)
-  .then(r => r.body.filter(f => f.name === name));
-
-const deleteInstancesForFormulas = (is) =>
-  Promise.all(is.map(i => deleteFormulaInstance(i.formula.id, i.id)));
-
-const deleteFormulasByName = (api, name) =>
-  getFormulasByName(api, name)
-  .then(fs =>
-    getInstancesForFormulas(fs)
-    .then(fis => [].concat.apply([], fis))
-    .then(deleteInstancesForFormulas)
-    .then(() => deleteFormulas(fs)));
-exports.deleteFormulasByName = deleteFormulasByName;
+exports.deleteFormula = (fId) => cloud.delete(`/formulas/${fId}`);
+exports.deleteFormulaInstance = (fId, fiId) => cloud.delete(`/formulas/${fId}/instances/${fiId}`);
 
 const getAllExecutions = (fiId, nextPage, all) => {
   all = all || [];
@@ -101,6 +72,10 @@ const getAllExecutions = (fiId, nextPage, all) => {
       all = all.concat(r.body);
       const npt = r.response.headers['elements-next-page-token'];
       return npt === undefined ? all : getAllExecutions(fiId, npt, all);
+    })
+    .catch(e => {
+      logger.debug(`Failed to retrieve executions, returning current list.  Exception: ${e}`);
+      return all;
     });
 };
 exports.getAllExecutions = getAllExecutions;
@@ -120,14 +95,11 @@ exports.getFormulaInstanceExecutionWithSteps = (fieId) => {
     });
 };
 
-exports.deleteFormulaInstance = deleteFormulaInstance;
-exports.deleteFormula = deleteFormula;
-
 exports.createFAndFI = (element, config) => {
   element = element || 'closeio';
   let elementInstanceId, formulaId, formulaInstanceId;
   const formula = require('./formulas/simple-successful-formula');
-  return deleteFormulasByName('/formulas', 'simple-successful')
+  return cleaner.formulas.withName('simple-successful')
     .then(r => cloud.post('/formulas', formula, fSchema))
     .then(r => formulaId = r.body.id)
     .then(r => provisioner.create(element, config))
