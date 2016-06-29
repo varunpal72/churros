@@ -9,7 +9,7 @@ const suite = require('core/suite');
 const schema = require('./assets/schemas/formula.schema');
 
 suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test) => {
-  before(() => cleaner.formulas.withNames([invalid.name, 'complex-successful']));
+  before(() => cleaner.formulas.withName([invalid.name, 'complex-successful']));
 
   /* make sure config keys are being validated properly when creating a formula with config */
   test

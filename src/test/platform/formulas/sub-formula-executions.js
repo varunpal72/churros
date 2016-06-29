@@ -26,7 +26,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       .concat(manualSubFormulas.map(f => f.name))
       .concat(filterSubFormulas.map(f => f.name))
       .concat(errorSubFormulas.map(f => f.name));
-    return cleaner.formulas.withNames(names);
+    return cleaner.formulas.withName(names);
   };
 
   /* Create SFDC element with events enabled */

@@ -909,7 +909,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const formulaInstance3 = require('./assets/formulas/loop-successful-formula-instance');
 
     let formulaId1, formulaId2, formulaId3, formulaInstanceId1, formulaInstanceId2, formulaInstanceId3;
-    return cleaner.formulas.withNames(['simple-successful', 'element-request-successful', 'loop-successful'])
+    return cleaner.formulas.withName(['simple-successful', 'element-request-successful', 'loop-successful'])
       .then(r => {
         formulaInstance1.configuration['trigger-instance'] = sfdcId;
         formulaInstance2.configuration['trigger-instance'] = sfdcId;

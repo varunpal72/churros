@@ -5,9 +5,10 @@
 const commander = require('commander');
 
 commander
-  .version('0.5.0')
+  .version('1.0.0')
   .command('init', 'initalize churros')
   .command('add', 'add a new test suite')
   .command('test', 'run a test suite')
   .command('props', 'view/set properties')
+  .command('clean', 'clean up platform resources')
   .parse(process.argv);

@@ -24,17 +24,22 @@ const deleteAll = (resource, ids) => {
     .then(r => deleteAll(resource, ids));
 };
 
+const filter = (rs, field, values) => {
+  return rs.body.filter(r => {
+    let isFound = false;
+    logger.debug(`Looking to see if ${r[field]} is in ${values}`);
+    values.forEach(value => isFound = (isFound || r[field] === value));
+    return isFound;
+  });
+};
+
 /**
  * Cleans all formulas and formula instances based on a given field
  */
 const cleanFormulas = (field, values) => {
   logger.debug(`Cleaning formulas where ${field} is set to one of ${values}`);
   return cloud.get(`/formulas`)
-    .then(rs => rs.body.filter(r => {
-      let isFound = false;
-      values.forEach(value => isFound = isFound || r[field] === value);
-      return isFound;
-    }))
+    .then(rs => filter(rs, field, values))
     .then(rs => {
       return Promise.all(rs.map(r => cloud.get(`/formulas/${r.id}/instances`)))
         .then(rs => {
@@ -48,28 +53,30 @@ const cleanFormulas = (field, values) => {
     });
 };
 
-const cleanElements = (field, value) => {
-  logger.debug(`Cleaning elements where ${field} is set to ${value}`);
+const cleanElements = (field, values) => {
+  logger.debug(`Cleaning element instances where ${field} is set to one of ${values}`);
   return cloud.get(`/instances`)
-    .then(rs => rs.body.filter(r => r[field] === value))
+    .then(rs => filter(rs, field, values))
     .then(rs => deleteAll('instances', rs.map(r => r.id)))
     .catch(r => logger.debug(`Poop: ${r}`));
 };
+
+/**
+ * Convert object to array if it is NOT an array
+ */
+const toArray = (value) => Array.isArray(value) ? value : [value];
 
 /**
  * Clean up resources with a given field
  */
 exports.formulas = {
   withName: (name) => {
-    return cleanFormulas('name', [name]);
-  },
-  withNames: (names) => {
-    return cleanFormulas('name', names);
+    return cleanFormulas('name', toArray(name));
   }
 };
 
 exports.elements = {
   withName: (name) => {
-    return cleanElements('name', name);
+    return cleanElements('name', toArray(name));
   }
 };
