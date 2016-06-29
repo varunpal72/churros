@@ -50,7 +50,7 @@ commander
     console.log('    $ churros clean formulas --name my-formula-name --name my-other-formula-name');
     console.log('');
     console.log('    # Cleanup Elements');
-    console.log('    $ churros clean element --name my-element-name');
+    console.log('    $ churros clean elements --name my-element-name');
     console.log('');
   })
   .parse(process.argv);
