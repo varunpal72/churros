@@ -190,11 +190,12 @@ exports.create = (element, args, baseApi) => {
 };
 
 exports.delete = (id, baseApi) => {
+  if (!id) return;
+
   baseApi = (baseApi) ? baseApi : '/instances';
   return cloud.delete(`${baseApi}/${id}`)
     .then(r => {
-      expect(r).to.have.statusCode(200);
-      logger.debug('Deleted element instance with ID: ' + id);
+      logger.debug(`Deleted element instance with ID: ${id}`);
       defaults.reset();
       return r.body;
     })

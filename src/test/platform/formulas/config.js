@@ -1,6 +1,7 @@
 'use strict';
 
 const cloud = require('core/cloud');
+const cleaner = require('core/cleaner');
 const common = require('./assets/common');
 const expect = require('chakram').expect;
 const invalid = require('./assets/formulas/formula-with-invalid-configs');
@@ -8,8 +9,7 @@ const suite = require('core/suite');
 const schema = require('./assets/schemas/formula.schema');
 
 suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test) => {
-  before(() => common.deleteFormulasByName('formulas', invalid.name)
-    .then(r => common.deleteFormulasByName('formulas', 'complex-successful')));
+  before(() => cleaner.formulas.withName([invalid.name, 'complex-successful']));
 
   /* make sure config keys are being validated properly when creating a formula with config */
   test

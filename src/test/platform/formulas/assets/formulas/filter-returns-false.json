@@ -1,33 +1,22 @@
 {
-    "name": "filter-returns-false",
-    "steps": [
-        {
-            "onSuccess": [],
-            "onFailure": [],
-            "name": "return-false",
-            "type": "filter",
-            "properties": {
-                "body": "done(false);"
-            }
-        }
-    ],
-    "triggers": [
-        {
-            "type": "event",
-            "async": true,
-            "onSuccess": ["return-false"],
-            "onFailure": [],
-            "properties": {
-                "elementInstanceId": "${trigger-instance}"
-            }
-        }
-    ],
-    "configuration": [
-        {
-            "key": "trigger-instance",
-            "name": "trigger-instance",
-            "type": "elementInstance",
-            "required": true
-        }
-    ]
+  "name": "filter-returns-false",
+  "steps": [{
+    "name": "return-false",
+    "type": "filter",
+    "properties": {
+      "body": "done(false);"
+    }
+  }],
+  "triggers": [{
+    "type": "event",
+    "onSuccess": ["return-false"],
+    "properties": {
+      "elementInstanceId": "${trigger-instance}"
+    }
+  }],
+  "configuration": [{
+    "key": "trigger-instance",
+    "name": "trigger-instance",
+    "type": "elementInstance"
+  }]
 }

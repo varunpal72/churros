@@ -1,5 +1,6 @@
 'use strict';
 
+const cleaner = require('core/cleaner');
 const suite = require('core/suite');
 const common = require('./assets/common');
 const cloud = require('core/cloud');
@@ -87,7 +88,7 @@ const createXInstances = (x, formulaId, formulaInstance) => {
  */
 suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   let sfdcId;
-  before(() => common.deleteFormulasByName(test.api, 'complex-successful')
+  before(() => cleaner.formulas.withName('complex-successful')
     .then(r => common.provisionSfdcWithWebhook())
     .then(r => sfdcId = r.body.id));
 

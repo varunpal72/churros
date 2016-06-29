@@ -17,7 +17,7 @@ const validator = (validationCb) => {
     };
   } else if (typeof validationCb === 'undefined' || (typeof validationCb === 'object' && validationCb === null)) {
     return (r) => {
-      logger.debug(`Validating that response is 200.  Response body: ${tools.stringify(r.body)}`);
+      if (typeof r.body === 'object') logger.debug(`Validating that response is 200.  Response body: ${tools.stringify(r.body)}`);
       expect(r).to.have.statusCode(200);
       return r;
     };
