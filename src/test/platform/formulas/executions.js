@@ -165,7 +165,6 @@ const validateSimpleErrorV2StepExecutionsForEvents = tValidator => ses => {
 
 const validateLoopSuccessfulLoopStepExecution = se => {
   const flat = flattenStepExecutionValues(se.stepExecutionValues);
-
   expect(flat['loop.index']).to.not.be.empty;
   const index = parseInt(flat['loop.index']);
 
@@ -338,7 +337,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
   /**
    * Represents a standard execution test setup, triggering of formula and validation.
    *
-   * NOTE: Currently working on migrating all tests in here to use this function to allow for less code and easier debugging
+   * NOTE: Currently working on re-factoring tests to reduce duplicate code
    */
   const executionTest = (formula, numberOfExecutions, numberOfStepExecutions, triggerCb, customExecutionsValidator) => {
     customExecutionsValidator = customExecutionsValidator || ((executions) => logger.debug(`No custom execution validator found`));
@@ -367,6 +366,32 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
       .then(executions => executionsValidator(executions));
   };
+
+  /**
+   * NOTE: Currently working on re-factoring tests to reduce duplicate code
+   */
+  const eventTriggerTest = (setup, formula, formulaInstance, numEvents, numStepExecutions, customValidator) => {
+    const validator = (executions) => {
+      customValidator = (customValidator || ((execution) => logger.debug(`No custom validator found`)));
+      customValidator(executions);
+    };
+
+    let formulaId, formulaInstanceId;
+    return cleaner.formulas.withName(formula.name)
+      .then(r => setup(formula, formulaInstance))
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(r => formulaInstanceId = r.body.id)
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, numEvents))
+      .then(() => tools.wait.upTo(30000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, numEvents, numStepExecutions)))
+      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(executions => validator(executions))
+      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
+      .then(() => common.deleteFormula(formulaId));
+  };
+
 
   it('should successfully execute a simple formula triggered by a single event', () => {
     const formula = require('./assets/formulas/simple-successful-formula');
@@ -612,30 +637,16 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
   });
 
   it('should properly handle a single threaded formula with a step that contains invalid json, triggered by an event with three objects', () => {
+    const setup = (formula, formulaInstance) => {
+      formula.singleThreaded = true;
+      formulaInstance.configuration['trigger-instance'] = sfdcId;
+    };
+
+    const validator = (executions) => executions.map(r => validateExecution(r, 'failed')(validateSimpleErrorStepExecutions.forEvents(2)));
+
     const formula = require('./assets/formulas/simple-error-formula-v1');
     const formulaInstance = require('./assets/formulas/simple-error-formula-instance');
-
-    let formulaId, formulaInstanceId;
-    return cleaner.formulas.withName('simple-error')
-      .then(r => {
-        formula.singleThreaded = true;
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-      })
-      .then(() => cloud.post(test.api, formula, fSchema))
-      .then(r => formulaId = r.body.id)
-      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
-      .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateTripleSfdcPollingEvent(sfdcId))
-      .then(() => sleep.sleep(5))
-      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
-      .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
-        return r;
-      })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r, 'failed')(validateSimpleErrorStepExecutions.forEvents(3))))
-      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-      .then(() => common.deleteFormula(formulaId));
+    return eventTriggerTest(setup, formula, formulaInstance, 3, 2, validator);
   });
 
   it('should successfully execute a simple formula triggered manually', () => {
@@ -645,7 +656,6 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     let formulaId, formulaInstanceId;
     return cleaner.formulas.withName('simple-successful')
       .then(r => {
-
         formula.singleThreaded = true;
         formulaInstance.configuration['trigger-instance'] = sfdcId;
       })
@@ -675,10 +685,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
 
     let formulaId, formulaInstanceId;
     return cleaner.formulas.withName('simple-successful')
-      .then(r => {
-        formula.singleThreaded = true;
-        formulaInstance.configuration['trigger-instance'] = sfdcId;
-      })
+      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => formulaId = r.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
@@ -739,7 +746,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateSingleSfdcPollingEvent(sfdcId))
-      .then(() => sleep.sleep(15))
+      .then(() => sleep.sleep(45))
       .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
       .then(r => {
         expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
