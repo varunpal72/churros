@@ -41,9 +41,32 @@ const updateInstanceWithReprovision = (baseUrl, schema) => {
     .then(r => {
       return provisioner.partialOauth('shopify');
     })
-    .then(code => cloud.put(`${baseUrl}/${id}`, genInstance('shopify', { name: 'updated-instance', providerData: { code: code } })))
+    .then(code =>
+      cloud.put(`${baseUrl}/${id}`, genInstance('shopify', { name: 'updated-instance', providerData: { code: code } }), r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body.configuration).to.not.be.empty;
+        expect(r.body.configuration.password).to.equal("********");
+        expect(r.body.configuration.username).to.equal(props.getForKey('shopify', 'username'));
+        expect(r.body).to.not.have.key('providerData');
+      }))
+    .then(r => cloud.get(`/hubs/ecommerce/orders`))
+    .then(r => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body).to.be.instanceof(Array);
+    })
     .then(r => provisioner.partialOauth('shopify'))
-    .then(code => cloud.patch(`${baseUrl}/${id}`, { name: 'updated-instance', providerData: { code: code } }))
+    .then(code => cloud.patch(`${baseUrl}/${id}`, { name: 'updated-instance', providerData: { code: code } }, r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body.configuration).to.not.be.empty;
+        expect(r.body.configuration.password).to.equal("********");
+        expect(r.body.configuration.username).to.equal(props.getForKey('shopify', 'username'));
+        expect(r.body).to.not.have.key('providerData');
+    }))
+    .then(r => cloud.get(`/hubs/ecommerce/orders`))
+    .then(r => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body).to.be.instanceof(Array);
+    })
     .then(r => provisioner.delete(id, baseUrl));
 };
 
