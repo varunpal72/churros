@@ -226,6 +226,16 @@ describe('provisioner', () => {
       .then(r => mockery.disable());
   });
 
+  it('should allow partially provisioning an oauth2 element instance', () => {
+    setupProps();
+    return provisioner.partialOauth('myoauth2element')
+      .then(r => {
+        expect(r).to.exist;
+        expect(r).to.equal('speakercity');
+      })
+      .then(r => mockery.disable());
+  });
+
   it('should throw an error for provisioning an oauth1 element with external', () => {
     setupProps();
     return provisioner.create('myoauth1external')
