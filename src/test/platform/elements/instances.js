@@ -9,6 +9,7 @@ const instanceSchema = require('./assets/element.instance.schema.json');
 
 const genInstance = (element, o) => ({
   name: (o.name || 'churros-instance'),
+  providerData: (o.providerData || undefined),
   element: { key: element },
   configuration: props.all(element)
 });
@@ -27,6 +28,48 @@ const crudInstance = (baseUrl, schema) => {
     .then(r => provisioner.delete(id, baseUrl));
 };
 
+const updateInstanceWithReprovision = (baseUrl, schema) => {
+  let id;
+  return provisioner.create('shopify')
+    .then(r => id = r.body.id)
+    .then(r => cloud.get(`${baseUrl}/${id}`, (r) => {
+      expect(r).to.have.schemaAnd200(schema);
+      expect(r.body.configuration).to.not.be.empty;
+      expect(r.body.configuration.password).to.equal("********");
+      expect(r.body.configuration.username).to.equal(props.getForKey('shopify', 'username'));
+    }))
+    .then(r => {
+      return provisioner.partialOauth('shopify');
+    })
+    .then(code =>
+      cloud.put(`${baseUrl}/${id}`, genInstance('shopify', { name: 'updated-instance', providerData: { code: code } }), r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body.configuration).to.not.be.empty;
+        expect(r.body.configuration.password).to.equal("********");
+        expect(r.body.configuration.username).to.equal(props.getForKey('shopify', 'username'));
+        expect(r.body).to.not.have.key('providerData');
+      }))
+    .then(r => cloud.get(`/hubs/ecommerce/orders`))
+    .then(r => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body).to.be.instanceof(Array);
+    })
+    .then(r => provisioner.partialOauth('shopify'))
+    .then(code => cloud.patch(`${baseUrl}/${id}`, { name: 'updated-instance', providerData: { code: code } }, r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body.configuration).to.not.be.empty;
+        expect(r.body.configuration.password).to.equal("********");
+        expect(r.body.configuration.username).to.equal(props.getForKey('shopify', 'username'));
+        expect(r.body).to.not.have.key('providerData');
+    }))
+    .then(r => cloud.get(`/hubs/ecommerce/orders`))
+    .then(r => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body).to.be.instanceof(Array);
+    })
+    .then(r => provisioner.delete(id, baseUrl));
+};
+
 const opts = { schema: instanceSchema };
 
 suite.forPlatform('elements/instances', opts, (test) => {
@@ -35,4 +78,5 @@ suite.forPlatform('elements/instances', opts, (test) => {
     return cloud.get('elements/jira')
       .then(r => crudInstance(`elements/${r.body.id}/instances`, instanceSchema));
   });
+  it('should support update with reprovision by key', () => updateInstanceWithReprovision('/instances', instanceSchema));
 });
