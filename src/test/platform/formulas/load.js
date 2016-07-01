@@ -9,6 +9,7 @@ const fiSchema = require('./assets/schemas/formula.instance.schema');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
+const provisioner = require('core/provisioner');
 
 const genWebhookEvent = (action, num) => {
   const event = require('./assets/events/raw-webhook');
@@ -94,7 +95,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
 
   /** Clean up */
   after(() => {
-    // if (sfdcId) return provisioner.delete(sfdcId);
+    if (sfdcId) return provisioner.delete(sfdcId);
   });
 
   it('should handle a very large event payload repeatedly', () => {
