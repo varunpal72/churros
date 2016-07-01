@@ -364,7 +364,9 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(fId, fiId, numberOfExecutions, numberOfStepExecutions)))
       .then(() => common.getFormulaInstanceExecutions(fiId))
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(executions => executionsValidator(executions));
+      .then(executions => executionsValidator(executions))
+      .then(() => cloud.delete(`/formulas/${fId}/instances/${fiId}`))
+      .then(() => cloud.delete(`/formulas/${fId}`));
   };
 
   /**
