@@ -148,9 +148,8 @@ const oauth1 = (element, args) => {
  * @param  {string} baseApi  The base API
  * @return {Promise}         JS promise that resolves to the instance created
  */
-const orchestrateCreate = (element, args, baseApi) => {
+const orchestrateCreate = (element, args, baseApi, cb) => {
   const type = props.getOptionalForKey(element, 'provisioning');
-  const external = props.getOptionalForKey(element, 'external');
   const config = genConfig(props.all(element), args);
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
@@ -165,14 +164,7 @@ const orchestrateCreate = (element, args, baseApi) => {
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
         .then(r => oauth(element, r, config))
-        .then(r => {
-          if (external && type === 'oauth2') {
-            return createExternalInstance(element, config, r);
-          } else if (external && type === 'oauth1') {
-            throw Error('External Authentication via churros is not yet implemented for OAuth1');
-          }
-          return createInstance(element, config, r, baseApi);
-        });
+        .then(r => cb(type, config, r));
     case 'custom':
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
       return require(cp).create(config);
@@ -181,20 +173,39 @@ const orchestrateCreate = (element, args, baseApi) => {
   }
 };
 
+exports.partialOauth = (element, args, baseApi) => {
+  const cb = (type, config, r) => {
+    return r.code;
+  };
+
+  return orchestrateCreate(element, args, baseApi, cb);
+};
+
 exports.create = (element, args, baseApi) => {
-  return orchestrateCreate(element, args, baseApi)
-    .then(r => {
-      defaults.token(r.body.token); // update defaults with token to add to requests
-      return r;
-    });
+  const cb = (type, config, r) => {
+    const external = props.getOptionalForKey(element, 'external');
+    if (external && type === 'oauth2') {
+      return createExternalInstance(element, config, r);
+    } else if (external && type === 'oauth1') {
+      throw Error('External Authentication via churros is not yet implemented for OAuth1');
+    }
+    return createInstance(element, config, r, baseApi)
+      .then(r => {
+        defaults.token(r.body.token);
+        return r;
+      });
+  };
+
+  return orchestrateCreate(element, args, baseApi, cb);
 };
 
 exports.delete = (id, baseApi) => {
+  if (!id) return;
+
   baseApi = (baseApi) ? baseApi : '/instances';
   return cloud.delete(`${baseApi}/${id}`)
     .then(r => {
-      expect(r).to.have.statusCode(200);
-      logger.debug('Deleted element instance with ID: ' + id);
+      logger.debug(`Deleted element instance with ID: ${id}`);
       defaults.reset();
       return r.body;
     })

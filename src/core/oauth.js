@@ -243,6 +243,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'servicenowoauth':
       return 'https://foo.bar.com?code=' + config.code; // they don't supply a code
     case 'servicemax':
+    case 'sagelive':
     case 'sfdc':
     case 'sfdcservicecloud':
     case 'sfdcmarketingcloud':

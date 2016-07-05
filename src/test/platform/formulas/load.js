@@ -1,5 +1,6 @@
 'use strict';
 
+const cleaner = require('core/cleaner');
 const suite = require('core/suite');
 const common = require('./assets/common');
 const cloud = require('core/cloud');
@@ -8,6 +9,7 @@ const fiSchema = require('./assets/schemas/formula.instance.schema');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
+const provisioner = require('core/provisioner');
 
 const genWebhookEvent = (action, num) => {
   const event = require('./assets/events/raw-webhook');
@@ -87,13 +89,13 @@ const createXInstances = (x, formulaId, formulaInstance) => {
  */
 suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   let sfdcId;
-  before(() => common.deleteFormulasByName(test.api, 'complex-successful')
+  before(() => cleaner.formulas.withName('complex-successful')
     .then(r => common.provisionSfdcWithWebhook())
     .then(r => sfdcId = r.body.id));
 
   /** Clean up */
   after(() => {
-    // if (sfdcId) return provisioner.delete(sfdcId);
+    if (sfdcId) return provisioner.delete(sfdcId);
   });
 
   it('should handle a very large event payload repeatedly', () => {
