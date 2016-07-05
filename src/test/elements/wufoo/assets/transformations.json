@@ -1,0 +1,11 @@
+{
+  "forms": {
+    "vendorName": "forms",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
