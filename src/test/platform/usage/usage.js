@@ -16,7 +16,8 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
 
   it('should support usage search', () => {
     return cloud.get('usage', usageSchema)
-      .then(r => trafficId = r.body[0].traffic_id);
+      .then(r => trafficId = r.body[0].traffic_id)
+      .then(r => cloud.withOptions({ qs: {from: yesterday, to: today, hub: 'crm', 'keys[]': 'sfdc', 'tags[]': 'sfdc', status: 'success', searchText: 'AccountId'}}).get('usage', usageSchema));
   });
   it('should support usage by ID', () => cloud.get(`usage/${trafficId}`));
   it('should support offset pagination', () => {
