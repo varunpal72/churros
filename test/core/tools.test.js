@@ -54,43 +54,27 @@ describe('tools', () => {
     expect(encoded).to.equal('ABCD');
   });
 
-  it('should support sleeping for x seconds', () => {
-    tools.sleep(1);
-  });
+  it('should support sleeping for x seconds', () => tools.sleep(1));
 
   it('should support waiting a specific time for a succesful predicate', () => {
-    var i = 0;
-
-    const pred = (cb) => {
-      if (++i > 2) cb(true);
-    };
-
+    let i = 0;
+    const pred = () => new Promise((res, rej) => ++i > 2 ? res(true) : rej());
     return expect(tools.wait.upTo(10000).for(pred)).to.eventually.equal(true);
   });
 
   it('should support waiting for a specific time for an unsuccesful predicate', () => {
-    const pred = (cb) => {
-      return false;
-    };
-
+    const pred = () => new Promise((res, rej) => rej());
     return expect(tools.wait.upTo(1000).for(pred)).to.be.rejected;
   });
 
   it('should support waiting the default time for a succesful predicate', () => {
-    var i = 0;
-
-    const pred = (cb) => {
-      if (++i > 2) cb(true);
-    };
-
+    let i = 0;
+    const pred = () => new Promise((res, rej) => ++i > 2 ? res(true) : rej());
     return expect(tools.wait.for(pred)).to.eventually.equal(true);
   });
 
   it('should support waiting for the default time for an unsuccesful predicate', () => {
-    const pred = (cb) => {
-      return false;
-    };
-
+    const pred = () => new Promise((res, rej) => rej(false));
     return expect(tools.wait.for(pred)).to.be.rejected;
   });
 
