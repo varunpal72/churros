@@ -113,25 +113,26 @@ exports.createFAndFI = (element, config) => {
     .then(r => ({ formulaInstanceId: formulaInstanceId, formulaId: formulaId, elementInstanceId: elementInstanceId }));
 };
 
-exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
+exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => () => new Promise((res, rej) => {
   return getFormulaInstanceExecutions(fiId)
     .then(r => {
-      if (r.body.length === numExecs) {
-        return Promise.all(r.body.map(fie => getFormulaInstanceExecution(fie.id)))
-          .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
-          .then(fieses => [].concat.apply([], fieses))
-          .then(ses => {
-            const numPending = ses.filter(se => se.status === 'pending').length;
-            if (ses.length === (numExecVals * numExecs) && numPending === 0) {
-              logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
-              cb();
-            } else {
-              logger.debug(`Not all ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}; ${ses.length} total execution values found so far.`);
-            }
-          });
-      }
+      if (r.body.length !== numExecs) rej();
+
+      return Promise.all(r.body.map(fie => getFormulaInstanceExecution(fie.id)))
+        .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
+        .then(fieses => [].concat.apply([], fieses))
+        .then(ses => {
+          const numPending = ses.filter(se => se.status === 'pending').length;
+          if (ses.length === (numExecVals * numExecs) && numPending === 0) {
+            logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
+            res();
+          } else {
+            logger.debug(`Not all ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}; ${ses.length} total execution values found so far.`);
+            rej();
+          }
+        });
     });
-};
+});
 
 exports.cleanup = (eiId, fId, fiId) => {
   return cloud.delete(`/formulas/${fId}/instances/${fiId}`)
