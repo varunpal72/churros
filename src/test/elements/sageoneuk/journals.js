@@ -26,6 +26,6 @@ const payload = (ref) => ({
     }]
 });
 
-suite.forElement('sage', 'journals', { payload: payload(tools.random()) }, (test) => {
+suite.forElement('accounting', 'journals', { payload: payload(tools.random()) }, (test) => {
   test.should.return200OnPost();
 });

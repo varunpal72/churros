@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 
-suite.forElement('sage', 'transactions', null, (test) => {
+suite.forElement('accounting', 'transactions', null, (test) => {
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'updated_from_date=\'2016-06-30\'' } }).should.return200OnGet();
 });

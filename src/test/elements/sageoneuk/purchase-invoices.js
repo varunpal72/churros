@@ -36,7 +36,7 @@ const options = {
   }
 };
 
-suite.forElement('sage', 'purchase-invoices', { payload: payload }, (test) => {
+suite.forElement('accounting', 'purchase-invoices', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds(chakram.put);
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'from_date=\'30/06/2016\' AND to_date=\'31/12/2016\'' } }).should.return200OnGet();

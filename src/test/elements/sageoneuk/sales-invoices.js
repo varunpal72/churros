@@ -12,7 +12,7 @@ const paymentPayload = {
  "destination_id": "5559453"
 };
 
-suite.forElement('sage', 'sales-invoices', { payload: payload }, (test) => {
+suite.forElement('accounting', 'sales-invoices', { payload: payload }, (test) => {
   test.should.supportCruds(chakram.put);
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'from_date=\'30/06/2016\' AND to_date=\'31/12/2016\'' } }).should.return200OnGet();
