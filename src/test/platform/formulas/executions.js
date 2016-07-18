@@ -354,11 +354,17 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       }
     };
 
+    // construct the formula instance and add on the sfdcId as the trigger-instance, if necessary
+    const formulaInstance = { name: 'churros-instance', };
+    const triggerInstance =
+      formula.configuration ? formula.configuration.filter(c => c.key === 'trigger-instance') : null;
+    if (triggerInstance) formulaInstance.configuration = { 'trigger-instance': sfdcId };
+
     let fId, fiId;
     return cleaner.formulas.withName(formula.name)
       .then(() => cloud.post(test.api, formula, fSchema))
       .then(r => fId = r.body.id)
-      .then(() => cloud.post(`/formulas/${fId}/instances`, { name: 'churros-instance' }, fiSchema))
+      .then(() => cloud.post(`/formulas/${fId}/instances`, formulaInstance, fiSchema))
       .then(r => fiId = r.body.id)
       .then(() => trigger(fId, fiId))
       .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(fId, fiId, numberOfExecutions, numberOfStepExecutions)))
@@ -1075,6 +1081,25 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     };
 
     return executionTest(formula, 1, 2, 'manual', validator);
+  });
+
+  it('should retry a request step when the retry property is set to true', () => {
+    const formula = require('./assets/formulas/retry-formula');
+    const validator = (executions) => {
+      expect(executions).to.have.length(1);
+
+      const execution = executions[0];
+      expect(execution.status).to.equal('failed');
+      expect(execution.stepExecutions).to.have.length(2);
+
+      const stepExecution = execution.stepExecutions.filter(se => se.stepName === 'retry-element-request')[0];
+
+      const stepExecutionValue = stepExecution.stepExecutionValues.filter(sev => sev.key === 'retry-element-request.request.retry-attempt')[0];
+      expect(stepExecutionValue.value).to.equal("3");
+    };
+    const triggerCb = (fId, fiId) => generateSingleSfdcPollingEvent(sfdcId);
+
+    return executionTest(formula, 1, 2, triggerCb, validator);
   });
 
   /** Clean up */

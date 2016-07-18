@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const payload = require('./assets/journals');
 const cloud = require('core/cloud');
 
-suite.forElement('sage', 'journals', { payload: payload }, (test) => {
+suite.forElement('accounting', 'journals', { payload: payload }, (test) => {
   it('should allow CRUDS for journals', () => {
     var options = { "Name": "Churros update" };
     let journalId;

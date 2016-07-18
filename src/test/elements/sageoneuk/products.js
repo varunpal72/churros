@@ -7,5 +7,5 @@ const chakram = require('chakram');
 suite.forElement('accounting', 'products', { payload: payload }, (test) => {
   test.should.supportCruds(chakram.put);
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'updated_or_created_since =\'2016-06-01\'' } }).should.return200OnGet();
+  test.withOptions({ qs: { where: 'search =\'product\'' } }).should.return200OnGet();
 });
