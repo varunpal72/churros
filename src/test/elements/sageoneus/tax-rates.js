@@ -16,7 +16,7 @@ const options = {
 };
 
 
-suite.forElement('sage', 'tax-rates', { payload: payload }, (test) => {
+suite.forElement('accounting', 'tax-rates', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds(chakram.put);
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'start_date=\'2016-05-15\''} }).should.return200OnGet();

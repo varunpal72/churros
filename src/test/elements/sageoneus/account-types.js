@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 
-suite.forElement('sage', 'account-types', null, (test) => {
+suite.forElement('accounting', 'account-types', null, (test) => {
   test.should.supportSr();
   test.should.supportPagination();
 });
