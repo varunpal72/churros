@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const payload = require('./assets/ledger-accounts');
 const tools = require('core/tools');
 
-suite.forElement('sage', 'ledger-accounts', { payload: payload }, (test) => {
+suite.forElement('accounting', 'ledger-accounts', { payload: payload }, (test) => {
   var options = {
     churros: { updatePayload: { "Name": "Churros " + tools.random() } }
   };
