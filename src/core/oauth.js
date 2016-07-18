@@ -286,24 +286,40 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.className('submit floatRight')).click();
       return browser.getCurrentUrl();
     case 'sageoneus':
-        browser.manage().deleteAllCookies();
-        browser.get(r.body.oauthUrl);
-        browser.wait(() => browser.isElementPresent(webdriver.By.id('us')), 5000)
+      browser.manage().deleteAllCookies();
+      browser.get(r.body.oauthUrl);
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('us')), 5000)
           .thenCatch(r => true); // ignore
-        browser.findElement(webdriver.By.id('us'))
+      browser.findElement(webdriver.By.id('us'))
           .then((element) => element.click(), (err) => {}); // ignore this
-        browser.wait(() => {
+      browser.wait(() => {
             return browser.isElementPresent(webdriver.By.id('sso_Email')); //slow load time for login screen
-        }, 10000);
-        browser.findElement(webdriver.By.id('sso_Email')).sendKeys(username);
-        browser.findElement(webdriver.By.id('sso_Password')).sendKeys(password);
-        browser.findElement(webdriver.By.className('button primary green')).click();
-
-        browser.wait(() => browser.isElementPresent(webdriver.By.className('primary')), 5000)
+      }, 10000);
+      browser.findElement(webdriver.By.id('sso_Email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('sso_Password')).sendKeys(password);
+      browser.findElement(webdriver.By.className('button primary green')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.className('primary')), 5000)
           .thenCatch(r => true); // ignore
-        browser.findElement(webdriver.By.className('primary'))
+      browser.findElement(webdriver.By.className('primary'))
           .then((element) => element.click(), (err) => {}); // ignore this
-        return browser.getCurrentUrl();
+      return browser.getCurrentUrl();
+    case 'sageoneuk':
+      browser.get(r.body.oauthUrl);
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('uk')), 5000)
+          .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('uk'))
+          .then((element) => element.click(), (err) => {}); // ignore this
+      browser.wait(() => {
+          return browser.isElementPresent(webdriver.By.id('sso_Email')); //slow load time for login screen
+      }, 10000);
+      browser.findElement(webdriver.By.id('sso_Email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('sso_Password')).sendKeys(password);
+      browser.findElement(webdriver.By.className('action full-width')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.className('primary')), 5000)
+          .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.className('primary'))
+          .then((element) => element.click(), (err) => {}); // ignore this
+          return browser.getCurrentUrl();
     case 'sharepoint':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
