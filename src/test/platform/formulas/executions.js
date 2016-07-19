@@ -12,6 +12,7 @@ const sleep = require('sleep');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
+const _ = require('lodash');
 
 const provisionSfdcWithPolling = () => provisioner.create('sfdc', {
   'event.notification.enabled': true,
@@ -339,7 +340,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
    *
    * NOTE: Currently working on re-factoring tests to reduce duplicate code
    */
-  const executionTest = (formula, numberOfExecutions, numberOfStepExecutions, triggerCb, customExecutionsValidator) => {
+  const executionTest = (formula, numberOfExecutions, numberOfStepExecutionValues, triggerCb, customExecutionsValidator) => {
     customExecutionsValidator = customExecutionsValidator || ((executions) => logger.debug(`No custom execution validator found`));
     const executionsValidator = (executions) => {
       customExecutionsValidator(executions);
@@ -367,7 +368,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(() => cloud.post(`/formulas/${fId}/instances`, formulaInstance, fiSchema))
       .then(r => fiId = r.body.id)
       .then(() => trigger(fId, fiId))
-      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(fId, fiId, numberOfExecutions, numberOfStepExecutions)))
+      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(fId, fiId, numberOfExecutions, numberOfStepExecutionValues)))
       .then(() => common.getFormulaInstanceExecutions(fiId))
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
       .then(executions => executionsValidator(executions))
@@ -1100,6 +1101,31 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const triggerCb = (fId, fiId) => generateSingleSfdcPollingEvent(sfdcId);
 
     return executionTest(formula, 1, 2, triggerCb, validator);
+  });
+
+  it('should not modify the formula context for a single-threaded formula that has multiple polling events trigger it', () => {
+    const formula = require('./assets/formulas/single-threaded-formula');
+    const validator = (executions) => {
+      console.log(`Validating: ${JSON.stringify(executions)}`);
+
+      // validate that each objectId exists once somewhere in the step execution values
+      const events = require('./assets/events/triple-event-sfdc');
+      events.accounts.forEach(event => {
+        const objectId = event.Id;
+        let found = false;
+        executions.forEach(execution => {
+          const debugStep = _.find(execution.stepExecutions, (se) => se.stepName === 'debug');
+          const debugObjectId = _.find(debugStep.stepExecutionValues, (sev) => sev.key === 'debug.objectId');
+          found = objectId === debugObjectId.value;
+        });
+
+        expect(found).to.be.true;
+      });
+    };
+
+    const triggerCb = (fId, fiId) => generateTripleSfdcPollingEvent(sfdcId);
+
+    return executionTest(formula, 3, 2, triggerCb, validator);
   });
 
   /** Clean up */
