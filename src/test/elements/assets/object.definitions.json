@@ -325,5 +325,65 @@
       "path": "id",
       "type": "string"
     }]
+  },
+  "transactions": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "subscriptions": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "product-families": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "forms": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "reports": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "plans": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "refunds": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "tokens": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "charges": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "transfers": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   }
 }

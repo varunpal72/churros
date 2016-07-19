@@ -1,0 +1,29 @@
+{
+  "forms": {
+    "vendorName": "forms",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "reports": {
+    "vendorName": "reports",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "users": {
+    "vendorName": "users",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
