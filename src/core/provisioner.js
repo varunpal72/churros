@@ -51,6 +51,7 @@ const createInstance = (element, config, providerData, baseApi) => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
+      defaults.token(r.body.token);
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
@@ -184,16 +185,11 @@ exports.partialOauth = (element, args, baseApi) => {
 exports.create = (element, args, baseApi) => {
   const cb = (type, config, r) => {
     const external = props.getOptionalForKey(element, 'external');
-    if (external && type === 'oauth2') {
-      return createExternalInstance(element, config, r);
-    } else if (external && type === 'oauth1') {
-      throw Error('External Authentication via churros is not yet implemented for OAuth1');
-    }
-    return createInstance(element, config, r, baseApi)
-      .then(r => {
-        defaults.token(r.body.token);
-        return r;
-      });
+
+    if (external && type === 'oauth2') return createExternalInstance(element, config, r);
+    if (external && type === 'oauth1') throw Error('External Authentication via churros is not yet implemented for OAuth1');
+
+    return createInstance(element, config, r, baseApi);
   };
 
   return orchestrateCreate(element, args, baseApi, cb);
