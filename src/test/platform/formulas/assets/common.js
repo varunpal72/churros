@@ -123,8 +123,6 @@ exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => () => new
         .then(fieses => [].concat.apply([], fieses))
         .then(ses => {
           const numPending = ses.filter(se => se.status === 'pending').length;
-          logger.debug(`Expecting numExecs: ${numExecs} and numExecValues: ${numExecVals}`);
-          logger.debug(`ses.length should equal numExecVals * numExecs: ${ses.length}`);
           if (ses.length === (numExecVals * numExecs) && numPending === 0) {
             logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
             res();
