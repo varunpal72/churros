@@ -42,7 +42,6 @@ before(() => {
       // transformations file exists? create the transformations on the instance
       const transformationsFile = `${__dirname}/${element}/assets/transformations`;
       if (fs.existsSync(transformationsFile + '.json')) {
-        console.log(`exists!`);
         logger.debug('Setting up transformations');
         const url = `/instances/${instanceId}/transformations/%s`;
         return createAll(url, require(transformationsFile));
