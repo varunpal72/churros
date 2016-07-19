@@ -1117,10 +1117,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       });
 
       // make sure that for each account in our event that we pumped in, that step execution value existed
-      events.accounts.forEach(account => {
-        const objectId = account.Id;
-        expect(all.indexOf(objectId)).to.be.above(-1);
-      });
+      events.accounts.forEach(account => expect(all.indexOf(account.Id)).to.be.above(-1));
     };
 
     return executionTest(formula, 3, 2, triggerCb, validator);
