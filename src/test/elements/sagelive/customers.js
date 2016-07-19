@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const payload = require('./assets/customers');
 
-suite.forElement('accounting', 'customers', { payload: payload }, (test) => {
+suite.forElement('sageaccounting', 'customers', { payload: payload }, (test) => {
   var options = {
     churros: { updatePayload: { "Name": "Churros update" } }
   };
