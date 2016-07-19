@@ -1,7 +1,7 @@
 'use strict';
 
-const chakram = require('chakram');
-const expect = chakram.expect;
+const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
 const argv = require('optimist').demand('element').argv;
@@ -13,9 +13,9 @@ const createAll = (urlTemplate, list) => {
   Object.keys(list).forEach(key => {
     const payload = list[key];
     const url = util.format(urlTemplate, key);
-    promises.push(chakram.post(url, payload));
+    promises.push(cloud.post(url, payload));
   });
-  return chakram.all(promises);
+  return Promise.all(promises);
 };
 
 const terminate = (error) => {
@@ -24,9 +24,9 @@ const terminate = (error) => {
 };
 
 let instanceId;
-before(done => {
+before(() => {
   const element = argv.element;
-  provisioner.create(element)
+  return provisioner.create(element)
     .then(r => {
       expect(r).to.have.statusCode(200);
       instanceId = r.body.id;
@@ -42,19 +42,18 @@ before(done => {
       // transformations file exists? create the transformations on the instance
       const transformationsFile = `${__dirname}/${element}/assets/transformations`;
       if (fs.existsSync(transformationsFile + '.json')) {
+        console.log(`exists!`);
         logger.debug('Setting up transformations');
         const url = `/instances/${instanceId}/transformations/%s`;
         return createAll(url, require(transformationsFile));
       }
     })
-    .then(r => done())
     .catch(r => {
-      if (instanceId) {
+      return instanceId ?
         provisioner.delete(instanceId)
-          .then(() => terminate(r))
-          .catch(() => terminate(r));
-      }
-      terminate(r);
+        .then(() => terminate(r))
+        .catch(() => terminate(r)) :
+        terminate(r);
     });
 });
 
