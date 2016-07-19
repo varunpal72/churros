@@ -12,7 +12,6 @@ const sleep = require('sleep');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
-const _ = require('lodash');
 
 const provisionSfdcWithPolling = () => provisioner.create('sfdc', {
   'event.notification.enabled': true,
@@ -1103,27 +1102,26 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     return executionTest(formula, 1, 2, triggerCb, validator);
   });
 
-  it('should not modify the formula context for a single-threaded formula that has multiple polling events trigger it', () => {
+  it('should have a unique formula context for a single-threaded formula that has multiple polling events trigger multiple executions at once', () => {
     const formula = require('./assets/formulas/single-threaded-formula');
+    const triggerCb = (fId, fiId) => generateTripleSfdcPollingEvent(sfdcId);
     const validator = (executions) => {
-      console.log(`Validating: ${JSON.stringify(executions)}`);
-
       // validate that each objectId exists once somewhere in the step execution values
       const events = require('./assets/events/triple-event-sfdc');
-      events.accounts.forEach(event => {
-        const objectId = event.Id;
-        let found = false;
-        executions.forEach(execution => {
-          const debugStep = _.find(execution.stepExecutions, (se) => se.stepName === 'debug');
-          const debugObjectId = _.find(debugStep.stepExecutionValues, (sev) => sev.key === 'debug.objectId');
-          found = objectId === debugObjectId.value;
-        });
 
-        expect(found).to.be.true;
+      // concatenating all step execution value debug.objectId values into an array
+      const all = [];
+      executions.forEach(e => {
+        const debugStep = e.stepExecutions.filter((se) => se.stepName === 'debug')[0];
+        all.push(debugStep.stepExecutionValues.filter((sev) => sev.key === 'debug.objectId')[0].value);
+      });
+
+      // make sure that for each account in our event that we pumped in, that step execution value existed
+      events.accounts.forEach(account => {
+        const objectId = account.Id;
+        expect(all.indexOf(objectId)).to.be.above(-1);
       });
     };
-
-    const triggerCb = (fId, fiId) => generateTripleSfdcPollingEvent(sfdcId);
 
     return executionTest(formula, 3, 2, triggerCb, validator);
   });
