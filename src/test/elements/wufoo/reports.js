@@ -6,34 +6,24 @@ const cloud = require('core/cloud');
 suite.forElement('general', 'reports', (test) => {
   test.should.return200OnGet();
   it(`should allow GET for /hubs/general/reports/{id}`, () => {
-    let reportId;
     return cloud.get(`${test.api}`)
-      .then(r => reportId = r.body[0].Hash)
-      .then(r => cloud.get(`${test.api}/${reportId}`));
+      .then(r => cloud.get(`${test.api}/${r.body[0].Hash}`));
   });
   it(`should allow GET for /hubs/general/report/{id}/entries`, () => {
-    let reportId;
     return cloud.get(`${test.api}`)
-      .then(r => reportId = r.body[0].Hash)
-      .then(r => cloud.get(`${test.api}/${reportId}/entries`));
+      .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/entries`));
   });
   it(`should allow GET for /hubs/general/reports/{id}/entries-count`, () => {
-    let reportId;
     return cloud.get(`${test.api}`)
-      .then(r => reportId = r.body[0].Hash)
-      .then(r => cloud.get(`${test.api}/${reportId}/entries-count`));
+      .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/entries-count`));
   });
   it(`should allow GET for /hubs/general/reports/{id}/fields`, () => {
-    let reportId;
     return cloud.get(`${test.api}`)
-      .then(r => reportId = r.body[0].Hash)
-      .then(r => cloud.get(`${test.api}/${reportId}/fields`));
+      .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/fields`));
   });
   it(`should allow GET for /hubs/general/reports/{id}/widgets`, () => {
-    let reportId;
     return cloud.get(`${test.api}`)
-      .then(r => reportId = r.body[0].Hash)
-      .then(r => cloud.get(`${test.api}/${reportId}/widgets`));
+      .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/widgets`));
   });
   test.should.supportPagination();
 });
