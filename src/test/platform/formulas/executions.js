@@ -339,7 +339,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
    *
    * NOTE: Currently working on re-factoring tests to reduce duplicate code
    */
-  const executionTest = (formula, numberOfExecutions, numberOfStepExecutions, triggerCb, customExecutionsValidator) => {
+  const executionTest = (formula, numberOfExecutions, numberOfStepExecutionValues, triggerCb, customExecutionsValidator) => {
     customExecutionsValidator = customExecutionsValidator || ((executions) => logger.debug(`No custom execution validator found`));
     const executionsValidator = (executions) => {
       customExecutionsValidator(executions);
@@ -367,7 +367,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(() => cloud.post(`/formulas/${fId}/instances`, formulaInstance, fiSchema))
       .then(r => fiId = r.body.id)
       .then(() => trigger(fId, fiId))
-      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(fId, fiId, numberOfExecutions, numberOfStepExecutions)))
+      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(fId, fiId, numberOfExecutions, numberOfStepExecutionValues)))
       .then(() => common.getFormulaInstanceExecutions(fiId))
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
       .then(executions => executionsValidator(executions))
@@ -1100,6 +1100,27 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     const triggerCb = (fId, fiId) => generateSingleSfdcPollingEvent(sfdcId);
 
     return executionTest(formula, 1, 2, triggerCb, validator);
+  });
+
+  it('should have a unique formula context for a single-threaded formula that has multiple polling events trigger multiple executions at once', () => {
+    const formula = require('./assets/formulas/single-threaded-formula');
+    const triggerCb = (fId, fiId) => generateTripleSfdcPollingEvent(sfdcId);
+    const validator = (executions) => {
+      // validate that each objectId exists once somewhere in the step execution values
+      const events = require('./assets/events/triple-event-sfdc');
+
+      // concatenating all step execution value debug.objectId values into an array
+      const all = [];
+      executions.forEach(e => {
+        const debugStep = e.stepExecutions.filter((se) => se.stepName === 'debug')[0];
+        all.push(debugStep.stepExecutionValues.filter((sev) => sev.key === 'debug.objectId')[0].value);
+      });
+
+      // make sure that for each account in our event that we pumped in, that step execution value existed
+      events.accounts.forEach(account => expect(all.indexOf(account.Id)).to.be.above(-1));
+    };
+
+    return executionTest(formula, 3, 2, triggerCb, validator);
   });
 
   /** Clean up */
