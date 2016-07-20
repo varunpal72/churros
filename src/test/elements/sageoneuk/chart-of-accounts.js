@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 
-suite.forElement('accounting', 'chart-of-accounts', null, (test) => {
+suite.forElement('sageaccounting', 'chart-of-accounts', null, (test) => {
   test.withApi(`${test.api}/structure`).should.return200OnGet();
   test.withApi(`${test.api}/template`).should.return200OnGet();
   let options = { qs: { page: 1, pageSize: 1 } };
