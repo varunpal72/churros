@@ -8,6 +8,7 @@ const listSchema = require('./assets/element.resources.schema.json');
 
 const opts = { payload: common.genResource({}), schema: schema };
 
+
 suite.forPlatform('elements/resources', opts, (test) => {
   let element, keyUrl, idUrl;
   before(() => common.deleteElementByKey('churros')
@@ -16,8 +17,11 @@ suite.forPlatform('elements/resources', opts, (test) => {
     .then(r => keyUrl = `elements/${element.key}/resources`)
     .then(r => idUrl = `elements/${element.id}/resources`));
 
-  it('should support CRUD by key', () => common.crudSubResource(keyUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
-  it('should support CRUD by ID', () => common.crudSubResource(idUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
+  it('should support CRUD by key', () => common.crudsResource(keyUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
+  it('should support CRUD by ID', () => common.crudsResource(idUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
+
+  it('should support CRUD by key with sample data', () => common.crudsResource(keyUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource", response: { sampleData: "{\"key\": \"value\"}"} })));
+  it('should support CRUD by ID with sample data', () => common.crudsResource(idUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource", response: { sampleData :"{\"key\": \"value\"}"} })));
 
   after(() => cloud.delete(`elements/${element.key}`));
 });

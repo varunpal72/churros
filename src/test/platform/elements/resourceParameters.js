@@ -21,5 +21,8 @@ suite.forPlatform('elements/resources/parameters', opts, (test) => {
   it('should support CRUD by key', () => common.crudSubResource(keyUrl, schema, listSchema, common.genParameter({}), common.genParameter({ description: "An updated Churros parameter" })));
   it('should support CRUD by ID', () => common.crudSubResource(idUrl, schema, listSchema, common.genParameter({}), common.genParameter({ description: "An updated Churros parameter" })));
 
+  it('should support CRUD by key with sample data', () => common.crudSubResource(keyUrl, schema, listSchema, common.genParameter({}), common.genParameter({ description: "An updated Churros parameter", sampleData: "testKey=1" })));
+  it('should support CRUD by ID with sample data', () => common.crudSubResource(idUrl, schema, listSchema, common.genParameter({}), common.genParameter({ description: "An updated Churros parameter", sampleData: "testKey=1" })));
+
   after(() => cloud.delete('elements/' + element.key));
 });
