@@ -24,7 +24,7 @@
       "type": "formula",
       "properties": {
         "formulaId": "SUB_FORMULA_ID",
-        "args": "steps.A-build-args"
+        "args": "${steps.A-build-args}"
       }
     }]
   },
