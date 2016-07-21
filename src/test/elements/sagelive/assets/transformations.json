@@ -1,38 +1,30 @@
 {
   "customers": {
     "vendorName": "customers",
-    "fields": [
-      {
-        "path": "Id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "Id",
+      "vendorPath": "Id"
+    }]
   },
   "vendors": {
     "vendorName": "vendors",
-    "fields": [
-      {
-        "path": "Id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "Id",
+      "vendorPath": "Id"
+    }]
   },
   "posting-rules": {
     "vendorName": "posting-rules",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "Id",
+      "vendorPath": "Id"
+    }]
   },
   "dimensions": {
     "vendorName": "dimensions",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "Id",
+      "vendorPath": "Id"
+    }]
   }
 }
