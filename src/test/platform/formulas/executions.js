@@ -1123,6 +1123,21 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     return executionTest(formula, 3, 2, triggerCb, validator);
   });
 
+  it('filter steps should add their boolean value as an available step execution value', () => {
+    const formula = require('./assets/formulas/simple-filter-formula');
+    const triggerCb = (fId, fiId) => generateSingleSfdcPollingEvent(sfdcId);
+    const validator = (executions) => {
+      expect(executions).to.have.length(1);
+
+      const execution = executions[0];
+      const filterStepExecution = execution.stepExecutions.filter(se => se.stepName === 'simple-filter')[0];
+      const filterStepExecutionValue = filterStepExecution.stepExecutionValues.filter(sev => sev.key === 'simple-filter.continue')[0];
+      expect(filterStepExecutionValue.value).to.equal("true");
+    };
+
+    return executionTest(formula, 1, 2, triggerCb, validator);
+  });
+
   /** Clean up */
   after(done => {
     if (!sfdcId) done();
