@@ -44,6 +44,12 @@
       "type": "string"
     }]
   },
+  "bank-accounts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "campaigns": {
     "fields": [{
       "path": "id",
@@ -98,9 +104,18 @@
       "type": "string"
     }]
   },
+  "contact-types": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "customers": {
     "fields": [{
       "path": "id",
+      "type": "string"
+    }, {
+      "path": "Id",
       "type": "string"
     }, {
       "path": "postId",
@@ -110,6 +125,12 @@
   "credit-memos": {
     "fields": [{
       "path": "id",
+      "type": "string"
+    }]
+  },
+  "dimensions": {
+    "fields": [{
+      "path": "Id",
       "type": "string"
     }]
   },
@@ -143,6 +164,12 @@
       "type": "string"
     }, {
       "path": "postId",
+      "type": "string"
+    }]
+  },
+  "expenses": {
+    "fields": [{
+      "path": "id",
       "type": "string"
     }]
   },
@@ -257,6 +284,12 @@
       "type": "string"
     }]
   },
+  "posting-rules": {
+    "fields": [{
+      "path": "Id",
+      "type": "string"
+    }]
+  },
   "products": {
     "fields": [{
       "path": "id",
@@ -282,6 +315,9 @@
     "fields": [{
       "path": "id",
       "type": "string"
+    }, {
+      "path": "Id",
+      "type": "string"
     }]
   },
   "groups": {
@@ -297,6 +333,12 @@
     }]
   },
   "transient-documents": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "sales-invoices": {
     "fields": [{
       "path": "id",
       "type": "string"
@@ -366,6 +408,12 @@
     "fields": [{
       "path": "id",
       "vendorPath": "id"
+    }]
+  },
+  "tax-rates": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
     }]
   },
   "tokens": {
