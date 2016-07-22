@@ -14,6 +14,7 @@ const simpleFormulas = require('./assets/formulas/sub-formula-executions/simple-
 const twoSubFormulas = require('./assets/formulas/sub-formula-executions/two-sub-formulas');
 const twoSubFormulasNoAfter = require('./assets/formulas/sub-formula-executions/two-sub-formulas-no-steps-after');
 const manualSubFormulas = require('./assets/formulas/sub-formula-executions/manual-sub-formulas');
+const manualSubFormulasFailedRequest = require('./assets/formulas/sub-formula-executions/manual-sub-formulas-failed-request');
 const filterSubFormulas = require('./assets/formulas/sub-formula-executions/filter-sub-formulas');
 const errorSubFormulas = require('./assets/formulas/sub-formula-executions/error-sub-formulas');
 const event = require('./assets/events/single-event-sfdc');
@@ -24,6 +25,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       .concat(twoSubFormulas.map(f => f.name))
       .concat(twoSubFormulasNoAfter.map(f => f.name))
       .concat(manualSubFormulas.map(f => f.name))
+      .concat(manualSubFormulasFailedRequest.map(f => f.name))
       .concat(filterSubFormulas.map(f => f.name))
       .concat(errorSubFormulas.map(f => f.name));
     return cleaner.formulas.withName(names);
@@ -188,6 +190,34 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     };
 
     return executionTest(setup, 3, validator, true);
+  });
+
+  it('should propagate values from a sub-formula that failed but not with an error', () => {
+    const setup = () => createSetCreate(manualSubFormulasFailedRequest, 'B-manual-formula-create-resource-failed-request', 'A-sub-formula', 'A-manual-formula-failed-request');
+
+    const validator = (executions) => {
+      const subFormulaExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-sub-formula')[0];
+      expect(subFormulaExecution.status).to.equal('failed');
+
+      // validate A-sub-formula sevs
+      const subFormulaSevs = subFormulaExecution.stepExecutionValues;
+      expect(subFormulaSevs).to.have.length(1);
+      const subFormulaSevsJson = JSON.parse(subFormulaSevs[0].value);
+      expect(subFormulaSevsJson.request).to.not.be.null;
+      expect(subFormulaSevsJson.response).to.not.be.null;
+
+      // validate A-end sevs
+      const onFailureExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-end')[0];
+
+      const endSevs = onFailureExecution.stepExecutionValues;
+      expect(endSevs).to.have.length(1);
+      const endSevsJson = JSON.parse(endSevs[0].value);
+      expect(endSevsJson.code).to.equal(404);
+      expect(endSevsJson.headers).to.not.be.null;
+      expect(endSevsJson.body).to.not.be.null;
+    };
+
+    return executionTest(setup, 4, validator, true);
   });
 
   /* Cleanup any resources */

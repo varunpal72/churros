@@ -1,5 +1,5 @@
 [{
-  "name": "A-manual-formula",
+  "name": "A-manual-formula-failed-request",
   "configuration": [{
     "key": "crm.instance",
     "name": "crm.instance",
@@ -17,12 +17,12 @@
     "type": "script",
     "onSuccess": ["A-sub-formula"],
     "properties": {
-      "body": "done( { resource: 'accounts', payload:{ Name: 'churros-test-name' }});"
+      "body": "done( { resource: 'i_am_a_bad_resource_name', payload:{ Name: 'churros-test-name' }});"
     }
   }, {
     "name": "A-sub-formula",
     "type": "formula",
-    "onSuccess": ["A-end"],
+    "onFailure": ["A-end"],
     "properties": {
       "formulaId": "SUB_FORMULA_ID",
       "args": "${steps.A-build-args}"
@@ -31,11 +31,11 @@
     "name": "A-end",
     "type": "script",
     "properties": {
-      "body": "done({createdId: steps['A-sub-formula'].id});"
+      "body": "done({failedResponse: steps['A-sub-formula'].response});"
     }
   }]
 }, {
-  "name": "B-manual-formula-create-resource",
+  "name": "B-manual-formula-create-resource-failed-request",
   "configuration": [{
     "key": "crm.instance",
     "name": "crm.instance",
