@@ -154,7 +154,7 @@ exports.crus = crus;
 
 const sr = (api, validationCb, options) => {
   return get(api, validationCb, options)
-    .then(r => get(api + '/' + r.body[0].id, validationCb, options));
+    .then(r => get(api + '/' + r.body[ 0 ].id, validationCb, options));
 };
 exports.sr = sr;
 const crs = (api, payload, validationCb, options) => {
@@ -186,16 +186,41 @@ exports.withOptions = (options) => {
   };
 };
 
-const createEvents = (element, eiId, payload, numEvents) => {
+const createEvents = (element, replacements, eventRequest, numEvents) => {
   numEvents = (numEvents || 1);
 
-  const api = '/events/' + element;
-  const options = { headers: { 'Element-Instances': eiId } };
+  const api = eventRequest.api;
+  let headers = eventRequest.headers;
+  let query = eventRequest.query;
+  let payload = eventRequest.body;
+  for (var replaceKey in replacements) {
+    if (headers) {
+      for (var hkey in headers) {
+        headers[ hkey ] = headers[ hkey ].replace(replaceKey, replacements[ replaceKey ]);
+      }
+    }
+    if (query) {
+      for (var qkey in query) {
+        query[ qkey ] = query[ qkey ].replace(replaceKey, replacements[ replaceKey ]);
+      }
+    }
+    if (payload) {
+      if (typeof payload === 'string') {
+        payload = payload.replace(replaceKey, replacements[ replaceKey ]);
+      }
+    }
+  }
+  const options = { headers: headers, qs: eventRequest.query };
 
   logger.debug('Attempting to send %s events to %s', numEvents, api);
   let promises = [];
   for (let i = 0; i < numEvents; i++) {
-    const response = chakram.post(api, payload, options);
+    let response;
+    if (eventRequest.method === 'GET') {
+      response = chakram.get(api, options);
+    } else {
+      response = chakram.post(api, payload, options);
+    }
     promises.push(response);
   }
   return chakram.all(promises);
