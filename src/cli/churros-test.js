@@ -24,7 +24,8 @@ const fromOptions = (url, options) => {
       loadElement: options.element,
       browser: options.browser,
       verbose: options.verbose === undefined ? false : options.verbose, // hack...i can't figure out why it's not default to false
-      externalAuth: options.externalAuth
+      externalAuth: options.externalAuth,
+      exclude: options.exclude
     });
   });
 };
@@ -44,6 +45,10 @@ const parse = (options) => {
   return fromOptions(url, options);
 };
 
+const isRunMultiple = (suite) => suite.indexOf('/') < 0;
+
+const isElement = (suite) => suite.startsWith('element');
+
 const run = (suite, options, cliArgs) => {
   const file = options.file;
   const test = options.test;
@@ -52,40 +57,22 @@ const run = (suite, options, cliArgs) => {
   const rootDir = path.dirname(require.main.filename);
   const rootTestDir = rootDir + '/../test';
 
+  const resources = [];
+  const resourceType = suite.split('/')[0];
+
   // always pass the lifecycle file first.  if it's an element, then use that element's lifecycle file too
-  const mochaPaths = [];
-  mochaPaths.push(rootTestDir + '/lifecycle');
+  const baseMochaPaths = [rootTestDir + '/lifecycle'];
+  if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
 
-  let element = null;
-  if (suite.startsWith('elements') || suite.startsWith('element')) {
-    const elementSetup = `${rootTestDir}/elements/lifecycle`;
-    element = suite.split('/')[1]; // i.e 'elements/box' would get 'box' here
-    mochaPaths.push(elementSetup);
-  }
-
-  // validate the root suite path before continuing
-  let testPath = `${rootTestDir}/${suite}`;
-  if (!fs.existsSync(testPath)) {
-    console.log('Invalid suite: %s', suite);
-    process.exit(1);
-  }
-
-  // add the suite next, unless a specific file was passed
-  if (file.length < 1) mochaPaths.push(testPath);
-  else {
-    file.forEach((s) => {
-      let filePath = testPath + '/' + s;
-      if (!fs.existsSync(filePath + '.js')) {
-        console.log('Invalid file: %s', s);
-        process.exit(1);
-      }
-      mochaPaths.push(filePath);
-    });
-  }
+  // if we want to run multiple tests, we need to find all of the available element or platform tests and add them to our resources array
+  isRunMultiple(suite) ?
+    fs.readdirSync(`${rootTestDir}/${resourceType}`)
+    .filter(e => e !== 'assets' && options.exclude.indexOf(e) < 0)
+    .map(e => resources.push(e)) :
+    resources.push(suite.split('/')[1]);
 
   let args = `--timeout 600000 --reporter spec --ui bdd`;
   if (test) args += ` --grep '${test}'`;
-  if (element) args += ` --element ${element}`;
   if (cliArgs.url) args += ` --url ${cliArgs.url}`;
   if (cliArgs.user) args += ` --user ${cliArgs.user}`;
   if (cliArgs.password) args += ` --password ${cliArgs.password}`;
@@ -96,7 +83,36 @@ const run = (suite, options, cliArgs) => {
   if (cliArgs.browser) args += ` --browser ${cliArgs.browser}`;
   if (cliArgs.externalAuth) args += ` --externalAuth`;
 
-  let cmd = `${rootDir}/../../node_modules/.bin/mocha ${mochaPaths.join(' ')} ${args}`;
+  // loop over each element, constructing the proper paths to pass to mocha
+  let cmd = "";
+  resources.forEach((resource, index) => {
+    const allMochaPaths = baseMochaPaths.slice();
+
+    // validate the root suite path before continuing
+    let testPath = `${rootTestDir}/${resourceType}/${resource}`;
+    if (!fs.existsSync(testPath)) {
+      console.log('Invalid suite: %s', suite);
+      process.exit(1);
+    }
+
+    // add the suite next, unless a specific file was passed
+    if (file.length < 1) allMochaPaths.push(testPath);
+    else {
+      file.forEach((s) => {
+        let filePath = testPath + '/' + s;
+        if (!fs.existsSync(filePath + '.js')) {
+          console.log('Invalid file: %s', s);
+          process.exit(1);
+        }
+        allMochaPaths.push(filePath);
+      });
+    }
+
+    cmd += `${rootDir}/../../node_modules/.bin/mocha ${allMochaPaths.join(' ')} ${args}`;
+    if (isElement(suite)) cmd += ` --element ${resource}`;
+    if (index !== resources.length - 1) cmd += " && "; // not the last one, then append &&
+  });
+
   process.exit(shell.exec(cmd).code); // execute the cmd and make our exit code the same as 'churros test' code
 };
 
@@ -122,6 +138,7 @@ commander
   .option('-p, --password', 'overrides the default password setup during initialization (this will prompt you for your password)')
   .option('-x, --externalAuth', 'provision using external authentication. only for elements tests')
   .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'firefox') // will change this to phantomjs as churros becomes more mature
+  .option('-s, --exclude <resource>', 'element(s) or platform resource(s) to exclude if running all tests', collect, [])
   .option('-V, --verbose', 'logging verbose mode')
   .on('--help', () => {
     console.log('  Examples:');
@@ -129,6 +146,8 @@ commander
     console.log('    # Element Tests');
     console.log('    $ churros test elements/closeio');
     console.log('    $ churros test elements/closeio --test \'contacts\'');
+    console.log('    $ churros test elements');
+    console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
     console.log('');
     console.log('    # Platform Tests');
     console.log('    $ churros test platform/notifications');
@@ -136,6 +155,8 @@ commander
     console.log('    $ churros test platform/formulas --test \'should not allow\'');
     console.log('    $ churros test platform/events --element sfdc');
     console.log('    $ churros test platform/events --element sfdc --load 50 --wait 60');
+    console.log('    $ churros test platform');
+    console.log('    $ churros test platform --exclude formulas --exclude elements');
     console.log('');
   })
   .parse(process.argv);
