@@ -215,7 +215,12 @@ const createEvents = (element, replacements, eventRequest, numEvents) => {
   logger.debug('Attempting to send %s events to %s', numEvents, api);
   let promises = [];
   for (let i = 0; i < numEvents; i++) {
-    const response = chakram.post(api, payload, options);
+    let response;
+    if (eventRequest.method === 'GET') {
+      response = chakram.get(api, options);
+    } else {
+      response = chakram.post(api, payload, options);
+    }
     promises.push(response);
   }
   return chakram.all(promises);
