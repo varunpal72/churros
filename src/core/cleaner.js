@@ -14,7 +14,7 @@ const ignore = (response) => {
 };
 
 /**
- * Filteres out the responses entries based on whether an entry has a field that matches at least one value in values
+ * Filters out the responses entries based on whether an entry has a field that matches at least one value in values
  */
 const filter = (rs, field, values) => {
   return rs.body.filter(r => {

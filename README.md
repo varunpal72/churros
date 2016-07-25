@@ -43,6 +43,8 @@ $ churros init
 npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
 ```
 
+Lastly, if you don't have a personal ngrok account, you'll need to signup for a free account [here](https://dashboard.ngrok.com/user/signup).  After you have signed up, you should have a personal ngrok auth token that you'll need to set in the churros properties by running `churros props ngrok.auth.token <your_auth_token>`.
+
 ## `churros` CLI
 It is worth taking some time to familiarize yourself with the `churros` CLI.  This CLI can run tests, help setup new test suites, and add/view properties that are needed in order to run certain suites.  Run `churros help` and dig through some of the different sub-commands that are currently available.  To see some examples of the most common command, `churros test`, continue on below.
 

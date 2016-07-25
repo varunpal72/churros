@@ -4,7 +4,7 @@ const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
-const argv = require('optimist').demand('element').argv;
+const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
 

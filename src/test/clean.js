@@ -5,8 +5,10 @@ const argv = require('optimist').argv;
 
 it(`should clean up all ${argv.resource} with name(s): ${argv.name}`, () => {
   switch (argv.resource) {
+    case 'formula':
     case 'formulas':
       return cleaner.formulas.withName(argv.name);
+    case 'element':
     case 'elements':
       return cleaner.elements.withName(argv.name);
     default:
