@@ -1,6 +1,5 @@
 'use strict';
 
-const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const server = require('core/server');
@@ -8,9 +7,6 @@ const tools = require('core/tools');
 const provisioner = require('core/provisioner');
 const props = require('core/props');
 const logger = require('winston');
-const crypto = require('crypto');
-const eventSchema = require('./assets/event.schema.json');
-const eventsSchema = require('./assets/events.schema.json');
 
 const gen = (opts, url) => ({
   'event.notification.enabled': opts['event.notification.enabled'] || true,
@@ -45,7 +41,7 @@ suite.forPlatform('events', (test) => {
     let instanceId, targetId;
     return provisioner.create('zendesk', gen({}, props.getForKey('events', 'url')))
       .then(r => {
-        instanceId = r.body.id
+        instanceId = r.body.id;
         targetId = r.body.configuration['helpdesk.zendesk.webhook.target_id'];
       })
       // fake a zendesk event
