@@ -214,6 +214,48 @@ suite.forPlatform('formulas', opts, (test) => {
         })
         .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId2));
     });
+
+    it('should create and delete jobs for a all schedule triggered instances with formula trigger type switched to manual', () => {
+      let formula = require('./assets/formulas/simple-successful-scheduled-trigger-formula');
+      const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
+      const cron = '0 0/60 * 1/1 * ? *';
+
+      formula.triggers[0].properties.cron = cron;
+      formula.active = true;
+      formulaInstance.active = true;
+
+      return cleaner.formulas.withName('simple-successful')
+        .then(() => cloud.post(test.api, formula, schema))
+        .then(r => { formula = r.body; formulaId = r.body.id; })
+
+        // create the formula instance
+        .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+        .then(r => formulaInstanceId = r.body.id)
+        // check that there is a job for it
+        .then(() => cloud.get('/jobs'))
+        .then(r => expect(r.body.filter(j => common.formulaJobId(formulaId, formulaInstanceId).indexOf(j.id) > -1)).to.have.length(1))
+
+        // switch trigger type to manual
+        .then(() => formula.triggers[0].type = 'manual')
+        .then(() => cloud.put(`/formulas/${formulaId}`, formula))
+        .then(r => { formula = r.body; expect(r.body.triggers[0].type).to.equal('manual'); })
+        // check that there is no longer a job for the instance
+        .then(r => cloud.get('/jobs'))
+        .then(r => {
+          expect(r.body.filter(j => common.formulaJobId(formulaId, formulaInstanceId).indexOf(j.id) > -1)).to.be.empty;
+        })
+
+        // switch formula trigger back to scheduled
+        .then(() => formula.triggers[0].type = 'scheduled')
+        .then(() => formula.triggers[0].properties = { cron: cron })
+        .then(() => cloud.put(`/formulas/${formulaId}`, formula))
+        .then(r => expect(r.body.triggers[0].type).to.equal('scheduled'))
+        // yep, you guessed it, check that the job has been created again
+        .then(r => cloud.get('/jobs'))
+        .then(r => {
+          expect(r.body.filter(j => common.formulaJobId(formulaId, formulaInstanceId).indexOf(j.id) > -1)).to.have.length(1);
+        });
+    });
   });
 
   /* Cleanup */
