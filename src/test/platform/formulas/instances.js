@@ -215,7 +215,7 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId2));
     });
 
-    it('should create and delete jobs for a all schedule triggered instances with formula trigger type switched to manual', () => {
+    it('should create and delete jobs for a all schedule triggered instances with formula trigger type switched to manual and back', () => {
       let formula = require('./assets/formulas/simple-successful-scheduled-trigger-formula');
       const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
       const cron = '0 0/60 * 1/1 * ? *';
