@@ -1,0 +1,10 @@
+{
+  "vendorName": "contacts",
+  "script": {
+    "body": "done(transformedObject);"
+  },
+  "fields": [{
+    "path": "id",
+    "vendorPath": "id"
+  }]
+}

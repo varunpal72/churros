@@ -1,0 +1,15 @@
+{
+  "contacts": {
+    "vendorName": "contacts",
+    "configuration": [{
+      "type": "scriptEngine",
+      "properties": {
+        "value": "v1"
+      }
+    }],
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  }
+}
