@@ -137,5 +137,8 @@ exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => () => new
 exports.cleanup = (eiId, fId, fiId) => {
   return cloud.delete(`/formulas/${fId}/instances/${fiId}`)
     .then(r => cloud.delete(`/formulas/${fId}`))
-    .then(r => provisioner.delete(eiId));
+    .then(r => eiId && provisioner.delete(eiId));
 };
+
+exports.formulaJobId = (formulaId, formulaInstanceId) => 
+  new Buffer(`1:1:1:0:Formula-${formulaId}-${formulaInstanceId}`).toString('base64');

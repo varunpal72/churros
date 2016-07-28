@@ -339,14 +339,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       //browser.findElement(webdriver.By.id('user_oauth_approval')).click();
       return browser.getCurrentUrl();
     case 'zendesk':
-      // TODO - not quite working yet ...
       browser.get(r.body.oauthUrl);
-      const iframe = webdriver.By.tagName('iframe')[0];
-      browser.switchTo().frame(iframe);
+      browser.switchTo().frame(0);
       browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.name('commit')).click();
-      return browser.getCurrentUrl();
+      return browser.wait(() => browser.isElementPresent(webdriver.By.id('user-approval')), 5000)
+        .then(r => browser.findElement(webdriver.By.xpath('//*[@id="user-approval"]/form[2]/input[6]')))
+        .then(r => r.click())
+        .then(r => browser.getCurrentUrl())
+        .catch(r => browser.getCurrentUrl());
     default:
       logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
       process.exit(1);
