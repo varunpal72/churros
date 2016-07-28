@@ -93,7 +93,7 @@ suite.forPlatform('transformation scripts', (test) => {
     return badUpdateScriptTest(transformationV2, transformationV1);
   });
 
-  it('should not allow updating a transformation with no explicit script engine set to v1', () => {
+  it('should not allow updating a transformation script from no explicit script engine to v1', () => {
     const transformation = require('./assets/simple-transformation');
     const transformationV1 = require('./assets/simple-v1-transformation');
     return badUpdateScriptTest(transformation, transformationV1);
