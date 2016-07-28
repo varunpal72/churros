@@ -23,6 +23,12 @@ suite.forPlatform('transformation scripts', (test) => {
     const definitions = require('./assets/object-definitions');
     const options = (opts || { isCleanup: true }); // default to cleaning up resources
 
+    const transformationCreatedValidator = (r, value) => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body.isLegacy).to.equal(value);
+      return r;
+    };
+
     const validatorWrapper = (r) => {
       const validator = (options.validator || ((object) => expect(object.foo).to.equal('bar')));
       expect(r).to.have.statusCode(200);
@@ -32,7 +38,7 @@ suite.forPlatform('transformation scripts', (test) => {
     };
 
     return cloud.post(`/instances/${closeioId}/objects/contacts/definitions`, definitions)
-      .then(r => cloud.post(`/instances/${closeioId}/transformations/contacts`, transformation))
+      .then(r => cloud.post(`/instances/${closeioId}/transformations/contacts`, transformation, (r) => transformationCreatedValidator(r, transformation.isLegacy ? transformation.isLegacy : false)))
       .then(r => cloud.get(`/hubs/crm/contacts/${contactId}`, validatorWrapper))
       .then(r => options.isCleanup ? cloud.delete(`/instances/${closeioId}/transformations/contacts`) : r)
       .then(r => options.isCleanup ? cloud.delete(`/instances/${closeioId}/objects/contacts/definitions`) : r);
