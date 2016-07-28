@@ -1,15 +1,16 @@
 {
-  "contacts": {
-    "vendorName": "contacts",
-    "configuration": [{
-      "type": "scriptEngine",
-      "properties": {
-        "value": "v2"
-      }
-    }],
-    "fields": [{
-      "path": "id",
-      "vendorPath": "id"
-    }]
-  }
+  "vendorName": "contacts",
+  "script": {
+    "body": "transformedObject.foo = 'bar'; done(transformedObject);"
+  },
+  "configuration": [{
+    "type": "scriptEngine",
+    "properties": {
+      "value": "v2"
+    }
+  }],
+  "fields": [{
+    "path": "id",
+    "vendorPath": "id"
+  }]
 }

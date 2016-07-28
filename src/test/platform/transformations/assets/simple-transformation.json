@@ -1,7 +1,7 @@
 {
   "vendorName": "contacts",
   "script": {
-    "body": "done(transformedObject);"
+    "body": "transformedObject.foo='bar'; done(transformedObject);"
   },
   "fields": [{
     "path": "id",
