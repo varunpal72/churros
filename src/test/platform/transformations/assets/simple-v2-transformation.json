@@ -1,14 +1,9 @@
 {
   "vendorName": "contacts",
+  "isLegacy": false,
   "script": {
     "body": "transformedObject.foo = 'bar'; done(transformedObject);"
   },
-  "configuration": [{
-    "type": "scriptEngine",
-    "properties": {
-      "value": "v2"
-    }
-  }],
   "fields": [{
     "path": "id",
     "vendorPath": "id"
