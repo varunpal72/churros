@@ -67,41 +67,16 @@ suite.forPlatform('transformation scripts', (test) => {
       .then(r => cloud.delete(`/instances/${closeioId}/objects/contacts/definitions`));
   };
 
-  it('should set the default scripting engine to v2', () => {
-    const transformation = require('./assets/simple-transformation');
-    return scriptTest(transformation);
-  });
+  /**
+   * Loads a transformation from the given file name from the assets directory
+   */
+  const lt = (fileName) => require(`./assets/${fileName}`);
 
-  it('should support setting the scripting engine to v1', () => {
-    const transformation = require('./assets/simple-v1-transformation');
-    return scriptTest(transformation);
-  });
-
-  it('should support setting the scripting engine to v2', () => {
-    const transformation = require('./assets/simple-v2-transformation');
-    return scriptTest(transformation);
-  });
-
-  it('should allow updating a transformation script from v1 to v2', () => {
-    const transformationV1 = require('./assets/simple-v1-transformation');
-    const transformationV2 = require('./assets/simple-v2-transformation');
-    return goodUpdateScriptTest(transformationV1, transformationV2);
-  });
-
-  it('should allow updating a transformation when both script engines are set to v2', () => {
-    const transformationV2 = require('./assets/simple-v2-transformation');
-    return goodUpdateScriptTest(transformationV2, transformationV2);
-  });
-
-  it('should not allow updating a transformation script from v2 to v1', () => {
-    const transformationV2 = require('./assets/simple-v2-transformation');
-    const transformationV1 = require('./assets/simple-v1-transformation');
-    return badUpdateScriptTest(transformationV2, transformationV1);
-  });
-
-  it('should not allow updating a transformation script from no explicit script engine to v1', () => {
-    const transformation = require('./assets/simple-transformation');
-    const transformationV1 = require('./assets/simple-v1-transformation');
-    return badUpdateScriptTest(transformation, transformationV1);
-  });
+  it('should set the default scripting engine to v2', () => scriptTest(lt('simple-transformation')));
+  it('should support setting the scripting engine to v1', () => scriptTest(lt('simple-v1-transformation')));
+  it('should support setting the scripting engine to v2', () => scriptTest(lt('simple-v2-transformation')));
+  it('should allow updating a transformation script from v1 to v2', () => goodUpdateScriptTest(lt('simple-v1-transformation'), lt('simple-v2-transformation')));
+  it('should allow updating a transformation when both script engines are set to v2', () => goodUpdateScriptTest(lt('simple-v2-transformation'), lt('simple-v2-transformation')));
+  it('should not allow updating a transformation script from v2 to v1', () => badUpdateScriptTest(lt('simple-v2-transformation'), lt('simple-v1-transformation')));
+  it('should not allow updating a transformation script from no explicit script engine to v1', () => badUpdateScriptTest(lt('simple-transformation'), lt('simple-v1-transformation')));
 });
