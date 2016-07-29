@@ -35,7 +35,7 @@ const post = (api, payload, validationCb, options) => {
   logger.debug('POST %s with options %s and body %s', api, options, payload);
   return chakram.post(api, payload, options)
     .then(r => validator(validationCb)(r))
-    .catch(r => tools.logAndThrow('Failed to create %s', r, api));
+    .catch(r => tools.logAndThrow('Failed to create or validate: %s', r, api));
 };
 exports.post = (api, payload, validationCb) => post(api, payload, validationCb, null);
 
@@ -43,7 +43,7 @@ const get = (api, validationCb, options) => {
   logger.debug('GET %s with options %s', api, options);
   return chakram.get(api, options)
     .then(r => validator(validationCb)(r))
-    .catch(r => tools.logAndThrow('Failed to retrieve %s', r, api));
+    .catch(r => tools.logAndThrow('Failed to retrieve or validate: %s', r, api));
 };
 exports.get = (api, validationCb) => get(api, validationCb, null);
 
