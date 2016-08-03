@@ -322,6 +322,18 @@
       "type": "string"
     }]
   },
+  "items": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "taxes": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "vendors": {
     "fields": [{
       "path": "id",

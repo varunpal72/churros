@@ -49,14 +49,16 @@ exports.genJdbcBaseUrlConfig = (opts) => new Object({
   type: 'TEXTFIELD_1000'
 });
 
-exports.genResource = (opts) => new Object({
-  path: (opts.path || '/churros'),
-  method: (opts.method || 'GET'),
-  vendorPath: (opts.path || '/getChurros'),
-  vendorMethod: (opts.vendorMethod || 'GET'),
-  description: (opts.description || 'A Churros resource'),
-  response: (opts.response || null)
-});
+exports.genResource = (opts) => {
+  opts = opts || {};
+  opts.path = (opts.path || '/churros');
+  opts.method = (opts.method || 'GET');
+  opts.vendorPath = (opts.path || '/getChurros');
+  opts.vendorMethod = (opts.vendorMethod || 'GET');
+  opts.description = (opts.description || 'A Churros resource');
+  opts.response = (opts.response || null);
+  return opts;
+};
 
 exports.genParameter = (opts) => new Object({
   name: (opts.name || 'param'),
