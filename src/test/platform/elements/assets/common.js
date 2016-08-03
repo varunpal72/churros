@@ -83,11 +83,29 @@ exports.genModelWithRequestSwagger = (opts) => new Object({
   requestSwagger: (opts.swagger) || {}
 });
 
-exports.genHook = (opts) => new Object({
-  mimeType: (opts.mimeType || 'application/javascript'),
-  type: (opts.type || 'preRequest'),
-  body: (opts.body || 'return {"hello": "world"}')
-});
+const genHook = (opts, body) => {
+  opts = (opts || {});
+  return {
+    mimeType: (opts.mimeType || 'application/javascript'),
+    type: (opts.type || 'preRequest'),
+    body: (opts.body || 'done(foo: \'bar\');')
+  };
+};
+exports.genHook = genHook;
+
+exports.genLegacyHook = (opts) => {
+  opts = (opts || {});
+  opts.body = 'return {"hello": "world"}';
+  const hook = genHook(opts);
+  hook.isLegacy = true;
+  return hook;
+};
+
+exports.genUpgradedHook = (opts) => {
+  const hook = genHook(opts);
+  hook.isLegacy = false;
+  return hook;
+};
 
 exports.crudSubResource = (url, schema, listSchema, payload, updatePayload) => {
   let subResource;

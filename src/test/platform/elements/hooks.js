@@ -1,14 +1,12 @@
 'use strict';
 
-const suite = require('core/suite');
 const cloud = require('core/cloud');
 const common = require('./assets/common.js');
+const suite = require('core/suite');
 const schema = require('./assets/element.hook.schema.json');
 const listSchema = require('./assets/element.hooks.schema.json');
 
-const opts = { payload: common.genHook({}), schema: schema };
-
-suite.forPlatform('elements/hooks', opts, (test) => {
+suite.forPlatform('elements/hooks', { schema: schema }, (test) => {
   let element, keyUrl, idUrl;
   before(() => common.deleteElementByKey('churros')
     .then(r => cloud.post('elements', common.genElement({})))
@@ -16,8 +14,8 @@ suite.forPlatform('elements/hooks', opts, (test) => {
     .then(r => keyUrl = `elements/${element.key}/hooks`)
     .then(r => idUrl = `elements/${element.id}/hooks`));
 
-  it('should support CRUD by key', () => common.crudSubResource(keyUrl, schema, listSchema, common.genHook({}), common.genHook({ description: "An updated Churros hook" })));
-  it('should support CRUD by ID', () => common.crudSubResource(idUrl, schema, listSchema, common.genHook({}), common.genHook({ description: "An updated Churros hook" })));
-
   after(() => cloud.delete('elements/' + element.key));
+
+  it('should support CRUD by key', () => common.crudSubResource(keyUrl, schema, listSchema, common.genLegacyHook(), common.genLegacyHook({ description: "An updated Churros hook" })));
+  it('should support CRUD by ID', () => common.crudSubResource(idUrl, schema, listSchema, common.genLegacyHook(), common.genLegacyHook({ description: "An updated Churros hook" })));
 });
