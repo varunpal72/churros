@@ -20,8 +20,8 @@ suite.forPlatform('elements/resources', opts, (test) => {
   it('should support CRUD by key', () => common.crudsResource(keyUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
   it('should support CRUD by ID', () => common.crudsResource(idUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource" })));
 
-  it('should support CRUD by key with sample data', () => common.crudsResource(keyUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource", response: { sampleData: "{\"key\": \"value\"}"} })));
-  it('should support CRUD by ID with sample data', () => common.crudsResource(idUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource", response: { sampleData :"{\"key\": \"value\"}"} })));
+  it('should support CRUD by key with sample data and other optional fields', () => common.crudsResource(keyUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource", response: { sampleData: "{\"key\": \"value\"}"}, operationId: "getChurrosById" })));
+  it('should support CRUD by ID with sample data and other optional fields', () => common.crudsResource(idUrl, schema, listSchema, common.genResource({}), common.genResource({ description: "An updated Churros resource", response: { sampleData :"{\"key\": \"value\"}"}, operationId: "getChurrosByKey" })));
 
   after(() => cloud.delete(`elements/${element.key}`));
 });

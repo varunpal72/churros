@@ -112,15 +112,20 @@
   },
   "customers": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "Id",
-      "type": "string"
-    }, {
-      "path": "postId",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      }, {
+        "path": "firstName",
+        "type": "string"
+      }, {
+        "path": "lastName",
+        "type": "string"
+      },
+      {
+        "path": "postId",
+        "type": "string"
+      }
+    ]
   },
   "credit-memos": {
     "fields": [{
@@ -131,6 +136,12 @@
   "dimensions": {
     "fields": [{
       "path": "Id",
+      "type": "string"
+    }]
+  },
+  "discounts": {
+    "fields": [{
+      "path": "id",
       "type": "string"
     }]
   },
@@ -311,6 +322,18 @@
       "type": "string"
     }]
   },
+  "items": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "taxes": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "vendors": {
     "fields": [{
       "path": "id",
@@ -429,6 +452,12 @@
     }]
   },
   "transfers": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "shops": {
     "fields": [{
       "path": "id",
       "vendorPath": "id"

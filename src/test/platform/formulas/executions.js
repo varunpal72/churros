@@ -814,7 +814,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       .then(() => common.deleteFormula(formulaId));
   });
 
-  it('should terminate an execution if the deactivate API is called during execution', () => {
+  it.skip('should terminate an execution if the deactivate API is called during execution', () => {
     const formula = require('./assets/formulas/loop-formula');
     const formulaInstance = require('./assets/formulas/loop-formula-instance');
     formulaInstance.configuration['sfdc.instance.id'] = sfdcId;

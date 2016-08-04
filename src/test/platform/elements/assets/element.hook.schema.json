@@ -24,6 +24,11 @@
     "body": {
       "id": "body",
       "type": "string"
+    },
+    "isLegacy": {
+      "id": "isLegacy",
+      "type": "boolean"
     }
-  }
+  },
+  "required": ["id", "type", "body", "isLegacy"]
 }

@@ -49,14 +49,16 @@ exports.genJdbcBaseUrlConfig = (opts) => new Object({
   type: 'TEXTFIELD_1000'
 });
 
-exports.genResource = (opts) => new Object({
-  path: (opts.path || '/churros'),
-  method: (opts.method || 'GET'),
-  vendorPath: (opts.path || '/getChurros'),
-  vendorMethod: (opts.vendorMethod || 'GET'),
-  description: (opts.description || 'A Churros resource'),
-  response:  (opts.response || null)
-});
+exports.genResource = (opts) => {
+  opts = opts || {};
+  opts.path = (opts.path || '/churros');
+  opts.method = (opts.method || 'GET');
+  opts.vendorPath = (opts.path || '/getChurros');
+  opts.vendorMethod = (opts.vendorMethod || 'GET');
+  opts.description = (opts.description || 'A Churros resource');
+  opts.response = (opts.response || null);
+  return opts;
+};
 
 exports.genParameter = (opts) => new Object({
   name: (opts.name || 'param'),
@@ -81,11 +83,29 @@ exports.genModelWithRequestSwagger = (opts) => new Object({
   requestSwagger: (opts.swagger) || {}
 });
 
-exports.genHook = (opts) => new Object({
-  mimeType: (opts.mimeType || 'application/javascript'),
-  type: (opts.type || 'preRequest'),
-  body: (opts.body || 'return {"hello": "world"}')
-});
+const genHook = (opts, body) => {
+  opts = (opts || {});
+  return {
+    mimeType: (opts.mimeType || 'application/javascript'),
+    type: (opts.type || 'preRequest'),
+    body: (opts.body || 'done(foo: \'bar\');')
+  };
+};
+exports.genHook = genHook;
+
+exports.genLegacyHook = (opts) => {
+  opts = (opts || {});
+  opts.body = 'return {"hello": "world"}';
+  const hook = genHook(opts);
+  hook.isLegacy = true;
+  return hook;
+};
+
+exports.genUpgradedHook = (opts) => {
+  const hook = genHook(opts);
+  hook.isLegacy = false;
+  return hook;
+};
 
 exports.crudSubResource = (url, schema, listSchema, payload, updatePayload) => {
   let subResource;
