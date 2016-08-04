@@ -4,7 +4,6 @@
     "password": "",
     "url": "",
     "oauth.callback.url": "",
-    "ngrok.auth.token": "",
     "events": {
         "load": 5,
         "wait": 45,

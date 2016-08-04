@@ -13,12 +13,6 @@ const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
 
-const provisionSfdcWithPolling = () => provisioner.create('sfdc', {
-  'event.notification.enabled': true,
-  'event.vendor.type': 'polling',
-  'event.poller.refresh_interval': 999999999
-});
-
 const flattenStepExecutionValues = sevs =>
   sevs.reduce((flat, curr) => {
     const key = curr.key;
@@ -84,23 +78,6 @@ const validateComplexSuccessfulStepExecutionsForEvents = tValidator => ses => {
     .map(validateErrorStepExecution);
   ses.filter(se => se.stepName !== 'invalid-request-step' && se.stepName !== 'looper')
     .map(validateSuccessfulStepExecution);
-};
-
-const validateScriptContextSuccessfulStepExecutionsForEvents = tValidator => ses => {
-  expect(ses).to.have.length(4);
-  ses.map(se => validateSuccessfulStepExecution(se));
-  ses.filter(se => se.stepName === 'trigger').map(tValidator);
-
-  const consolidated = consolidateStepExecutionValues(ses);
-
-  expect(consolidated['customer.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
-  expect(consolidated['customer.name']).to.equal('test');
-  expect(consolidated['customer-update.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
-  expect(consolidated['customer-update.name']).to.equal('test');
-  expect(consolidated['customer-update.newthing']).to.equal('{"some":"new thing"}');
-  expect(consolidated['customer-retrieve.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
-  expect(consolidated['customer-retrieve.name']).to.equal('test');
-  expect(consolidated['customer-retrieve.newthing']).to.equal('{"some":"new thing"}');
 };
 
 const validateSimpleTimeoutStepExecutionsForEvents = tValidator => ses => {
@@ -275,10 +252,6 @@ const validateComplexSuccessfulStepExecutions = {
   forEvents: (num) => validateComplexSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
-const validateScriptContextSuccessfulStepExecutions = {
-  forEvents: (num) => validateScriptContextSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-};
-
 const validateSimpleTimeoutStepExecutions = {
   forEvents: (num) => validateSimpleTimeoutStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
@@ -326,7 +299,7 @@ const validateScriptOnFailureStepExecutions = {
 suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test) => {
   let sfdcId;
   before(() => {
-    return provisionSfdcWithPolling()
+    return provisioner.create('sfdc', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 })
       .then(r => sfdcId = r.body.id)
       .catch(r => {
         console.log(`Rats...${r}`);
@@ -336,13 +309,11 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
 
   /**
    * Represents a standard execution test setup, triggering of formula and validation.
-   *
-   * NOTE: Currently working on re-factoring tests to reduce duplicate code
    */
-  const executionTest = (formula, numberOfExecutions, numberOfStepExecutionValues, triggerCb, customExecutionsValidator) => {
-    customExecutionsValidator = customExecutionsValidator || ((executions) => logger.debug(`No custom execution validator found`));
+  const executionTest = (formula, numberOfExecutions, numberOfStepExecutionValues, triggerCb, validator) => {
+    validator = validator || ((executions) => logger.debug(`No validator found`));
     const executionsValidator = (executions) => {
-      customExecutionsValidator(executions);
+      validator(executions);
       return executions;
     };
 
@@ -376,101 +347,88 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
   };
 
   /**
-   * NOTE: Currently working on re-factoring tests to reduce duplicate code
+   * Handles the basic formula execution test for a formula that is triggered by an event
    */
-  const eventTriggerTest = (setup, formula, formulaInstance, numEvents, numStepExecutions, customValidator) => {
-    const validator = (executions) => {
-      customValidator = (customValidator || ((execution) => logger.debug(`No custom validator found`)));
-      customValidator(executions);
+  const eventTriggerTest = (f, fi, numEvents, numStepExecutionValues, validator) => {
+    const validatorWrapper = (executions) => {
+      validator = (validator || ((executions) => {
+        logger.debug(`Using default validator`);
+
+        // validating executions
+        expect(executions).to.have.length(numEvents);
+        executions.map(e => e.status === 'success');
+
+        // validating step executions
+        executions.stepExecutions.map(ses => {
+          expect(ses).to.have.length(2);
+          ses.map(se => validateStepExecutionStatus(se, 'success'));
+
+          // validating step execution values
+          ses.filter(se => se.stepName === 'trigger').map((t) => {
+            const flat = flattenStepExecutionValues(t.stepExecutionValues);
+            expect(flat['trigger.type']).to.equal('event');
+            expect(flat['trigger.event']).to.exist;
+            expect(flat['trigger.eventId']).to.exist;
+          });
+        });
+      }));
+      
+      validator(executions);
     };
 
+    if (fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
+
     let formulaId, formulaInstanceId;
-    return cleaner.formulas.withName(formula.name)
-      .then(r => setup(formula, formulaInstance))
-      .then(() => cloud.post(test.api, formula, fSchema))
+    return cleaner.formulas.withName(f.name)
+      .then(() => cloud.post(test.api, f, fSchema))
       .then(r => formulaId = r.body.id)
-      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
+      .then(() => cloud.post(`/formulas/${formulaId}/instances`, fi, fiSchema))
       .then(r => formulaInstanceId = r.body.id)
       .then(() => generateXSingleSfdcPollingEvents(sfdcId, numEvents))
-      .then(() => tools.wait.upTo(30000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, numEvents, numStepExecutions)))
+      .then(() => tools.wait.upTo(30000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, numEvents, numStepExecutionValues)))
       .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
       .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(executions => validator(executions))
+      .then(executions => validatorWrapper(executions))
       .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
       .then(() => common.deleteFormula(formulaId));
   };
 
-
   it('should successfully execute a simple formula triggered by a single event', () => {
     const formula = require('./assets/formulas/simple-successful-formula');
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
-
-    let formulaId, formulaInstanceId;
-    return cleaner.formulas.withName('simple-successful')
-      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
-      .then(() => cloud.post(test.api, formula, fSchema))
-      .then(r => formulaId = r.body.id)
-      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
-      .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateSingleSfdcPollingEvent(sfdcId))
-      .then(() => sleep.sleep(5))
-      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
-      .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-        return r;
-      })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
-      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-      .then(() => common.deleteFormula(formulaId));
+    return eventTriggerTest(formula, formulaInstance, 1, 2);
   });
 
   it('should successfully execute a simple formula triggered by a triple event', () => {
     const formula = require('./assets/formulas/simple-successful-formula');
     const formulaInstance = require('./assets/formulas/simple-successful-formula-instance');
-
-    let formulaId, formulaInstanceId;
-    return cleaner.formulas.withName('simple-successful')
-      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
-      .then(() => cloud.post(test.api, formula, fSchema))
-      .then(r => formulaId = r.body.id)
-      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
-      .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateTripleSfdcPollingEvent(sfdcId))
-      .then(() => sleep.sleep(5))
-      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
-      .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(3);
-        return r;
-      })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(3))))
-      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-      .then(() => common.deleteFormula(formulaId));
+    return eventTriggerTest(formula, formulaInstance, 3, 2);
   });
 
   it('should successfully execute a formula and properly handle context between steps', () => {
     const formula = require('./assets/formulas/script-context-successful-formula');
     const formulaInstance = require('./assets/formulas/script-context-successful-formula-instance');
 
-    let formulaId, formulaInstanceId;
-    return cleaner.formulas.withName('script-context-successful')
-      .then(r => formulaInstance.configuration['trigger-instance'] = sfdcId)
-      .then(() => cloud.post(test.api, formula, fSchema))
-      .then(r => formulaId = r.body.id)
-      .then(() => cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema))
-      .then(r => formulaInstanceId = r.body.id)
-      .then(() => generateSingleSfdcPollingEvent(sfdcId))
-      .then(() => sleep.sleep(5))
-      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
-      .then(r => {
-        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
-        return r;
-      })
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(rs => rs.map(r => validateExecution(r)(validateScriptContextSuccessfulStepExecutions.forEvents(1))))
-      .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId))
-      .then(() => common.deleteFormula(formulaId));
+    const validator = (executions) => {
+      const ses = executions[0].stepExecutions;
+
+      expect(ses).to.have.length(4);
+      ses.map(se => validateSuccessfulStepExecution(se));
+      ses.filter(se => se.stepName === 'trigger').map(t => t.status === 'success');
+
+      const consolidated = consolidateStepExecutionValues(ses);
+
+      expect(consolidated['customer.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
+      expect(consolidated['customer.name']).to.equal('test');
+      expect(consolidated['customer-update.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
+      expect(consolidated['customer-update.name']).to.equal('test');
+      expect(consolidated['customer-update.newthing']).to.equal('{"some":"new thing"}');
+      expect(consolidated['customer-retrieve.id'], 'Step values are being parsed as double, but should be string.').to.equal('8000270E-1392053436');
+      expect(consolidated['customer-retrieve.name']).to.equal('test');
+      expect(consolidated['customer-retrieve.newthing']).to.equal('{"some":"new thing"}');
+    };
+
+    return eventTriggerTest(formula, formulaInstance, 1, 4, validator);
   });
 
   it('should successfully execute a single threaded formula triggered by an event with three objects', () => {
@@ -645,16 +603,14 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
   });
 
   it('should properly handle a single threaded formula with a step that contains invalid json, triggered by an event with three objects', () => {
-    const setup = (formula, formulaInstance) => {
-      formula.singleThreaded = true;
-      formulaInstance.configuration['trigger-instance'] = sfdcId;
-    };
 
     const validator = (executions) => executions.map(r => validateExecution(r, 'failed')(validateSimpleErrorStepExecutions.forEvents(2)));
 
     const formula = require('./assets/formulas/simple-error-formula-v1');
+    formula.singleThreaded = true;
     const formulaInstance = require('./assets/formulas/simple-error-formula-instance');
-    return eventTriggerTest(setup, formula, formulaInstance, 3, 2, validator);
+    formulaInstance.configuration['trigger-instance'] = sfdcId;
+    return eventTriggerTest(formula, formulaInstance, 3, 2, validator);
   });
 
   it('should successfully execute a simple formula triggered manually', () => {

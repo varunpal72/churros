@@ -48,8 +48,7 @@ before(() => {
    */
   const setupEventsTunnel = () => {
     const port = props.getForKey('events', 'port');
-    const token = props.getOptional('ngrok.auth.token');
-    return tunnel.start(port, token)
+    return tunnel.start(port)
       .then(url => props.setForKey('events', 'url', url));
   };
 

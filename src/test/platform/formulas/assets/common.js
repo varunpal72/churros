@@ -140,5 +140,5 @@ exports.cleanup = (eiId, fId, fiId) => {
     .then(r => eiId && provisioner.delete(eiId));
 };
 
-exports.formulaJobId = (formulaId, formulaInstanceId) => 
+exports.formulaJobId = (formulaId, formulaInstanceId) =>
   new Buffer(`1:1:1:0:Formula-${formulaId}-${formulaInstanceId}`).toString('base64');
