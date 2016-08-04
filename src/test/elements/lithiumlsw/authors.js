@@ -12,14 +12,14 @@ suite.forElement('social', 'authors', { payload: payload }, (test) => {
   test.should.supportCrus();
 
   it('should allow get for /authors/changes', () => {
-    return cloud.get('/hubs/social/authors/changes?startEpochMillis=1470174284000')
+    return cloud.get('/hubs/social/authors/changes?startEpochMillis=1470174284000');
   });
 
   it('should allow get for /persons/:id', () => {
     let personId;
     return cloud.get('/hubs/social/authors?pageSize=1')
       .then(r => personId = r.body[0].id)
-      .then(r => cloud.get(`/hubs/social/persons/${personId}`))
+      .then(r => cloud.get(`/hubs/social/persons/${personId}`));
   });
 
 });
