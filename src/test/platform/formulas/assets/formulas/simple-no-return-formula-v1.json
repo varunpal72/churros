@@ -1,43 +1,23 @@
 {
-    "name": "simple-no-return",
-    "steps": [
-        {
-            "onSuccess": [],
-            "onFailure": [],
-            "name": "simple-script",
-            "type": "script",
-            "properties": {
-                "body": "var start = new Date().getTime(); return ;",
-                "scriptEngine": "v1"
-            }
-        }
-    ],
-    "triggers": [
-        {
-            "type": "event",
-            "async": true,
-            "onSuccess": ["simple-script"],
-            "onFailure": [],
-            "properties": {
-                "elementInstanceId": "${trigger-instance}"
-            }
-        }
-    ],
-    "active": true,
-    "singleThreaded": false,
-    "configuration": [
-        {
-            "key": "notification.email",
-            "name": "Notification Email",
-            "type": "value",
-            "description": "Optional email where formula errors and notification steps will be sent (If more than one email is needed, separate each email with a comma)",
-            "required": false
-        },
-        {
-            "key": "trigger-instance",
-            "name": "trigger-instance",
-            "type": "elementInstance",
-            "required": true
-        }
-    ]
+  "name": "simple-no-return",
+  "steps": [{
+    "name": "simple-script",
+    "type": "script",
+    "properties": {
+      "body": "var start = new Date().getTime(); return ;",
+      "scriptEngine": "v1"
+    }
+  }],
+  "triggers": [{
+    "type": "event",
+    "onSuccess": ["simple-script"],
+    "properties": {
+      "elementInstanceId": "${trigger-instance}"
+    }
+  }],
+  "configuration": [{
+    "key": "trigger-instance",
+    "name": "trigger-instance",
+    "type": "elementInstance"
+  }]
 }
