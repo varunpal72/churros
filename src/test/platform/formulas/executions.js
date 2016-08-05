@@ -96,7 +96,7 @@ const generateXSingleSfdcPollingEvents = (instanceId, x) => {
 };
 
 const validateSuccessfulEventTrigger = num => se => {
-  expect(se).to.have.property('status').and.be('success');
+  expect(se).to.have.property('status').and.equal('success');
 
   const flat = flattenStepExecutionValues(se.stepExecutionValues);
   expect(flat['trigger.type']).to.equal('event');
@@ -550,20 +550,36 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
   });
 
   it('should successfully execute a simple event trigger formula triggered manually', () => {
-    const kickOffDatFormulaCb = (fId, fiId) => {
-      return generateXSingleSfdcPollingEvents(sfdcId, 1)
-        .then(() => sleep.sleep(5))
-        .then(() => cloud.get(`/instances/${sfdcId}/events`))
-        .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, r.body[0].notifiedData[0]));
-    };
-    const f = require(`./assets/formulas/simple-successful-formula`);
-    const fi = require(`./assets/formulas/basic-formula-instance`);
-    return testWrapper(kickOffDatFormulaCb, f, fi, 1, f.steps.length + 1, 4);
+    const formula = require('./assets/formulas/simple-successful-formula');
+    formula.singleThreaded = true;
+    const formulaInstance = require('./assets/formulas/basic-formula-instance');
+    formulaInstance.configuration['trigger-instance'] = sfdcId;
+
+    let fId, fiId;
+    return cleaner.formulas.withName(formula.name)
+      .then(() => generateXSingleSfdcPollingEvents(sfdcId, 1))
+      .then(() => sleep.sleep(5)) // Let the event flow through
+      .then(() => cloud.post(test.api, formula, fSchema))
+      .then(r => fId = r.body.id)
+      .then(() => cloud.post(`/formulas/${fId}/instances`, formulaInstance, fiSchema))
+      .then(r => fiId = r.body.id)
+      .then(() => cloud.get(`/instances/${sfdcId}/events`))
+      .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, r.body[0].notifiedData[0]))
+      .then(() => sleep.sleep(5))
+      .then(() => common.getFormulaInstanceExecutions(fiId))
+      .then(r => {
+        expect(r).to.have.statusCode(200) && expect(r.body).to.have.length(1);
+        return r;
+      })
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(rs => rs.map(r => validateExecution(r)(validateSimpleSuccessfulStepExecutions.forEvents(1))))
+      .then(() => common.deleteFormulaInstance(fId, fiId))
+      .then(() => common.deleteFormula(fId));
   });
 
   it('should successfully execute three simple formula instances triggered by a single event', () => {
     const formula = require('./assets/formulas/simple-successful-formula');
-    const formulaInstance =require('./assets/formulas/basic-formula-instance');
+    const formulaInstance = require('./assets/formulas/basic-formula-instance');
 
     let fId, fiId1, fiId2, fiId3;
     return cleaner.formulas.withName('simple-successful')
