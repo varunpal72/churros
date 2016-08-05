@@ -88,7 +88,7 @@ const validateExecution = (e, expectedStatus) => validator => {
 };
 
 const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
-  fileName = fileName || 'single-sfdc-event';
+  fileName = fileName || 'single-event-sfdc';
   const payload = require(`./assets/events/${fileName}`);
   return Promise.all(Array(x).fill().reduce((p, c) => {
     p.push(common.generateSfdcPollingEvent(instanceId, payload));
