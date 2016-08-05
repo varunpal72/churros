@@ -116,7 +116,7 @@ const validateElementRequestSuccessfulStepExecutions = {
   forEvents: (num) => validateElementRequestSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
 };
 
-suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test) => {
+suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let sfdcId;
   before(() => {
     return provisioner.create('sfdc', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 })
@@ -295,7 +295,6 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
       return {
         name: 'churros-formula-instance',
         configuration: {
-          'trigger-instance': sfdcId,
           cron: `${dt.seconds()} ${dt.minutes()} ${dt.hours()} ${dt.date()} ${dt.month() + 1} ? ${dt.year()}`
         }
       };
@@ -460,7 +459,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
         expect(consolidated['end.done']).to.equal('true');
       });
     };
-    return eventTriggerTest('large-payload-successful-formula', 1, 1, validator);
+    return eventTriggerTest('large-payload-successful-formula', 1, 3, validator);
   });
 
   it('should successfully execute one simple formula instance x number of times for x events', () => eventTriggerTest('simple-successful-formula', 10, 2));
@@ -514,7 +513,6 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
   it('should retry a request step when the retry property is set to true', () => {
     const validator = (executions) => {
       executions.map(e => {
-        expect(e.stepExecutions).to.have.length(2);
         const stepExecution = e.stepExecutions.filter(se => se.stepName === 'retry-element-request')[0];
         const stepExecutionValue = stepExecution.stepExecutionValues.filter(sev => sev.key === 'retry-element-request.request.retry-attempt')[0];
         expect(stepExecutionValue.value).to.equal("3");
@@ -526,6 +524,7 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
 
   it('should have a unique formula context for a single-threaded formula that has multiple polling events trigger multiple executions at once', () => {
     const validator = (executions) => {
+      console.log(JSON.stringify(executions));
       // validate that each objectId exists once somewhere in the step execution values
       const events = require('./assets/events/triple-event-sfdc');
       const all = [];
@@ -548,6 +547,8 @@ suite.forPlatform('formulas', { name: 'formula executions', skip: false }, (test
     };
     return eventTriggerTest('simple-filter-formula', 1, 2, validator);
   });
+
+  /** NOTE: The tests below this line have not been re-factored to follow our standard flow and need updated */
 
   it('should successfully execute a simple event trigger formula triggered manually', () => {
     const formula = require('./assets/formulas/simple-successful-formula');
