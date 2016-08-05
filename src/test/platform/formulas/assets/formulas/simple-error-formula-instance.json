@@ -1,7 +1,0 @@
-{
-    "name": "simple-error-inst",
-    "configuration": {
-        "notification.email": "",
-        "trigger-instance": "<replace-me>"
-    }
-}

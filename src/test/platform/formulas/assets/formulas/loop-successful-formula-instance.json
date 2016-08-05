@@ -1,7 +1,0 @@
-{
-    "name": "loop-successful-inst",
-    "configuration": {
-        "notification.email": "",
-        "trigger-instance": "<replace-me>"
-    }
-}
