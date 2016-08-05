@@ -552,6 +552,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('simple-filter-formula', 1, 2, validator);
   });
 
+  it('should support formulas with nested loop steps', () => {
+    const validator = (executions) => {
+      console.log(`${JSON.stringify(executions)}`);
+    };
+    return eventTriggerTest('nested-loops-formula', 1, 17, validator, 'success', 17);
+  });
+
   /** NOTE: The tests below this line have not been re-factored to follow our standard flow and need updated */
 
   it('should successfully execute a simple event trigger formula triggered manually', () => {
