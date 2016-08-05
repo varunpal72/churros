@@ -145,7 +145,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     logger.debug('Validating executions with default validator');
     expect(executions).to.have.length(numEs);
     executions.map(e => {
-      e.status === executionStatus || 'success';
+      const eStatus = (executionStatus || 'success');
+      expect(e.status).to.equal(eStatus);
 
       logger.debug('Validating step executions with default validator');
       expect(e.stepExecutions).to.have.length(numSes);
@@ -535,7 +536,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       events.accounts.forEach(account => expect(all.indexOf(account.Id)).to.be.above(-1));
     };
 
-    return eventTriggerTest('single-threaded-formula', 3, 6, validator, null, null, 'triple-event-sfdc');
+    const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(sfdcId, 1, 'triple-event-sfdc');
+    const f = require('./assets/formulas/single-threaded-formula');
+    const fi = require('./assets/formulas/basic-formula-instance');
+    return testWrapper(triggerCb, f, fi, 3, 2, 2, validator);
   });
 
   it('filter steps should add their boolean value as an available step execution value', () => {
