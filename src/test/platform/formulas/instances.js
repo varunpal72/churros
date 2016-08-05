@@ -11,10 +11,10 @@ const expect = require('chakram').expect;
 const opts = { name: 'formula instances', payload: common.genFormula({}), schema: schema };
 
 suite.forPlatform('formulas', opts, (test) => {
-  /* Create a formula instance to use in the tests below */
-  let elementInstanceId, formulaId, formulaInstanceId;
   describe('general', () => {
+    let elementInstanceId, formulaId, formulaInstanceId;
     before(() => {
+      /* Create a formula instance to use in the tests below */
       return common.createFAndFI()
         .then(r => {
           formulaId = r.formulaId;
@@ -53,8 +53,16 @@ suite.forPlatform('formulas', opts, (test) => {
   });
 
   describe('scheduled', () => {
-    /* Cleanup */
-    after(() => common.cleanup(elementInstanceId, formulaId, formulaInstanceId));
+    let elementInstanceId, formulaId, formulaInstanceId;
+    before(() => {
+      /* Create a formula instance to use in the tests below */
+      return common.createFAndFI()
+        .then(r => {
+          formulaId = r.formulaId;
+          formulaInstanceId = r.formulaInstanceId;
+          elementInstanceId = r.elementInstanceId;
+        });
+    });
 
     const fi = (cron, active) => ({
       name: 'churros-formula-instance',
@@ -74,7 +82,8 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(() => cloud.post(`/formulas/${formulaId}/instances`, fi('0 0/60 * 1/1 * ? *', true), fiSchema))
         .then(r => formulaInstanceId = r.body.id)
         .then(() => cloud.get('/jobs'))
-        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.have.length(1));
+        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.have.length(1))
+        .then(r => cleaner.formulas.withName(formula.name));
     });
 
     it('should not create a job for a new inactive formula and active instance triggered by schedule', () => {
@@ -87,7 +96,8 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(() => cloud.post(`/formulas/${formulaId}/instances`, fi('0 0/60 * 1/1 * ? *', true), fiSchema))
         .then(r => formulaInstanceId = r.body.id)
         .then(r => cloud.get('/jobs'))
-        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty);
+        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty)
+        .then(r => cleaner.formulas.withName(formula.name));
     });
 
     it('should not create a job for a new active formula and inactive instance triggered by schedule', () => {
@@ -100,7 +110,8 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(() => cloud.post(`/formulas/${formulaId}/instances`, fi('0 0/60 * 1/1 * ? *', false), fiSchema))
         .then(r => formulaInstanceId = r.body.id)
         .then(r => cloud.get('/jobs'))
-        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty);
+        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty)
+        .then(r => cleaner.formulas.withName(formula.name));
     });
 
     it('should create and delete jobs for a schedule triggered instance updated to active and inactive using the active endpoint', () => {
@@ -124,7 +135,8 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(() => cloud.delete(`/formulas/${formulaId}/instances/${formulaInstanceId}/active`))
         // yep, you guessed it, check that there is no longer a job for it
         .then(() => cloud.get('/jobs'))
-        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty);
+        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty)
+        .then(r => cleaner.formulas.withName(formula.name));
     });
 
     it('should create and delete jobs for a schedule triggered instance updated to active and inactive using a PUT', () => {
@@ -156,7 +168,8 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(r => expect(r.body.active).to.equal(false))
         // yep, you guessed it, check that there is no longer a job for it
         .then(r => cloud.get('/jobs'))
-        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty);
+        .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty)
+        .then(r => cleaner.formulas.withName(formula.name));
     });
 
     it('should create and delete jobs for a all schedule triggered instances with formula updated to active and inactive using a PUT', () => {
@@ -203,7 +216,8 @@ suite.forPlatform('formulas', opts, (test) => {
           expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.have.length(1);
           expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.have.length(1);
         })
-        .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId2));
+        .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId2))
+        .then(r => cleaner.formulas.withName(formula.name));
     });
 
     it('should create and delete jobs for a all schedule triggered instances with formula trigger type switched to manual and back', () => {
@@ -249,7 +263,8 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(r => cloud.get('/jobs'))
         .then(r => {
           expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.have.length(1);
-        });
+        })
+        .then(r => cleaner.formulas.withName(formula.name));
     });
   });
 });
