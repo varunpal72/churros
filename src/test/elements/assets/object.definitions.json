@@ -462,5 +462,15 @@
       "path": "id",
       "vendorPath": "id"
     }]
+  },
+  "authors": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    },
+    {
+      "path": "otherId",
+      "vendorPath": "id"
+    }]  
   }
 }
