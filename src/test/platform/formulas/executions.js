@@ -582,7 +582,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${fId}/instances`, formulaInstance, fiSchema))
       .then(r => fiId = r.body.id)
       .then(() => cloud.get(`/instances/${sfdcId}/events`))
-      .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, r.body[0].notifiedData[0]))
+      .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, JSON.parse(r.body[0].eventElementInstances[0].notifiedData)))
       .then(() => sleep.sleep(5))
       .then(() => common.getFormulaInstanceExecutions(fiId))
       .then(r => {
