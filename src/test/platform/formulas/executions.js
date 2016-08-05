@@ -554,7 +554,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
   it('should support formulas with nested loop steps', () => {
     const validator = (executions) => {
-      console.log(`${JSON.stringify(executions)}`);
+      const e = executions[0];
+      // outer loop verification
+      expect(e.stepExecutions.filter(se => se.stepName === 'loop-1').length).to.equal(3);
+      expect(e.stepExecutions.filter(se => se.stepName === 'silly-script-1').length).to.equal(2);
+      // inner loop
+      expect(e.stepExecutions.filter(se => se.stepName === 'loop-2').length).to.equal(6);
+      expect(e.stepExecutions.filter(se => se.stepName === 'silly-script-2').length).to.equal(4);
     };
     return eventTriggerTest('nested-loops-formula', 1, 17, validator, 'success', 17);
   });
