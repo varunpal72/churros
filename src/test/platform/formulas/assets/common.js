@@ -105,7 +105,7 @@ exports.createFAndFI = (element, config) => {
     .then(r => provisioner.create(element, config))
     .then(r => elementInstanceId = r.body.id)
     .then(r => {
-      const formulaInstance = require('./formulas/simple-successful-formula-instance');
+      const formulaInstance = require('./formulas/basic-formula-instance');
       formulaInstance.configuration['trigger-instance'] = elementInstanceId;
       return cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema);
     })
@@ -139,6 +139,3 @@ exports.cleanup = (eiId, fId, fiId) => {
     .then(r => cloud.delete(`/formulas/${fId}`))
     .then(r => eiId && provisioner.delete(eiId));
 };
-
-exports.formulaJobId = (formulaId, formulaInstanceId) =>
-  new Buffer(`1:1:1:0:Formula-${formulaId}-${formulaInstanceId}`).toString('base64');

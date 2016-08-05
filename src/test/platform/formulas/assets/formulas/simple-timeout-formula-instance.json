@@ -1,7 +1,0 @@
-{
-    "name": "simple-timeout-inst",
-    "configuration": {
-        "notification.email": "",
-        "trigger-instance": "<replace-me>"
-    }
-}
