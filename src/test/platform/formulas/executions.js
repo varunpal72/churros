@@ -87,8 +87,9 @@ const validateExecution = (e, expectedStatus) => validator => {
   fn(e.stepExecutions);
 };
 
-const generateXSingleSfdcPollingEvents = (instanceId, x) => {
-  const payload = require('./assets/events/single-event-sfdc');
+const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
+  fileName = fileName || 'single-sfdc-event';
+  const payload = require(`./assets/events/${fileName}`);
   return Promise.all(Array(x).fill().reduce((p, c) => {
     p.push(common.generateSfdcPollingEvent(instanceId, payload));
     return p;
@@ -187,7 +188,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   /**
    * Handles the basic formula execution test for a formula that is triggered by an event
    */
-  const eventTriggerTest = (fName, numEvents, numSevs, validator, executionStatus, numSes) => {
+  const eventTriggerTest = (fName, numEvents, numSevs, validator, executionStatus, numSes, eventFileName) => {
     const f = require(`./assets/formulas/${fName}`);
     let fi = require(`./assets/formulas/basic-formula-instance`);
     if (fs.existsSync(`./assets/formulas/${fName}-instance`)) fi = require(`./assets/formulas/${fName}-instance`);
@@ -206,7 +207,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       if (typeof validator === 'function') validator(executions);
     };
 
-    const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(sfdcId, numEvents);
+    const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(sfdcId, numEvents, eventFileName);
     numSes = numSes || f.steps.length + 1; // defaults to steps + trigger but for loop cases, that won't work
     return testWrapper(triggerCb, f, fi, numEvents, numSes, numSevs, validatorWrapper, executionStatus);
   };
@@ -524,7 +525,6 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
   it('should have a unique formula context for a single-threaded formula that has multiple polling events trigger multiple executions at once', () => {
     const validator = (executions) => {
-      console.log(JSON.stringify(executions));
       // validate that each objectId exists once somewhere in the step execution values
       const events = require('./assets/events/triple-event-sfdc');
       const all = [];
@@ -535,7 +535,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       events.accounts.forEach(account => expect(all.indexOf(account.Id)).to.be.above(-1));
     };
 
-    return eventTriggerTest('single-threaded-formula', 3, 2, validator);
+    return eventTriggerTest('single-threaded-formula', 3, 6, validator, null, null, 'triple-event-sfdc');
   });
 
   it('filter steps should add their boolean value as an available step execution value', () => {
