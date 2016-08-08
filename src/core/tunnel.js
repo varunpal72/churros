@@ -1,4 +1,3 @@
-/** @module tunnel */
 'use strict';
 
 const ngrok = require('ngrok');
