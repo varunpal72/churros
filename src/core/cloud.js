@@ -32,20 +32,20 @@ const validator = (validationCb) => {
   }
 };
 
-/**
- * HTTP POST to the given API
- * @param  {string} api          The API to call
- * @param  {Object} payload      The optional JSON payload to send on this API call
- * @param  {Function} validationCb The optional validation callback function to use to validate the HTTP response
- * @param  {Object} options       The optional request options to use on this HTTP request
- * @return {Promise}              Promise
- */
 const post = (api, payload, validationCb, options) => {
   logger.debug('POST %s with options %s and body %s', api, options, payload);
   return chakram.post(api, payload, options)
     .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to create or validate: %s', r, api));
 };
+/**
+ * HTTP POST
+ * @param  {string} api          The API to call
+ * @param  {Object} payload      The optional JSON payload to send on this API call
+ * @param  {Function} validationCb The optional validation callback function to use to validate the HTTP response
+ * @param  {Object} options       The optional request options to use on this HTTP request
+ * @return {Promise}
+ */
 exports.post = (api, payload, validationCb) => post(api, payload, validationCb, null);
 
 const get = (api, validationCb, options) => {
@@ -54,6 +54,13 @@ const get = (api, validationCb, options) => {
     .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to retrieve or validate: %s', r, api));
 };
+
+/**
+ * HTTP GET
+ * @param  {string} api          The API to call
+ * @param  {Function} validationCb The optional validation callback function to use to validate the HTTP response
+ * @return {Promise}
+ */
 exports.get = (api, validationCb) => get(api, validationCb, null);
 
 const modifyPayload = (payload, options) => {
