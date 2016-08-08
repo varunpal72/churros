@@ -10,12 +10,17 @@
   "plugins": [
     "plugins/markdown"
   ],
+  "docdash": {
+    "static": true,
+    "sort": true
+  },
   "opts": {
-    "template": "node_modules/docdash",
-    "encoding": "utf8",
     "destination": "docs/",
+    "encoding": "utf8",
+    "readme": "./README.md",
     "recurse": true,
-    "verbose": true
+    "verbose": false,
+    "template": "node_modules/docdash"
   },
   "templates": {
     "cleverLinks": false,

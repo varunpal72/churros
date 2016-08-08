@@ -1,4 +1,4 @@
-/** @module cloud */
+/** @module core/cloud */
 'use strict';
 
 const tools = require('core/tools');
@@ -163,7 +163,7 @@ exports.crus = crus;
 
 const sr = (api, validationCb, options) => {
   return get(api, validationCb, options)
-    .then(r => get(api + '/' + r.body[ 0 ].id, validationCb, options));
+    .then(r => get(api + '/' + r.body[0].id, validationCb, options));
 };
 exports.sr = sr;
 const crs = (api, payload, validationCb, options) => {
@@ -205,17 +205,17 @@ const createEvents = (element, replacements, eventRequest, numEvents) => {
   for (var replaceKey in replacements) {
     if (headers) {
       for (var hkey in headers) {
-        headers[ hkey ] = headers[ hkey ].replace(replaceKey, replacements[ replaceKey ]);
+        headers[hkey] = headers[hkey].replace(replaceKey, replacements[replaceKey]);
       }
     }
     if (query) {
       for (var qkey in query) {
-        query[ qkey ] = query[ qkey ].replace(replaceKey, replacements[ replaceKey ]);
+        query[qkey] = query[qkey].replace(replaceKey, replacements[replaceKey]);
       }
     }
     if (payload) {
       if (typeof payload === 'string') {
-        payload = payload.replace(replaceKey, replacements[ replaceKey ]);
+        payload = payload.replace(replaceKey, replacements[replaceKey]);
       }
     }
   }

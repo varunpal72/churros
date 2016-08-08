@@ -1,4 +1,3 @@
-/** @module assertions */
 'use strict';
 
 const assert = require('assert');

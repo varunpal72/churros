@@ -1,4 +1,4 @@
-/** @module oauth */
+/** @module core/oauth */
 'use strict';
 
 const webdriver = require('selenium-webdriver');
@@ -356,6 +356,15 @@ const manipulateDom = (element, browser, r, username, password, config) => {
   }
 };
 
+/**
+ * Provision an OAuth2 element
+ * @param  {string} element  The element key to provisioner
+ * @param  {Object} r        The HTTP response object from GET /elements/:key/oauth/url
+ * @param  {string} username The login username
+ * @param  {string} password The login password
+ * @param  {Object} config   The other config for this element from churros props
+ * @return {Promise}
+ */
 module.exports = (element, r, username, password, config) => {
   const b = props.get('browser');
   logger.debug('Using the %s browser', b);

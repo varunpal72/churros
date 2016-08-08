@@ -1,4 +1,3 @@
-/** @module props */
 'use strict';
 
 const tools = require('core/tools');

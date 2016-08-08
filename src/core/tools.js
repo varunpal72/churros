@@ -1,4 +1,4 @@
-/** @module tools */
+/** @module core/tools */
 'use strict';
 
 const logger = require('winston');
@@ -6,24 +6,55 @@ const sleep = require('sleep');
 
 var exports = module.exports = {};
 
+/**
+ * Generates a random string
+ * @return {string} A random, 7 character string
+ */
 exports.random = () => Math.random().toString(36).substring(7);
 
+/**
+ * Generates a random email address in the @churros.com domain
+ * @return {string} A random, 7-character email address
+ */
 exports.randomEmail = () => {
   var address = exports.random();
   var domain = 'churros';
   return address + '@' + domain + '.com';
 };
 
+/**
+ * Generates a random integer
+ * @return {int} A random integer
+ */
 exports.randomInt = () => Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
 
+/**
+ * Log and throw an error
+ * @param  {String} msg   The message to log
+ * @param  {Error} error  The JS error to throw
+ * @param  {Object} arg   Any args to pass when logging
+ */
 exports.logAndThrow = (msg, error, arg) => {
   arg ? logger.error(msg, arg) : logger.error(msg);
   throw error;
 };
 
+/**
+ * Base 64 encode a string
+ * @param {string} s The string to base 64 encode
+ */
 exports.base64Encode = s => new Buffer(s).toString('base64');
+/**
+ * Base 64 decode the given string
+ * @param {string} s      The string to decode
+ * @param {string} base64 The base 64 decoded string
+ */
 exports.base64Decode = s => new Buffer(s, 'base64').toString('ascii');
 
+/**
+ * Sleep for a certain amount of time
+ * @param {int} secs The number of seconds to sleep
+ */
 exports.sleep = secs => {
   logger.debug(`Sleeping for ${secs} seconds`);
   sleep.sleep(secs);
@@ -55,13 +86,17 @@ const waitFor = max => pred => new Promise((res, rej) => {
  * a value:
  *   wait.for(cb => { if (true) { cb(true); } });
  */
-const wait = {
+exports.wait = {
   upTo: max => ({
     for: waitFor(max)
   }),
   for: waitFor(15000)
 };
 
-exports.wait = wait;
 
+/**
+ * Stringify an object
+ * @param  {object} json The JSON object to stringify
+ * @return {string}      The JSON object stringified
+ */
 exports.stringify = (json) => JSON.stringify(json);
