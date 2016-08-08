@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>tools.js - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="core_cleaner_module_elements.html">elements</a></li><li><a href="core_cleaner_module_formulas.html">formulas</a></li><li><a href="module-core_cleaner.html">core/cleaner</a></li><li><a href="module-core_cloud.html">core/cloud</a><ul class='methods'><li data-type='method'><a href="module-core_cloud.html#~post">post</a></li></ul></li><li><a href="module-core_oauth.html">core/oauth</a></li><li><a href="module-core_suite.html">core/suite</a><ul class='methods'><li data-type='method'><a href="module-core_suite.html#.forElement">forElement</a></li><li data-type='method'><a href="module-core_suite.html#.forPlatform">forPlatform</a></li><li data-type='method'><a href="module-core_suite.html#~itNextPagePagination">itNextPagePagination</a></li></ul></li><li><a href="module-core_tools.html">core/tools</a><ul class='members'><li data-type='member'><a href="module-core_tools.html#.wait">wait</a></li></ul><ul class='methods'><li data-type='method'><a href="module-core_tools.html#.base64Decode">base64Decode</a></li><li data-type='method'><a href="module-core_tools.html#.base64Encode">base64Encode</a></li><li data-type='method'><a href="module-core_tools.html#.logAndThrow">logAndThrow</a></li><li data-type='method'><a href="module-core_tools.html#.random">random</a></li><li data-type='method'><a href="module-core_tools.html#.randomEmail">randomEmail</a></li><li data-type='method'><a href="module-core_tools.html#.randomInt">randomInt</a></li><li data-type='method'><a href="module-core_tools.html#.sleep">sleep</a></li><li data-type='method'><a href="module-core_tools.html#.stringify">stringify</a></li></ul></li><li><a href="module-provisioner.html">provisioner</a><ul class='methods'><li data-type='method'><a href="module-provisioner.html#~orchestrateCreate">orchestrateCreate</a></li></ul></li><li><a href="module-tunnel.html">tunnel</a><ul class='methods'><li data-type='method'><a href="module-tunnel.html#.start">start</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#handlerCb">handlerCb</a></li><li><a href="global.html#listen">listen</a></li><li><a href="global.html#server">server</a></li><li><a href="global.html#start">start</a></li><li><a href="global.html#stop">stop</a></li></ul>
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">tools.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @module core/tools */
+'use strict';
+
+const logger = require('winston');
+const sleep = require('sleep');
+
+var exports = module.exports = {};
+
+/**
+ * Generates a random string
+ * @return {string} A random, 7 character string
+ */
+exports.random = () => Math.random().toString(36).substring(7);
+
+/**
+ * Generates a random email address in the @churros.com domain
+ * @return {string} A random, 7-character email address
+ */
+exports.randomEmail = () => {
+  var address = exports.random();
+  var domain = 'churros';
+  return address + '@' + domain + '.com';
+};
+
+/**
+ * Generates a random integer
+ * @return {int} A random integer
+ */
+exports.randomInt = () => Math.floor(Math.random() * (1000 - 1 + 1)) + 1;
+
+/**
+ * Log and throw an error
+ * @param  {String} msg   The message to log
+ * @param  {Error} error  The JS error to throw
+ * @param  {Object} arg   Any args to pass when logging
+ */
+exports.logAndThrow = (msg, error, arg) => {
+  arg ? logger.error(msg, arg) : logger.error(msg);
+  throw error;
+};
+
+/**
+ * Base 64 encode a string
+ * @param {string} s The string to base 64 encode
+ */
+exports.base64Encode = s => new Buffer(s).toString('base64');
+/**
+ * Base 64 decode the given string
+ * @param {string} s      The string to decode
+ * @param {string} base64 The base 64 decoded string
+ */
+exports.base64Decode = s => new Buffer(s, 'base64').toString('ascii');
+
+/**
+ * Sleep for a certain amount of time
+ * @param {int} secs The number of seconds to sleep
+ */
+exports.sleep = secs => {
+  logger.debug(`Sleeping for ${secs} seconds`);
+  sleep.sleep(secs);
+};
+
+const waitFor = max => pred => new Promise((res, rej) => {
+  const doit = (ms) => {
+    if (ms &lt;= 0) {
+      rej(`Predicate was not true within the maximum time allowed of ${max} ms.`);
+    }
+
+    return pred()
+      .then(r => res(r))
+      .then(r => res(r))
+      .catch(e => setTimeout(doit, 3000, ms - 3000));
+  };
+  doit(max);
+});
+
+/**
+ * Wait for up to a maximum number of milliseconds for a predicate to become
+ * true.
+ * The predicate should be a function that takes a single callback argument.
+ * When the predicate determines itself to be true, it should call the callback,
+ * with a return value if needed.
+ * Example to wait up to 10 seconds for the predicate:
+ *   wait.upTo(10000).for(cb => { if (true) { cb(); } });
+ * Example to wait the default time for the predicate (15 seconds), and return
+ * a value:
+ *   wait.for(cb => { if (true) { cb(true); } });
+ */
+exports.wait = {
+  upTo: max => ({
+    for: waitFor(max)
+  }),
+  for: waitFor(15000)
+};
+
+
+/**
+ * Stringify an object
+ * @param  {object} json The JSON object to stringify
+ * @return {string}      The JSON object stringified
+ */
+exports.stringify = (json) => JSON.stringify(json);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Mon Aug 08 2016 15:10:21 GMT-0600 (MDT) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
