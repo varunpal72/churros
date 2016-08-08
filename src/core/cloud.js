@@ -1,3 +1,4 @@
+/** @module */
 'use strict';
 
 const tools = require('core/tools');
@@ -31,6 +32,14 @@ const validator = (validationCb) => {
   }
 };
 
+/**
+ * HTTP POST to the given API
+ * @param  {[type]} api          [description]
+ * @param  {[type]} payload      [description]
+ * @param  {[type]} validationCb [description]
+ * @param  {[type]} options      [description]
+ * @return {[type]}              [description]
+ */
 const post = (api, payload, validationCb, options) => {
   logger.debug('POST %s with options %s and body %s', api, options, payload);
   return chakram.post(api, payload, options)
