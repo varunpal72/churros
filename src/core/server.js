@@ -7,13 +7,11 @@ var exports = module.exports = {};
 
 /**
  * Global HTTP server object, that represents the current server that is listening for incoming HTTP requests
- * @type {object} The HTTP server
  */
 let server = null;
 
 /**
  * Global handlerCb function defines how this server will handle any incoming HTTP requests
- * @type {function}
  */
 let handlerCb = null;
 

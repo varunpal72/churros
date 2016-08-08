@@ -1,3 +1,4 @@
+/** @module core/cleaner */
 'use strict';
 
 const cloud = require('core/cloud');
@@ -5,17 +6,11 @@ const logger = require('winston');
 
 var exports = module.exports = {};
 
-/**
- * Validator that validates absolutely nothing
- */
 const ignore = (response) => {
   logger.debug(`Ignoring HTTP response`);
   return response;
 };
 
-/**
- * Filters out the responses entries based on whether an entry has a field that matches at least one value in values
- */
 const filter = (rs, field, values) => {
   return rs.body.filter(r => {
     let isFound = false;
@@ -25,9 +20,6 @@ const filter = (rs, field, values) => {
   });
 };
 
-/**
- * Slowly deletes things as opposed to doing them all at once, which can be painful
- */
 const deleteAll = (resource, ids) => {
   if (!ids || ids.length <= 0) return;
   logger.debug(`Attempting to delete ${resource} with id ${ids[0]}`);
@@ -36,9 +28,6 @@ const deleteAll = (resource, ids) => {
     .then(r => deleteAll(resource, ids));
 };
 
-/**
- * Cleans all formulas and formula instances based on a given field
- */
 const cleanFormulas = (field, values) => {
   logger.debug(`Cleaning formulas where ${field} is set to one of ${values}`);
   return cloud.get(`/formulas`)
@@ -57,9 +46,6 @@ const cleanFormulas = (field, values) => {
     });
 };
 
-/**
- * Cleans all element instances based on a given field
- */
 const cleanElements = (field, values) => {
   logger.debug(`Cleaning element instances where ${field} is set to one of ${values}`);
   return cloud.get(`/instances`)
@@ -67,24 +53,35 @@ const cleanElements = (field, values) => {
     .then(rs => deleteAll('instances', rs.map(r => r.id)));
 };
 
-/**
- * Convert object to array if it is NOT an array
- */
 const toArray = (value) => Array.isArray(value) ? value : [value];
 
 /**
- * Clean up formulas based on a given field
+ * Formulas object
+ * @type {Object}
+ * @module core/cleaner#formulas
  */
 exports.formulas = {
+  /**
+   * Clean up formulas with the give name
+   * @param  {string} name The name of the formula
+   * @return {Promise}
+   */
   withName: (name) => {
     return cleanFormulas('name', toArray(name));
   }
 };
 
 /**
- * Clean up element instances based on a field field
+ * Elements object
+ * @type {Object}
+ * @module core/cleaner#elements
  */
 exports.elements = {
+  /**
+   * Clean up elements with the given name
+   * @param  {string} name The name of the element
+   * @return {Promise}
+   */
   withName: (name) => {
     return cleanElements('name', toArray(name));
   }

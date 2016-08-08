@@ -14,3 +14,9 @@ general:
   artifacts:
     - "churros.log"
     - "coverage"
+
+deployment:
+  master:
+    branch: master
+    commands:
+      - ./deploy/deploy-docs.sh
