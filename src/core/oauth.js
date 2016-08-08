@@ -1,3 +1,4 @@
+/** @module oauth */
 'use strict';
 
 const webdriver = require('selenium-webdriver');

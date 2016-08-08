@@ -1,3 +1,4 @@
+/** @module server */
 'use strict';
 
 const http = require('http');

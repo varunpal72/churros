@@ -1,3 +1,4 @@
+/** @module tools */
 'use strict';
 
 const logger = require('winston');

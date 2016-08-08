@@ -1,3 +1,4 @@
+/** @module defaults */
 'use strict';
 
 const chakram = require('chakram');

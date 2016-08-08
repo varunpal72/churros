@@ -1,3 +1,4 @@
+/** @module cleaner */
 'use strict';
 
 const cloud = require('core/cloud');

@@ -1,4 +1,4 @@
-/** @module */
+/** @module cloud */
 'use strict';
 
 const tools = require('core/tools');
