@@ -81,6 +81,13 @@ const update = (api, payload, validationCb, chakramCb, options) => {
 exports.update = (api, payload, validationCb, chakramCb) => update(api, payload, validationCb, chakramCb, null);
 
 const patch = (api, payload, validationCb, options) => update(api, payload, validationCb, chakram.patch, options);
+/**
+ * HTTP PATCH
+ * @param  {string} api          The API to call
+ * @param  {Object} payload      The optional JSON payload
+ * @param  {Function} validationCb The optional validation callback function used to validate the HTTP response
+ * @return {Promise}              
+ */
 exports.patch = (api, payload, validationCb) => patch(api, payload, validationCb, null);
 
 const put = (api, payload, validationCb, options) => update(api, payload, validationCb, chakram.put, options);
