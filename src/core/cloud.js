@@ -1,3 +1,4 @@
+/** @module core/cloud */
 'use strict';
 
 const tools = require('core/tools');
@@ -37,6 +38,14 @@ const post = (api, payload, validationCb, options) => {
     .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to create or validate: %s', r, api));
 };
+/**
+ * HTTP POST
+ * @param  {string} api          The API to call
+ * @param  {Object} payload      The optional JSON payload to send on this API call
+ * @param  {Function} validationCb The optional validation callback function to use to validate the HTTP response
+ * @param  {Object} options       The optional request options to use on this HTTP request
+ * @return {Promise}
+ */
 exports.post = (api, payload, validationCb) => post(api, payload, validationCb, null);
 
 const get = (api, validationCb, options) => {
@@ -45,6 +54,13 @@ const get = (api, validationCb, options) => {
     .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to retrieve or validate: %s', r, api));
 };
+
+/**
+ * HTTP GET
+ * @param  {string} api          The API to call
+ * @param  {Function} validationCb The optional validation callback function to use to validate the HTTP response
+ * @return {Promise}
+ */
 exports.get = (api, validationCb) => get(api, validationCb, null);
 
 const modifyPayload = (payload, options) => {
@@ -65,6 +81,13 @@ const update = (api, payload, validationCb, chakramCb, options) => {
 exports.update = (api, payload, validationCb, chakramCb) => update(api, payload, validationCb, chakramCb, null);
 
 const patch = (api, payload, validationCb, options) => update(api, payload, validationCb, chakram.patch, options);
+/**
+ * HTTP PATCH
+ * @param  {string} api          The API to call
+ * @param  {Object} payload      The optional JSON payload
+ * @param  {Function} validationCb The optional validation callback function used to validate the HTTP response
+ * @return {Promise}              
+ */
 exports.patch = (api, payload, validationCb) => patch(api, payload, validationCb, null);
 
 const put = (api, payload, validationCb, options) => update(api, payload, validationCb, chakram.put, options);
@@ -154,7 +177,7 @@ exports.crus = crus;
 
 const sr = (api, validationCb, options) => {
   return get(api, validationCb, options)
-    .then(r => get(api + '/' + r.body[ 0 ].id, validationCb, options));
+    .then(r => get(api + '/' + r.body[0].id, validationCb, options));
 };
 exports.sr = sr;
 const crs = (api, payload, validationCb, options) => {
@@ -196,17 +219,17 @@ const createEvents = (element, replacements, eventRequest, numEvents) => {
   for (var replaceKey in replacements) {
     if (headers) {
       for (var hkey in headers) {
-        headers[ hkey ] = headers[ hkey ].replace(replaceKey, replacements[ replaceKey ]);
+        headers[hkey] = headers[hkey].replace(replaceKey, replacements[replaceKey]);
       }
     }
     if (query) {
       for (var qkey in query) {
-        query[ qkey ] = query[ qkey ].replace(replaceKey, replacements[ replaceKey ]);
+        query[qkey] = query[qkey].replace(replaceKey, replacements[replaceKey]);
       }
     }
     if (payload) {
       if (typeof payload === 'string') {
-        payload = payload.replace(replaceKey, replacements[ replaceKey ]);
+        payload = payload.replace(replaceKey, replacements[replaceKey]);
       }
     }
   }

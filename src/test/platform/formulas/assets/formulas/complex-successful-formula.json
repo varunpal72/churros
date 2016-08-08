@@ -1,5 +1,21 @@
 {
   "name": "complex-successful",
+  "triggers": [{
+    "type": "event",
+    "onSuccess": [
+      "return-true"
+    ],
+    "onFailure": [],
+    "properties": {
+      "elementInstanceId": "${trigger-instance}"
+    }
+  }],
+  "configuration": [{
+    "key": "trigger-instance",
+    "name": "Trigger Instance",
+    "type": "elementInstance",
+    "description": "The element instance that triggers the formula"
+  }],
   "steps": [{
       "onSuccess": [],
       "onFailure": [],
@@ -123,21 +139,5 @@
         "body": "var contacts = steps['get-contacts'].response.body;\nvar response = {ids:[]};\n\n// only care about 10 of these bad boyz...\nfor (var i = 0; i < 10; i ++) {\n  var c = contacts[i];\n  response.ids.push(c.Id);\n}\n\ndone(response);"
       }
     }
-  ],
-  "triggers": [{
-    "type": "event",
-    "onSuccess": [
-      "return-true"
-    ],
-    "onFailure": [],
-    "properties": {
-      "elementInstanceId": "${trigger-instance}"
-    }
-  }],
-  "configuration": [{
-    "key": "trigger-instance",
-    "name": "Trigger Instance",
-    "type": "elementInstance",
-    "description": "The element instance that triggers the formula"
-  }]
+  ]
 }

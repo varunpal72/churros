@@ -552,6 +552,19 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('simple-filter-formula', 1, 2, validator);
   });
 
+  it('should support formulas with nested loop steps', () => {
+    const validator = (executions) => {
+      const e = executions[0];
+      // outer loop verification
+      expect(e.stepExecutions.filter(se => se.stepName === 'loop-1').length).to.equal(3);
+      expect(e.stepExecutions.filter(se => se.stepName === 'silly-script-1').length).to.equal(2);
+      // inner loop
+      expect(e.stepExecutions.filter(se => se.stepName === 'loop-2').length).to.equal(6);
+      expect(e.stepExecutions.filter(se => se.stepName === 'silly-script-2').length).to.equal(4);
+    };
+    return eventTriggerTest('nested-loops-formula', 1, 17, validator, 'success', 17);
+  });
+
   /** NOTE: The tests below this line have not been re-factored to follow our standard flow and need updated */
 
   it('should successfully execute a simple event trigger formula triggered manually', () => {
@@ -569,7 +582,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${fId}/instances`, formulaInstance, fiSchema))
       .then(r => fiId = r.body.id)
       .then(() => cloud.get(`/instances/${sfdcId}/events`))
-      .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, r.body[0].notifiedData[0]))
+      .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, JSON.parse(r.body[0].eventElementInstances[0].notifiedData)))
       .then(() => sleep.sleep(5))
       .then(() => common.getFormulaInstanceExecutions(fiId))
       .then(r => {

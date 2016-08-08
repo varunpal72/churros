@@ -1,3 +1,4 @@
+/** @module provisioner */
 'use strict';
 
 const chakram = require('chakram');

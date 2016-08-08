@@ -18,6 +18,7 @@
     "testcore": "istanbul cover -x '**/src/core/oauth.js' _mocha test/core -- --reporter spec --ui bdd",
     "testcorenc": "mocha test/core --reporter spec --ui bdd",
     "test": "npm run lintall && npm run testcli && npm run testcore",
+    "docs": "jsdoc -c jsdoc.json -r src/core",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   },
   "bin": {
@@ -28,8 +29,10 @@
     "chakram": "^1.2.1",
     "commander": "^2.9.0",
     "coveralls": "^2.11.6",
+    "docdash": "^0.4.0",
     "inquirer": "^0.11.4",
     "istanbul": "^0.4.2",
+    "jsdoc": "^3.4.0",
     "mocha": "^2.3.4",
     "mockery": "^1.4.0",
     "moment": "^2.12.0",
