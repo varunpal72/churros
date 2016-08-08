@@ -34,11 +34,11 @@ const validator = (validationCb) => {
 
 /**
  * HTTP POST to the given API
- * @param  {[type]} api          [description]
- * @param  {[type]} payload      [description]
- * @param  {[type]} validationCb [description]
- * @param  {[type]} options      [description]
- * @return {[type]}              [description]
+ * @param  {string} api          The API to call
+ * @param  {Object} payload      The optional JSON payload to send on this API call
+ * @param  {Function} validationCb The optional validation callback function to use to validate the HTTP response
+ * @param  {Object} options       The optional request options to use on this HTTP request
+ * @return {Promise}              Promise
  */
 const post = (api, payload, validationCb, options) => {
   logger.debug('POST %s with options %s and body %s', api, options, payload);
