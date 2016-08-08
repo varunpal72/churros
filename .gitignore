@@ -32,6 +32,7 @@ node_modules
 
 build/
 dist/
+docs/
 
 .coveralls.yml
 
