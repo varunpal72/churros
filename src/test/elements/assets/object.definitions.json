@@ -135,7 +135,7 @@
   },
   "dimensions": {
     "fields": [{
-      "path": "Id",
+      "path": "id",
       "type": "string"
     }]
   },
@@ -297,7 +297,7 @@
   },
   "posting-rules": {
     "fields": [{
-      "path": "Id",
+      "path": "id",
       "type": "string"
     }]
   },
@@ -505,6 +505,24 @@
     }]
   },
   "products-attribute-sets": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "folders": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "colors": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "dependencies": {
     "fields": [{
       "path": "id",
       "vendorPath": "string"
