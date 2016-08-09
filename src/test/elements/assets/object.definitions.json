@@ -465,12 +465,25 @@
   },
   "authors": {
     "fields": [{
+        "path": "id",
+        "vendorPath": "id"
+      },
+      {
+        "path": "otherId",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "members": {
+    "fields": [{
       "path": "id",
       "vendorPath": "id"
-    },
-    {
-      "path": "otherId",
+    }]
+  },
+  "mobi-events": {
+    "fields": [{
+      "path": "id",
       "vendorPath": "id"
-    }]  
+    }]
   }
 }
