@@ -10,6 +10,7 @@ commander
   .option('-p, --password <password>', 'password for that user', '')
   .option('-r, --url <url>', 'default CE url to run churros against', '')
   .option('-f, --file </full/path/to/file>', 'props file to use for churros', __dirname + '/assets/sauce.template.json')
+  .option('-r, --repo <username/repo>', 'git repo which contains props file to use for churros', '')
   .parse(process.argv);
 
 const validateValue = (value) => value ? true : 'Must enter a value';
