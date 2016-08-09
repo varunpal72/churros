@@ -485,5 +485,29 @@
       "path": "id",
       "vendorPath": "id"
     }]
+  },
+  "coupons": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "sales-rules": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "products-attributes": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "products-attribute-sets": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
   }
 }
