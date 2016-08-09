@@ -2,9 +2,7 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const chakram = require('chakram');
 const swaggerParser = require('swagger-parser');
-const expect = chakram.expect;
 
 suite.forPlatform('docs', (test) => {
   let hubs;
