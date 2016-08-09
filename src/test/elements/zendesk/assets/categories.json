@@ -1,0 +1,6 @@
+{
+  "name": "Sample Category 1",
+  "description": "A Category Created via API",
+  "position": 2,
+  "locale": "us-en"
+}
