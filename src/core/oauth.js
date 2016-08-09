@@ -351,9 +351,29 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(r => browser.getCurrentUrl())
         .catch(r => browser.getCurrentUrl());
     default:
-      logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
-      process.exit(1);
+      throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }
+};
+
+const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, password, config) => {
+  const browser = new webdriver.Builder()
+    .forBrowser(b)
+    .build();
+  return browser.call(() => manipulateDom(element, browser, r, username, password, config))
+    .then(url => {
+      browser.close();
+      return url;
+    })
+    .catch(e => {
+      if (attempt < 3) {
+        logger.debug("OAuth exchange failed (%s) on attempt %s, retrying.", e.message, attempt);
+        return attemptOAuthExchange(++attempt, manipulateDom, element, b, r, username, password, config);
+      } else {
+        browser.close();
+        logger.error("OAuth exchange failed (%s) after %s attempts", e.message, attempt);
+        throw e;
+      }
+    });
 };
 
 /**
@@ -369,13 +389,6 @@ module.exports = (element, r, username, password, config) => {
   const b = props.get('browser');
   logger.debug('Using the %s browser', b);
 
-  const browser = new webdriver.Builder()
-    .forBrowser(b)
-    .build();
-
   logger.debug('Redirecting to %s', r.body.oauthUrl);
-  const url = manipulateDom(element, browser, r, username, password, config);
-  browser.close();
-
-  return url;
+  return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);
 };
