@@ -17,7 +17,7 @@ suite.forPlatform('docs', (test) => {
 
   it('should return proper swagger json', () => {
     return Promise.all(Array.from(hubs).map(h => {
-      return chakram.get(`/docs/${h}`)
+      return cloud.get(`/docs/${h}`)
       .then(r => {
         expect(r.response.statusCode).to.equal(200, `${h} hub documentation failed to generate`);
         return r.body;
