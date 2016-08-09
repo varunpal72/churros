@@ -37,12 +37,12 @@ $ churros init
 > __PROTIP:__ May have to `sudo` the global install and `npm link` depending on your environment
 
 > __PROTIP:__ You can pass `--template` to `churros init` if you have an existing sauce template
-that you want to initialize from. `--template` can accept both local filesystem paths
-(i.e. `churros init --template /absolute/path/to/existing/sauce.json`)
-AND github urls (i.e. `churros init --template https://token@github.com/cloud-elements/churros-sauce/sauce.json`)
+that you want to initialize from. It can accept both local filesystem paths and github urls:
+  * `churros init --template /absolute/path/to/existing/sauce.json`
+  * `churros init --template https://token@github.com/cloud-elements/churros-sauce/sauce.json`
 
 > __PROTIP:__ `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
-```bash
+```bashmark
 npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
 ```
 
