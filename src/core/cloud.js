@@ -86,7 +86,7 @@ const patch = (api, payload, validationCb, options) => update(api, payload, vali
  * @param  {string} api          The API to call
  * @param  {Object} payload      The optional JSON payload
  * @param  {Function} validationCb The optional validation callback function used to validate the HTTP response
- * @return {Promise}              
+ * @return {Promise}
  */
 exports.patch = (api, payload, validationCb) => patch(api, payload, validationCb, null);
 

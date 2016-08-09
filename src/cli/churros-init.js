@@ -4,7 +4,11 @@ const commander = require('commander');
 const fs = require('fs');
 const github = new require('github')({});
 const inquirer = require('inquirer');
-const optimist = require('optimist');
+const optimist = require('optimist')
+  .default('user', process.env.CHURROS_USER)
+  .default('password', process.env.CHURROS_PASSWORD)
+  .default('url', process.env.CHURROS_URL)
+  .default('template', process.env.CHURROS_TEMPLATE);
 const url = require('url');
 
 commander
