@@ -5,7 +5,6 @@ const payload = require('./assets/customers');
 const cloud = require('core/cloud');
 
 suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
-  //test.should.supportSr();
   test.should.return200OnGet();
 
   it('it should support GET by id', () => {
