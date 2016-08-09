@@ -58,7 +58,7 @@ const customerGroups = () => ({
 
 suite.forElement('ecommerce', 'sales-rules', (test) => {
   it(`should allow CRUDS for ${test.api}`, () => {
-    let ruleId, customerGroupId;
+    let customerGroupId;
     let autoGen = false;
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)

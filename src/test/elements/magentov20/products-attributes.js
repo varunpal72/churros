@@ -42,7 +42,7 @@ suite.forElement('ecommerce', 'products-attributes', (test) => {
     let attributeCode;
     return cloud.get(`${test.api}`)
     .then(r => attributeCode = r.body[0].attribute_code)
-    cloud.crds(`${test.api}`, productsAttributes(attributeCode));
+    .then(r => cloud.crds(`${test.api}`, productsAttributes(attributeCode)));
   });
   test.withApi(`/hubs/ecommerce/products-attributes-types`).should.return200OnGet();
   it(`should allow SR for ${test.api}/{attributeCode}/options`, () => {
