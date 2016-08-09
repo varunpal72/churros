@@ -135,7 +135,7 @@
   },
   "dimensions": {
     "fields": [{
-      "path": "Id",
+      "path": "id",
       "type": "string"
     }]
   },
@@ -297,7 +297,7 @@
   },
   "posting-rules": {
     "fields": [{
-      "path": "Id",
+      "path": "id",
       "type": "string"
     }]
   },
