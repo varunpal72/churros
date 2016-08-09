@@ -351,8 +351,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(r => browser.getCurrentUrl())
         .catch(r => browser.getCurrentUrl());
     default:
-      logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
-      process.exit(1);
+      throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }
 };
 

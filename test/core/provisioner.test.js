@@ -75,6 +75,14 @@ const setupProps = () => {
     'customProvisioning': {
       'provisioning': 'custom',
       'username': 'frank'
+    },
+    'myboguselement': {
+      'provisioning': 'oauth2',
+      'external': true,
+      'username': 'frank',
+      'password': 'ricard',
+      'oauth.api.key': 'he gon do one',
+      'oauth.api.secret': 'fill it up again'
     }
   });
 };
@@ -251,6 +259,14 @@ describe('provisioner', () => {
       .catch(e => {
         expect(e).to.not.be.null;
         expect(e.message).to.equal(`Token URL must be present in the element props as 'tokenUrl'`);
+      });
+  });
+
+  it('should throw an error if provisioning a bogus element', () => {
+    setupProps();
+    return provisioner.create('myboguselement')
+      .catch(e => {
+        expect(e).to.not.be.null;
       });
   });
 
