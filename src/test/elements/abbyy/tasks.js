@@ -1,6 +1,5 @@
 'use strict';
 
-const tools = require('core/tools');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
