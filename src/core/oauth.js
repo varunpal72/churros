@@ -19,6 +19,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
       return browser.getCurrentUrl();
+    case 'base':
+      browser.manage().deleteAllCookies();
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
+      browser.findElement(webdriver.By.className('icon-lock')).click();
+      browser.wait(() => {
+              browser.isElementPresent(webdriver.By.className('btn'))
+      }, 5000).thenCatch(r => true);
+      browser.findElement(webdriver.By.className('btn')).click();
+      return browser.getCurrentUrl();
     case 'desk':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('user_session_email')).sendKeys(username);
