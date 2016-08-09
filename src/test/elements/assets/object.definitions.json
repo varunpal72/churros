@@ -509,5 +509,23 @@
       "path": "id",
       "vendorPath": "string"
     }]
+  },
+  "folders": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "colors": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "dependencies": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
   }
 }
