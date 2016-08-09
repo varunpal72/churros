@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const swaggerParser = require('swagger-parser');
 
-suite.forPlatform('docs', (test) => {
+suite.forPlatform('docs', () => {
   let hubs;
 
   before(() => cloud.get('/elements')
