@@ -1,0 +1,20 @@
+{
+  "contacts": {
+    "vendorName": "contacts",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "organizations": {
+    "vendorName": "organizations",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
