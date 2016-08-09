@@ -111,6 +111,10 @@ const oauth = (element, args, config) => {
       expect(r).to.have.statusCode(200);
       return o(element, r, args.username, args.password, config);
     })
+    .catch(err => {
+      logger.error("OAuth exchange failed: %s", err);
+      throw err;
+    })
     .then(r => {
       const query = urlParser.parse(r, true).query;
       expect(query).to.not.be.null;
