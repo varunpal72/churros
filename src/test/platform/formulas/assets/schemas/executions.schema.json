@@ -1,6 +1,6 @@
 {
   "type": "array",
   "items": {
-    "$ref": "formula.execution.schema.json"
+    "$ref": "execution.schema.json"
   }
 }
