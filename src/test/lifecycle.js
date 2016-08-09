@@ -47,6 +47,12 @@ before(() => {
    * @return {Promise} A promise that, when resolved, contains the tunnel that was started
    */
   const setupEventsTunnel = () => {
+    let url;
+    try {
+      url = props.getForKey('events', 'url');
+      logger.debug("Using events URL %s", url);
+      return url;
+    } catch (err) { }
     const port = props.getForKey('events', 'port');
     return tunnel.start(port)
       .then(url => props.setForKey('events', 'url', url));
