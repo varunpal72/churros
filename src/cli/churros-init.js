@@ -1,7 +1,5 @@
 'use strict';
 
-const async = require('asyncawait/async');
-const await = require('asyncawait/await');
 const commander = require('commander');
 const fs = require('fs');
 const github = new require('github')({});
