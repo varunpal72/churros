@@ -25,11 +25,13 @@
     "churros": "src/cli/churros.js"
   },
   "dependencies": {
+    "asyncawait": "1.0.6",
     "chai": "^3.4.1",
     "chakram": "^1.2.1",
     "commander": "^2.9.0",
     "coveralls": "^2.11.6",
     "docdash": "^0.4.0",
+    "github": "^2.4.0",
     "inquirer": "^0.11.4",
     "istanbul": "^0.4.2",
     "jsdoc": "^3.4.0",
