@@ -88,10 +88,7 @@ const saveSauce = (answers) => {
       write(file, props);
     })
     .then(r => console.log('Churros initialization successful!'))
-    .catch(err => {
-      console.log(err);
-      process.exit(1);
-    });
+    .catch(err => terminate('Churros initialization failed', err));
 };
 
 const questions = [];
