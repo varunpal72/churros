@@ -41,7 +41,8 @@ that you want to initialize from. It can accept both local filesystem paths and 
   * `churros init --template /absolute/path/to/existing/sauce.json`
   * `churros init --template https://token@github.com/cloud-elements/churros-sauce/sauce.json`
 
-> __PROTIP:__ `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
+> __PROTIP:__ `node` version `5.4.0` is prone to showing messages like the one below. Just ignore them...
+
 ```bash
 npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
 ```
