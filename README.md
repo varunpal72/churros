@@ -36,7 +36,9 @@ $ churros init
 
 > __PROTIP:__ May have to `sudo` the global install and `npm link` depending on your environment
 
-> __PROTIP:__ You can pass a `--file` to `churros init` if you have an existing properties file that you want to initialize from (i.e. `churros init --file /absolute/path/to/existing/properties/file`)
+> __PROTIP:__ You can pass `--template` to `churros init` if you have an existing properties
+template that you want to initialize from (i.e. `churros init --template
+/absolute/path/to/existing/properties/file`)
 
 > __PROTIP:__ `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
 ```bash
