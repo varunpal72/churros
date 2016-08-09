@@ -1,18 +1,12 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const createPayment = (customerId, bankId) => ({
   "customer_id": customerId,
   "bank_id": bankId,
   "cheque_value": 200.00
-});
-
-const createCustomer = (rando) => ({
-  "reference": "CE" + rando,
-  "name": "CE Payments"
 });
 
 const testCreatePayment = (test, customerId) => {
