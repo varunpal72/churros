@@ -8,25 +8,12 @@
       }
     ]
   },
-  "banks": {
-    "vendorName": "banks",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
-  },
   "invoices": {
     "vendorName": "sales_invoices",
     "fields": [
       {
         "path": "id",
         "vendorPath": "id"
-      },
-      {
-        "path": "urn",
-        "vendorPath": "urn"
       }
     ]
   },
@@ -36,46 +23,11 @@
       {
         "path": "id",
         "vendorPath": "id"
-      },
-      {
-        "path": "urn",
-        "vendorPath": "urn"
-      }
-    ]
-  },
-  "payments/receipts": {
-    "vendorName": "sales_receipts",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      },
-      {
-        "path": "urn",
-        "vendorPath": "urn"
       }
     ]
   },
   "products": {
     "vendorName": "products",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
-  },
-  "products/groups": {
-    "vendorName": "product_groups",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
-  },
-  "products/prices": {
-    "vendorName": "product_price_views",
     "fields": [
       {
         "path": "id",

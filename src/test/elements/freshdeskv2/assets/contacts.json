@@ -3,8 +3,6 @@
     "address": "123 Main Street",
     "description": "Test Integration Contact",
     "job_title": "Test Integrator",
-    "language": "en",
     "mobile": "1234567654",
-    "phone": "4567657890",
-    "time_zone": "Mountain Time (US & Canada)"
+    "phone": "4567657890"
 }

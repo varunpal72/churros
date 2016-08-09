@@ -1,0 +1,29 @@
+{
+  "products": {
+    "vendorName": "product",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "orders": {
+    "vendorName": "order",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "number"
+      }
+    ]
+  },
+  "customers": {
+    "vendorName": "customer",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "customerId"
+      }
+    ]
+  }
+}
