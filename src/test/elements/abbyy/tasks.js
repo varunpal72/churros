@@ -11,7 +11,7 @@ suite.forElement('ocr', 'tasks', (test) => {
     let taskId = "-1";
     let path = __dirname + '/assets/brady.jpg';
 
-    return cloud.postFile(test.api, path, null)
+    return cloud.postFile(test.api, path)
       .then(r => taskId = r.body["@id"])
       .then(r => cloud.get(test.api + '/' + taskId, (r) => expect(r).to.have.schemaAnd200(schema)));
   });
@@ -21,7 +21,7 @@ suite.forElement('ocr', 'tasks', (test) => {
     let taskId = "-1";
     let path = __dirname + '/assets/brady.jpg';
 
-    return cloud.postFile(test.api + '/textfields', path, null)
+    return cloud.postFile(test.api + '/textfields', path)
       .then(r => taskId = r.body["@id"])
       .then(r => cloud.get(test.api + '/' + taskId, (r) => expect(r).to.have.schemaAnd200(schema)));
   });

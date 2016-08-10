@@ -20,7 +20,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
     let incidentId, attachmentId;
     return cloud.post('/hubs/helpdesk/incidents', payload)
       .then(r => incidentId = r.body.id)
-      .then(r => cloud.postFile('hubs/helpdesk/incidents/' + incidentId + '/attachments', __dirname + '/assets/attach.txt', { qs: query }))
+      .then(r => cloud.withOptions({ qs: query }).postFile('hubs/helpdesk/incidents/' + incidentId + '/attachments', __dirname + '/assets/attach.txt'))
       .then(r => attachmentId = r.body.id)
       .then(r => cloud.get('/hubs/helpdesk/attachments/' + attachmentId))
       .then(r => cloud.get('/hubs/helpdesk/incidents/' + incidentId + '/attachments'))

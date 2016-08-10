@@ -64,7 +64,7 @@ suite.forPlatform('events', (test) => {
         oauthUserId = r.body.configuration['oauth.user.id'];
       })
       // upload a file for an item ID
-      .then(r => cloud.postFile('/hubs/documents/files', path, { qs: query }))
+      .then(r => cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path))
       .then(r => fileId = r.body.id)
       // fake a box event
       .then(r => cloud.createEvents('box', { '<oauthUserId>': oauthUserId, '<fileId>': fileId }, loadEventRequest('box'), 1))
