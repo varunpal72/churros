@@ -9,8 +9,6 @@ const schema = require('./assets/envelope.schema.json');
 const envelopesSchema = require('./assets/envelopes.schema.json');
 const documentsSchema = require('./assets/documents.schema.json');
 
-const options = { churros: { updatePayload: updatePayload } };
-
 suite.forElement('esignature', 'envelopes', null, (test) => {
   it('should allow creating an envelope, retrieving the created envelope and updating the envelope status.',
           () => {
