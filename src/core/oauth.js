@@ -373,7 +373,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
  * @param  {string} username The login username
  * @param  {string} password The login password
  * @param  {Object} config   The other config for this element from churros props
- * @return {Promise}
+ * @return {Promise}  A promise that resolves to
  */
 module.exports = (element, r, username, password, config) => {
   const b = props.get('browser');

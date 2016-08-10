@@ -56,15 +56,15 @@ const cleanElements = (field, values) => {
 const toArray = (value) => Array.isArray(value) ? value : [value];
 
 /**
- * Formulas object
+ * The formula context
  * @type {Object}
- * @module core/cleaner#formulas
  */
 exports.formulas = {
   /**
-   * Clean up formulas with the give name
-   * @param  {string} name The name of the formula
-   * @return {Promise}
+   * Clean up all with the name of the formula
+   * @param {string} name The name of the formula
+   * @return {Promise} A promise that will resolve once all formulas have been deleted
+   * @memberof module:core/cleaner
    */
   withName: (name) => {
     return cleanFormulas('name', toArray(name));
@@ -72,15 +72,15 @@ exports.formulas = {
 };
 
 /**
- * Elements object
+ * The elements context
  * @type {Object}
- * @module core/cleaner#elements
  */
 exports.elements = {
   /**
    * Clean up elements with the given name
    * @param  {string} name The name of the element
    * @return {Promise}
+   * @memberof module:core/cleaner
    */
   withName: (name) => {
     return cleanElements('name', toArray(name));
