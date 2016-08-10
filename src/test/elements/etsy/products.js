@@ -16,13 +16,13 @@ suite.forElement('ecommerce', 'products', {}, (test) => {
   		if (r.body.length <= 0){
   			return;
   		}
-  		orderId = r.body[0].listing_id
-  		return cloud.get(`${test.api}/${orderId}`)
-  	})
+  		orderId = r.body[0].listing_id;
+  		return cloud.get(`${test.api}/${orderId}`);
+  	});
   });
 
   it('should retrieve all resources', () => {
-  	return cloud.get(`${test.api}`)
+  	return cloud.get(`${test.api}`);
   });
 
   it('should be that number of products retrieved be equal to or less than page size', () => {
@@ -38,9 +38,9 @@ suite.forElement('ecommerce', 'products', {}, (test) => {
   			if(r.body.length <= length){
   				return;
   			}
-  		})	
+  		});	
   		
-  	})
+  	});
 
   });
 
@@ -49,19 +49,19 @@ suite.forElement('ecommerce', 'products', {}, (test) => {
   	return cloud.get(`${test.api}`)
   	.then(r => {
   		if(r.body.length<2){
-  			return
+  			return;
   		}else{
   			let pageSize=3;
-  			page2Id = r.body[pageSize]['listing_id'];
-  			return cloud.get(`${test.api}?page=2&pageSize=${length}`)
+  			page2Id = r.body[pageSize].listing_id;
+  			return cloud.get(`${test.api}?page=2&pageSize=${pageSize}`)
   			.then(r =>{
-  				if (page2Id == r.body[0]['listing_id']){
+  				if (page2Id === r.body[0].listing_id){
   					return;
   				}
-  			})
+  			});
   		}
-	})
-  })
+	});
+  });
   // nextPageToken is returning last page
   // it('should page through all pages', () => {
   // 	let nextPageToke = ''

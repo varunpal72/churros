@@ -3,7 +3,7 @@
 
 const suite = require('core/suite');
 // const payload = require('./assets/orders');
-const cloud = require('core/cloud');
+// const cloud = require('core/cloud');
 
 suite.forElement('ecommerce', 'customers', {}, (test) => {
   // checkout functions available under test.should which provide a lot of pre-canned tests
