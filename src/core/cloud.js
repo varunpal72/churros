@@ -103,26 +103,7 @@ exports.delete = (api, validationCb) => remove(api, validationCb, null);
 
 const postFile = (api, filePath, options) => {
   options = (options || {});
-  options.formData = { file: fs.createReadStream(filePath) };
-
-  logger.debug('POST %s with multipart/form-data file');
-  return chakram.post(api, undefined, options)
-    .then(r => validator(undefined)(r))
-    .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
-};
-exports.postFile = postFile;
-
-const postMultipartFile = (api, filePath, queryMap) => {
-  let options = {};
-
-  options.formData = {};
-
-  for (var key in queryMap) {
-    if (queryMap.hasOwnProperty(key)) {
-        options.formData[key] = queryMap[key];
-    }
-  }
-
+  options.formData = (options.formData || {});
   options.formData.file = fs.createReadStream(filePath);
 
   logger.debug('POST %s with multipart/form-data file');
@@ -130,7 +111,7 @@ const postMultipartFile = (api, filePath, queryMap) => {
     .then(r => validator(undefined)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
-exports.postMultipartFile = postMultipartFile;
+exports.postFile = postFile;
 
 const patchFile = (api, filePath, options) => {
   options = (options || {});

@@ -17,7 +17,7 @@ suite.forElement('documents', 'files', (test) => {
 
   it('should allow crud cycle by id', () => {
     let fileId = -1;
-    return cloud.postFile(test.api, path, { qs: query })
+    return cloud.withOptions({ qs: query }).postFile(test.api, path)
       .then(r => fileId = r.body.id)
       .then(r => cloud.get(test.api + '/' + fileId, (r) => expect(r).to.have.statusCode(200)))
       .then(r => cloud.get(`${test.api}/${fileId}/links`))
@@ -28,7 +28,7 @@ suite.forElement('documents', 'files', (test) => {
 
   it('should allow crud cycle by path', () => {
     let fileId = -1;
-    return cloud.postFile(test.api, path, { qs: query })
+    return cloud.withOptions({ qs: query }).postFile(test.api, path)
       .then(r => fileId = r.body.id)
       .then(r => cloud.withOptions({ qs: query }).get(`${test.api}/links`))
       .then(r => cloud.withOptions({ qs: query }).get(`${test.api}/metadata`))
