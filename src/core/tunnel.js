@@ -1,3 +1,4 @@
+/** @module core/tunnel */
 'use strict';
 
 const ngrok = require('ngrok');
@@ -8,7 +9,7 @@ var exports = module.exports = {};
 /**
  * Starts a ngrok listener on the specified port
  * @param  {number} port The port to start the ngrok instance on
- * @return {object}      The ngrok object containing the publicly available URL string
+ * @return {Promise}     Resolves to the URL ngrok is running as
  */
 exports.start = (port) => {
   logger.debug('Attempting to start up ngrok on port %s', port);

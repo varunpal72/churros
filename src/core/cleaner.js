@@ -1,4 +1,7 @@
-/** @module core/cleaner */
+/**
+ *  @namespace MyNamespace
+ * @module core/cleaner
+ */
 'use strict';
 
 const cloud = require('core/cloud');
@@ -56,33 +59,29 @@ const cleanElements = (field, values) => {
 const toArray = (value) => Array.isArray(value) ? value : [value];
 
 /**
- * The formula context
- * @type {Object}
+ * The formula module
+ * @namespace formulas
  */
 exports.formulas = {
   /**
    * Clean up all with the name of the formula
    * @param {string} name The name of the formula
    * @return {Promise} A promise that will resolve once all formulas have been deleted
-   * @memberof module:core/cleaner
+   * @memberof module:core/cleaner~formulas
    */
-  withName: (name) => {
-    return cleanFormulas('name', toArray(name));
-  }
+  withName: (name) => cleanFormulas('name', toArray(name))
 };
 
 /**
- * The elements context
- * @type {Object}
+ * The elements module
+ * @namespace elements
  */
 exports.elements = {
   /**
    * Clean up elements with the given name
    * @param  {string} name The name of the element
    * @return {Promise}
-   * @memberof module:core/cleaner
+   * @memberof module:core/cleaner~elements
    */
-  withName: (name) => {
-    return cleanElements('name', toArray(name));
-  }
+  withName: (name) => cleanElements('name', toArray(name))
 };

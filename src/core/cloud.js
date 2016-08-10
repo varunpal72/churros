@@ -115,6 +115,13 @@ const remove = (api, validationCb, options) => {
  */
 exports.delete = (api, validationCb) => remove(api, validationCb, null);
 
+/**
+ * HTTP POST a file
+ * @param  {string} api        The API to call
+ * @param  {string} filePath   The local file system path to the file to upload
+ * @param  {Object} options    The HTTP request options
+ * @return {Promise}           A Promise that resolves to the HTTP response
+ */
 const postFile = (api, filePath, options) => {
   options = (options || {});
   options.formData = (options.formData || {});
@@ -125,16 +132,14 @@ const postFile = (api, filePath, options) => {
     .then(r => validator(undefined)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
-
-/**
- * HTTP POST a file
- * @param  {string} api        The API to call
- * @param  {string} filePath   The local file system path to the file to upload
- * @param  {Object} options    The HTTP request options
- * @return {Promise}           A Promise that resolves to the HTTP response
- */
 exports.postFile = postFile;
 
+/**
+ * HTTP PATCH a file
+ * @param  {string} api        The API to call
+ * @param  {string} filePath   The local file system path to the file to upload
+ * @return {Promise}           A Promise that resolves to the HTTP response
+ */
 const patchFile = (api, filePath, options) => {
   options = (options || {});
   options.formData = { file: fs.createReadStream(filePath) };
@@ -144,15 +149,16 @@ const patchFile = (api, filePath, options) => {
     .then(r => validator(undefined)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
-
-/**
- * HTTP PATCH a file
- * @param  {string} api        The API to call
- * @param  {string} filePath   The local file system path to the file to upload
- * @return {Promise}           A Promise that resolves to the HTTP response
- */
 exports.patchFile = patchFile;
 
+/**
+ * Create, retrieve and delete a resource by its `id` field
+ * @param {string} api The API to Create
+ * @param {Object} payload The JSON payload used to Create
+ * @param {Function} validationCb The validation callback to validate responses
+ * @param {Object} options The optional request options
+ * @return {Promise}  The Promise that resolves to the last HTTP response
+ */
 const crd = (api, payload, validationCb, options) => {
   return post(api, payload, validationCb, options)
     .then(r => get(api + '/' + r.body.id, validationCb, options))
@@ -160,6 +166,14 @@ const crd = (api, payload, validationCb, options) => {
 };
 exports.crd = crd;
 
+/**
+ * Create and delete a resource by its `id` field
+ * @param {string} api The API to Create
+ * @param {Object} payload The JSON payload used to Create
+ * @param {Function} validationCb The validation callback to validate responses
+ * @param {Object} options The optional request options
+ * @return {Promise}  The Promise that resolves to the last HTTP response
+ */
 const cd = (api, payload, validationCb, options) => {
   return post(api, payload, validationCb, options)
     .then(r => remove(api + '/' + r.body.id, null, options));
@@ -239,7 +253,7 @@ exports.withOptions = (options) => {
   };
 };
 
-const createEvents = (element, replacements, eventRequest, numEvents) => {
+exports.createEvents = (element, replacements, eventRequest, numEvents) => {
   numEvents = (numEvents || 1);
 
   const api = eventRequest.api;
@@ -278,4 +292,3 @@ const createEvents = (element, replacements, eventRequest, numEvents) => {
   }
   return chakram.all(promises);
 };
-exports.createEvents = createEvents;

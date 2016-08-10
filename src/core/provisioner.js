@@ -1,4 +1,4 @@
-/** @module provisioner */
+/** @module core/provisioner */
 'use strict';
 
 const chakram = require('chakram');
@@ -179,14 +179,22 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
   }
 };
 
-exports.partialOauth = (element, args, baseApi) => {
-  const cb = (type, config, r) => {
-    return r.code;
-  };
+/**
+ * Provision an element using just the partial OAuth flow.
+ * @param {tring} element The element key
+ * @param {Object} args Any other args to pass when provisioning the element
+ * @param {string} baseApi The base API
+ * @return {Promise}  A promise that will resolve to the response after the partial OAuth flow is complete
+ */
+exports.partialOauth = (element, args, baseApi) => orchestrateCreate(element, args, baseApi, (type, config, r) => r.code);
 
-  return orchestrateCreate(element, args, baseApi, cb);
-};
-
+/**
+ * Provision an element instance
+ * @param {string} element The element key
+ * @param {Object} args All properties that are available in churros props for this element
+ * @param {string} baseApi The base API
+ * @return {Promise}  A promise that resolves to the HTTP response after attempting to create the element instance
+ */
 exports.create = (element, args, baseApi) => {
   const cb = (type, config, r) => {
     const external = props.getOptionalForKey(element, 'external');
@@ -200,6 +208,12 @@ exports.create = (element, args, baseApi) => {
   return orchestrateCreate(element, args, baseApi, cb);
 };
 
+/**
+ * Delete an element instance
+ * @param {number} id The element instance ID
+ * @param {string} baseApi The base API
+ * @return {Promise}  A promise that resolves to the HTTP response after attempting to delete this element instance
+ */
 exports.delete = (id, baseApi) => {
   if (!id) return;
 
