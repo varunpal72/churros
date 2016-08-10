@@ -1,3 +1,4 @@
+/** @module core/server */
 'use strict';
 
 const http = require('http');
@@ -68,7 +69,7 @@ exports.start = (port) => {
 };
 
 /**
- * If an HTTP server is running, this stops that server
+ * Stops an HTTP server, if one is running
  */
 exports.stop = () => {
   if (server) {

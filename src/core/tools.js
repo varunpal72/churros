@@ -1,4 +1,7 @@
-/** @module core/tools */
+/**
+ * A handful of utility functions that are used throughout lots of our test suites.
+ * @module core/tools
+ */
 'use strict';
 
 const logger = require('winston');
@@ -75,21 +78,28 @@ const waitFor = max => pred => new Promise((res, rej) => {
 });
 
 /**
- * Wait for up to a maximum number of milliseconds for a predicate to become
- * true.
- * The predicate should be a function that takes a single callback argument.
- * When the predicate determines itself to be true, it should call the callback,
- * with a return value if needed.
- * Example to wait up to 10 seconds for the predicate:
- *   wait.upTo(10000).for(cb => { if (true) { cb(); } });
- * Example to wait the default time for the predicate (15 seconds), and return
- * a value:
- *   wait.for(cb => { if (true) { cb(true); } });
+ * Wait for up to a maximum number of milliseconds for a Promise to resolve.
+ * @memberof module:core/tools
+ * @namespace wait
  */
 exports.wait = {
+  /**
+   * Waits up to a `max` number of seconds for a Promise to resolve
+   * @param {number} max The max number of seconds to wait
+   * @namespace upTo
+   * @memberof module:core/tools.wait
+   */
   upTo: max => ({
+    /**
+     * Waits up to `max` seconds for a Promise to resolve
+     * @memberof module:core/tools.wait.upTo
+     */
     for: waitFor(max)
   }),
+  /**
+   * Waits up to 15 seconds for a Promise to resolve
+   * @memberof module:core/tools.wait
+   */
   for: waitFor(15000)
 };
 

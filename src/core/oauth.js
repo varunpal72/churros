@@ -25,7 +25,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.className('icon-lock')).click();
       browser.wait(() => {
-              return browser.isElementPresent(webdriver.By.className('btn')); //slow load time for accept screen
+        return browser.isElementPresent(webdriver.By.className('btn')); //slow load time for accept screen
       }, 5000);
       browser.findElement(webdriver.By.className('btn')).click();
       return browser.getCurrentUrl();
@@ -300,37 +300,37 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.manage().deleteAllCookies();
       browser.get(r.body.oauthUrl);
       browser.wait(() => browser.isElementPresent(webdriver.By.id('us')), 5000)
-          .thenCatch(r => true); // ignore
+        .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.id('us'))
-          .then((element) => element.click(), (err) => {}); // ignore this
+        .then((element) => element.click(), (err) => {}); // ignore this
       browser.wait(() => {
-            return browser.isElementPresent(webdriver.By.id('sso_Email')); //slow load time for login screen
+        return browser.isElementPresent(webdriver.By.id('sso_Email')); //slow load time for login screen
       }, 10000);
       browser.findElement(webdriver.By.id('sso_Email')).sendKeys(username);
       browser.findElement(webdriver.By.id('sso_Password')).sendKeys(password);
       browser.findElement(webdriver.By.className('button primary green')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.className('primary')), 5000)
-          .thenCatch(r => true); // ignore
+        .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.className('primary'))
-          .then((element) => element.click(), (err) => {}); // ignore this
+        .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
     case 'sageoneuk':
       browser.get(r.body.oauthUrl);
       browser.wait(() => browser.isElementPresent(webdriver.By.id('uk')), 5000)
-          .thenCatch(r => true); // ignore
+        .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.id('uk'))
-          .then((element) => element.click(), (err) => {}); // ignore this
+        .then((element) => element.click(), (err) => {}); // ignore this
       browser.wait(() => {
-          return browser.isElementPresent(webdriver.By.id('sso_Email')); //slow load time for login screen
+        return browser.isElementPresent(webdriver.By.id('sso_Email')); //slow load time for login screen
       }, 10000);
       browser.findElement(webdriver.By.id('sso_Email')).sendKeys(username);
       browser.findElement(webdriver.By.id('sso_Password')).sendKeys(password);
       browser.findElement(webdriver.By.className('action full-width')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.className('primary')), 5000)
-          .thenCatch(r => true); // ignore
+        .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.className('primary'))
-          .then((element) => element.click(), (err) => {}); // ignore this
-          return browser.getCurrentUrl();
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'sharepoint':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
@@ -361,9 +361,29 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(r => browser.getCurrentUrl())
         .catch(r => browser.getCurrentUrl());
     default:
-      logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
-      process.exit(1);
+      throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }
+};
+
+const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, password, config) => {
+  const browser = new webdriver.Builder()
+    .forBrowser(b)
+    .build();
+  return browser.call(() => manipulateDom(element, browser, r, username, password, config))
+    .then(url => {
+      browser.close();
+      return url;
+    })
+    .catch(e => {
+      if (attempt < 3) {
+        logger.debug("OAuth exchange failed (%s) on attempt %s, retrying.", e.message, attempt);
+        return attemptOAuthExchange(++attempt, manipulateDom, element, b, r, username, password, config);
+      } else {
+        browser.close();
+        logger.error("OAuth exchange failed (%s) after %s attempts", e.message, attempt);
+        throw e;
+      }
+    });
 };
 
 /**
@@ -373,7 +393,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
  * @param  {string} username The login username
  * @param  {string} password The login password
  * @param  {Object} config   The other config for this element from churros props
- * @return {Promise}
+ * @return {Promise}  A promise that resolves to
  */
 module.exports = (element, r, username, password, config) => {
   const b = props.get('browser');
@@ -384,8 +404,5 @@ module.exports = (element, r, username, password, config) => {
     .build();
 
   logger.debug('Redirecting to %s', r.body.oauthUrl);
-  const url = manipulateDom(element, browser, r, username, password, config);
-  browser.close();
-
-  return url;
+  return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);
 };
