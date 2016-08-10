@@ -76,6 +76,8 @@ describe('cloud', () => {
       })
       .post('/foo/file')
       .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
+      .post('/foo/file/with/multipart')
+      .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
       .post('/foo/bad/file')
       .reply(404, (uri, requestBody) => {
         return { message: 'No resource found at /foo/bad/file' };
@@ -240,9 +242,9 @@ describe('cloud', () => {
   it('should support crds with options', () => cloud.withOptions({ json: true }).crds('/foo', genPayload(), genSchema()));
   it('should support crud with options', () => cloud.withOptions({ json: true }).crud('/foo', genPayload(), genSchema()));
   it('should support cruds with options', () => cloud.withOptions({ json: true }).cruds('/foo', genPayload(), genSchema()));
-  it('should support creating events', () =>  {
+  it('should support creating events', () => {
     cloud.createEvents('myelement', { '<replaceme>': 'foo' }, genEventRequest(), 2)
-    .then(r => cloud.createEvents('myelement', {}, genEventRequest({method: 'GET'}), 2));
+      .then(r => cloud.createEvents('myelement', {}, genEventRequest({ method: 'GET' }), 2));
   });
 
   it('should support sr', () => cloud.sr('/foo', (r) => expect(r).to.have.statusCode(200)));
@@ -264,6 +266,14 @@ describe('cloud', () => {
     const filePath = '.post1.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.withOptions({ json: false }).postFile('/foo/file', filePath)
+      .then(r => fs.unlink(filePath));
+  });
+
+  it('should support post file with form data options', () => {
+    const options = { formData: { field: '{\"foo\":\"bar\"}' } };
+    const filePath = '.post1.tmp';
+    fs.closeSync(fs.openSync(filePath, 'w'));
+    return cloud.withOptions(options).postFile('/foo/file/with/multipart', filePath)
       .then(r => fs.unlink(filePath));
   });
 

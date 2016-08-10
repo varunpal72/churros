@@ -1,0 +1,29 @@
+{
+  "lists": {
+    "vendorName": "list",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "campaigns": {
+    "vendorName": "campaigns",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "contacts": {
+    "vendorName": "contact",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "contact_id"
+      }
+    ]
+  }
+}

@@ -117,7 +117,8 @@ exports.delete = (api, validationCb) => remove(api, validationCb, null);
 
 const postFile = (api, filePath, options) => {
   options = (options || {});
-  options.formData = { file: fs.createReadStream(filePath) };
+  options.formData = (options.formData || {});
+  options.formData.file = fs.createReadStream(filePath);
 
   logger.debug('POST %s with multipart/form-data file');
   return chakram.post(api, undefined, options)

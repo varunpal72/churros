@@ -106,6 +106,7 @@ describe('suite', () => {
     test.should.return200OnPost();
     test.should.return404OnGet(456);
     test.should.supportSr();
+    test.should.supportS();
     test.should.supportCruds();
     test.should.supportCruds(chakram.put);
     test.should.supportCrud();
