@@ -53,6 +53,11 @@ const itSr = (name, api, validationCb, options) => {
   it(n, () => cloud.withOptions(options).get(api).then(r => cloud.get(api + '/' + r.body[0].id)));
 };
 
+const itS = (name, api, validationCb, options) => {
+  const n = name || `should allow S for ${api}`;
+  it(n, () => cloud.withOptions(options).get(api));
+};
+
 const itCrs = (name, api, payload, validationCb, options) => {
   const n = name || `should allow CRS for ${api}`;
   it(n, () => cloud.withOptions(options).crs(api, payload, validationCb));
@@ -172,6 +177,7 @@ const runTests = (api, payload, validationCb, tests) => {
     supportCd: () => itCd(name, api, payload, validationCb, options),
     supportCrds: () => itCrds(name, api, payload, validationCb, options),
     supportSr: () => itSr(name, api, validationCb, options),
+    supportS: () => itS(name, api, validationCb, options),
     supportCrs: () => itCrs(name, api, payload, validationCb, options),
   });
 
