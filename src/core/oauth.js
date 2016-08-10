@@ -20,14 +20,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 10000);
       return browser.getCurrentUrl();
     case 'base':
-      browser.manage().deleteAllCookies();
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.className('icon-lock')).click();
       browser.wait(() => {
-              browser.isElementPresent(webdriver.By.className('btn'))
-      }, 5000).thenCatch(r => true);
+              return browser.isElementPresent(webdriver.By.className('btn')); //slow load time for accept screen
+      }, 5000);
       browser.findElement(webdriver.By.className('btn')).click();
       return browser.getCurrentUrl();
     case 'desk':
@@ -226,7 +225,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.className('to-login')).click();
-      browser.findElement(webdriver.By.xpath('//*[@tabindex="2"]')).click();
+      browser.findElement(webdriver.By.className('button')).click();
       return browser.getCurrentUrl();
     case 'onedrivev2':
       browser.get(r.body.oauthUrl);
@@ -362,29 +361,9 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(r => browser.getCurrentUrl())
         .catch(r => browser.getCurrentUrl());
     default:
-      throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
+      logger.error('No OAuth function found for element %s.  Please implement function in core/oauth so %s can be provisioned', element, element);
+      process.exit(1);
   }
-};
-
-const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, password, config) => {
-  const browser = new webdriver.Builder()
-    .forBrowser(b)
-    .build();
-  return browser.call(() => manipulateDom(element, browser, r, username, password, config))
-    .then(url => {
-      browser.close();
-      return url;
-    })
-    .catch(e => {
-      if (attempt < 3) {
-        logger.debug("OAuth exchange failed (%s) on attempt %s, retrying.", e.message, attempt);
-        return attemptOAuthExchange(++attempt, manipulateDom, element, b, r, username, password, config);
-      } else {
-        browser.close();
-        logger.error("OAuth exchange failed (%s) after %s attempts", e.message, attempt);
-        throw e;
-      }
-    });
 };
 
 /**
@@ -400,6 +379,13 @@ module.exports = (element, r, username, password, config) => {
   const b = props.get('browser');
   logger.debug('Using the %s browser', b);
 
+  const browser = new webdriver.Builder()
+    .forBrowser(b)
+    .build();
+
   logger.debug('Redirecting to %s', r.body.oauthUrl);
-  return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);
+  const url = manipulateDom(element, browser, r, username, password, config);
+  browser.close();
+
+  return url;
 };
