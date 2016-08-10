@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const payload = require('./assets/lists');
 const contactPayload = require('./assets/contacts');
+const contactUpdatePayload = require('./assets/contactsUpdate');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 payload.listname = tools.random();
@@ -26,7 +27,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     .then(r => r.body.filter(r => r.id))
     .then(fi => filteredLists = fi)
     .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
-    .then(contacts => cloud.delete(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body.id}`));
+    .then(contacts => cloud.delete(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`));
   });
 
   it('it should support GET a contact inside a list', () => {
@@ -36,7 +37,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     .then(r => r.body.filter(r => r.id))
     .then(fi => filteredLists = fi)
     .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
-    .then(contacts => cloud.get(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body.id}`));
+    .then(contacts => cloud.get(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`));
   });
 
   it('it should support PATCH a contact inside a list', () => {
@@ -46,7 +47,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     .then(r => r.body.filter(r => r.id))
     .then(fi => filteredLists = fi)
     .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
-    .then(contacts => cloud.patch(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body.id}`, contactPayload));
+    .then(contacts => cloud.patch(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`, contactUpdatePayload));
   });
 
 
