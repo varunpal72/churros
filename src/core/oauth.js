@@ -398,11 +398,6 @@ const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, p
 module.exports = (element, r, username, password, config) => {
   const b = props.get('browser');
   logger.debug('Using the %s browser', b);
-
-  const browser = new webdriver.Builder()
-    .forBrowser(b)
-    .build();
-
   logger.debug('Redirecting to %s', r.body.oauthUrl);
   return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);
 };
