@@ -33,6 +33,7 @@ suite.forPlatform('transformation scripts', (test) => {
       const validator = (options.validator || ((object) => expect(object.foo).to.equal('bar')));
       expect(r).to.have.statusCode(200);
       expect(r.body).to.not.be.null;
+      expect(r.body.console).to.be.undefined;
       validator(r.body);
       return r;
     };
