@@ -7,6 +7,9 @@
         "fromVendor": false,
         "toVendor": false
       }
+    },
+    {
+      "type": "addToDocumentation"
     }
   ],
   "fields": [

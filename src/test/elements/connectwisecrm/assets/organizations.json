@@ -1,6 +1,6 @@
 {
   "companyName": "Churros Company",
-  "companyIdentifier": "ChurrosCompany",
+  "companyIdentifier": "ChurrosCompanyId",
   "defaultAddress": {
     "city": "dallas",
     "siteName": "www.churros.com",
