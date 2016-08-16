@@ -13,7 +13,7 @@ const lock = () => ({
 
 suite.forElement('documents', 'files', null, (test) => {
 
-  it('should allow Lock/Unlock for files', () => {
+  it('should allow POST /files/:id/lock and POST /files/:id/unlock', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
     let query = { path: `/brady-${tools.random()}.jpg` };
