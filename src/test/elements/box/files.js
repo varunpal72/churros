@@ -13,14 +13,14 @@ const lock = () => ({
 
 suite.forElement('documents', 'files', null, (test) => {
 
-  it('should allow POST /files/:id/lock and POST /files/:id/unlock', () => {
+  it('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
     let query = { path: `/brady-${tools.random()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
-      .then(r => cloud.patch('/hubs/documents/files/' + fileId + '/lock', null, null, lock))
-      .then(r => cloud.patch('/hubs/documents/files/' + fileId + '/unlock'))
+      .then(r => cloud.put('/hubs/documents/files/' + fileId + '/lock', null, null, lock))
+      .then(r => cloud.delete('/hubs/documents/files/' + fileId + '/lock'))
       .then(r => cloud.delete(test.api + '/' + fileId));
   });
 
