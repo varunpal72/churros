@@ -1,0 +1,127 @@
+{
+    "active": true,
+    "configuration": [
+        {
+            "description": "Optional email where formula errors and notification steps will be sent (If more than one email is needed, separate each email with a comma)",
+            "key": "notification.email",
+            "name": "Notification Email",
+            "required": false,
+            "type": "value"
+        },
+        {
+            "key": "trigger-instance",
+            "name": "trigger-instance",
+            "required": true,
+            "type": "elementInstance"
+        },
+        {
+            "key": "resource.name",
+            "name": "resource.name",
+            "required": true,
+            "type": "value"
+        }
+    ],
+    "name": "element-request-with-configured-api-successful",
+    "singleThreaded": false,
+    "steps": [
+        {
+            "name": "delete-contact",
+            "onFailure": [],
+            "onSuccess": [],
+            "properties": {
+                "acceptableStatusCodes": "200",
+                "api": "/hubs/crm/${config.resource.name}/{id}",
+                "elementInstanceId": "${trigger-instance}",
+                "method": "DELETE",
+                "path": "${delete-contact-path}",
+                "retry": "true",
+                "retryAttempts": "3",
+                "retryDelay": "200",
+                "retryStatusCodes": "400,500,503"
+            },
+            "type": "elementRequest"
+        },
+        {
+            "name": "delete-contact-path",
+            "onFailure": [],
+            "onSuccess": [
+                "delete-contact"
+            ],
+            "properties": {
+                "body": "var path = { \"id\": steps['get-contact'].response.body[0].Id }\n\ndone(path);"
+            },
+            "type": "script"
+        },
+        {
+            "name": "get-contact",
+            "onFailure": [],
+            "onSuccess": [
+                "delete-contact-path"
+            ],
+            "properties": {
+                "acceptableStatusCodes": "200",
+                "api": "/hubs/crm/${config.resource.name}",
+                "elementInstanceId": "${trigger-instance}",
+                "method": "GET",
+                "query": "${get-contact-query.query}",
+                "retry": "true",
+                "retryAttempts": "3",
+                "retryDelay": "200",
+                "retryStatusCodes": "400,500,503"
+            },
+            "type": "elementRequest"
+        },
+        {
+            "name": "get-contact-query",
+            "onFailure": [],
+            "onSuccess": [
+                "get-contact"
+            ],
+            "properties": {
+                "body": "var contact = steps['post-contact'].response.body\n\nvar query = { \"query\": { \"where\": \"Id='\" + contact.Id + \"'\" } };\n\ndone(query);"
+            },
+            "type": "script"
+        },
+        {
+            "name": "post-contact",
+            "onFailure": [],
+            "onSuccess": [
+                "get-contact-query"
+            ],
+            "properties": {
+                "api": "/hubs/crm/${config.resource.name}",
+                "body": "${post-contact-payload.contact}",
+                "elementInstanceId": "${trigger-instance}",
+                "method": "POST",
+                "retry": "true",
+                "retryAttempts": "3",
+                "retryDelay": "200",
+                "retryStatusCodes": "400,500,503"
+            },
+            "type": "elementRequest"
+        },
+        {
+            "name": "post-contact-payload",
+            "onFailure": [],
+            "onSuccess": [
+                "post-contact"
+            ],
+            "properties": {
+                "body": "var contact = { \"contact\": {\n  \"Phone\": \"123-456-7890\",\n  \"Email\": \"devnull@cloud-elements.com\",\n  \"FirstName\": \"Dev\",\n  \"LastName\": \"Null\",\n  \"MobilePhone\": \"987-654-3210\",\n  \"Title\": \"Colonel\",\n  \"Salutation\": \"Mr.\",\n  \"Birthdate\": \"1977-01-01\"\n}};\n\ndone(contact);\n\n"
+            },
+            "type": "script"
+        }
+    ],
+    "triggers": [
+        {
+            "async": true,
+            "name": "trigger",
+            "onFailure": [],
+            "onSuccess": [
+                "post-contact-payload"
+            ],
+            "properties": {},
+            "type": "manual"
+        }
+    ]
+}

@@ -472,6 +472,22 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return manualTriggerTest('http-request-successful-formula', configuration, 3, validator);
   });
 
+  it('should successfully execute an element request formula with a configured api field', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        const consolidated = consolidateStepExecutionValues(e.stepExecutions);
+        expect(consolidated['delete-contact.response.code']).to.equal('200');
+      });
+    };
+
+    const configuration = {
+        "trigger-instance": sfdcId,
+        "resource.name": "contacts"
+    }
+
+    return manualTriggerTest('element-request-with-configured-api-successful-formula', configuration, 7, validator);
+  });
+
   it('should successfully execute a large payload formula triggered by a single event', () => {
     const validator = (executions) => {
       executions.map(e => {
