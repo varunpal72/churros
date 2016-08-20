@@ -467,7 +467,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     const configuration = {
         "http.request.url": props.get('url') + "/elements/api-v2/elements/sfdc"
-    }
+    };
 
     return manualTriggerTest('http-request-successful-formula', configuration, 3, validator);
   });
@@ -483,7 +483,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const configuration = {
         "trigger-instance": sfdcId,
         "resource.name": "contacts"
-    }
+    };
 
     return manualTriggerTest('element-request-with-configured-api-successful-formula', configuration, 7, validator);
   });
