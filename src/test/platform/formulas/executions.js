@@ -13,6 +13,7 @@ const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
 const fs = require('fs');
+const props = require('core/props');
 
 const flattenStepExecutionValues = sevs =>
   sevs.reduce((flat, curr) => {
@@ -251,9 +252,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   /**
    * Handles the basic formula execution test for a formula that has a manual trigger type
    */
-  const manualTriggerTest = (fName, numSevs, validator, executionStatus) => {
+  const manualTriggerTest = (fName, configuration, numSevs, validator, executionStatus) => {
     const f = require(`./assets/formulas/${fName}`);
-    const fi = { name: 'churros-manual-formula-instance' };
+    let fi = { name: 'churros-manual-formula-instance' };
+
+    if (configuration) {
+        fi.configuration = configuration;
+    }
 
     const validatorWrapper = (executions) => {
       executions.map(e => {
@@ -448,6 +453,25 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('element-request-successful-formula', 1, 7, validator);
   });
 
+  it('should successfully execute a simple http request formula triggered manually', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        expect(e.status).to.equal('success');
+        e.stepExecutions.filter(se => se.stepName === 'did-it-work').map(sev => {
+          expect(sev.stepExecutionValues).to.have.length(1);
+          const stepExecutionValue = sev.stepExecutionValues[0];
+          expect(stepExecutionValue.value).to.equal('true');
+        });
+      });
+    };
+
+    const configuration = {
+        "http.request.url": props.get('url') + "/elements/api-v2/elements/sfdc"
+    }
+
+    return manualTriggerTest('http-request-successful-formula', configuration, 3, validator);
+  });
+
   it('should successfully execute a large payload formula triggered by a single event', () => {
     const validator = (executions) => {
       executions.map(e => {
@@ -509,7 +533,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         });
       });
     };
-    return manualTriggerTest('manual-trigger', 2, validator);
+    return manualTriggerTest('manual-trigger', null, 2, validator);
   });
 
   it('should retry a request step when the retry property is set to true', () => {
