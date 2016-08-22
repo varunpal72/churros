@@ -14,5 +14,5 @@ const options = {
 
 suite.forElement('humancapital', 'employees', { payload }, (test) => {
   test.should.supportPagination();
-  test.withOptions(options).should.supportCruds();
+  //test.withOptions(options).should.supportCruds();
 });
