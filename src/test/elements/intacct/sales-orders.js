@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const payload = () => ({
@@ -72,6 +71,6 @@ const payload = () => ({
 
 suite.forElement('finance', 'sales-orders', { payload: payload() }, (test) => {
   it(`should allow CRUDS for ${test.api}`, () => {
-    return cloud.cruds(test.api, payload())
+    return cloud.cruds(test.api, payload());
   });
 });

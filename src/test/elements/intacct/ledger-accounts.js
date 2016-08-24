@@ -18,6 +18,6 @@ const payload = () => ({
 
 suite.forElement('finance', 'ledger-accounts', { payload: payload() }, (test) => {
   it(`should allow CRUDS for ${test.api}`, () => {
-    return cloud.cruds(test.api, payload())
+    return cloud.cruds(test.api, payload());
   });
 });

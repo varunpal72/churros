@@ -28,6 +28,6 @@ const payload = () => ({
 
 suite.forElement('finance', 'locations', { payload: payload() }, (test) => {
   it(`should allow CRUDS for ${test.api}`, () => {
-    return cloud.cruds(test.api, payload())
+    return cloud.cruds(test.api, payload());
   });
 });

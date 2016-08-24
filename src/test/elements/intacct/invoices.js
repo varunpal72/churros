@@ -79,28 +79,8 @@ const payload = () => ({
   }
 });
 
-const customer = () => ({
-  "name": tools.random(),
-  "deliveryoptions": {
-    "deliveryoption": "print"
-  },
-  "customerid": tools.random(),
-  "primary": {
-      "contactname": "Anita Anderson"
-  },
-  "billto": {
-      "contactname": "Anita Anderson"
-  },
-  "shipto": {
-      "contactname": "Anita Anderson"
-  },
-  "contactinfo": {
-      "contactname": "Anita Anderson"
-  }
-});
-
 suite.forElement('finance', 'invoices', { payload: payload() }, (test) => {
   it(`should allow CRUDS for ${test.api}`, () => {
-    return cloud.cruds(test.api, payload())
+    return cloud.cruds(test.api, payload());
   });
 });

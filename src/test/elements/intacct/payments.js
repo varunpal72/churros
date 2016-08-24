@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const cloud = require('core/cloud');
 
 const payload = () => ({
   "customerid": "AGR001",
@@ -19,6 +18,6 @@ const payload = () => ({
 
 suite.forElement('finance', 'payments', { payload: payload() }, (test) => {
   it(`should allow CRS for ${test.api}`, () => {
-    return cloud.crs(test.api, payload())
+    return cloud.crs(test.api, payload());
   });
 });

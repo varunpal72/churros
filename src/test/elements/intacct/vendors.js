@@ -122,6 +122,6 @@ const payload = () => ({
 
 suite.forElement('finance', 'vendors', { payload: payload() }, (test) => {
   it(`should allow CRDS for ${test.api}`, () => {
-    return cloud.crds(test.api, payload())
+    return cloud.crds(test.api, payload());
   });
 });

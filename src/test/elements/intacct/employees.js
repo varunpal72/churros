@@ -99,7 +99,7 @@ const employeesPatch = (contactName) => ({
 
 suite.forElement('finance', 'employees', { payload: payload() }, (test) => {
   it(`should allow CRDS for ${test.api}`, () => {
-    return cloud.crds(test.api, payload())
+    return cloud.crds(test.api, payload());
   });
   it(`should allow PATCH for ${test.api}/{id}`, () => {
     let employeeId, contactName;
