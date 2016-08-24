@@ -16,7 +16,7 @@ suite.forPlatform('publishing', { payload: payload }, (test) => {
 
     return cloud.post('elements', payload)
       .then(r => element = r.body)
-      .then(r => id = element['id'])
+      .then(r => id = element.id)
       .then(r => cloud.post(`elements/${id}/client-sdks`, getGenerateSdkPayload()))
       .then(r => packageId = r.body.packageIds[0])
       .then(() => cloud.withOptions({ 'headers': headers }).get(`elements/client-sdks/${packageId}`));
