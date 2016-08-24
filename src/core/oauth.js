@@ -225,7 +225,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.className('to-login')).click();
-      browser.findElement(webdriver.By.className('button')).click();
+      browser.findElement(webdriver.By.xpath('/html/body/div[1]/div[3]/section/div/div/div/form[2]/div/button')).click();
       return browser.getCurrentUrl();
     case 'onedrivev2':
       browser.get(r.body.oauthUrl);
