@@ -42,4 +42,5 @@ suite.forElement('finance', 'contacts', { payload: payload() }, (test) => {
     .then(r => cloud.patch(`${test.api}/${customerId}`, contactsPatch))
     .then(r => cloud.delete(`${test.api}/${customerId}`));
   });
+  test.should.supportPagination();
 });

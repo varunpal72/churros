@@ -51,4 +51,5 @@ suite.forElement('finance', 'transactions', { payload: payload() }, (test) => {
     .then(r => cloud.crds(test.api, payload(journalid)));
   });
   test.withApi(`/hubs/finance/transactions-entries`).should.return200OnGet();
+  test.should.supportPagination();
 });

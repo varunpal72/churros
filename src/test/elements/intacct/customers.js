@@ -4,4 +4,5 @@ const suite = require('core/suite');
 
 suite.forElement('finance', 'customers', (test) => {
   test.should.supportSr();
+  test.should.supportPagination();
 });

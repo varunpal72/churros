@@ -20,4 +20,5 @@ suite.forElement('finance', 'payments', { payload: payload() }, (test) => {
   it(`should allow CRS for ${test.api}`, () => {
     return cloud.crs(test.api, payload());
   });
+  test.should.supportPagination();
 });

@@ -110,4 +110,5 @@ suite.forElement('finance', 'employees', { payload: payload() }, (test) => {
     .then(r => cloud.patch(`${test.api}/${employeeId}`, employeesPatch(contactName)))
     .then(r => cloud.delete(`${test.api}/${employeeId}`));
   });
+  test.should.supportPagination();
 });

@@ -190,4 +190,5 @@ suite.forElement('finance', 'bills', { payload: payload() }, (test) => {
     .then(r => cloud.crds(test.api, payload(vendorId)))
     .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
   });
+  test.should.supportPagination();
 });

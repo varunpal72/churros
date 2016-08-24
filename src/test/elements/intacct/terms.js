@@ -17,4 +17,5 @@ suite.forElement('finance', 'terms', { payload: payload() }, (test) => {
     .then(r => cloud.patch(`${test.api}/${termName}`, payload(termName)))
     .then(r => cloud.delete(`${test.api}/${termName}`));
   });
+  test.should.supportPagination();
 });

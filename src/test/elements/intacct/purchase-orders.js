@@ -216,4 +216,5 @@ suite.forElement('finance', 'purchase-orders', { payload: payload() }, (test) =>
     .then(r => cloud.delete(`/hubs/finance/transactions/${transactionId}`))
     .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
   });
+  test.should.supportPagination();
 });

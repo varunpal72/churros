@@ -28,4 +28,5 @@ const payload = () => ({
 suite.forElement('finance', 'items', { payload: payload() }, (test) => {
   var options = { churros: { updatePayload: { "name": tools.random()}}};
   test.withOptions(options).should.supportCruds();
+  test.should.supportPagination();
 });

@@ -20,4 +20,5 @@ suite.forElement('finance', 'ledger-accounts', { payload: payload() }, (test) =>
   it(`should allow CRUDS for ${test.api}`, () => {
     return cloud.cruds(test.api, payload());
   });
+  test.should.supportPagination();
 });
