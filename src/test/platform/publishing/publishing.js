@@ -9,10 +9,9 @@ const getGenerateSdkPayload = () => ({
 });
 
 suite.forPlatform('publishing', { payload: payload }, (test) => {
-  let element, id;
+  let id;
   before(() => cloud.post('elements', payload)
-    .then(r => element = r.body)
-    .then(r => id = element.id)
+    .then(r => id = r.body.id)
   );
 
   it('should allow AWS lambda autogenerate and download for the element ', () => {
