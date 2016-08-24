@@ -9,9 +9,8 @@ const getGenerateSdkPayload = () => ({
 });
 
 suite.forPlatform('publishing', { payload: payload }, (test) => {
-  let id;
   it('should allow AWS lambda autogenerate and download for the element ', () => {
-    let element, packageId;
+    let element, id, packageId;
     const headers = { 'Accept': 'application/zip' };
 
     return cloud.post('elements', payload)
@@ -19,11 +18,14 @@ suite.forPlatform('publishing', { payload: payload }, (test) => {
       .then(r => id = element.id)
       .then(r => cloud.post(`elements/${id}/client-sdks`, getGenerateSdkPayload()))
       .then(r => packageId = r.body.packageIds[0])
-      .then(() => cloud.withOptions({ 'headers': headers }).get(`elements/client-sdks/${packageId}`));
+      .then(() => cloud.withOptions({ 'headers': headers }).get(`elements/client-sdks/${packageId}`))
+      .then(r => cloud.delete(`elements/${id}`))
+      .catch(err => {
+        // if anything bad happens, delete the element
+        return cloud.delete(`elements/${id}`)
+        .then(r => {
+          throw err;
+        });
+      });
   });
-
-  it('should allow delete of the element created for lambda autogenerate', () => {
-    return cloud.delete(`elements/${id}`);
-  });
-
 });
