@@ -14,4 +14,5 @@ suite.forElement('finance', 'classes', { payload: payload() }, (test) => {
     return cloud.cruds(test.api, payload());
   });
   test.should.supportPagination();
+  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });

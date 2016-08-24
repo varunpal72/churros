@@ -217,4 +217,5 @@ suite.forElement('finance', 'purchase-orders', { payload: payload() }, (test) =>
     .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
   });
   test.should.supportPagination();
+  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });

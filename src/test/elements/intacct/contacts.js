@@ -43,4 +43,5 @@ suite.forElement('finance', 'contacts', { payload: payload() }, (test) => {
     .then(r => cloud.delete(`${test.api}/${customerId}`));
   });
   test.should.supportPagination();
+  test.withOptions({ qs: { where: 'sortDescending=\'contactname\'' }}).should.return200OnGet();
 });
