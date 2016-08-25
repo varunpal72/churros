@@ -42,13 +42,13 @@ suite.forPlatform('formulas', opts, (test) => {
     });
 
     it('should search for formula instances by elementInstanceId', () => {
-      const baseApi = `/formulas/instances?elementInstanceId=${elementInstanceId}`;
-      return cloud.get(baseApi)
+      const baseApi = '/formulas/instances';
+      return cloud.withOptions({ qs:{ elementInstanceId } }).get(baseApi)
         .then(r => {
           expect(r.body.length).to.equal(1);
           expect(r.body[0].id).to.equal(formulaInstanceId);
         })
-        .then(r => cloud.get(`/formulas/instances?elementInstanceId=-1`))
+        .then(r => cloud.withOptions({ qs:{ elementInstanceId: -1 }}).get('/formulas/instances'))
         .then(r => expect(r.body.length).to.equal(0));
     });
 
