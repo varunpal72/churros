@@ -527,5 +527,83 @@
       "path": "id",
       "vendorPath": "string"
     }]
+  },
+  "departments": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "journals": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "locations": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "classes": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "bills": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "projects": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "purchase-orders": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "sales-orders": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "terms": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "vouchers": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "warehouses": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "ledger-accounts": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "terms": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
   }
 }
