@@ -5,7 +5,7 @@ const payload = require('./assets/publishing');
 const cloud = require('core/cloud');
 
 const getGenerateSdkPayload = () => ({
-  to: 'awslambda-native-java'
+  type: 'awslambda-native-java'
 });
 
 suite.forPlatform('publishing', { payload: payload }, (test) => {
