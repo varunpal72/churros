@@ -41,6 +41,17 @@ suite.forPlatform('formulas', opts, (test) => {
       return cloud.put(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance);
     });
 
+    it('should search for formula instances by elementInstanceId', () => {
+      const baseApi = '/formulas/instances';
+      return cloud.withOptions({ qs:{ elementInstanceId } }).get(baseApi)
+        .then(r => {
+          expect(r.body.length).to.equal(1);
+          expect(r.body[0].id).to.equal(formulaInstanceId);
+        })
+        .then(r => cloud.withOptions({ qs:{ elementInstanceId: -1 }}).get('/formulas/instances'))
+        .then(r => expect(r.body.length).to.equal(0));
+    });
+
     /* 404 on PUT where formula and formula instance do not exist */
     test
       .withApi('/formulas/-1/instances/-1/active')
