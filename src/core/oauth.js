@@ -268,9 +268,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).clear();
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('Login')).click();
-      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 5000)
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 10000)
         .thenCatch(r => true); // ignore
-
       browser.findElement(webdriver.By.id('oaapprove'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
@@ -396,7 +395,14 @@ const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, p
  * @return {Promise}  A promise that resolves to
  */
 module.exports = (element, r, username, password, config) => {
-  const b = props.get('browser');
+
+  let b;
+  try {
+    b = props.get('browser');
+  } catch (e) {
+    b = config.browser;
+  }
+
   logger.debug('Using the %s browser', b);
   logger.debug('Redirecting to %s', r.body.oauthUrl);
   return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);

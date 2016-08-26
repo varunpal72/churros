@@ -26,7 +26,7 @@ const parseProps = (element) => {
     password: props.getForKey(element, 'password'),
     options: {
       qs: {
-        apiKey: props.getForKey(element, 'oauth.api.key'),
+        apiKey: aws ? props.getForKey(element, 'awsElementConsumerKey') : props.getForKey(element, 'oauth.api.key'),
         apiSecret: props.getForKey(element, 'oauth.api.secret'),
         callbackUrl: (props.getOptionalForKey(element, 'oauth.callback.url') || props.get('oauth.callback.url')),
         scope: props.getOptionalForKey(element, 'oauth.scope'),

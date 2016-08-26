@@ -11,6 +11,11 @@ const collect = (val, list) => {
   return list;
 };
 
+const warnAndExit = string => {
+  console.log(string);
+  process.exit(1);
+}
+
 const validateValue = (value) => value ? true : 'Must enter a value';
 
 const fromOptions = (url, options) => {
@@ -48,10 +53,12 @@ const parse = (options) => {
 const isRunMultiple = (suite) => suite.indexOf('/') < 0;
 
 const isElement = (suite) => suite.startsWith('element');
+const getElement = (suite) => suite.split('/')[1];
 
 const run = (suite, options, cliArgs) => {
   const file = options.file;
   const test = options.test;
+  const aws = options.aws;
 
   // ugly as all get out ...
   const rootDir = path.dirname(require.main.filename);
@@ -60,9 +67,32 @@ const run = (suite, options, cliArgs) => {
   const resources = [];
   const resourceType = suite.split('/')[0];
 
-  // always pass the lifecycle file first.  if it's an element, then use that element's lifecycle file too
-  const baseMochaPaths = [rootTestDir + '/lifecycle'];
-  if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
+  const baseMochaPaths = [];
+
+  // Setup the proper lifecycle
+  if(aws) {
+    // Exit if the AWS flag was passed to a non-element test
+    if(!isElement(suite)) warnAndExit('The aws flag should only be used for testing elements');
+
+    // Get the churros config
+    let config;
+    try {
+      config = require(process.env.HOME + '/.churros/sauce.json');
+    } catch (e) {
+      warnAndExit('No properties found.  Make sure to run \'churros init\' first.');
+    }
+
+    const element = getElement(suite);
+    const elementConfig = config[element];
+
+    if(!elementConfig.aws) warnAndExit(`The ${element} element is not configured to test against AWS`);
+
+      baseMochaPaths.push(`${rootTestDir}/aws-lifecycle`);
+  } else {
+      // always pass the lifecycle file first.  if it's an element, then use that element's lifecycle file too
+    baseMochaPaths.push(`${rootTestDir}/lifecycle`);
+    if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
+  }
 
   // if we want to run multiple tests, we need to find all of the available element or platform tests and add them to our resources array
   isRunMultiple(suite) ?
@@ -89,21 +119,15 @@ const run = (suite, options, cliArgs) => {
     const allMochaPaths = baseMochaPaths.slice();
 
     // validate the root suite path before continuing
-    let testPath = `${rootTestDir}/${resourceType}/${resource}`;
-    if (!fs.existsSync(testPath)) {
-      console.log('Invalid suite: %s', suite);
-      process.exit(1);
-    }
+    let testPath = `${rootTestDir}/${resourceType}/${resource}`;;
+    if (!fs.existsSync(testPath)) warnAndExit(`'Invalid suite: ${suite}`)
 
     // add the suite next, unless a specific file was passed
     if (file.length < 1) allMochaPaths.push(testPath);
     else {
       file.forEach((s) => {
         let filePath = testPath + '/' + s;
-        if (!fs.existsSync(filePath + '.js')) {
-          console.log('Invalid file: %s', s);
-          process.exit(1);
-        }
+        if (!fs.existsSync(filePath + '.js')) warnAndExit(`'Invalid file: ${s}`);
         allMochaPaths.push(filePath);
       });
     }
@@ -140,6 +164,7 @@ commander
   .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'firefox') // will change this to phantomjs as churros becomes more mature
   .option('-s, --exclude <resource>', 'element(s) or platform resource(s) to exclude if running all tests', collect, [])
   .option('-V, --verbose', 'logging verbose mode')
+  .option('-z, --aws', 'specifies that the test(s) should be run against an AWS lambda instance (only available for "churros test elements/[element]")')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');

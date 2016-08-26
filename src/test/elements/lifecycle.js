@@ -8,6 +8,15 @@ const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
 
+let config;
+try {
+  config = require(process.env.HOME + '/.churros/sauce.json');
+} catch (e) {
+  console.log('No properties found.  Make sure to run \'churros init\' first.');
+  process.exit(1);
+}
+
+
 const createAll = (urlTemplate, list) => {
   let promises = [];
   Object.keys(list).forEach(key => {
