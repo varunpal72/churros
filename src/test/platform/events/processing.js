@@ -24,7 +24,7 @@ const loadEventRequest = (element) => {
   }
 };
 
-suite.forPlatform('events', (test) => {
+suite.forPlatform('event processing', (test) => {
   const wait = props.getForKey('events', 'wait');
 
   it('should handle POST /events/{key} with request body, headers, and parameters', () => {
