@@ -48,12 +48,17 @@ suite.forPlatform('bulk', (test) => {
   it('should support bulk upload', () => {
     let bulkId;
     // start bulk upload
-    //return cloud.postFile('/hubs/crm/bulk/accounts', __dirname + `/assets/${element}.accounts.csv`)
-    // get bulk upload status
-
-    // get bulk upload errors
-
-    // get bulk upload results
+    return cloud.postFile('/hubs/crm/bulk/accounts', __dirname + `/assets/${element}.accounts.csv`)
+      .then(r => {
+        expect(r.body.status).to.equal('CREATED');
+        bulkId = r.body.id;
+      })
+      // get bulk upload status
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED')
+      })))
+      // get bulk upload errors
+      .then(r => cloud.get(`/hubs/crm/bulk/${bulkId}/errors`));
   });
 
 });
