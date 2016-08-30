@@ -105,7 +105,8 @@ const authenticateViaOpenId = (element, config) => {
       });
     })
     .then( stsCredentials => {
-      console.log(stsCredentials);
+      // Now use this credentials to generate the
+      // aws signature => http://docs.aws.amazon.com/general/latest/gr/signing_aws_api_requests.html
     })
 
 }
@@ -116,13 +117,13 @@ const authenticate = (element, config) => {
       case 'openId':
         return authenticateViaOpenId(element, config);
       case 'saml2':
-        reject('SAML2.0 is not yet supported for AWS elements')
+        reject('SAML2.0 is not yet supported for AWS elements');
       case 'oauth2':
-        reject('OAuth2 is not yet supported for AWS elements')
+        reject('OAuth2 is not yet supported for AWS elements');
       case 'custom':
-        reject('Custom auth is not yet supported for AWS elements.')
+        reject('Custom auth is not yet supported for AWS elements.');
       default:
-        reject('Invalid authentication scheme')
+        reject('Invalid authentication scheme');
       }
   });
 }
