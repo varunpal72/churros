@@ -78,4 +78,18 @@ suite.forPlatform('bulk', (test) => {
       })));
   });
 
+  it('should support scheduled bulk workflow', () => {
+    let jobId;
+    // start bulk workflow
+    return cloud.withOptions({ headers: { "Elements-Schedule-Request": "0 * * * * ?" } }).post('/hubs/crm/bulk/workflows', workflow)
+      .then(r => {
+        expect(r.body.id).to.not.be.empty;
+        jobId = r.body.id;
+      })
+      // get bulk upload status
+      .then(r => tools.wait.upTo(200000).for(() => cloud.withOptions({ qs: { jobId: jobId } }).get('/bulkloader', r => {
+        expect(r.body[ 0 ].status).to.equal('COMPLETED');
+      })));
+  });
+
 });
