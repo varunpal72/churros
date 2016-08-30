@@ -6,9 +6,8 @@ const cloud = require('core/cloud');
 const provisioner = require('core/provisioner');
 const props = require('core/props');
 const tools = require('core/tools');
-const logger = require('winston');
 
-let workflow = require('./assets/hubspotcrm.workflow.json')
+let workflow = require('./assets/hubspotcrm.workflow.json');
 
 suite.forPlatform('bulk', (test) => {
   let instanceId;
@@ -33,7 +32,7 @@ suite.forPlatform('bulk', (test) => {
       })
       // wait for download to finish by checking status
       .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
-        expect(r.body.status).to.equal('COMPLETED')
+        expect(r.body.status).to.equal('COMPLETED');
       })))
       // get bulk query errors
       .then(r => cloud.get(`/hubs/crm/bulk/${bulkId}/errors`))
@@ -57,7 +56,7 @@ suite.forPlatform('bulk', (test) => {
       })
       // get bulk upload status
       .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
-        expect(r.body.status).to.equal('COMPLETED')
+        expect(r.body.status).to.equal('COMPLETED');
       })))
       // get bulk upload errors
       .then(r => cloud.get(`/hubs/crm/bulk/${bulkId}/errors`));
