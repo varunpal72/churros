@@ -165,10 +165,12 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('loginBtn')).click();
-      try {
-        browser.findElement(webdriver.By.className('accept')).click();
-      } catch (e) {}
-      return browser.getCurrentUrl();
+      return browser.wait(() => {
+        try {
+          browser.findElement(webdriver.By.className('accept')).click();
+        } catch (e) {}
+        return browser.getCurrentUrl();
+      }, 5000);
     case 'instagram':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('id_username')).clear();
