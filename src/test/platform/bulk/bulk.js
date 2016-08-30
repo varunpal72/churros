@@ -8,14 +8,16 @@ const props = require('core/props');
 const tools = require('core/tools');
 const logger = require('winston');
 
-//const payload = require('./assets/bulk');
-//const schema = require('./assets/bulk.schema');
+let workflow = require('./assets/hubspotcrm.workflow.json')
 
 suite.forPlatform('bulk', (test) => {
   let instanceId;
   const element = props.getForKey('bulk', 'element');
   before(done => provisioner.create(element)
-    .then(r => instanceId = r.body.id)
+    .then(r => {
+      instanceId = r.body.id;
+      workflow[ 0 ].targetConfiguration.token = r.body.token;
+    })
     .then(r => done()));
 
   after(done => provisioner.delete(instanceId)
@@ -59,6 +61,21 @@ suite.forPlatform('bulk', (test) => {
       })))
       // get bulk upload errors
       .then(r => cloud.get(`/hubs/crm/bulk/${bulkId}/errors`));
+  });
+
+  it('should support bulk workflow', () => {
+    let bulkId;
+    // start bulk workflow
+    return cloud.post('/hubs/crm/bulk/workflows', workflow)
+      .then(r => {
+        expect(r.body.status).to.equal('CREATED');
+        bulkId = r.body.id;
+      })
+      // get bulk upload status
+      .then(r => tools.wait.upTo(120000).for(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('/bulkloader', r => {
+        expect(r.body[ 0 ].groupName).to.equal(bulkId);
+        expect(r.body[ 0 ].status).to.equal('COMPLETED');
+      })));
   });
 
 });
