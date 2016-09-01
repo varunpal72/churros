@@ -56,6 +56,12 @@
       "type": "string"
     }]
   },
+  "cases": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "comments": {
     "fields": [{
       "path": "id",
@@ -175,6 +181,12 @@
       "type": "string"
     }, {
       "path": "postId",
+      "type": "string"
+    }]
+  },
+  "estimates": {
+    "fields": [{
+      "path": "id",
       "type": "string"
     }]
   },
@@ -340,6 +352,12 @@
       "type": "string"
     }, {
       "path": "Id",
+      "type": "string"
+    }]
+  },
+  "vendor-payments": {
+    "fields": [{
+      "path": "id",
       "type": "string"
     }]
   },
@@ -540,6 +558,12 @@
       "vendorPath": "string"
     }]
   },
+  "journal-entries": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
   "locations": {
     "fields": [{
       "path": "id",
@@ -595,6 +619,24 @@
     }]
   },
   "ledger-accounts": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "time-activities": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "customer-refunds": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "return-authorizations": {
     "fields": [{
       "path": "id",
       "vendorPath": "string"
