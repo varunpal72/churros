@@ -2,6 +2,7 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/publishing');
+const dbPayload = require('./assets/db-publishing');
 const cloud = require('core/cloud');
 
 const getGenerateSdkPayload = () => ({
@@ -9,19 +10,34 @@ const getGenerateSdkPayload = () => ({
 });
 
 suite.forPlatform('publishing', { payload: payload }, (test) => {
-  let id;
-  before(() => cloud.post('elements', payload)
-    .then(r => id = r.body.id)
-  );
+  let httpElement, dbElement;
+  before(() => {
+    return cloud.post('elements', payload)
+      .then(r => httpElement = r.body)
+      .then(r => cloud.post('elements', dbPayload))
+      .then(r => dbElement = r.body)
+  });
 
   it('should allow AWS lambda autogenerate and download for the element ', () => {
     let packageId;
     const headers = { 'Accept': 'application/zip' };
 
-    return cloud.post(`elements/${id}/client-sdks`, getGenerateSdkPayload())
+    return cloud.post(`elements/${httpElement.id}/client-sdks`, getGenerateSdkPayload())
       .then(r => packageId = r.body.packageIds[0])
       .then(() => cloud.withOptions({ 'headers': headers }).get(`elements/client-sdks/${packageId}`));
   });
 
-  after(() => cloud.delete(`elements/${id}`));
+  it('should allow AWS database lambda autogenerate and download for the element ', () => {
+    let packageId;
+    const headers = { 'Accept': 'application/zip' };
+
+    return cloud.post(`elements/${dbElement.id}/client-sdks`, getGenerateSdkPayload())
+      .then(r => packageId = r.body.packageIds[0])
+      .then(() => cloud.withOptions({ 'headers': headers }).get(`elements/client-sdks/${packageId}`));
+  });
+
+  after(() => {
+    return cloud.delete(`elements/${httpElement.id}`)
+      .then(r => cloud.delete(`elements/${dbElement.id}`))
+  });
 });
