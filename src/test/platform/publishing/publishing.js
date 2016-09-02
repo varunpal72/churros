@@ -15,7 +15,7 @@ suite.forPlatform('publishing', { payload: payload }, (test) => {
     return cloud.post('elements', payload)
       .then(r => httpElement = r.body)
       .then(r => cloud.post('elements', dbPayload))
-      .then(r => dbElement = r.body)
+      .then(r => dbElement = r.body);
   });
 
   it('should allow AWS lambda autogenerate and download for the element ', () => {
@@ -38,6 +38,6 @@ suite.forPlatform('publishing', { payload: payload }, (test) => {
 
   after(() => {
     return cloud.delete(`elements/${httpElement.id}`)
-      .then(r => cloud.delete(`elements/${dbElement.id}`))
+      .then(r => cloud.delete(`elements/${dbElement.id}`));
   });
 });
