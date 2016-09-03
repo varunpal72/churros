@@ -642,6 +642,18 @@
       "vendorPath": "string"
     }]
   },
+  "non-inventory-resale-items": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "service-resale-items": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
   "terms": {
     "fields": [{
       "path": "id",
