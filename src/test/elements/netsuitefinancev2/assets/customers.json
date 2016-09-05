@@ -1,0 +1,14 @@
+{
+  "lastName":"El Chappo",
+  "companyName":"Churros Company",
+  "isPerson":true,
+  "subsidiary":{
+    "internalId":"1",
+    "name":"Honeycomb Mfg."
+  },
+  "firstName":"Churros Test",
+  "entityStatus":{
+    "internalId":"13",
+    "name":"CUSTOMER-Closed Won"
+  }
+}
