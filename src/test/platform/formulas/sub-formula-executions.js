@@ -11,6 +11,7 @@ const tools = require('core/tools');
 
 /* JSON */
 const simpleFormulas = require('./assets/formulas/sub-formula-executions/simple-sub-formulas');
+const duplicateStepFormulas = require('./assets/formulas/sub-formula-executions/sub-formula-duplicate-step');
 const twoSubFormulas = require('./assets/formulas/sub-formula-executions/two-sub-formulas');
 const twoSubFormulasNoAfter = require('./assets/formulas/sub-formula-executions/two-sub-formulas-no-steps-after');
 const manualSubFormulas = require('./assets/formulas/sub-formula-executions/manual-sub-formulas');
@@ -22,6 +23,7 @@ const event = require('./assets/events/single-event-sfdc');
 suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (test) => {
   const cleanFormulas = () => {
     const names = simpleFormulas.map(f => f.name)
+      .concat(duplicateStepFormulas.map(f => f.name))
       .concat(twoSubFormulas.map(f => f.name))
       .concat(twoSubFormulasNoAfter.map(f => f.name))
       .concat(manualSubFormulas.map(f => f.name))
@@ -118,6 +120,11 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   it('should support a formula that contains a sub-formula', () => {
     const setup = () => createSetCreate(simpleFormulas, 'B-simple-formula', 'A-sub-formula', 'A-simple-formula');
+    return executionTest(setup, 3);
+  });
+
+  it('should support a formula having a sub-formula with a duplicate stepName in the parent and sub-formula', () => {
+    const setup = () => createSetCreate(duplicateStepFormulas, 'B-duplicate-step-sub', 'formula-b-step', 'A-duplicate-step-parent');
     return executionTest(setup, 3);
   });
 
