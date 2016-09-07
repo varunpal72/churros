@@ -48,7 +48,7 @@ suite.forPlatform('events', (test) => {
     let eventId, eventIds = [], eventMap = {}, failed;
     return cloud.createEvents(element, { '<elementInstanceId>': instanceId }, payload, load)
       .then(sentEvents => failed = sentEvents.filter(event => event.error).length)
-      .then(r => { if (failed > 0) logger.warn("Failed to POST %d events", failed) })
+      .then(r => { if (failed > 0) logger.warn("Failed to POST %d events", failed); })
       .then(s => server.listen(load, wait))
       .then(r => r.forEach(event => {
         // basic event header and body validation

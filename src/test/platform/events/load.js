@@ -8,9 +8,6 @@ const server = require('core/server');
 const provisioner = require('core/provisioner');
 const props = require('core/props');
 const logger = require('winston');
-const crypto = require('crypto');
-const eventSchema = require('./assets/event.schema.json');
-const eventsSchema = require('./assets/events.schema.json');
 
 const gen = (opts, url) => ({
   'event.notification.enabled': opts[ 'event.notification.enabled' ] || true,
@@ -40,7 +37,7 @@ suite.forPlatform('event load', (test) => {
     }
     return chakram.all(instancePromises)
       .then(r => instanceIds = r.map(instance => instance.body.id))
-      .then(r => done())
+      .then(r => done());
   });
 
   after(done => {
@@ -50,7 +47,7 @@ suite.forPlatform('event load', (test) => {
       instancePromises.push(provisioner.delete(instanceIds[i]));
     }
     return chakram.all(instancePromises)
-      .then(r => done())
+      .then(r => done());
   });
 
   it('should handle receiving x number of events for n element instances', () => {
