@@ -654,6 +654,12 @@
       "vendorPath": "string"
     }]
   },
+  "lot-numbered-assembly-items": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
   "terms": {
     "fields": [{
       "path": "id",

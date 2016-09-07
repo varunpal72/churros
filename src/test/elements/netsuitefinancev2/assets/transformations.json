@@ -26,6 +26,15 @@
       }
     ]
   },
+  "lot-numbered-assembly-items": {
+    "vendorName": "lotnumberedassemblyitem",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "internalId"
+      }
+    ]
+  },
   "service-resale-items": {
     "vendorName": "ServiceResaleItem",
     "fields": [
