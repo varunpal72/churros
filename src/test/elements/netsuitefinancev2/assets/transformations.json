@@ -26,6 +26,42 @@
       }
     ]
   },
+  "lot-numbered-assembly-items": {
+    "vendorName": "lotnumberedassemblyitem",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "internalId"
+      }
+    ]
+  },
+  "lot-numbered-inventory-items": {
+    "vendorName": "lotnumberedinventoryitem",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "internalId"
+      }
+    ]
+  },
+  "serialized-inventory-items": {
+    "vendorName": "serializedinventoryitem",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "internalId"
+      }
+    ]
+  },
+  "serialized-assembly-items": {
+    "vendorName": "serializedassemblyitem",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "internalId"
+      }
+    ]
+  },
   "service-resale-items": {
     "vendorName": "ServiceResaleItem",
     "fields": [
