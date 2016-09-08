@@ -654,6 +654,30 @@
       "vendorPath": "string"
     }]
   },
+  "lot-numbered-assembly-items": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "lot-numbered-inventory-items": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "serialized-inventory-items": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "serialized-assembly-items": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
   "terms": {
     "fields": [{
       "path": "id",
