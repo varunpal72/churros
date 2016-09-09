@@ -362,6 +362,21 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(r => r.click())
         .then(r => browser.getCurrentUrl())
         .catch(r => browser.getCurrentUrl());
+
+    case 'sapanywhere':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.name('emailInput')).sendKeys(username);
+      browser.findElement(webdriver.By.name('loginInputPwd')).sendKeys(password);
+      browser.findElement(webdriver.By.name('loginButton')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]')), 5000)
+          .thenCatch(r => true); // ignore
+
+      browser.findElement(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]'))
+          .then((element) => element.click(), (err) => {}); // ignore this```
+
+
+      return browser.getCurrentUrl();
+ 
     default:
       throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }
