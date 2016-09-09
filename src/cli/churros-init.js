@@ -46,7 +46,7 @@ const saveSauce = (answers) => {
   };
 
   const template = (frm, to) => new Promise ((resolve, reject) => {
-    if (frm.indexOf('https') >= 0) {
+    if (frm.indexOf('https') === 0) {
       const purl = url.parse(frm);
       const token = purl.auth;
       const user = purl.pathname.split('/')[1];
