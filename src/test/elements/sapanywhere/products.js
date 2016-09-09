@@ -1,0 +1,29 @@
+'use strict';
+
+const suite = require('core/suite');
+const payload = require('./assets/products');
+const tools = require('core/tools');
+const productsUpdate = () => ({
+  "name": " Nylon shirt3"
+});
+
+const options = {
+  churros: {
+    updatePayload: productsUpdate()
+  }
+};
+suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
+  //test.should.supportCruds();
+  payload.name = tools.random();
+  payload.code = tools.randomInt();
+  test.should.supportSr();
+  test.withOptions(options).should.supportCruds();
+  test.should.supportPagination();
+  test.withOptions({ qs: { where: 'code = \'P005\'' } }).should.return200OnGet();
+  test.withApi(test.api + '/count').should.return200OnGet();
+  test.withApi(test.api + '/count').withOptions({ qs: { where: 'name = \'Cotton pants\'' } }).should.return200OnGet();
+  test.withApi(test.api + '/variant-values/count').should.return200OnGet();
+  test.withApi(test.api + '/variant-values/count').withOptions({ qs: { where: 'value = \'Color\'' } }).should.return200OnGet();
+  test.withApi(test.api + '/metadata/fields').should.return200OnGet();
+
+});
