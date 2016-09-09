@@ -28,6 +28,6 @@ suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'firstName = \'Brian\'' } }).should.return200OnGet();
   test.withApi(test.api + '/count').should.return200OnGet();
-  test.withApi(test.api + '/count').withOptions({ qs: { where: 'firstName = \'Brian\'' } }).should.return200OnGet();;
+  test.withApi(test.api + '/count').withOptions({ qs: { where: 'firstName = \'Brian\'' } }).should.return200OnGet();
 
 });

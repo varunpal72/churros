@@ -20,6 +20,6 @@ suite.forElement('ecommerce', 'products/product-tax-classes', { payload: payload
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'description = \'Special\'' } }).should.return200OnGet();
-  test.withApi(test.api + '/count').should.return200OnGet();;
-  test.withApi(test.api + '/count').withOptions({ qs: { where: 'description = \'Special\'' } }).should.return200OnGet();;
+  test.withApi(test.api + '/count').should.return200OnGet();
+  test.withApi(test.api + '/count').withOptions({ qs: { where: 'description = \'Special\'' } }).should.return200OnGet();
 });

@@ -7,6 +7,6 @@ suite.forElement('ecommerce', 'orders/valid-values', null, (test) => {
 
 
   it('should get valid values for orders', () => {
-    return cloud.get(test.api, { qs: { fieldName: 'status' } })
+    return cloud.get(test.api, { qs: { fieldName: 'status' } });
   });
 });
