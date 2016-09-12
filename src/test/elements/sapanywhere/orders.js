@@ -3,16 +3,15 @@
 const suite = require('core/suite');
 const payload = require('./assets/orders');
 
-const ordersUpdate = () => ({
-  "discount": "5"
-});
-
-const options = {
-  churros: {
-    updatePayload: ordersUpdate()
-  }
-};
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
+  const ordersUpdate = () => ({
+    "discount": "5"
+  });
+  const options = {
+    churros: {
+      updatePayload: ordersUpdate()
+    }
+  };
   test.withOptions(options).should.supportCrus();
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'orderType = \'SELL_ORDER\'' } }).should.return200OnGet();

@@ -5,9 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const productPayload = require('./assets/products');
 
-
 suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) => {
-
   let productId;
   productPayload.name = tools.random();
   productPayload.code = tools.randomInt();

@@ -5,13 +5,11 @@ const attachmentPayload = require('./assets/attachment');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const customerPayload = require('./assets/customers');
-const mobNumber = '9876503';
-
-attachmentPayload.name = tools.random() + '.png';
 
 suite.forElement('ecommerce', 'customers', { payload: customerPayload }, (test) => {
-
+  const mobNumber = '9876503';
   let customerId;
+  attachmentPayload.name = tools.random() + '.png';
   customerPayload.lastName = tools.random();
   customerPayload.firstName = tools.random();
   customerPayload.customerName = tools.random();
@@ -22,5 +20,4 @@ suite.forElement('ecommerce', 'customers', { payload: customerPayload }, (test) 
       .then(r => cloud.crds(`${test.api}/${customerId}/attachments`, attachmentPayload))
       .then(r => cloud.get(`${test.api}/${customerId}/attachments`), { qs: { page: 1, pageSize: 1 } });
   });
-
 });

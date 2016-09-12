@@ -6,16 +6,12 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const productPayload = require('./assets/products');
 
-
-imagePayload.fileName = tools.random() + '.png';
-
 suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) => {
-
   let productId;
   let imageId;
   productPayload.name = tools.random();
   productPayload.code = tools.randomInt();
-
+  imagePayload.fileName = tools.random() + '.png';
   it('should create a product and then CRDS for an image', () => {
     return cloud.post(test.api, productPayload)
       .then(r => productId = r.body.id)
@@ -26,7 +22,5 @@ suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) =>
       .then(r => cloud.get(`${test.api}/${productId}/images/${imageId}`))
       .then(r => cloud.delete(`${test.api}/${productId}/images/${imageId}`))
       .then(r => cloud.delete(`${test.api}/${productId}`));
-
   });
-
 });

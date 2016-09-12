@@ -3,19 +3,17 @@
 const suite = require('core/suite');
 const payload = require('./assets/product-tax-classes');
 const tools = require('core/tools');
-const productTaxClassesUpdate = () => ({
-  "description": "standard_101"
-});
 
-const options = {
-  churros: {
-    updatePayload: productTaxClassesUpdate()
-  }
-};
-payload.description = tools.random();
 suite.forElement('ecommerce', 'products/product-tax-classes', { payload: payload }, (test) => {
-
-
+  const productTaxClassesUpdate = () => ({
+    "description": "standard_101"
+  });
+  const options = {
+    churros: {
+      updatePayload: productTaxClassesUpdate()
+    }
+  };
+  payload.description = tools.random();
   test.should.supportSr();
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();

@@ -3,20 +3,17 @@
 const suite = require('core/suite');
 const payload = require('./assets/manufacturers');
 const tools = require('core/tools');
-const manufacturersUpdate = () => ({
-  "name": "Adidas"
-});
 
-const options = {
-  churros: {
-    updatePayload: manufacturersUpdate()
-  }
-};
-payload.name = tools.random();
 suite.forElement('ecommerce', 'products/manufacturers', { payload: payload }, (test) => {
-  //test.should.supportCruds();
-  //test.should.supportSr();
-
+  const manufacturersUpdate = () => ({
+    "name": "Adidas"
+  });
+  const options = {
+    churros: {
+      updatePayload: manufacturersUpdate()
+    }
+  };
+  payload.name = tools.random();
   test.should.supportSr();
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();

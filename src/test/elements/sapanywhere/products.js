@@ -3,17 +3,16 @@
 const suite = require('core/suite');
 const payload = require('./assets/products');
 const tools = require('core/tools');
-const productsUpdate = () => ({
-  "name": " Nylon shirt3"
-});
 
-const options = {
-  churros: {
-    updatePayload: productsUpdate()
-  }
-};
 suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
-  //test.should.supportCruds();
+  const productsUpdate = () => ({
+    "name": " Nylon shirt3"
+  });
+  const options = {
+    churros: {
+      updatePayload: productsUpdate()
+    }
+  };
   payload.name = tools.random();
   payload.code = tools.randomInt();
   test.should.supportSr();
@@ -25,5 +24,4 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
   test.withApi(test.api + '/variant-values/count').should.return200OnGet();
   test.withApi(test.api + '/variant-values/count').withOptions({ qs: { where: 'value = \'Color\'' } }).should.return200OnGet();
   test.withApi(test.api + '/metadata/fields').should.return200OnGet();
-
 });
