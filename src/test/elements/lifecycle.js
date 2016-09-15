@@ -9,13 +9,9 @@ const fs = require('fs');
 const logger = require('winston');
 
 const createAll = (urlTemplate, list) => {
-  let promises = [];
-  Object.keys(list).forEach(key => {
-    const payload = list[key];
-    const url = util.format(urlTemplate, key);
-    promises.push(cloud.post(url, payload));
-  });
-  return Promise.all(promises);
+  return Object.keys(list).reduce((p, key) =>
+    p.then(() => cloud.post(util.format(urlTemplate, key), list[key])),
+    Promise.resolve(true)); // initial
 };
 
 const terminate = (error) => {
