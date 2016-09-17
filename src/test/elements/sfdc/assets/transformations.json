@@ -17,6 +17,15 @@
       }
     ]
   },
+  "campaigns": {
+    "vendorName": "Campaign",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "Id"
+      }
+    ]
+  },
   "attachments": {
     "vendorName": "Attachment",
     "fields": [
