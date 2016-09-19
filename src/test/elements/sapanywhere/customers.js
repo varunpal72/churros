@@ -5,18 +5,16 @@ const payload = require('./assets/customers');
 const tools = require('core/tools');
 
 suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
-  const customersUpdate = () => ({
-    "lastName": "Lallana_3"
-  });
-  const mobNumber = '1837653';
   const options = {
     churros: {
-      updatePayload: customersUpdate()
+      updatePayload: {
+        "lastName": "Lallana_3"
+      }
     }
   };
   payload.lastName = tools.random();
   payload.firstName = tools.random();
-  payload.mobile = '' + mobNumber + '' + tools.randomInt();
+  payload.mobile = tools.randomInt()+'7653' + tools.randomInt();
   test.should.supportCrus();
   test.should.supportSr();
   test.withOptions(options).should.supportCrus();

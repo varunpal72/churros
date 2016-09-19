@@ -5,12 +5,11 @@ const payload = require('./assets/product-tax-classes');
 const tools = require('core/tools');
 
 suite.forElement('ecommerce', 'products/product-tax-classes', { payload: payload }, (test) => {
-  const productTaxClassesUpdate = () => ({
-    "description": "standard_101"
-  });
   const options = {
     churros: {
-      updatePayload: productTaxClassesUpdate()
+      updatePayload: {
+        "description": "standard_101"
+      }
     }
   };
   payload.description = tools.random();

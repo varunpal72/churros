@@ -4,12 +4,11 @@ const suite = require('core/suite');
 const payload = require('./assets/orders');
 
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
-  const ordersUpdate = () => ({
-    "discount": "5"
-  });
   const options = {
     churros: {
-      updatePayload: ordersUpdate()
+      updatePayload: {
+        "discount": "5"
+      }
     }
   };
   test.withOptions(options).should.supportCrus();

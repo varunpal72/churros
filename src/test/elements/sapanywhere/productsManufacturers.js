@@ -5,12 +5,11 @@ const payload = require('./assets/manufacturers');
 const tools = require('core/tools');
 
 suite.forElement('ecommerce', 'products/manufacturers', { payload: payload }, (test) => {
-  const manufacturersUpdate = () => ({
-    "name": "Adidas"
-  });
   const options = {
     churros: {
-      updatePayload: manufacturersUpdate()
+      updatePayload: {
+        "name": "Adidas"
+      }
     }
   };
   payload.name = tools.random();

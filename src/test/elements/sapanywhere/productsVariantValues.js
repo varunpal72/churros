@@ -5,14 +5,13 @@ const payload = require('./assets/variant-values');
 const tools = require('core/tools');
 
 suite.forElement('ecommerce', 'products/variant-values', { payload: payload }, (test) => {
-  const variantValuesUpdate = () => ({
-    "value": "mode",
-    "code": "sample_code_2",
-    "displayOrder": 99
-  });
   const options = {
     churros: {
-      updatePayload: variantValuesUpdate()
+      updatePayload: {
+        "value": "mode",
+        "code": "sample_code_2",
+        "displayOrder": 99
+      }
     }
   };
   payload.value = tools.random();

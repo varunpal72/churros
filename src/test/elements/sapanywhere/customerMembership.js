@@ -6,12 +6,11 @@ const cloud = require('core/cloud');
 const customersPayload = require('./assets/customers');
 
 suite.forElement('ecommerce', 'customers', { payload: customersPayload }, (test) => {
-  let customerId;
-  const mobNumber = '9876543';
   customersPayload.lastName = tools.random();
   customersPayload.firstName = tools.random();
-  customersPayload.mobile = '' + mobNumber + '' + tools.randomInt();
+  customersPayload.mobile = '9876543'+ tools.randomInt();
   it('should create a customer and then patch for membership', () => {
+    let customerId;
     return cloud.post(test.api, customersPayload)
       .then(r => customerId = r.body.id)
       .then(r => cloud.patch(`${test.api}/${customerId}/membership/disable`), null)
