@@ -1,53 +1,42 @@
 {
   "contacts": {
     "vendorName": "Contact",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
   },
   "accounts": {
     "vendorName": "Account",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
   },
   "campaigns": {
     "vendorName": "Campaign",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
   },
   "attachments": {
     "vendorName": "Attachment",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
   },
   "leads": {
     "vendorName": "Lead",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
   },
-"opportunities": {
+  "opportunities": {
     "vendorName": "Opportunity",
-    "fields": [
-      {
+    "fields": [{
         "path": "id",
         "vendorPath": "Id"
       },
@@ -88,14 +77,12 @@
         "vendorPath": "Probability"
       }
     ]
-    },
+  },
   "users": {
     "vendorName": "User",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "Id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
   }
 }
