@@ -3,8 +3,10 @@
 const suite = require('core/suite');
 const payload = require('./assets/variants');
 const tools = require('core/tools');
+const build = (overrides) => Object.assign({}, payload, overrides);
+const variantPayload = build({ name: tools.random(), description: tools.random() });
 
-suite.forElement('ecommerce', 'products/variants', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'products/variants', { payload: variantPayload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
@@ -13,8 +15,6 @@ suite.forElement('ecommerce', 'products/variants', { payload: payload }, (test) 
       }
     }
   };
-  payload.name = tools.random();
-  payload.description = tools.random();
   test.should.supportSr();
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();

@@ -6,13 +6,12 @@ const cloud = require('core/cloud');
 const customerPayload = require('./assets/customers');
 
 suite.forElement('ecommerce', 'customers', { payload: customerPayload }, (test) => {
-  customerPayload.lastName = tools.random();
-  customerPayload.firstName = tools.random();
-  customerPayload.mobile = tools.randomInt()+'7153' + tools.randomInt();
+  const build = (overrides) => Object.assign({}, customerPayload, overrides);
+  const payload = build({ lastName: tools.random(), firstName: tools.random(), mobile: tools.randomInt() + '7153' + tools.randomInt() });
   it('should create a customer and then CRDS for an attachment', () => {
     let path = __dirname + '/assets/temp.png';
     let customerId, attachmentId;
-    return cloud.post(test.api, customerPayload)
+    return cloud.post(test.api, payload)
       .then(r => customerId = r.body.id)
       .then(r => cloud.postFile(`${test.api}/${customerId}/attachments`, path))
       .then(r => attachmentId = r.body.id)

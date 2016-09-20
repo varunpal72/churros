@@ -6,12 +6,11 @@ const cloud = require('core/cloud');
 const productPayload = require('./assets/products');
 
 suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) => {
-  productPayload.name = tools.random();
-  productPayload.code = tools.randomInt();
-
+  const build = (overrides) => Object.assign({}, productPayload, overrides);
+  const payload = build({ name: tools.random(), code: tools.randomInt() });
   it('should create a product and then patch for variant', () => {
     let productId;
-    return cloud.post(test.api, productPayload)
+    return cloud.post(test.api, payload)
       .then(r => productId = r.body.id)
       .then(r => cloud.patch(`${test.api}/${productId}/variant/disable`), null)
       .then(r => cloud.patch(`${test.api}/${productId}/variant/enable`), null);

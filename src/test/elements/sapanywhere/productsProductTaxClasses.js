@@ -3,8 +3,10 @@
 const suite = require('core/suite');
 const payload = require('./assets/product-tax-classes');
 const tools = require('core/tools');
+const build = (overrides) => Object.assign({}, payload, overrides);
+const taxPayload = build({ description: tools.random() });
 
-suite.forElement('ecommerce', 'products/product-tax-classes', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'products/product-tax-classes', { payload: taxPayload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
@@ -12,7 +14,6 @@ suite.forElement('ecommerce', 'products/product-tax-classes', { payload: payload
       }
     }
   };
-  payload.description = tools.random();
   test.should.supportSr();
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();

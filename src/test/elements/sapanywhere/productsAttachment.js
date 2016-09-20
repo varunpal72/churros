@@ -9,8 +9,9 @@ suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) =>
   it('should create a product and then CRDS for an attachment', () => {
     let path = __dirname + '/assets/temp.png';
     let productId, attachmentId;
-    productPayload.code = tools.randomInt();
-    return cloud.post(test.api, productPayload)
+    const build = (overrides) => Object.assign({}, productPayload, overrides);
+    const payload = build({ code: tools.randomInt() });
+    return cloud.post(test.api, payload)
       .then(r => productId = r.body.id)
       .then(r => cloud.postFile(`${test.api}/${productId}/attachments`, path))
       .then(r => attachmentId = r.body.id)
