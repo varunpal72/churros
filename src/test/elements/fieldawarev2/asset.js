@@ -23,8 +23,7 @@ const assetPayload = (locationId) => (
 
 suite.forElement('fsa', 'assets', null, (test) => {
   it('should allow CRUDS for assets', () => {
-    let locationId, customerId;
-    let httpElement;
+    let locationId, customerId,httpElement;
     return cloud.post('/hubs/fsa/customers', customerPayload)
       .then(r => httpElement = r.body)
       .then(r => customerId = httpElement.id)
