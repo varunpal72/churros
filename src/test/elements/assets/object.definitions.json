@@ -38,6 +38,24 @@
       "type": "string"
     }]
   },
+  "custom-fields": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "locations": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "jobs": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "attachments": {
     "fields": [{
       "path": "id",
