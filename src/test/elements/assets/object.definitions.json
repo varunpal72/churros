@@ -38,6 +38,24 @@
       "type": "string"
     }]
   },
+  "custom-fields": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "locations": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "jobs": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "attachments": {
     "fields": [{
       "path": "id",
@@ -683,5 +701,49 @@
       "path": "id",
       "vendorPath": "string"
     }]
+  },
+  "exception-reasons": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "brands": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "manufacturers": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "product-tax-classes": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "variants": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "customers": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "fullfillment-methods": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
   }
+
+
 }
