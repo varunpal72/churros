@@ -41,6 +41,26 @@ suite.forPlatform('formulas', opts, (test) => {
       return cloud.put(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance);
     });
 
+    it('should allow CRUD a formula instance with notification settings', () => {
+      const formulaInstance = require('./assets/formulas/basic-formula-instance');
+      formulaInstance.configuration['trigger-instance'] = elementInstanceId;
+      formulaInstance.settings = {
+        'notification.email': 'churros+trash@cloud-elements.com',
+        'notification.webhook.url': 'churrostrash.cloud-elements.com'
+      };
+
+      return cloud.get(`${test.api}/${formulaId}/instances/${formulaInstanceId}`)
+        .then(r => {
+          expect(r.body.settings['notification.email']).to.equal(undefined);
+          expect(r.body.settings['notification.webhook.url']).to.equal(undefined);
+        })
+        .then(r => cloud.put(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance))
+        .then(r => {
+          expect(r.body.settings['notification.email']).to.equal('churros+trash@cloud-elements.com');
+          expect(r.body.settings['notification.webhook.url']).to.equal('churrostrash.cloud-elements.com');
+        });
+    });
+
     it('should search for formula instances by elementInstanceId', () => {
       const baseApi = '/formulas/instances';
       return cloud.withOptions({ qs:{ elementInstanceId } }).get(baseApi)
