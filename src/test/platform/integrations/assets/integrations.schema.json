@@ -1,18 +1,6 @@
 {
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "number"
-    },
-    "name": {
-      "type": "string"
-    },
-    "createdDate": {
-      "type": "date"
-    },
-    "updatedDate": {
-      "type": "date"
-    }
-  },
-  "required": ["id", "name", "createdDate"]
+  "type": "array",
+  "items": {
+    "$ref": "integration.schema.json"
+  }
 }
