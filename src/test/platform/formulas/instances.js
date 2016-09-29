@@ -58,7 +58,8 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(r => {
           expect(r.body.settings['notification.email']).to.equal('churros+trash@cloud-elements.com');
           expect(r.body.settings['notification.webhook.url']).to.equal('churrostrash.cloud-elements.com');
-        });
+        })
+        .then(r => cloud.delete(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance));
     });
 
     it('should search for formula instances by elementInstanceId', () => {
