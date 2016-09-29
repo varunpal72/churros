@@ -7,6 +7,9 @@
     "name": {
       "type": "string"
     },
+    "status": {
+      "type": "string"
+    },
     "createdDate": {
       "type": "string"
     },
@@ -14,5 +17,5 @@
       "type": "string"
     }
   },
-  "required": ["id", "name", "createdDate"]
+  "required": ["id", "name", "status", "createdDate"]
 }

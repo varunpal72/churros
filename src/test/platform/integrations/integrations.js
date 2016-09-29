@@ -9,8 +9,8 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const cleaner = require('core/cleaner');
 
-/* default simple payloads */
-const payload = { name: 'churros-integration' };
+/* default simple payload */
+const payload = { name: 'churros-integration', status: 'development' };
 
 suite.forPlatform('integrations', { schema, payload }, (test) => {
   beforeEach(() => {
@@ -19,7 +19,7 @@ suite.forPlatform('integrations', { schema, payload }, (test) => {
   });
 
   test
-    .withOptions({ churros: { updatePayload: { name: `${payload.name}-update` } } })
+    .withOptions({ churros: { updatePayload: { name: `${payload.name}-update`, status: 'published' } } })
     .should.supportCrud(chakram.put);
 
   test
