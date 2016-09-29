@@ -137,7 +137,8 @@
   "customers": {
     "fields": [{
         "path": "id",
-        "type": "string"
+        "type": "string",
+        "vendorPath": "string"
       }, {
         "path": "firstName",
         "type": "string"
@@ -727,12 +728,6 @@
     }]
   },
   "variants": {
-    "fields": [{
-      "path": "id",
-      "vendorPath": "string"
-    }]
-  },
-  "customers": {
     "fields": [{
       "path": "id",
       "vendorPath": "string"
