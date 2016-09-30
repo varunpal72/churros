@@ -12,7 +12,7 @@ Before submitting a PR, make sure to run `npm test` locally to ensure that all t
 
 All PRs submitted to the `churros` repository will have *all* of the unit tests run before they're able to be merged into `master`.  When creating a PR, please refrain from assigning it to someone else until all GitHub status checks have been completed and you have that nice little :white_check_mark:.
 
-> __NOTE:__ When all tests have passed then you can assign the PR out.  Make sure the label at this point is `in review`.
+> __NOTE:__ When all tests have passed then you can assign the PR out. 
 
 ## Best Practices
 In order to keep `churros` consistent, here are some common patterns that are followed in `churros`:
