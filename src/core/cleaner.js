@@ -56,6 +56,13 @@ const cleanElements = (field, values) => {
     .then(rs => deleteAll('instances', rs.map(r => r.id)));
 };
 
+const cleanIntegrations = (field, values) => {
+  logger.debug(`Cleaning integrations where ${field} is set to one of ${values}`);
+  return cloud.get('/integrations')
+    .then(rs => filter(rs, field, values))
+    .then(rs => deleteAll('integrations', rs.map(r => r.id)));
+};
+
 const toArray = (value) => Array.isArray(value) ? value : [value];
 
 /**
@@ -84,4 +91,18 @@ exports.elements = {
    * @memberof module:core/cleaner~elements
    */
   withName: (name) => cleanElements('name', toArray(name))
+};
+
+/**
+ * The integrations module
+ * @namespace integrations
+ */
+exports.integrations = {
+  /**
+   * Clean up integrations with the given name
+   * @param {string} name The name of the integrations
+   * @return {Promise}
+   * @memberof module:core/cleaner~integrations
+   */
+  withName: (name) => cleanIntegrations('name', toArray(name))
 };
