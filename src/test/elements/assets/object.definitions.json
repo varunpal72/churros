@@ -676,7 +676,7 @@
   "smart-collections": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "lot-numbered-assembly-items": {
