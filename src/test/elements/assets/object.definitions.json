@@ -673,6 +673,12 @@
       "vendorPath": "string"
     }]
   },
+  "smart-collections": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
   "lot-numbered-assembly-items": {
     "fields": [{
       "path": "id",
