@@ -21,6 +21,8 @@ describe('cleaner', () => {
 
   const elementInstances = [{ id: 123, name: 'foo' }, { id: 456, name: 'bar' }];
 
+  const integrations = [{ id: 123, name: 'foo' }, { id: 456, name: 'bar' }];
+
   const headers = () => ({ reqheaders: { 'Authorization': (value) => value === AUTH } });
 
   it('should support cleaning up formulas by name', () => {
@@ -80,5 +82,25 @@ describe('cleaner', () => {
       .delete('/instances/456')
       .reply(200);
     return cleaner.elements.withName(['foo', 'bar']);
+  });
+
+  it('should support cleaning up integrations by name', () => {
+    nock(BASE_URL, headers())
+      .get('/integrations')
+      .reply(200, (uri, requestBody) => integrations)
+      .delete('/integrations/123')
+      .reply(200);
+    return cleaner.integrations.withName('foo');
+  });
+
+  it('should support cleaning up integrations with a list of names', () => {
+    nock(BASE_URL, headers())
+      .get('/integrations')
+      .reply(200, (uri, requestBody) => integrations)
+      .delete('/integrations/123')
+      .reply(200)
+      .delete('/integrations/456')
+      .reply(200);
+    return cleaner.integrations.withName(['foo', 'bar']);
   });
 });
