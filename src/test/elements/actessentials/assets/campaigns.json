@@ -1,11 +1,13 @@
 {
-  "groupId": "57d8230ff25fbd0244c0c84d",
-  "templateId": "fdc763af-8281-4002-bc03-ffe8719a97f5",
-  "emailSubject": "Churros campaign for testing",
-  "sendDate": "2016-09-27T13:29:17.375Z",
-  "recordOwner": "luke@cloud-elements.com",
-  "groupName": "testGroup",
+  "campaignId": "churrosTest",
   "senderEmailAddress": "luke@cloud-elements.com",
+  "recordOwner": "luke@cloud-elements.com",
+  "groupId": "57d8230ff25fbd0244c0c84d",
+  "groupName": "testGroup",
+  "templateId": "fdc763af-8281-4002-bc03-ffe8719a97f5",
+  "emailSubject": "Churros Test",
+  "sendDate": "2016-10-06T17:36:48.270Z",
+  "groupName": "testGroup",
   "contacts": [
     {
       "id": "57e074d8301fa2032435f78c",
@@ -16,6 +18,5 @@
       "displayName": "Alec Shunk"
     }
   ],
-  "timeZone": "Mountain Standard Time",
-  "status": "InQueue"
+  "timeZone": "Mountain Standard Time"
 }

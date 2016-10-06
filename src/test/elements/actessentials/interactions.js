@@ -1,12 +1,11 @@
-// 'use strict';
-//
-// const suite = require('core/suite');
-// const payload = require('./assets/contacts');
-//
-// suite.forElement('marketing', 'interactions', { payload: payload }, (test) => {
-//   // checkout functions available under test.should which provide a lot of pre-canned tests
-//   //   more information here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#adding-tests-to-an-existing-suite
-//   // test.should.supportCruds();
-//   test.should.return200OnGet();
-//   // it('lukevance should insert some tests here :)', () => true);
-// });
+'use strict';
+
+const suite = require('core/suite');
+const payload = require('./assets/interactions');
+
+suite.forElement('marketing', 'interactions', { payload: payload }, (test) => {
+  test.should.supportCrds();
+  test.should.supportPagination();
+  test.withOptions({qs:{where:'subject=\'Churros\''}}).should.return200OnGet();
+  // test update through Put only
+});
