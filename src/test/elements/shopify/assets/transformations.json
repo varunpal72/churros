@@ -47,5 +47,14 @@
         "vendorPath": "id"
       }
     ]
+  },
+  "smart-collections": {
+    "vendorName": "smart-collection",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
   }
 }
