@@ -4,8 +4,6 @@ const account = require('./assets/account');
 const accountSchema = require('./assets/account.schema');
 const accountsSchema = require('./assets/accounts.schema');
 const chakram = require('chakram');
-const cloud = require('core/cloud');
-const expect = chakram.expect;
 const suite = require('core/suite');
 
 suite.forPlatform('accounts', {payload: account, schema: accountSchema}, (test) => {
