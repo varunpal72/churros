@@ -71,7 +71,7 @@ const opts = { schema: instanceSchema };
 suite.forPlatform('elements/instances', opts, (test) => {
   let sfdcId;
   before(() => {
-    return provisioner.create('closeio')
+    return provisioner.create('sfdc')
       .then(r => sfdcId = r.body.id);
   });
 
