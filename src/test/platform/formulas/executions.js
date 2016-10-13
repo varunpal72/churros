@@ -170,11 +170,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       return executions;
     };
 
-    const fetchAndValidateExecutions = (fiId) => {
+    const fetchAndValidateExecutions = (fiId) => () => new Promise((res, rej) => {
       return common.getFormulaInstanceExecutions(fiId)
-        .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-        .then(executions => validatorWrapper(executions))
-    };
+      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+      .then(executions => validatorWrapper(executions))
+      .then (v => res(v))
+      .catch(e => rej(e));
+    });
 
     if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
 
@@ -185,7 +187,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${fId}/instances`, fi, fiSchema))
       .then(r => fiId = r.body.id)
       .then(() => kickOffDatFormulaCb(fId, fiId))
-      .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
+      .then(() => tools.wait.upTo(90000).for(common.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
       .then(() => tools.wait.upTo(10000).for(fetchAndValidateExecutions(fiId)))
       .then(() => common.deleteFormulaInstance(fId, fiId))
       .then(() => common.deleteFormula(fId));
