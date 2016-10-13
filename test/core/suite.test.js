@@ -130,6 +130,7 @@ describe('suite', () => {
     test
       .withName('this should be the name of the test')
       .should.return200OnPost();
+
     test
       .withApi('/foo/bad')
       .withName('this should be the name of the test')
@@ -139,6 +140,12 @@ describe('suite', () => {
       .withName('should allow overriding the api and the options with new values')
       .withApi(`${test.api}/search`)
       .withOptions({ qs: { foo: 'bar' } })
+      .should.return200OnGet();
+
+    test
+      .withName('should allow skipping a specific test by passing in the skip option')
+      .withOptions({ skip: true })
+      .withApi(`${test.api}/api/that/is/not/mocked`)
       .should.return200OnGet();
   });
 });
