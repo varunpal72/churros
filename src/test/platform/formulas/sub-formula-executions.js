@@ -105,6 +105,15 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       customValidator(executions);
     };
 
+    const fetchAndValidateExecutions = (fiId) => () => new Promise((res, rej) => {
+      return common.getFormulaInstanceExecutions(fiId)
+        .then(executions => validateExecution(executions))
+        .then(executions => Promise.all(executions.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+        .then(executions => validator(executions))
+        .then (v => res(v))
+        .catch(e => rej(e));
+    });
+
     let formulaId, formulaInstanceId;
     return setup()
       .then(formula => formulaId = formula.body.id)
@@ -112,10 +121,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       .then(formulaInstance => formulaInstanceId = formulaInstance.body.id)
       .then(() => common.generateSfdcPollingEvent(sfdcId, event))
       .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, expectedNumSteps)))
-      .then(() => common.getFormulaInstanceExecutions(formulaInstanceId))
-      .then(executions => validateExecution(executions))
-      .then(executions => Promise.all(executions.body.map(execution => common.getFormulaInstanceExecutionWithSteps(execution.id))))
-      .then(executions => validator(executions));
+      .then(() => tools.wait.upTo(10000).for(fetchAndValidateExecutions(formulaInstanceId)));
   };
 
   it('should support a formula that contains a sub-formula', () => {
