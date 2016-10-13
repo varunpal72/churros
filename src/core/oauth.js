@@ -69,22 +69,27 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'dropboxbusiness':
     case 'dropbox':
       browser.get(r.body.oauthUrl);
-      return browser.findElement(webdriver.By.xpath('//input[@name="login_email"]'))
-        .then(el => {
-          el.sendKeys(username);
-          return browser.findElement(webdriver.By.xpath('//input[@name="login_password"]'));
-        })
-        .then(el => {
-          el.sendKeys(password);
-          return browser.findElement(webdriver.By.className('login-button button-primary'));
-        })
-        .then(el => {
-          el.click();
-          return browser.wait(() => {
-            return browser.getTitle().then((title) => !title);
-          }, 5000);
-        })
-        .then(() => browser.getCurrentUrl());
+      browser.findElement(webdriver.By.xpath('//input[@name="login_email"]')).sendKeys(username);
+      browser.findElement(webdriver.By.xpath('//input[@name="login_password"]')).sendKeys(password);
+      browser.findElement(webdriver.By.className('login-button button-primary')).click();
+
+      // dropbox for business handling but failing silently
+      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//*[@id="authorize-form-multiaccount"]/button[2]')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.xpath('//*[@id="authorize-form-multiaccount"]/button[1]'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+
+      // non-dropbox for business handling but failing silently
+      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//*[@id="authorize-form"]/button[2]')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.xpath('//*[@id="authorize-form"]/button[2]'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+
+      browser.wait(() => {
+        return browser.getTitle().then((title) => !title);
+      }, 5000);
+
+      return browser.getCurrentUrl();
     case 'facebooksocial':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).clear();
@@ -242,7 +247,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           });
       return browser.getCurrentUrl();
     case 'quickbooks':
-          browser.get(r.body.oauthUrl);
+      browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('Email')).sendKeys(username);
       browser.findElement(webdriver.By.name('Password')).sendKeys(password);
       browser.findElement(webdriver.By.id('ius-sign-in-submit-btn')).click();
@@ -271,7 +276,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).clear();
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('Login')).click();
-      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 5000)
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 10000)
         .thenCatch(r => true); // ignore
 
       browser.findElement(webdriver.By.id('oaapprove'))
@@ -370,10 +375,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('loginInputPwd')).sendKeys(password);
       browser.findElement(webdriver.By.name('loginButton')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]')), 5000)
-          .thenCatch(r => true); // ignore
+        .thenCatch(r => true); // ignore
 
       browser.findElement(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]'))
-          .then((element) => element.click(), (err) => {}); // ignore this```
+        .then((element) => element.click(), (err) => {}); // ignore this```
 
 
       return browser.getCurrentUrl();
