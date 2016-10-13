@@ -22,7 +22,9 @@ suite.forPlatform('formulas', opts, (test) => {
       });
   };
 
-  const cleanup = (name) => cleaner.formulas.withName(name);
+  const cleanup = (names) => {
+    return cleaner.formulas.withName(names.concat('simple-successful'));
+  };
 
   describe('general', () => {
     let elementInstanceId, formulaId, formulaInstanceId;
@@ -38,7 +40,7 @@ suite.forPlatform('formulas', opts, (test) => {
 
     after(() => {
       const formula = require('./assets/formulas/simple-successful-formula');
-      return cleanup(formula.name);
+      return cleanup([formula.name]);
     });
 
     /* 200 on DELETE and PUT to /formulas/:id/instances/:id/active to activate and deactivate instance */
@@ -115,7 +117,7 @@ suite.forPlatform('formulas', opts, (test) => {
 
     after(() => {
       const formula = require('./assets/formulas/simple-successful-scheduled-trigger-formula');
-      return cleanup(formula.name);
+      return cleanup([formula.name]);
     });
 
     const fi = (cron, active) => ({
