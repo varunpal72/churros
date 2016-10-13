@@ -26,6 +26,6 @@ suite.forElement('crm', 'contacts', { payload: gen() }, (test) => {
   test.should.supportPagination();
   test.should.return404OnGet(-1);
   test.should.return404OnPatch(-1);
-  test.should.return400OnPost();
+  test.withOptions({ skip: true }).should.return400OnPost();
   test.withJson({}).should.return400OnPost();
 });
