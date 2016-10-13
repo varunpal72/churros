@@ -16,6 +16,19 @@ var exports = module.exports = {};
 exports.random = () => Math.random().toString(36).substring(7);
 
 /**
+ * Generates a random string from possible and can determine length
+ * @return {string} A random, 7 character string
+ */
+exports.randomStr = (possible, len) => {
+    var text = "";
+
+    for( var i=0; i < len; i++ ) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      };
+    return text;
+};
+
+/**
  * Generates a random email address in the @churros.com domain
  * @return {string} A random, 7-character email address
  */
