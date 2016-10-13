@@ -12,66 +12,71 @@ const logger = require('winston');
 
 var exports = module.exports = {};
 
+const boomGoesTheDynamite = (name, testCb, skip) => {
+  skip ?
+    it.skip(name, testCb()) :
+    it(name, () => testCb());
+};
+
 const itPost = (name, api, payload, options, validationCb) => {
   const n = name || `should allow POST for ${api}`;
-  it(n, () => cloud.withOptions(options).post(api, payload, validationCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).post(api, payload, validationCb), options ? options.skip : false);
 };
 
 const itGet = (name, api, options, validationCb) => {
   const n = name || `should allow GET for ${api}`;
-  it(n, () => cloud.withOptions(options).get(api, validationCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).get(api, validationCb), options ? options.skip : false);
 };
 
 const itCrd = (name, api, payload, validationCb, options) => {
   const n = name || `should allow CRD for ${api}`;
-  it(n, () => cloud.withOptions(options).crd(api, payload, validationCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).crd(api, payload, validationCb), options ? options.skip : false);
 };
 
 const itCd = (name, api, payload, validationCb, options) => {
   const n = name || `should allow CD for ${api}`;
-  it(n, () => cloud.withOptions(options).cd(api, payload, validationCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).cd(api, payload, validationCb), options ? options.skip : false);
 };
 
 const itCrds = (name, api, payload, validationCb, options) => {
   const n = name || `should allow CRDS for ${api}`;
-  it(n, () => cloud.withOptions(options).crds(api, payload, validationCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).crds(api, payload, validationCb), options ? options.skip : false);
 };
 
 const itCrud = (name, api, payload, validationCb, updateCb, options) => {
   const n = name || `should allow CRUD for ${api}`;
-  it(n, () => cloud.withOptions(options).crud(api, payload, validationCb, updateCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).crud(api, payload, validationCb, updateCb), options ? options.skip : false);
 };
 
 const itCruds = (name, api, payload, validationCb, updateCb, options) => {
   const n = name || `should allow CRUDS for ${api}`;
-  it(n, () => cloud.withOptions(options).cruds(api, payload, validationCb, updateCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).cruds(api, payload, validationCb, updateCb), options ? options.skip : false);
 };
 
 const itCrus = (name, api, payload, validationCb, updateCb, options) => {
   const n = name || `should allow CRUS for ${api}`;
-  it(n, () => cloud.withOptions(options).crus(api, payload, validationCb, updateCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).crus(api, payload, validationCb, updateCb), options ? options.skip : false);
 };
 
 const itSr = (name, api, validationCb, options) => {
   const n = name || `should allow SR for ${api}`;
-  it(n, () => cloud.withOptions(options).get(api).then(r => cloud.get(api + '/' + r.body[0].id)));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).get(api).then(r => cloud.get(api + '/' + r.body[0].id)), options ? options.skip : false);
 };
 
 const itS = (name, api, validationCb, options) => {
   const n = name || `should allow S for ${api}`;
-  it(n, () => cloud.withOptions(options).get(api));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).get(api), options ? options.skip : false);
 };
 
 const itCrs = (name, api, payload, validationCb, options) => {
   const n = name || `should allow CRS for ${api}`;
-  it(n, () => cloud.withOptions(options).crs(api, payload, validationCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).crs(api, payload, validationCb), options ? options.skip : false);
 };
 
-const itPagination = (name, api, validationCb) => {
+const itPagination = (name, api, options, validationCb) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
-  const options = { qs: { page: 1, pageSize: 1 } };
-
-  it(n, () => cloud.withOptions(options).get(api, validationCb));
+  const newOptions = Object.assign({}, options, { qs: { page: 1, pageSize: 1 } });
+  boomGoesTheDynamite(n, () => cloud.withOptions(newOptions).get(api, validationCb), options ? options.skip : false);
 };
 
 const paginate = (api, options, validationCb, nextPage, page, max, all) => {
@@ -112,47 +117,47 @@ const itNextPagePagination = (name, api, payload, amount, shouldCreate, options,
   };
 
   const n = name || `should allow paginating with page and nextPage ${api}`;
-  it(n, () => {
+  boomGoesTheDynamite(n, () => {
     return shouldCreate ?
       itNextPagePaginationCreate() :
       itNextPagePagination();
-  });
+  }, options ? options.skip : false);
 };
 
-const it404 = (name, api, invalidId, method, cloudCb) => {
+const it404 = (name, api, invalidId, method, cloudCb, options) => {
   const n = name || `should throw a 404 when trying to ${method} ${api} with an ID that does not exist`;
   if (invalidId) api = api + '/' + invalidId;
-  it(n, () => cloudCb(api, (r) => expect(r).to.have.statusCode(404)));
+  boomGoesTheDynamite(n, () => cloudCb(api, (r) => expect(r).to.have.statusCode(404)), options ? options.skip : false);
 };
 
-const itUpdate404 = (name, api, payload, invalidId, method, chakramUpdateCb) => {
+const itUpdate404 = (name, api, payload, invalidId, method, chakramUpdateCb, options) => {
   const n = name || `should throw a 404 when trying to ${method} ${api} with an ID that does not exist`;
   if (invalidId) api = api + '/' + invalidId;
-  it(n, () => cloud.update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakramUpdateCb));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakramUpdateCb), options ? options.skip : false);
 };
 
-const itPostError = (name, httpCode, api, payload) => {
+const itPostError = (name, httpCode, api, payload, options) => {
   const suffix = payload ? 'invalid JSON body' : 'empty JSON body';
   let n = name || `should throw a ${httpCode} when trying to create a(n) ${api} with an ${suffix}`;
-  it(n, () => cloud.post(api, payload, (r) => expect(r).to.have.statusCode(httpCode)));
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).post(api, payload, (r) => expect(r).to.have.statusCode(httpCode)), options ? options.skip : false);
 };
 
-const itCeqlSearch = (name, api, payload, field) => {
+const itCeqlSearch = (name, api, payload, field, options) => {
   const n = name || `should support searching ${api} by ${field}`;
-  it(n, () => {
+  boomGoesTheDynamite(n, () => {
     let id;
     return cloud.post(api, payload)
       .then(r => {
         id = r.body.id;
         const clause = `${field}='${r.body[field]}'`; // have to escape where values with single quotes
-        const options = { qs: { where: clause } };
-        return cloud.withOptions(options).get(api, (r) => {
+        const myOptions = Object.assign({}, options, { qs: { where: clause } });
+        return cloud.withOptions(myOptions).get(api, (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body.length).to.equal(1);
         });
       })
       .then(r => cloud.delete(api + '/' + id));
-  });
+  }, options ? options.skip : false);
 };
 
 const runTests = (api, payload, validationCb, tests) => {
@@ -161,36 +166,36 @@ const runTests = (api, payload, validationCb, tests) => {
      * HTTP POST that validates that the response is a 400
      * @memberof module:core/suite.test.should
      */
-    return400OnPost: () => itPostError(name, 400, api, payload),
+    return400OnPost: () => itPostError(name, 400, api, payload, options),
     /**
      * HTTP POST that validates that the response is a 409
      * @memberof module:core/suite.test.should
      */
-    return409OnPost: () => itPostError(name, 409, api, payload),
+    return409OnPost: () => itPostError(name, 409, api, payload, options),
     /**
      * HTTP PATCH that validates that the response is a 404
      * @param {string} [invalidId=-1] The invalid ID
      * @memberof module:core/suite.test.should
      */
-    return404OnPatch: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PATCH', chakram.patch),
+    return404OnPatch: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PATCH', chakram.patch, options),
     /**
      * HTTP PUT that validates that the response is a 404
      * @param {string} [invalidId=-1] The invalid ID
      * @memberof module:core/suite.test.should
      */
-    return404OnPut: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PUT', chakram.put),
+    return404OnPut: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PUT', chakram.put, options),
     /**
      * HTTP GET that validates that the response is a 404
      * @param {string} [invalidId=-1] The invalid ID
      * @memberof module:core/suite.test.should
      */
-    return404OnGet: (invalidId) => it404(name, api, invalidId, 'GET', cloud.get),
+    return404OnGet: (invalidId) => it404(name, api, invalidId, 'GET', cloud.get, options),
     /**
      * HTTP DELETE that validates that the response is a 404
      * @param {string} [invalidId=-1] The invalid ID
      * @memberof module:core/suite.test.should
      */
-    return404OnDelete: (invalidId) => it404(name, api, invalidId, 'DELETE', cloud.delete),
+    return404OnDelete: (invalidId) => it404(name, api, invalidId, 'DELETE', cloud.delete, options),
     /**
      * HTTP POST that validates that the response is a 200
      * @memberof module:core/suite.test.should
@@ -206,7 +211,7 @@ const runTests = (api, payload, validationCb, tests) => {
      * through the results before cleaning up any resources that were created.
      * @memberof module:core/suite.test.should
      */
-    supportPagination: () => itPagination(name, api, validationCb),
+    supportPagination: () => itPagination(name, api, options, validationCb),
     /**
      * Validates that the given API supports `nextPageToken` type pagination.
      * @param {number} amount The number of objects to paginate through
@@ -219,7 +224,7 @@ const runTests = (api, payload, validationCb, tests) => {
      * @param {string} field The field to search by
      * @memberof module:core/suite.test.should
      */
-    supportCeqlSearch: (field) => itCeqlSearch(name, api, payload, field),
+    supportCeqlSearch: (field) => itCeqlSearch(name, api, payload, field, options),
     /**
      * Validates that the given API resource supports CRUDS
      * @param {Function} [updateCb=chakram.put] The update callback (`chakram.patch` can also be used)
@@ -336,7 +341,15 @@ const runTests = (api, payload, validationCb, tests) => {
      */
     withJson: (myPayload) => using(api, validationCb, myPayload),
     /**
-     * Specifies that any API calls made should use the given request options
+     * Specifies that any API calls made should use the given request options.  The available request options include
+     * everything available in the "request" libraries options object (https://github.com/request/request#requestoptions-callback)
+     * as well as the following custom churros options:
+     * {
+     *   "skip": boolean, // skips this test
+     *   "churros": {
+     *     "updatePayload": {...} // uses this as the upload payload
+     *   }
+     * }
      * @param {Object} myOptions The request options to override with
      * @memberof module:core/suite.test
      * @namespace withOptions
