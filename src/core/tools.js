@@ -20,9 +20,9 @@ exports.random = () => Math.random().toString(36).substring(7);
  * @return {string} A random, 7 character string
  */
 exports.randomStr = (possible, len) => {
-    var text = "";
+    let text = "";
 
-    for( var i=0; i < len; i++ ) {
+    for( let i=0; i < len; i++ ) {
         text += possible.charAt(Math.floor(Math.random() * possible.length));
       }
     return text;
@@ -33,8 +33,8 @@ exports.randomStr = (possible, len) => {
  * @return {string} A random, 7-character email address
  */
 exports.randomEmail = () => {
-  var address = exports.random();
-  var domain = 'churros';
+  const address = exports.random();
+  const domain = 'churros';
   return address + '@' + domain + '.com';
 };
 
