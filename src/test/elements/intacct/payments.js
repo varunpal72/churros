@@ -16,7 +16,7 @@ const payload = () => ({
   "paymentmethod": "Cash"
 });
 
-suite.forElement('finance', 'payments', { payload: payload() }, (test) => {
+suite.forElement('finance', 'payments', { payload: payload(), skip: true}, (test) => {
   it(`should allow CRS for ${test.api}`, () => {
     return cloud.crs(test.api, payload());
   });
