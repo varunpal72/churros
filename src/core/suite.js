@@ -341,7 +341,15 @@ const runTests = (api, payload, validationCb, tests) => {
      */
     withJson: (myPayload) => using(api, validationCb, myPayload),
     /**
-     * Specifies that any API calls made should use the given request options
+     * Specifies that any API calls made should use the given request options.  The available request options include
+     * everything available in the "request" libraries options object (https://github.com/request/request#requestoptions-callback)
+     * as well as the following custom churros options:
+     * {
+     *   "skip": boolean, // skips this test
+     *   "churros": {
+     *     "updatePayload": {...} // uses this as the upload payload
+     *   }
+     * }
      * @param {Object} myOptions The request options to override with
      * @memberof module:core/suite.test
      * @namespace withOptions
