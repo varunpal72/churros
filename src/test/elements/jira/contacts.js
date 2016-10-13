@@ -13,5 +13,5 @@ suite.forElement('helpdesk', 'contacts', {payload:payload}, (test) => {
     .then(r =>  cloud.get('/hubs/helpdesk/contacts/' + contactId))
     .then(r =>  cloud.withOptions({qs:{where:`username='test'`}}).get('/hubs/helpdesk/contacts'))
     .then(r => cloud.delete('/hubs/helpdesk/contacts/' + contactId));
-})
+});
 });

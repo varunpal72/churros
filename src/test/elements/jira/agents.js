@@ -8,7 +8,7 @@ suite.forElement('helpdesk', 'agents', (test) => {
   it('should allow get for /agents', () => {
     cloud.withOptions({qs:{where:`username='test'`}}).get('/hubs/helpdesk/agents')
     .then(r => agentId = r.body[0].key)
-    .then(r => cloud.get("/hubs/helpdesk/agents/" + agentId))
+    .then(r => cloud.get("/hubs/helpdesk/agents/" + agentId));
   }
 );
 }
