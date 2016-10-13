@@ -110,3 +110,9 @@ exports.wait = {
  * @return {string}      The JSON object stringified
  */
 exports.stringify = (json) => JSON.stringify(json);
+
+/**
+ * Copy an asset
+ * @param asset The absolute path to the asset (can use `require.resolve(relativePath)`)
+ */
+exports.copyAsset = (asset) => JSON.parse(JSON.stringify(require(asset)));
