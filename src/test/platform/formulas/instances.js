@@ -11,16 +11,36 @@ const expect = require('chakram').expect;
 const opts = { name: 'formula instances', payload: common.genFormula({}), schema: schema };
 
 suite.forPlatform('formulas', opts, (test) => {
+  const setup = () => {
+    return common.createFAndFI()
+      .then(r => {
+        return {
+          formulaId: r.formulaId,
+          formulaInstanceId: r.formulaInstanceId,
+          elementInstanceId: r.elementInstanceId
+        };
+      });
+  };
+
+  const cleanup = (names) => {
+    return cleaner.formulas.withName(names.concat('simple-successful'));
+  };
+
   describe('general', () => {
     let elementInstanceId, formulaId, formulaInstanceId;
     before(() => {
       /* Create a formula instance to use in the tests below */
-      return common.createFAndFI()
+      return setup()
         .then(r => {
           formulaId = r.formulaId;
           formulaInstanceId = r.formulaInstanceId;
           elementInstanceId = r.elementInstanceId;
         });
+    });
+
+    after(() => {
+      const formula = require('./assets/formulas/simple-successful-formula');
+      return cleanup([formula.name]);
     });
 
     /* 200 on DELETE and PUT to /formulas/:id/instances/:id/active to activate and deactivate instance */
@@ -58,18 +78,17 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(r => {
           expect(r.body.settings['notification.email']).to.equal('churros+trash@cloud-elements.com');
           expect(r.body.settings['notification.webhook.url']).to.equal('churrostrash.cloud-elements.com');
-        })
-        .then(r => cloud.delete(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance));
+        });
     });
 
     it('should search for formula instances by elementInstanceId', () => {
       const baseApi = '/formulas/instances';
-      return cloud.withOptions({ qs:{ elementInstanceId } }).get(baseApi)
+      return cloud.withOptions({ qs: { elementInstanceId } }).get(baseApi)
         .then(r => {
           expect(r.body.length).to.equal(1);
           expect(r.body[0].id).to.equal(formulaInstanceId);
         })
-        .then(r => cloud.withOptions({ qs:{ elementInstanceId: -1 }}).get('/formulas/instances'))
+        .then(r => cloud.withOptions({ qs: { elementInstanceId: -1 } }).get('/formulas/instances'))
         .then(r => expect(r.body.length).to.equal(0));
     });
 
@@ -88,12 +107,17 @@ suite.forPlatform('formulas', opts, (test) => {
     let elementInstanceId, formulaId, formulaInstanceId;
     before(() => {
       /* Create a formula instance to use in the tests below */
-      return common.createFAndFI()
+      return setup()
         .then(r => {
           formulaId = r.formulaId;
           formulaInstanceId = r.formulaInstanceId;
           elementInstanceId = r.elementInstanceId;
         });
+    });
+
+    after(() => {
+      const formula = require('./assets/formulas/simple-successful-scheduled-trigger-formula');
+      return cleanup([formula.name]);
     });
 
     const fi = (cron, active) => ({
