@@ -1,4 +1,13 @@
 {
+  "lists": {
+    "vendorName": "trigger",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "list_id"
+      }
+    ]
+  },
   "triggers": {
     "vendorName": "trigger",
     "fields": [
@@ -14,6 +23,15 @@
       {
         "path": "id",
         "vendorPath": "template"
+      }
+    ]
+  },
+  "users": {
+    "vendorName": "user",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "keys.id"
       }
     ]
   }
