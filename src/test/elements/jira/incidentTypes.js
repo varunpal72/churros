@@ -1,8 +1,10 @@
 'use strict';
 
+const tools = require('core/tools');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/issuetype');
+let payload = require('./assets/issuetype');
+payload.name = payload.name + tools.random();
 const uri = '/hubs/helpdesk/incident-types';
 const updatePayload = {};
 updatePayload.name = payload.name;
