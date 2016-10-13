@@ -7,6 +7,7 @@ const expect = require('chakram').expect;
 const invalid = require('./assets/formulas/formula-with-invalid-configs');
 const suite = require('core/suite');
 const schema = require('./assets/schemas/formula.schema');
+const tools = require('core/tools');
 
 suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test) => {
   before(() => cleaner.formulas.withName([invalid.name, 'complex-successful']));
@@ -34,7 +35,7 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
    * trigger and steps that were relying on it should also be updated properly
    */
   it('should allow updating a variable key and all relying steps/triggers will be updated too', () => {
-    const f = require('./assets/formulas/complex-successful-formula');
+    const f = tools.copyAsset(require.resolve('./assets/formulas/complex-successful-formula'));
     const v = (r, key) => {
       expect(r).to.have.statusCode(200);
       expect(r.body).to.not.be.null;

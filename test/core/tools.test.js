@@ -93,4 +93,6 @@ describe('tools', () => {
   });
 
   it('should allow stringifying an object', () => tools.stringify({ foo: 'bar' }));
+
+  it('should allow loading an asset file', () => tools.copyAsset(require.resolve('./assets/test.json')));
 });
