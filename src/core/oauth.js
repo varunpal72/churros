@@ -165,12 +165,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('loginBtn')).click();
-      return browser.wait(() => {
-        try {
-          browser.findElement(webdriver.By.className('accept')).click();
-        } catch (e) {}
-        return browser.getCurrentUrl();
-      }, 5000);
+      browser.wait(() => browser.isElementPresent(webdriver.By.className('accept')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.className('accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'instagram':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('id_username')).clear();
@@ -243,15 +242,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           });
       return browser.getCurrentUrl();
     case 'quickbooks':
-      // TODO - not working quite yet...
-      browser.get(r.body.oauthUrl);
+          browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('Email')).sendKeys(username);
       browser.findElement(webdriver.By.name('Password')).sendKeys(password);
       browser.findElement(webdriver.By.id('ius-sign-in-submit-btn')).click();
-      try {
-        browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
-        browser.findElement(webdriver.By.id('authorizeBtn')).click();
-      } catch (e) {}
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('companySelectionWidgetCompanySelector_href')), 10000)
+        .thenCatch(r => true);
+      browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
+      browser.wait(() => webdriver.until.elementLocated(webdriver.By.id('authorizeBtn')), 7000)
+        .thenCatch(r => true);
+      browser.findElement(webdriver.By.id('authorizeBtn')).click();
+      browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
       return browser.getCurrentUrl();
     case 'servicenowoauth':
       return 'https://foo.bar.com?code=' + config.code; // they don't supply a code
