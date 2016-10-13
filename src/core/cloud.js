@@ -240,6 +240,7 @@ exports.withOptions = (options) => {
     patchFile: (api, filePath) => patchFile(api, filePath, options),
     put: (api, payload, validationCb) => put(api, payload, validationCb, options),
     patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
+    update: (api, payload, validationCb, chakramCb) => update(api, payload, validationCb, chakramCb, options),
     get: (api, validationCb) => get(api, validationCb, options),
     delete: (api, validationCb) => remove(api, validationCb, options),
     cruds: (api, payload, validationCb, updateCb) => cruds(api, payload, validationCb, updateCb, options),
