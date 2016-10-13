@@ -1,0 +1,30 @@
+{
+  "contacts": {
+    "vendorName": "contact",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "accounts": {
+    "vendorName": "account",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "lists": {
+    "vendorName": "list",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "campaigns": {
+    "vendorName": "campaign",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "activities"
+    }]
+  }
+}
