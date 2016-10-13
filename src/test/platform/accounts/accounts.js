@@ -19,6 +19,10 @@ suite.forPlatform('accounts', {payload: account, schema: accountSchema}, (test) 
       .then(r => expect(r.body.filter(a => a.name === 'churros')).to.have.length(1))
   );
 
+  suite.forPlatform('accounts', {payload: account, schema: accountsSchema}, (test) => {
+    test.should.supportS();
+  });
+
   afterEach(() =>
     chakram.get('/accounts')
       .then(r => Promise.all(r.body.filter(a => !a.defaultAccount).map(a => chakram.delete(`/accounts/${a.id}`))))
