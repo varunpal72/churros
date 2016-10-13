@@ -10,6 +10,12 @@ describe('tools', () => {
     expect(random).to.be.a('string');
   });
 
+  it('should support generating a random string', () => {
+    const random = tools.randomStr("aAeEiIoOuU", 4);
+    expect(random).to.be.a('string');
+    expect(random).to.have.lengthOf(4);
+  });
+
   it('should support generating a random email address', () => {
     const random = tools.randomEmail();
     expect(random).to.be.a('string');
