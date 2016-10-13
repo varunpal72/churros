@@ -170,6 +170,12 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       return executions;
     };
 
+    const fetchAndValidateExecutions = (fiId) => {
+      return common.getFormulaInstanceExecutions(fiId)
+        .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
+        .then(executions => validatorWrapper(executions))
+    };
+
     if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
 
     let fId, fiId;
@@ -180,9 +186,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => fiId = r.body.id)
       .then(() => kickOffDatFormulaCb(fId, fiId))
       .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
-      .then(() => common.getFormulaInstanceExecutions(fiId))
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(executions => validatorWrapper(executions))
+      .then(() => tools.wait.upTo(10000).for(fetchAndValidateExecutions(fiId)))
       .then(() => common.deleteFormulaInstance(fId, fiId))
       .then(() => common.deleteFormula(fId));
   };
@@ -623,6 +627,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => fiId = r.body.id)
       .then(() => cloud.get(`/instances/${sfdcId}/events`))
       .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, JSON.parse(r.body[0].eventElementInstances[0].notifiedData)))
+      // TODO fix
       .then(() => sleep.sleep(5))
       .then(() => common.getFormulaInstanceExecutions(fiId))
       .then(r => {
@@ -651,6 +656,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${fId}/instances`, formulaInstance, fiSchema))
       .then(r => fiId3 = r.body.id)
       .then(() => generateXSingleSfdcPollingEvents(sfdcId, 1))
+      // TODO fix
       .then(() => sleep.sleep(20))
       .then(() => common.getFormulaInstanceExecutions(fiId1))
       .then(r => {
@@ -709,6 +715,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => cloud.post(`/formulas/${fId3}/instances`, formulaInstance3, fiSchema))
       .then(r => fiId3 = r.body.id)
       .then(() => generateXSingleSfdcPollingEvents(sfdcId, 1))
+      // TODO fix
       .then(() => sleep.sleep(10))
       .then(() => common.getFormulaInstanceExecutions(fiId1))
       .then(r => {
