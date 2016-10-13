@@ -8,7 +8,6 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const fSchema = require('./assets/schemas/formula.schema');
 const fiSchema = require('./assets/schemas/formula.instance.schema');
-const sleep = require('sleep');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
@@ -37,12 +36,6 @@ const validateSuccessfulStepExecution = se =>
 const validateErrorStepExecution = se =>
   validateStepExecutionStatus(se, 'failed');
 
-const validateSimpleSuccessfulStepExecutionsForType = tValidator => ses => {
-  expect(ses).to.have.length(2);
-  ses.map(se => validateSuccessfulStepExecution(se));
-  ses.filter(se => se.stepName === 'trigger').map(tValidator);
-};
-
 const validateLoopSuccessfulLoopStepExecution = se => {
   const flat = flattenStepExecutionValues(se.stepExecutionValues);
   expect(flat['loop.index']).to.not.be.empty;
@@ -68,26 +61,6 @@ const validateLoopSuccessfulEmailStepExecution = se => {
   expect(flat['create-email-body.message']).to.contain('Loopy val: 0.');
 };
 
-const validateLoopSuccessfulStepExecutionsForEvents = tValidator => ses => {
-  expect(ses).to.have.length(103);
-  ses.filter(se => se.stepName === 'trigger').map(tValidator);
-  ses.filter(se => se.stepName === 'create-email-body').map(validateLoopSuccessfulEmailStepExecution);
-  ses.filter(se => se.stepName === 'loop').map(validateLoopSuccessfulLoopStepExecution);
-};
-
-const validateElementRequestSuccessfulStepExecutionsForEvents = tValidator => ses => {
-  expect(ses).to.have.length(7);
-  ses.filter(se => se.stepName === 'trigger').map(tValidator);
-  ses.filter(se => se.stepName !== 'trigger').map(validateSuccessfulStepExecution);
-};
-
-const validateExecution = (e, expectedStatus) => validator => {
-  const fn = validator || ((ses) => ses.map(se => validateSuccessfulStepExecution(se)));
-  const es = expectedStatus || 'success';
-  expect(e.status).to.equal(es);
-  fn(e.stepExecutions);
-};
-
 const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
   fileName = fileName || 'single-event-sfdc';
   const payload = require(`./assets/events/${fileName}`);
@@ -97,26 +70,6 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
   }, []));
 };
 
-const validateSuccessfulEventTrigger = num => se => {
-  expect(se).to.have.property('status').and.equal('success');
-
-  const flat = flattenStepExecutionValues(se.stepExecutionValues);
-  expect(flat['trigger.type']).to.equal('event');
-  expect(flat['trigger.event']).to.exist;
-  expect(flat['trigger.eventId']).to.exist;
-};
-
-const validateSimpleSuccessfulStepExecutions = {
-  forEvents: (num) => validateSimpleSuccessfulStepExecutionsForType(validateSuccessfulEventTrigger(num))
-};
-
-const validateLoopSuccessfulStepExecutions = {
-  forEvents: (num) => validateLoopSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-};
-
-const validateElementRequestSuccessfulStepExecutions = {
-  forEvents: (num) => validateElementRequestSuccessfulStepExecutionsForEvents(validateSuccessfulEventTrigger(num))
-};
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let sfdcId;
