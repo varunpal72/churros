@@ -93,4 +93,17 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => cloud.post(`instances/${sfdcId}/transformations/myaccounts`, transformationPayload))
       .then(r => cloud.get(`instances/${sfdcId}/docs`, sfdcSwaggerSchema));
   });
+
+  it('should support updating the configuration for an element instance', () => {
+    const validate = (r) => {
+      expect(r.body.length).to.be.above(0);
+      return r.body.filter(config => config.key === 'event.notification.enabled')[0];
+    };
+
+    return cloud.get(`/instances/${sfdcId}/configuration`)
+      .then(r => validate(r))
+      .then(configuration => cloud.patch(`/instances/${sfdcId}/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'true' })))
+      .then(r => cloud.get(`/instances/${sfdcId}/configuration/${r.body.id}`))
+      .then(r => expect(r.body.propertyValue).to.equal('true'));
+  });
 });
