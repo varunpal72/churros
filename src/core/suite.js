@@ -14,7 +14,7 @@ var exports = module.exports = {};
 
 const boomGoesTheDynamite = (name, testCb, skip) => {
   skip ?
-    it.skip(name, testCb()) :
+    it.skip(name, () => testCb()) :
     it(name, () => testCb());
 };
 
