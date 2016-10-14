@@ -99,14 +99,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('loginbutton')).click();
       return browser.getCurrentUrl();
     case 'eloqua':
-      // TODO - not working yet...
       browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('login-button')).click();
-      browser.findElement(webdriver.By.id('sitename')).sendKeys(config['comany.name']);
-      browser.findElement(webdriver.By.id('username')).sendKeys(username);
-      browser.findElement(webdriver.By.id('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('submitButton')).click();
-      browser.findElement(webdriver.By.id('accept')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="login-button"]')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="sitename"]')).sendKeys(config['company.name']);
+      browser.findElement(webdriver.By.xpath('//*[@id="username"]')).sendKeys(username);
+      browser.findElement(webdriver.By.xpath('//*[@id="password"]')).sendKeys(password);
+      browser.findElement(webdriver.By.xpath('//*[@id="submitButton"]')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="accept"]')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="accept"]')).click();
       return browser.getCurrentUrl();
     case 'etsy':
       browser.get(r.body.oauthUrl);
@@ -276,7 +276,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).clear();
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('Login')).click();
-      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 5000)
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 10000)
         .thenCatch(r => true); // ignore
 
       browser.findElement(webdriver.By.id('oaapprove'))

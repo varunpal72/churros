@@ -83,12 +83,12 @@ suite.forPlatform('formulas', opts, (test) => {
 
     it('should search for formula instances by elementInstanceId', () => {
       const baseApi = '/formulas/instances';
-      return cloud.withOptions({ qs: { elementInstanceId } }).get(baseApi)
+      return cloud.withOptions({ qs:{ elementInstanceId: elementInstanceId } }).get(baseApi)
         .then(r => {
           expect(r.body.length).to.equal(1);
           expect(r.body[0].id).to.equal(formulaInstanceId);
         })
-        .then(r => cloud.withOptions({ qs: { elementInstanceId: -1 } }).get('/formulas/instances'))
+        .then(r => cloud.withOptions({ qs:{ elementInstanceId: -1 }}).get(baseApi))
         .then(r => expect(r.body.length).to.equal(0));
     });
 
