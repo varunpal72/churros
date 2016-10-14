@@ -24,9 +24,9 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
 	    let listId;
 	    let contactId;
 	    return cloud.post(test.api, genList())
-	      .then(r => { listId = r.body.ID })
+	      .then(r => { listId = r.body.ID; })
 	      .then(r => cloud.post(`${test.api}/${listId}/contacts/`, genContact()))
-	      .then(r => { contactId = r.body.ID })
+	      .then(r => { contactId = r.body.ID; })
 	      .then(r => cloud.get(`${test.api}/${listId}/contacts/${contactId}`))
 	      .then(r => cloud.patch(`${test.api}/${listId}/contacts/${contactId}`, genContact()))
 	      .then(r => cloud.delete(`${test.api}/${listId}/contacts/${contactId}`))

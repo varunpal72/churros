@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/campaigns');
+const expect = require('chakram').expect;
 
 suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
 	test.should.supportPagination();
