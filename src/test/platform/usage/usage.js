@@ -62,6 +62,6 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
 
     return cloud.withOptions({ qs: { from: futureToday, to: futureTomorrow } }).get('usage', expectFoHunderdNFer)
       .then(() => cloud.withOptions({ qs: { from: futureToday, to: futureTomorrow } }).get('usage/analytics/times', expectFoHunderdNFer))
-      .then(() => cloud.withOptions({ qs: { from: futureToday, to: futureTomorrow } }).get('usage/analytics/statuses', expectFoHunderdNFer))
+      .then(() => cloud.withOptions({ qs: { from: futureToday, to: futureTomorrow } }).get('usage/analytics/statuses', expectFoHunderdNFer));
   });
 });
