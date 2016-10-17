@@ -26,13 +26,6 @@
     "singleThreaded": false,
     "configuration": [
         {
-            "key": "notification.email",
-            "name": "Notification Email",
-            "type": "value",
-            "description": "Optional email where formula errors and notification steps will be sent (If more than one email is needed, separate each email with a comma)",
-            "required": false
-        },
-        {
             "key": "trigger-instance",
             "name": "trigger-instance",
             "type": "elementInstance",

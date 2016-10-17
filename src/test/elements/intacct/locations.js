@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const payload = () => ({
-  "locationid": tools.random(),
+  "locationid": tools.randomStr("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz", 15),
   "name": tools.random(),
   "startdate": {
     "year": "2010",

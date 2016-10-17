@@ -3,8 +3,10 @@
   "configuration": {
     "stIdFieldName": "field2",
     "synchableFieldName": "field",
-    "notification.email": "churros+trash@cloud-elements.com",
     "sfdc.instance.id": "<replace-me>",
     "sailthru.instance.id": "<replace-me>"
+  },
+  "settings": {
+    "notification.email": "churros+trash@cloud-elements.com"
   }
 }

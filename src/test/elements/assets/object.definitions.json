@@ -347,6 +347,18 @@
       "type": "string"
     }]
   },
+  "templates": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "triggers": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "users": {
     "fields": [{
       "path": "id",
@@ -745,6 +757,4 @@
       "vendorPath": "string"
     }]
   }
-
-
 }
