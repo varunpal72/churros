@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const payload = require('./assets/contacts');
 
 
-suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
+suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
   // test for functional where to OData field
