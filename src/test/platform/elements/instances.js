@@ -115,14 +115,14 @@ suite.forPlatform('elements/instances', opts, (test) => {
     }
     let instance, clone;
     return provisioner.create('shopify')
-      .then(r => instance = r.body) //create an instnace of the original
-      .then(r => cloud.post('elements/shopify/clone')) //create a clone
+      .then(r => instance = r.body)
+      .then(r => cloud.post('elements/shopify/clone'))
       .then(r => clone = r.body)
       .then(r => cloud.patch(`instances/${instance.id}`, {element: {id: clone.id}})
-      .then(r => { //update the instance to switch to the clone
+      .then(r => {
         expect(r.body.element.id).to.equal(clone.id);
       }))
-      .then(r => provisioner.delete(instance.id, 'elements/shopify/instances')) //clean up
+      .then(r => provisioner.delete(instance.id, 'elements/shopify/instances'))
       .then(r => cloud.delete(`elements/${clone.key}`));
   });
 });
