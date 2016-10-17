@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 
 const payload = () => ({
-  "itemid": tools.random(),
+  "itemid": tools.randomStr("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz", 15),
   "name": tools.random(),
   "status": "active",
   "itemtype": "Non-Inventory (Sales only)",

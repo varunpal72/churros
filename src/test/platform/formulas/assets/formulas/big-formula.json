@@ -273,12 +273,6 @@
             "name": "stIdFieldName",
             "type": "value",
             "description": "The Salesforce 'ST id' API field name"
-        },
-        {
-            "key": "notification.email",
-            "name": "Notification Email",
-            "type": "value",
-            "description": "Optional email where formula errors and notification steps will be sent"
         }
     ]
 }

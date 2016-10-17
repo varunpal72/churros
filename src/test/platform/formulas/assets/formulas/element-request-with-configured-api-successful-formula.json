@@ -2,13 +2,6 @@
     "active": true,
     "configuration": [
         {
-            "description": "Optional email where formula errors and notification steps will be sent (If more than one email is needed, separate each email with a comma)",
-            "key": "notification.email",
-            "name": "Notification Email",
-            "required": false,
-            "type": "value"
-        },
-        {
             "key": "trigger-instance",
             "name": "trigger-instance",
             "required": true,

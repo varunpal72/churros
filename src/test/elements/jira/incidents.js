@@ -21,10 +21,10 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
     return cloud.post('/hubs/helpdesk/incidents', payload)
       .then(r => incidentId = r.body.id)
       .then(r => cloud.withOptions({ qs: query }).postFile('hubs/helpdesk/incidents/' + incidentId + '/attachments', __dirname + '/assets/attach.txt'))
-      .then(r => attachmentId = r.body.id)
-      .then(r => cloud.get('/hubs/helpdesk/attachments/' + attachmentId))
       .then(r => cloud.get('/hubs/helpdesk/incidents/' + incidentId + '/attachments'))
-      .then(r => cloud.delete('/hubs/crm/attachments/' + attachmentId))
+      .then(r => attachmentId = r.body[0].id)
+      .then(r => cloud.get('/hubs/helpdesk/attachments/' + attachmentId))
+      .then(r => cloud.delete('/hubs/helpdesk/attachments/' + attachmentId))
       .then(r => cloud.delete(test.api + '/' + incidentId));
   });
   test.should.supportCruds();
