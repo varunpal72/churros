@@ -189,6 +189,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then(r => browser.getCurrentUrl())
           .thenCatch(r => browser.getCurrentUrl());
       }, 7000);
+    case 'infusionsoftecommerce':
     case 'infusionsoftcrm':
     case 'infusionsoftmarketing':
       browser.get(r.body.oauthUrl);
