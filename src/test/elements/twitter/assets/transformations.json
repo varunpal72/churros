@@ -1,0 +1,11 @@
+{
+  "lists": {
+    "vendorName": "lists/list.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
