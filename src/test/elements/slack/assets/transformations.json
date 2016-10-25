@@ -1,0 +1,11 @@
+{
+  "slack": {
+    "vendorName": "channels",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "channelID"
+      }
+    ]
+  }
+}
