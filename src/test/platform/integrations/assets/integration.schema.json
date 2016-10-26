@@ -7,7 +7,7 @@
     "name": {
       "type": "string"
     },
-    "status": {
+    "stage": {
       "type": "string"
     },
     "createdDate": {
@@ -17,5 +17,5 @@
       "type": "string"
     }
   },
-  "required": ["id", "name", "status", "createdDate"]
+  "required": ["id", "name", "stage", "createdDate"]
 }
