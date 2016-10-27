@@ -1,9 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');
 
-suite.forElement('marketing', 'endPoints', { payload: null},(test) => {
+suite.forElement('marketing', 'endPoints',null,(test) => {
   test.should.supportS();
 });
 

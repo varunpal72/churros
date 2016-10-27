@@ -6,12 +6,8 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const contactsPayload = build({ contactKey:tools.randomEmail()});
-var key,value;
-var name =tools.random();
-var emailValue =tools.randomEmail();
-var contactKey = contactsPayload.contactKey;
 const updatedPayload  = {
-   "contactKey":contactKey,
+   "contactKey":tools.randomEmail(),
    "attributeSets":[
       {
          "name":"Email Addresses",
@@ -20,7 +16,7 @@ const updatedPayload  = {
                "values":[
                   {
                      "name":"Email Address",
-                     "value":emailValue
+                     "value":tools.randomEmail()
                   },
                   {
                      "name":"HTML Enabled",
@@ -31,13 +27,14 @@ const updatedPayload  = {
          ]
       }
    ]
-}
+};
 suite.forElement('marketing', 'contacts', { payload: contactsPayload}, (test) => {
  it('should allow Create Update Search for /contacts', () => {
-    key="Email Addresses.Email Address";
+	let id;
     return cloud.post(test.api,contactsPayload)
-	.then(r => cloud.patch(test.api,updatedPayload))
-	.then(r => test.withApi(`${test.api}/search`).withOptions({ qs: { key: '${key}',value:'${value}' } }).should.return200OnGet());
+	.then(r => id =r.body.contactID)
+	.then(r => cloud.patch(`${test.api}/${id}`,updatedPayload))
+	.then(r => test.withApi(`${test.api}/search`).withOptions({ qs: { key: 'Email Addresses.Email Address',value:'${tools.randomStr()}' } }).should.return200OnGet());
 });
 });
 
