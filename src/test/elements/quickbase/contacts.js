@@ -13,7 +13,7 @@ suite.forElement('db', 'contacts', { payload: payload }, (test) => {
     return cloud.post(test.api, payload)
       .then(r => contactId = r.body.id)
       .then(r => cloud.withOptions({ qs: { fieldName: 'file' } }).postFile(`${test.api}/${contactId}/attachments`, __dirname + '/assets/attach.txt'))
-      .then(r => cloud.get(`${test.api}/${contactId}/attachments/42`))
+      .then(r => cloud.get(`${test.api}/${contactId}/attachments/22`))
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
