@@ -7,5 +7,59 @@
         "vendorPath": "id"
       }
     ]
+  },
+  "tweets": {
+    "vendorName": "search/tweets.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "accounts": {
+    "vendorName": "account/settings.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "blocks-id": {
+    "vendorName": "blocks/ids.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "blocks-list": {
+    "vendorName": "blocks/list.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "places": {
+    "vendorName": "geo/search.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "users": {
+    "vendorName": "users/search.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
   }
 }
