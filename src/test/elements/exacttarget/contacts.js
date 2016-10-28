@@ -31,11 +31,11 @@ const updatedPayload  = {
 };
 suite.forElement('marketing', 'contacts', { payload: contactsPayload}, (test) => {
  it('should allow CUS for /contacts', () => {
-   let id;
+  let id;
    return cloud.post(test.api,contactsPayload)
 	  .then(r => id =r.body.contactID)
 	  .then(r => cloud.patch(`${test.api}/${id}`,updatedPayload))
-          .then(r => test.withApi(`${test.api}`).withOptions({ qs: { key: 'Email Addresses',value:'${tools.randomStr()}' } }).should.return200OnGet());
+    .then(r => test.withApi(`${test.api}`).withOptions({ qs: { key: 'Email Addresses',value:'${tools.randomStr()}' } }).should.return200OnGet());
 });
 });
 
