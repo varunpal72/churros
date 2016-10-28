@@ -19,12 +19,12 @@ suite.forElement('marketing', 'interactions', { payload: interactionPayload }, (
   it('should allow CRD for /interactions', () => {
     let interationId;
     return cloud.post(test.api,payload)
-	    .then(r => interationId = r.body.id)
+      .then(r => interationId = r.body.id)
       .then(r => cloud.get(`${test.api}/${interationId}`))
       .then(r => cloud.get(test.api))
       .then(r => cloud.delete(`${test.api}/${interationId}`))
-	    .then(r =>cloud.post(test.api,interactionPayload ))
-	    .then(r =>updatePayload.modifiedDate=r.body.modifiedDate)
-	    .then(r => cloud.put(test.api,updatePayload));
+      .then(r =>cloud.post(test.api,interactionPayload ))
+      .then(r =>updatePayload.modifiedDate=r.body.modifiedDate)
+      .then(r => cloud.put(test.api,updatePayload));
  });
 });
