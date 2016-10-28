@@ -744,7 +744,59 @@
       "path": "id",
       "vendorPath": "string"
     }]
+  },
+  "tweets": {
+    "vendorName": "search/tweets.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "string"
+      }
+    ]
+  },
+  "accounts": {
+    "vendorName": "account/settings.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "string"
+      }
+    ]
+  },
+  "blocks-id": {
+    "vendorName": "blocks/ids.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "string"
+      }
+    ]
+  },
+  "blocks-list": {
+    "vendorName": "blocks/list.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "string"
+      }
+    ]
+  },
+  "places": {
+    "vendorName": "geo/search.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "string"
+      }
+    ]
+  },
+  "users": {
+    "vendorName": "users/search.json",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "string"
+      }
+    ]
   }
-
-
 }
