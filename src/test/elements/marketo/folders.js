@@ -5,7 +5,7 @@ const suite = require('core/suite');
 const payload = require('./assets/folders');
 const cloud = require('core/cloud');
 const updatePayload = {
-  			"name" : "cHANGED",
+  			"name" : "Test Folder Updated",
   			"description" : tools.randomStr()
 			}
 

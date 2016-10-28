@@ -565,6 +565,12 @@
       "vendorPath": "string"
     }]
   },
+  "files": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
   "colors": {
     "fields": [{
       "path": "id",
