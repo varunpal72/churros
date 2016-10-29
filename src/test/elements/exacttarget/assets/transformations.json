@@ -17,7 +17,7 @@
       }
     ]
   },
-  "interactions": {
+  "activities": {
     "vendorName": "interaction/v1/interactions",
     "fields": [
       {

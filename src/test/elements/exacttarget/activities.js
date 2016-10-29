@@ -1,29 +1,29 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/interactions');
+const payload = require('./assets/activities');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 
 const build = (overrides) => Object.assign({}, payload, overrides);
-const interactionPayload = build({ key:tools.random()});
+const activitiesPayload = build({ key:tools.random()});
 const updatePayload={
-   "key":interactionPayload.key,
+   "key":activitiesPayload.key,
    "modifiedDate":"",
    "name": tools.random(),
    "version":1,
    "description":tools.random(),
    "workflowApiVersion":1.0
 };
-suite.forElement('marketing', 'interactions', { payload: interactionPayload }, (test) => {
-  it('should allow CRD for /interactions', () => {
-    let interationId;
+suite.forElement('marketing','activities', { payload: activitiesPayload }, (test) => {
+  it('should allow CRD for /activities', () => {
+    let activitiesId;
     return cloud.post(test.api,payload)
-      .then(r => interationId = r.body.id)
-      .then(r => cloud.get(`${test.api}/${interationId}`))
+      .then(r => activitiesId = r.body.id)
+      .then(r => cloud.get(`${test.api}/${activitiesId}`))
       .then(r => cloud.get(test.api))
-      .then(r => cloud.delete(`${test.api}/${interationId}`))
-      .then(r =>cloud.post(test.api,interactionPayload ))
+      .then(r => cloud.delete(`${test.api}/${activitiesId}`))
+      .then(r =>cloud.post(test.api,activitiesPayload ))
       .then(r =>updatePayload.modifiedDate=r.body.modifiedDate)
       .then(r => cloud.put(test.api,updatePayload));
  });
