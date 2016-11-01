@@ -1,77 +1,27 @@
 {
-  "all":
-[
-  {
-    "creator": "U2S6WE012",
-    "is_member": true,
-    "is_archived": false,
-    "purpose": {
-      "last_set": 0,
-      "creator": "",
-      "value": "This channel is for team-wide communication and announcements. All team members are in this channel."
-    },
-    "created": 1476999904,
-    "is_channel": true,
-    "is_general": true,
-    "members": [
-      "U2S6WE012"
-    ],
-    "num_members": 1,
-    "name": "general",
-    "topic": {
-      "last_set": 0,
-      "creator": "",
-      "value": "Company-wide announcements and work-based matters"
-    },
-    "id": "C2S6WE3RS"
+  "creator": "U2S6WE012",
+  "is_member": true,
+  "is_archived": false,
+  "purpose": {
+    "last_set": 0,
+    "creator": "",
+    "value": ""
   },
-  {
-    "creator": "U2S6WE012",
-    "is_member": true,
-    "is_archived": false,
-    "purpose": {
-      "last_set": 0,
-      "creator": "",
-      "value": ""
-    },
-    "created": 1477419309,
-    "is_channel": true,
-    "is_general": false,
-    "members": [
-      "U2S6WE012"
-    ],
-    "num_members": 1,
-    "name": "my-new-fancy-channel",
-    "topic": {
-      "last_set": 0,
-      "creator": "",
-      "value": ""
-    },
+  "created": 1477419309,
+  "is_channel": true,
+  "is_general": false,
+  "members": [
+    "U2S6WE012"
+  ],
+  "num_members": 1,
+  "name": "my-new-fancy-channel",
+  "topic": {
+    "last_set": 0,
+    "creator": "",
+    "value": ""
+  },
     "id": "C2U2YU9NW"
-  },
-  {
-    "creator": "U2S6WE012",
-    "is_member": true,
-    "is_archived": false,
-    "purpose": {
-      "last_set": 0,
-      "creator": "",
-      "value": "A place for non-work-related flimflam, faffing, hodge-podge or jibber-jabber you'd prefer to keep out of more focused work-related channels."
-    },
-    "created": 1476999904,
-    "is_channel": true,
-    "is_general": false,
-    "members": [
-      "U2S6WE012"
-    ],
-    "num_members": 1,
-    "name": "random",
-    "topic": {
-      "last_set": 0,
-      "creator": "",
-      "value": "Non-work banter and water cooler conversation"
-    },
-    "id": "C2S7C51R7"
-  }
-]
 }
+
+user: U2V71B9FA
+privateChan: G2V7U25LG
