@@ -17,21 +17,13 @@ suite.forElement('collaboration', 'channels', { payload: payload }, (test) => {
   test.should.supportSr();
 
   it('should allow PATCH on public channels for all actions', () => {
-    let options = { qs: { action: actions.all[0] }};
     return cloud.get(test.api)
-    .then(response => {
-      return response.filter(function(channel){
-        if (channel.name === 'churros-test-channel'){
-          return channel;
-        }
-      });
-    })
-    .then(function (channels) {
-      if (channels.length > 0) {
-        return channels[0];
-      } else {
-        return cloud.post(test.api, createPayload);
-      }
+    .then(response => response.filter( channel => {
+        if (channel.name === 'churros-test-channel'){return channel;}
+      }))
+    .then(channels => {
+      if (channels.length > 0) {return channels[0];}
+      else {return cloud.post(test.api, createPayload);}
     })
     .then(r => cloud.update(`${test.api}/${r.id}/actions`, {qs: {action: 'rename', name: 'churros-check'}}))
     .then(r => cloud.update(`${test.api}/${r.id}/actions`, {qs: {action: 'purpose', purpose: 'eat yummy churros'}}))
@@ -57,6 +49,7 @@ suite.forElement('collaboration', 'channels', { payload: payload }, (test) => {
   test.should.return200OnGet();
   test.withOptions({qs: {private: true}}).should.return200OnGet();
   // check
+
 
 
   it('lukevance should insert some tests here :)', () => true);
