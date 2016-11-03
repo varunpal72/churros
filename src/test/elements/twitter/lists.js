@@ -4,10 +4,10 @@ const suite = require('core/suite');
 const payload = require('./assets/lists');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const build = (overrides) => Object.assign({}, payload, overrides);
+const updatePayload = build({ "name": "test" + tools.random() });
 
 suite.forElement('social', 'lists', { payload: payload }, (test) => {
-  const build = (overrides) => Object.assign({}, payload, overrides);
-  const updatePayload = build({ "name": "test" + tools.random() });
   test.should.supportPagination();
   it('should support CRUDS for /hubs/social/lists/{id}/subscribers', () => {
     let listId;
