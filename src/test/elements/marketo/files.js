@@ -9,7 +9,7 @@ suite.forElement('marketing', 'files', (test) => {
     let path = __dirname + '/assets/brady_original.jpg';
 
     return cloud.postFile(test.api, path)
-      .then(r => fileId = r.body.result[0].id)
+      .then(r => fileId = r.body.id)
       .then(r => cloud.get(`${test.api}`))
       .then(r => cloud.patchFile(`${test.api}/${fileId}/content`, path))
       .then(r => cloud.get(`${test.api}/${fileId}`));
