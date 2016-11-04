@@ -35,7 +35,7 @@ suite.forElement('marketing', 'contacts', { payload: contactsPayload}, (test) =>
    return cloud.post(test.api,contactsPayload)
 	  .then(r => id =r.body.contactID)
 	  .then(r => cloud.patch(`${test.api}/${id}`,updatedPayload))
-          .then(r => test.withApi(`${test.api}`).withOptions({ qs: { key: 'Email Addresses',value:'${tools.randomStr()}' } }).should.return200OnGet());
+ 	  .then(r => cloud.get(`${test.api}`), { qs: { key: 'Email Addresses',value:'${tools.randomStr()}' } })
 });
 });
 
