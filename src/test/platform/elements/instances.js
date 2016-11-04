@@ -10,6 +10,7 @@ const instancesSchema = require('./assets/element.instances.schema');
 const transformationPayload = require('./assets/accountTransformation');
 const objDefPayload = require('./assets/accountObjectDefinition');
 const sfdcSwaggerSchema = require('./assets/sfdcSwagger.schema');
+const logger = require('winston');
 
 const genInstance = (element, o) => ({
   name: (o.name || 'churros-instance'),
@@ -105,5 +106,23 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(configuration => cloud.patch(`/instances/${sfdcId}/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'true' })))
       .then(r => cloud.get(`/instances/${sfdcId}/configuration/${r.body.id}`))
       .then(r => expect(r.body.propertyValue).to.equal('true'));
+  });
+
+  it('should support switching an instance to the clone of an element', () => {
+    if (props.get('user') === 'system') {
+      logger.warn('Unable to test element clone as system user. Skipping.');
+      return;
+    }
+    let instance, clone;
+    return provisioner.create('shopify')
+      .then(r => instance = r.body)
+      .then(r => cloud.post('elements/shopify/clone'))
+      .then(r => clone = r.body)
+      .then(r => cloud.patch(`instances/${instance.id}`, {element: {id: clone.id}})
+      .then(r => {
+        expect(r.body.element.id).to.equal(clone.id);
+      }))
+      .then(r => provisioner.delete(instance.id, 'elements/shopify/instances'))
+      .then(r => cloud.delete(`elements/${clone.key}`));
   });
 });
