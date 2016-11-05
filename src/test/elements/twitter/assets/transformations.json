@@ -1,6 +1,6 @@
 {
   "lists": {
-    "vendorName": "lists/list.json",
+    "vendorName": "lists",
     "fields": [
       {
         "path": "id",
@@ -8,12 +8,12 @@
       }
     ]
   },
-  "tweets": {
-    "vendorName": "search/tweets.json",
+  "statuses": {
+    "vendorName": "statuses",
     "fields": [
       {
         "path": "id",
-        "vendorPath": "id"
+        "vendorPath": "id_str"
       }
     ]
   },

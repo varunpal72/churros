@@ -745,8 +745,7 @@
       "vendorPath": "string"
     }]
   },
-  "tweets": {
-    "vendorName": "search/tweets.json",
+  "statuses": {
     "fields": [
       {
         "path": "id",
