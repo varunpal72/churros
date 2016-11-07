@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 
-suite.forElement('documents', 'folders', (test) => {
+suite.forElement('documents', 'folders', {ski: true}, (test) => {
   const contentsApi = test.api + '/contents';
   const metadataApi = test.api + '/metadata';
   const options1ApiPaging = { qs: { path: '/', page: 1, pageSize: 1 } };

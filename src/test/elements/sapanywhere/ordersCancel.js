@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const ordersPayload = require('./assets/orders');
 
-suite.forElement('ecommerce', 'orders', { payload: ordersPayload }, (test) => {
+suite.forElement('ecommerce', 'orders', { payload: ordersPayload, skip: true }, (test) => {
   it('should create an order and then cancel it', () => {
     let orderId;
     return cloud.post(test.api, ordersPayload)

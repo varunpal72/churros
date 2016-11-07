@@ -69,7 +69,7 @@ const refund = (lineId, parentId) => ({
   }
 });
 
-suite.forElement('ecommerce', 'refunds', (test) => {
+suite.forElement('ecommerce', 'refunds', {skip: true} (test) => {
   let orderId, lineId;
   before(() => cloud.post(`/hubs/ecommerce/orders`, order())
     .then(r => orderId = r.body.id)

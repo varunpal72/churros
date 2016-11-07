@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('ecommerce', 'orders', {}, (test) => {
+suite.forElement('ecommerce', 'orders', {skip: true}, (test) => {
   test.should.return200OnGet();
   test.should.supportPagination();
   test.should.supportSr();

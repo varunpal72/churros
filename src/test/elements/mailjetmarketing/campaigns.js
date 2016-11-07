@@ -5,7 +5,7 @@ const cloud = require('core/cloud');
 const payload = require('./assets/campaigns');
 const expect = require('chakram').expect;
 
-suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
+suite.forElement('marketing', 'campaigns', { payload: payload, skip: true }, (test) => {
 	test.should.supportPagination();
 	test.should.return200OnGet();
 

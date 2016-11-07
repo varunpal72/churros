@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const payload = require('./assets/orders');
 
-suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'orders', { payload: payload, skip: true }, (test) => {
   const options = {
     churros: {
       updatePayload: {
