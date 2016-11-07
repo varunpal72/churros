@@ -756,5 +756,13 @@
       "path": "id",
       "vendorPath": "string"
     }]
+  },
+  "interactions": {
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
   }
 }
