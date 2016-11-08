@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const payload = require('./assets/statuses');
 const tools = require('core/tools');
-const cloud = require('core/cloud');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const tweetsPayload = build({ status: tools.random() });
 
