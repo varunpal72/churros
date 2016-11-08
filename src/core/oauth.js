@@ -370,11 +370,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('loginButton')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]')), 5000)
           .thenCatch(r => true); // ignore
-
       browser.findElement(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]'))
-          .then((element) => element.click(), (err) => {}); // ignore this```
-
-
+          .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
     case 'twitter':
       browser.get(r.body.oauthUrl);
@@ -382,7 +379,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('allow')).click();
       return browser.getCurrentUrl();
-
     default:
       throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }
