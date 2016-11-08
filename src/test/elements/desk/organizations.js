@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const organizationsUpdate = (rando) => ({
-  "name": "Cloud-Elements update" + rando,
+  "name": "CE-" + rando,
   "domains": [
     "acmeinc.com",
     "acmeinc.net"
@@ -13,7 +13,7 @@ const organizationsUpdate = (rando) => ({
 });
 
 const organizationsCreate = (rando) => ({
-  "name": "Cloud-Elements " + rando,
+  "name": "CE " + rando,
   "domains": [
     "acmeinc.com",
     "acmeinc.net"
@@ -22,7 +22,7 @@ const organizationsCreate = (rando) => ({
 
 suite.forElement('helpdesk', 'organizations', { payload: organizationsCreate() }, (test) => {
   let organiztionId;
-  it('should allow CRUS for organizations', () => {
+  it.skip('should allow CRUS for organizations', () => {
     return cloud.post(test.api, organizationsCreate(tools.randomInt().toString()))
       .then(r => organiztionId = r.body.id)
       .then(r => cloud.get(`${test.api}/${organiztionId}`))

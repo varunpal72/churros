@@ -11,7 +11,7 @@
 Integration testing framework for CE APIs, written in Javascript.  Provides testing for all things Cloud Elements, from platform resources (`elements`, `notifications`, etc.) to all of the current elements in our catalog (`sfdc`, `dropbox`, etc.).  This framework has up-to-date example JSON requests, example JSON transformations and much more.  These tests are run against our platform many times a day, guaranteeing that they represent what our platform supports *today*.
 
 ## How
-Interact with the `churros` CLI to go about initializing `churros`, stubbing out tests and running tests.  When it comes to running tests, the `churros test` sub-command simply wraps the `mocha` executable, which is the framework that all of our tests run as.  The lower-level functions are all using the `chakram` node library to make HTTP requests, and then valiation of payloads and HTTP responses is done using `chai` assertions.  The `churros` framework relies heavily on Javascript promises in order to manage the asynchronous nature of `nodejs`.  If you're new to Javascript, I recommend familiarizing yourself with promises before trying to write any of your own tests.
+Interact with the `churros` CLI to go about initializing `churros`, stubbing out tests and running tests.  When it comes to running tests, the `churros test` sub-command simply wraps the `mocha` executable, which is the framework that all of our tests run as.  The lower-level functions are all using the `chakram` node library to make HTTP requests, and then validation of payloads and HTTP responses is done using `chai` assertions.  The `churros` framework relies heavily on Javascript promises in order to manage the asynchronous nature of `nodejs`.  If you're new to Javascript, I recommend familiarizing yourself with promises before trying to write any of your own tests.
 
 ## Installation
 If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/getting-started/installing-node) first.
@@ -36,15 +36,31 @@ $ churros init
 
 > __PROTIP:__ May have to `sudo` the global install and `npm link` depending on your environment
 
-> __PROTIP:__ You can pass a `--file` to `churros init` if you have an existing properties file that you want to initialize from (i.e. `churros init --file /absolute/path/to/existing/properties/file`)
+> __PROTIP:__ You can pass `--template` to `churros init` if you have an existing sauce template
+that you want to initialize from. It can accept both local filesystem paths and github urls:
+  * `churros init --template /absolute/path/to/existing/sauce.json`
+  * `churros init --template https://token@github.com/cloud-elements/churros-sauce/sauce.json`
 
-> __PROTIP:__ `node` version `5.4.0` is prone to showing messages like the one below.  Just ignore them...
+> __PROTIP:__ You can set environment variables so that `churros init` does not prompt:
+  * `CHURROS_USER`
+  * `CHURROS_PASSWORD`
+  * `CHURROS_URL`
+  * `CHURROS_TEMPLATE`
+
+> __PROTIP:__ `node` version `5.4.0` is prone to showing messages like the one below. Just ignore
+them...
+
 ```bash
 npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
 ```
 
+Lastly, if you don't have a personal ngrok account, you'll need to signup for a free account [here](https://dashboard.ngrok.com/user/signup).  After you have signed up, you should have a personal ngrok auth token that you'll need to setup on your computer per their instructions.
+
 ## `churros` CLI
 It is worth taking some time to familiarize yourself with the `churros` CLI.  This CLI can run tests, help setup new test suites, and add/view properties that are needed in order to run certain suites.  Run `churros help` and dig through some of the different sub-commands that are currently available.  To see some examples of the most common command, `churros test`, continue on below.
+
+## API Docs
+For full API docs, see the API docs [here](http://cloud-elements.github.io/churros).
 
 ## Examples
 

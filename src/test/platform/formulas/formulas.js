@@ -57,13 +57,13 @@ suite.forPlatform('formulas', opts, (test) => {
 
   it('should allow creating a big azz formula and then an instance', () => {
     const genF = () => {
-      let f = require('./assets/big-formula.json');
+      let f = require('./assets/formulas/big-formula.json');
       f.name = tools.random();
       return f;
     };
 
     const genFi = (id) => {
-      let fi = require('./assets/big-formula-instance.json');
+      let fi = require('./assets/formulas/big-formula-instance.json');
       fi.configuration['sfdc.instance.id'] = id;
       fi.configuration['sailthru.instance.id'] = id;
       return fi;

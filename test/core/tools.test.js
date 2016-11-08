@@ -1,8 +1,6 @@
 'use strict';
 
 const chai = require('chai');
-const chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised);
 const expect = chai.expect;
 const tools = require('core/tools');
 
@@ -10,6 +8,12 @@ describe('tools', () => {
   it('should support generating a random string', () => {
     const random = tools.random();
     expect(random).to.be.a('string');
+  });
+
+  it('should support generating a random string', () => {
+    const random = tools.randomStr("aAeEiIoOuU", 4);
+    expect(random).to.be.a('string');
+    expect(random).to.have.lengthOf(4);
   });
 
   it('should support generating a random email address', () => {
@@ -54,43 +58,41 @@ describe('tools', () => {
     expect(encoded).to.equal('ABCD');
   });
 
-  it('should support sleeping for x seconds', () => {
-    tools.sleep(1);
-  });
+  it('should support sleeping for x seconds', () => tools.sleep(1));
 
   it('should support waiting a specific time for a succesful predicate', () => {
-    var i = 0;
-
-    const pred = (cb) => {
-      if (++i > 2) cb(true);
-    };
-
-    return expect(tools.wait.upTo(10000).for(pred)).to.eventually.equal(true);
+    let i = 0;
+    const pred = () => new Promise((res, rej) => ++i > 2 ? res(true) : rej());
+    return tools.wait.upTo(10000).for(pred)
+      .then(r => expect(r).to.equal(true));
   });
 
   it('should support waiting for a specific time for an unsuccesful predicate', () => {
-    const pred = (cb) => {
-      return false;
-    };
-
-    return expect(tools.wait.upTo(10000).for(pred)).to.be.rejected;
+    const pred = () => new Promise((res, rej) => rej());
+    return tools.wait.upTo(1000).for(pred)
+      .then(r => {
+        throw Error('Failed');
+      })
+      .catch(e => true);
   });
 
   it('should support waiting the default time for a succesful predicate', () => {
-    var i = 0;
-
-    const pred = (cb) => {
-      if (++i > 2) cb(true);
-    };
-
-    return expect(tools.wait.for(pred)).to.eventually.equal(true);
+    let i = 0;
+    const pred = () => new Promise((res, rej) => ++i > 2 ? res(true) : rej());
+    return tools.wait.for(pred)
+      .then(r => expect(r).to.equal(true));
   });
 
   it('should support waiting for the default time for an unsuccesful predicate', () => {
-    const pred = (cb) => {
-      return false;
-    };
-
-    return expect(tools.wait.for(pred)).to.be.rejected;
+    const pred = () => new Promise((res, rej) => rej(false));
+    return tools.wait.for(pred)
+      .then(r => {
+        throw Error('Failed');
+      })
+      .catch(r => true);
   });
+
+  it('should allow stringifying an object', () => tools.stringify({ foo: 'bar' }));
+
+  it('should allow loading an asset file', () => tools.copyAsset(require.resolve('./assets/test.json')));
 });

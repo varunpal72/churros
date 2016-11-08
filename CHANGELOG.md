@@ -1,5 +1,7 @@
 ## v0.6.0 <sub><sup>(TBD)</sup></sub>
 #### Highlights
+* added support for new `churros clean` sub-command utility to help clean up platform resources
+![CLIExample](http://cl.ly/1I0m290l1O0w/Screen%20Recording%202016-06-29%20at%2010.34%20AM.gif)
 
 ## v0.5.0 <sub><sup>(2016-03-25)</sup></sub>
 #### Highlights

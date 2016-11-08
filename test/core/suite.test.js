@@ -97,12 +97,16 @@ describe('suite', () => {
       .should.return404OnDelete();
     test
       .withApi('/foo/pagination')
+      .should.supportNextPagePagination(1, true);
+    test
+      .withApi('/foo/pagination')
       .should.supportNextPagePagination(1);
 
     /* no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above */
     test.should.return200OnPost();
     test.should.return404OnGet(456);
     test.should.supportSr();
+    test.should.supportS();
     test.should.supportCruds();
     test.should.supportCruds(chakram.put);
     test.should.supportCrud();
@@ -126,6 +130,7 @@ describe('suite', () => {
     test
       .withName('this should be the name of the test')
       .should.return200OnPost();
+
     test
       .withApi('/foo/bad')
       .withName('this should be the name of the test')
@@ -136,13 +141,24 @@ describe('suite', () => {
       .withApi(`${test.api}/search`)
       .withOptions({ qs: { foo: 'bar' } })
       .should.return200OnGet();
+
+    test
+      .withName('should allow skipping a specific test by passing in the skip option')
+      .withOptions({ skip: true })
+      .withApi(`${test.api}/api/that/is/not/mocked`)
+      .should.return200OnGet();
   });
 });
 
-/* This test exercises all of the available optional suite options */
+/* This test exercises some of the available optional suite options */
 const opts = {
   name: 'this will override the resource that was passed in',
   payload: genPayload(),
   schema: genSchema()
 };
 suite.forPlatform('exampleResourceName', opts, (test) => {});
+
+const optsWithSkip = {
+  skip: true
+};
+suite.forPlatform('resourceNameThatWillBeSkipped', optsWithSkip, (test) => {});

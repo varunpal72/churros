@@ -1,3 +1,4 @@
+/** @module core/defaults */
 'use strict';
 
 const chakram = require('chakram');
@@ -26,6 +27,13 @@ const validate = (b, u, o, un) => {
   if (!un) throw Error('The username was never set. Cannot reset until properly initialized');
 };
 
+/**
+ * Set the default chakram HTTP properties for all subsequent requests that get made through chakram
+ * @param b The base URL
+ * @param u The default user secret
+ * @param o The default org secret
+ * @param un The username
+ */
 var exports = module.exports = (b, u, o, un) => {
   validate(b, u, o, un);
   baseUrl = b;
@@ -35,11 +43,18 @@ var exports = module.exports = (b, u, o, un) => {
   setDefaults(b, u, o, un);
 };
 
+/**
+ * Resets the defaults and removes the element token from any subsequent HTTP requests
+ */
 exports.reset = () => {
   validate(baseUrl, userSecret, orgSecret, username);
   setDefaults(baseUrl, userSecret, orgSecret, username);
 };
 
+/**
+ * Adds the specified element token to any subsequent HTTP requests made through chakram
+ * @param {string} token The element token to include on any subsequent HTTP calls
+ */
 exports.token = (token) => {
   logger.debug('Adding token to our default request headers');
   chakram.setRequestDefaults({

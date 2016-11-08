@@ -71,6 +71,18 @@ const setupProps = () => {
       'password': 'ricard',
       'oauth.api.key': 'he gon do one',
       'oauth.api.secret': 'fill it up again'
+    },
+    'customProvisioning': {
+      'provisioning': 'custom',
+      'username': 'frank'
+    },
+    'myboguselement': {
+      'provisioning': 'oauth2',
+      'external': true,
+      'username': 'frank',
+      'password': 'ricard',
+      'oauth.api.key': 'he gon do one',
+      'oauth.api.secret': 'fill it up again'
     }
   });
 };
@@ -222,6 +234,16 @@ describe('provisioner', () => {
       .then(r => mockery.disable());
   });
 
+  it('should allow partially provisioning an oauth2 element instance', () => {
+    setupProps();
+    return provisioner.partialOauth('myoauth2element')
+      .then(r => {
+        expect(r).to.exist;
+        expect(r).to.equal('speakercity');
+      })
+      .then(r => mockery.disable());
+  });
+
   it('should throw an error for provisioning an oauth1 element with external', () => {
     setupProps();
     return provisioner.create('myoauth1external')
@@ -237,6 +259,14 @@ describe('provisioner', () => {
       .catch(e => {
         expect(e).to.not.be.null;
         expect(e.message).to.equal(`Token URL must be present in the element props as 'tokenUrl'`);
+      });
+  });
+
+  it('should throw an error if provisioning a bogus element', () => {
+    setupProps();
+    return provisioner.create('myboguselement')
+      .catch(e => {
+        expect(e).to.not.be.null;
       });
   });
 
@@ -261,5 +291,24 @@ describe('provisioner', () => {
         throw Error('Where my error at?');
       })
       .catch(r => true);
+  });
+
+  it('should allow creating an element instance with custom provisioning', () => {
+    setupProps();
+    const mockProvisioner = {
+      create: (config) => new Promise((res, rej) => res({ body: { token: 123 } }))
+    };
+    const s = `${__dirname}`.split('/');
+    const root = s.filter((i) => i !== 'test' && i !== 'core').reduce((fullPath, item) => fullPath + '/' + item);
+    const reqPath = `${root}/src/core/../test/elements/customProvisioning/provisioner`;
+    mockery.registerMock(reqPath, mockProvisioner);
+    mockery.enable({
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    });
+    return provisioner.create('customProvisioning')
+      .then(r => {
+        mockery.disable();
+      });
   });
 });

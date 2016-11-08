@@ -46,6 +46,14 @@ const testOAuthUrl = (idOrKey) => {
   });
 };
 
+const testOAuthUrlPost = (idOrKey) => {
+  return cloud.post(`elements/${idOrKey}/oauth/url`, { apiKey: 'abcdefg', apiSecret: '1234567', callbackUrl: 'http://localhost:8080' }, r => {
+    expect(r.body).to.not.be.empty;
+    expect(r.body.element).to.equal('sfdc');
+    expect(r.body.oauthUrl).to.not.be.empty;
+  });
+};
+
 const opts = { payload: common.genElement({}), schema: schema };
 
 suite.forPlatform('elements', opts, (test) => {
@@ -55,6 +63,9 @@ suite.forPlatform('elements', opts, (test) => {
 
   it('should support CRUD by key', () => crudElement('key', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
   it('should support CRUD by ID', () => crudElement('id', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
+
+  it('should support JDBC element CRUD by key', () => crudElement('key', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
+  it('should support JDBC element CRUD by ID', () => crudElement('id', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
 
   it('should support export by key', () => cloud.get('elements/freshdesk/export', schema));
   it('should support export by ID', () => {
@@ -88,10 +99,16 @@ suite.forPlatform('elements', opts, (test) => {
   it('should support activate/deactivate by key', () => testElementActivation('key', schema));
   it('should support activate/deactivate by ID', () => testElementActivation('id', schema));
 
-  it('should support oauth URL generation by key', () => testOAuthUrl('sfdc'));
+  it('should support oauth URL generation by key', () => {
+    return testOAuthUrl('sfdc')
+    .then(() => testOAuthUrlPost('sfdc'));
+  });
   it('should support oauth URL generation by ID', () => {
+    let elementId;
     return getElementId('sfdc')
-      .then(id => testOAuthUrl(id));
+      .then(id => elementId = id)
+      .then(() => testOAuthUrl(elementId))
+      .then(() => testOAuthUrlPost(elementId));
   });
 
   it('should support retrieve default transformations by key', () => cloud.get('elements/sfdc/transformations'));

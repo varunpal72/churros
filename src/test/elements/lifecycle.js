@@ -1,22 +1,17 @@
 'use strict';
 
-const chakram = require('chakram');
-const expect = chakram.expect;
+const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
-const argv = require('optimist').demand('element').argv;
+const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
-let defaults = require('core/defaults');
 
 const createAll = (urlTemplate, list) => {
-  let promises = [];
-  Object.keys(list).forEach(key => {
-    const payload = list[key];
-    const url = util.format(urlTemplate, key);
-    promises.push(chakram.post(url, payload));
-  });
-  return chakram.all(promises);
+  return Object.keys(list).reduce((p, key) =>
+    p.then(() => cloud.post(util.format(urlTemplate, key), list[key])),
+    Promise.resolve(true)); // initial
 };
 
 const terminate = (error) => {
@@ -25,13 +20,12 @@ const terminate = (error) => {
 };
 
 let instanceId;
-before(done => {
+before(() => {
   const element = argv.element;
-  provisioner.create(element)
+  return provisioner.create(element)
     .then(r => {
       expect(r).to.have.statusCode(200);
       instanceId = r.body.id;
-      defaults.token(r.body.token);
       // object definitions file exists? create the object definitions on the instance
       const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
       if (fs.existsSync(objectDefinitionsFile + '.json')) {
@@ -49,14 +43,12 @@ before(done => {
         return createAll(url, require(transformationsFile));
       }
     })
-    .then(r => done())
     .catch(r => {
-      if (instanceId) {
+      return instanceId ?
         provisioner.delete(instanceId)
-          .then(() => terminate(r))
-          .catch(() => terminate(r));
-      }
-      terminate(r);
+        .then(() => terminate(r))
+        .catch(() => terminate(r)) :
+        terminate(r);
     });
 });
 

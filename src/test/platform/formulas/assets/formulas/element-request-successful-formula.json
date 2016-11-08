@@ -1,0 +1,115 @@
+{
+    "name": "element-request-successful",
+    "steps": [
+        {
+            "onSuccess": [],
+            "onFailure": [],
+            "name": "delete-contact",
+            "type": "elementRequest",
+            "properties": {
+                "method": "DELETE",
+                "retryAttempts": "3",
+                "path": "${delete-contact-path}",
+                "retry": "true",
+                "retryDelay": "200",
+                "retryStatusCodes": "400,500,503",
+                "elementInstanceId": "${trigger-instance}",
+                "api": "/hubs/crm/contacts/{id}",
+                "acceptableStatusCodes": "200"
+            }
+        },
+        {
+            "onSuccess": [
+                "delete-contact"
+            ],
+            "onFailure": [],
+            "name": "delete-contact-path",
+            "type": "script",
+            "properties": {
+                "body": "var path = { \"id\": steps['get-contact'].response.body[0].Id }\n\ndone(path);"
+            }
+        },
+        {
+            "onSuccess": [
+                "delete-contact-path"
+            ],
+            "onFailure": [],
+            "name": "get-contact",
+            "type": "elementRequest",
+            "properties": {
+                "method": "GET",
+                "retryAttempts": "3",
+                "query": "${get-contact-query.query}",
+                "retry": "true",
+                "retryDelay": "200",
+                "retryStatusCodes": "400,500,503",
+                "elementInstanceId": "${trigger-instance}",
+                "api": "/hubs/crm/contacts",
+                "acceptableStatusCodes": "200"
+            }
+        },
+        {
+            "onSuccess": [
+                "get-contact"
+            ],
+            "onFailure": [],
+            "name": "get-contact-query",
+            "type": "script",
+            "properties": {
+                "body": "var contact = steps['post-contact'].response.body\n\nvar query = { \"query\": { \"where\": \"Id='\" + contact.Id + \"'\" } };\n\ndone(query);"
+            }
+        },
+        {
+            "onSuccess": [
+                "get-contact-query"
+            ],
+            "onFailure": [],
+            "name": "post-contact",
+            "type": "elementRequest",
+            "properties": {
+                "body": "${post-contact-payload.contact}",
+                "method": "POST",
+                "retryAttempts": "3",
+                "retry": "true",
+                "retryDelay": "200",
+                "retryStatusCodes": "400,500,503",
+                "elementInstanceId": "${trigger-instance}",
+                "api": "/hubs/crm/contacts"
+            }
+        },
+        {
+            "onSuccess": [
+                "post-contact"
+            ],
+            "onFailure": [],
+            "name": "post-contact-payload",
+            "type": "script",
+            "properties": {
+                "body": "var contact = { \"contact\": {\n  \"Phone\": \"123-456-7890\",\n  \"Email\": \"devnull@cloud-elements.com\",\n  \"FirstName\": \"Dev\",\n  \"LastName\": \"Null\",\n  \"MobilePhone\": \"987-654-3210\",\n  \"Title\": \"Colonel\",\n  \"Salutation\": \"Mr.\",\n  \"Birthdate\": \"1977-01-01\"\n}};\n\ndone(contact);\n\n"
+            }
+        }
+    ],
+    "triggers": [
+        {
+            "type": "event",
+            "async": true,
+            "onSuccess": [
+                "post-contact-payload"
+            ],
+            "onFailure": [],
+            "properties": {
+                "elementInstanceId": "${trigger-instance}"
+            }
+        }
+    ],
+    "active": true,
+    "singleThreaded": false,
+    "configuration": [
+        {
+            "key": "trigger-instance",
+            "name": "trigger-instance",
+            "type": "elementInstance",
+            "required": true
+        }
+    ]
+}

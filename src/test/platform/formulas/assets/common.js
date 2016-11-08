@@ -1,8 +1,10 @@
 'use strict';
 
+const cleaner = require('core/cleaner');
 const tools = require('core/tools');
+const b64 = tools.base64Encode;
 const chakram = require('chakram');
-const util = require('util');
+const expect = chakram.expect;
 const logger = require('winston');
 const provisioner = require('core/provisioner');
 const cloud = require('core/cloud');
@@ -27,57 +29,83 @@ exports.genInstance = (opts) => new Object({
   name: (opts.name || 'churros-formula-instance-name')
 });
 
-const deleteFormulaInstance = (fId, fiId) =>
-  chakram.delete(util.format('/formulas/%s/instances/%s', fId, fiId));
+exports.provisionSfdcWithPolling = () => provisioner.create('sfdc', {
+  'event.notification.enabled': true,
+  'event.vendor.type': 'polling',
+  'event.poller.refresh_interval': 999999999
+});
 
-const getInstancesForFormula = (fId) =>
-  chakram.get(util.format('/formulas/%s/instances', fId))
-  .then(r => r.body);
+exports.provisionSfdcWithWebhook = () => provisioner.create('sfdc', {
+  'event.notification.enabled': true,
+  'event.vendor.type': 'webhook'
+});
 
-const getInstancesForFormulas = (fs) =>
-  Promise.all(fs.map(f => getInstancesForFormula(f.id)));
+exports.generateSfdcEvent = (instanceId, payload) => {
+  const url = `/events/sfdc`;
+  const opts = { headers: { 'Element-Instances': instanceId } };
+  return cloud
+    .withOptions(opts)
+    .post(url, payload);
+};
 
-const deleteFormula = (fId) =>
-  chakram.delete(util.format('/formulas/%s', fId));
+exports.generateSfdcPollingEvent = (instanceId, payload) => {
+  const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
+  const encodedId = b64(instanceId.toString());
 
-const deleteFormulas = (fs) =>
-  Promise.all(fs.map(f => deleteFormula(f.id)));
+  payload.instance_id = instanceId;
 
-const getFormulasByName = (api, name) =>
-  chakram.get(api)
-  .then(r => r.body.filter(f => f.name === name));
+  return cloud
+    .withOptions({ 'headers': headers })
+    .post('/events/sfdcPolling/' + encodedId, payload);
+};
 
-const deleteInstancesForFormulas = (is) =>
-  Promise.all(is.map(i => deleteFormulaInstance(i.formula.id, i.id)));
+exports.deleteFormula = (fId) => cloud.delete(`/formulas/${fId}`);
+exports.deleteFormulaInstance = (fId, fiId) => cloud.delete(`/formulas/${fId}/instances/${fiId}`);
 
-const deleteFormulasByName = (api, name) =>
-  getFormulasByName(api, name)
-  .then(fs =>
-    getInstancesForFormulas(fs)
-    .then(fis => [].concat.apply([], fis))
-    .then(deleteInstancesForFormulas)
-    .then(() => deleteFormulas(fs)));
-exports.deleteFormulasByName = deleteFormulasByName;
+const getAllExecutions = (fiId, nextPage, all) => {
+  all = all || [];
+  const options = { qs: { nextPage: nextPage, pageSize: 200 } };
+  return cloud.withOptions(options).get(`/formulas/instances/${fiId}/executions`)
+    .then(r => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body).to.not.be.null;
+      all = all.concat(r.body);
+      const npt = r.response.headers['elements-next-page-token'];
+      return npt === undefined ? all : getAllExecutions(fiId, npt, all);
+    })
+    .catch(e => {
+      logger.debug(`Failed to retrieve executions, returning current list.  Exception: ${e}`);
+      return all;
+    });
+};
+exports.getAllExecutions = getAllExecutions;
 
-exports.getFormulaInstanceExecutions = (fId, fiId) =>
-  chakram.get(util.format('/formulas/%s/instances/%s/executions', fId, fiId));
+const getFormulaInstanceExecutions = (fiId) => cloud.get(`/formulas/instances/${fiId}/executions`);
+exports.getFormulaInstanceExecutions = getFormulaInstanceExecutions;
 
-exports.getFormulaInstanceExecution = (fId, fiId, fieId) =>
-  chakram.get(util.format('/formulas/%s/instances/%s/executions/%s', fId, fiId, fieId));
+const getFormulaInstanceExecution = (fieId) => cloud.get(`/formulas/instances/executions/${fieId}`);
 
-exports.deleteFormulaInstance = deleteFormulaInstance;
-exports.deleteFormula = deleteFormula;
+exports.getFormulaInstanceExecutionWithSteps = (fieId) => {
+  return getFormulaInstanceExecution(fieId)
+    .then(r => {
+      const fie = r.body;
+      return cloud.withOptions({ qs: { includeValues: true } }).get(`/formulas/instances/executions/${fieId}/steps`)
+        .then(r => fie.stepExecutions = r.body)
+        .then(r => fie);
+    });
+};
 
-exports.createFAndFI = () => {
+exports.createFAndFI = (element, config) => {
+  element = element || 'closeio';
   let elementInstanceId, formulaId, formulaInstanceId;
-  const formula = require('./simple-successful-formula');
-  return deleteFormulasByName('/formulas', 'simple-successful')
+  const formula = require('./formulas/simple-successful-formula');
+  return cleaner.formulas.withName('simple-successful')
     .then(r => cloud.post('/formulas', formula, fSchema))
     .then(r => formulaId = r.body.id)
-    .then(r => provisioner.create('closeio')) // just chose a random element, as i just need a valid ID
+    .then(r => provisioner.create(element, config))
     .then(r => elementInstanceId = r.body.id)
     .then(r => {
-      const formulaInstance = require('./simple-successful-formula-instance');
+      const formulaInstance = require('./formulas/basic-formula-instance');
       formulaInstance.configuration['trigger-instance'] = elementInstanceId;
       return cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema);
     })
@@ -85,22 +113,29 @@ exports.createFAndFI = () => {
     .then(r => ({ formulaInstanceId: formulaInstanceId, formulaId: formulaId, elementInstanceId: elementInstanceId }));
 };
 
-exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => cb => {
-  exports.getFormulaInstanceExecutions(fId, fiId)
-  .then(r => {
-    if (r.body.length === numExecs) {
-      Promise.all(r.body.map(fie => exports.getFormulaInstanceExecution(fId, fiId, fie.id)))
-      .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
-      .then(fieses => [].concat.apply([], fieses))
-      .then(ses => {
-        if (ses.length === (numExecVals * numExecs) && ses.filter(se => se.status === 'pending' === 0)) {
-          logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
-          cb();
-        }
-        else {
-          logger.debug(`Not all ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}; ${ses.length} total execution values found so far.`);
-        }
-      });
-    }
-  });
+exports.allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => () => new Promise((res, rej) => {
+  return getFormulaInstanceExecutions(fiId)
+    .then(r => {
+      if (r.body.length !== numExecs) rej();
+
+      return Promise.all(r.body.map(fie => getFormulaInstanceExecution(fie.id)))
+        .then(rs => Promise.all(rs.map(r => r.body.stepExecutions)))
+        .then(fieses => [].concat.apply([], fieses))
+        .then(ses => {
+          const numPending = ses.filter(se => se.status === 'pending').length;
+          if (ses.length === (numExecVals * numExecs) && numPending === 0) {
+            logger.debug(`All ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}.`);
+            res();
+          } else {
+            logger.debug(`Not all ${numExecs} executions completed with ${numExecVals} execution values for formula ${fId}, instance ${fiId}; ${ses.length} total execution values found so far.`);
+            rej();
+          }
+        });
+    });
+});
+
+exports.cleanup = (eiId, fId, fiId) => {
+  return cloud.delete(`/formulas/${fId}/instances/${fiId}`)
+    .then(r => cloud.delete(`/formulas/${fId}`))
+    .then(r => eiId && provisioner.delete(eiId));
 };

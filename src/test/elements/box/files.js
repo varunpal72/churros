@@ -1,19 +1,27 @@
 'use strict';
 
-const tools = require('core/tools');
-const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const tools = require('core/tools');
 
-suite.forElement('documents', 'files', (test) => {
-  it('should allow uploading and downloading a file', () => {
-    let fileId = -1;
+const lock = () => ({
+   "is_download_prevented" : false,
+   "expires_at" : "2030-12-12T10:55:30-08:00" 
+});
+
+
+
+suite.forElement('documents', 'files', null, (test) => {
+
+  it('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
+    let fileId;
+    let path = __dirname + '/../assets/brady.jpg';
     let query = { path: `/brady-${tools.random()}.jpg` };
-    let path = __dirname + '/assets/brady.jpg';
-
-    return cloud.postFile(test.api, path, { qs: query })
+    return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + fileId, (r) => expect(r).to.have.statusCode(200)))
-      .then(r => cloud.delete('/hubs/documents/files/' + fileId));
+      .then(r => cloud.put('/hubs/documents/files/' + fileId + '/lock', null, null, lock))
+      .then(r => cloud.delete('/hubs/documents/files/' + fileId + '/lock'))
+      .then(r => cloud.delete(test.api + '/' + fileId));
   });
+
 });
