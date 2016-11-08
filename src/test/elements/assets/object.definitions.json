@@ -138,7 +138,7 @@
     "fields": [{
         "path": "id",
         "type": "string",
-        "vendorPath": "string"
+        "type": "string"
       }, {
         "path": "firstName",
         "type": "string"
@@ -347,6 +347,18 @@
       "type": "string"
     }]
   },
+  "templates": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "triggers": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "users": {
     "fields": [{
       "path": "id",
@@ -431,43 +443,43 @@
   "transactions": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "subscriptions": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "product-families": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "forms": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "reports": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "plans": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "refunds": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "tax-rates": {
@@ -479,198 +491,204 @@
   "tokens": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "charges": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "transfers": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "shops": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "authors": {
     "fields": [{
         "path": "id",
-        "vendorPath": "id"
+        "type": "string"
       },
       {
         "path": "otherId",
-        "vendorPath": "id"
+        "type": "string"
       }
     ]
   },
   "members": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "mobi-events": {
     "fields": [{
       "path": "id",
-      "vendorPath": "id"
+      "type": "string"
     }]
   },
   "coupons": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "sales-rules": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "products-attributes": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "products-attribute-sets": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "folders": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
+    }]
+  },
+  "files": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
     }]
   },
   "colors": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "dependencies": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "departments": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "journals": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "journal-entries": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "locations": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "classes": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "bills": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "projects": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "purchase-orders": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "sales-orders": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "terms": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "vouchers": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "warehouses": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "ledger-accounts": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "time-activities": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "customer-refunds": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "return-authorizations": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "non-inventory-resale-items": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "service-resale-items": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "smart-collections": {
@@ -682,106 +700,114 @@
   "lot-numbered-assembly-items": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "lot-numbered-inventory-items": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "serialized-inventory-items": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "serialized-assembly-items": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "terms": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "exception-reasons": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "brands": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "manufacturers": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "product-tax-classes": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "variants": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "fullfillment-methods": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "statuses": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }, {
       "path": "wrong_id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "accounts": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "blocks-id": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "blocks-list": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "places": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
   },
   "users": {
     "fields": [{
       "path": "id",
-      "vendorPath": "string"
+      "type": "string"
     }]
+  },
+  "interactions": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      }
+    ]
   }
 }
