@@ -1,6 +1,6 @@
 {
-  "background-checks": {
-    "vendorName": "background-checks",
+  "contacts": {
+    "vendorName": "contacts",
     "fields": [
       {
         "path": "id",

@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const payload = () => ({
-  "employeeid": tools.random(),
+  "employeeid": tools.randomStr("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz", 15),
   "title": tools.random(),
   "locationid": "100",
   "departmentid": "10",

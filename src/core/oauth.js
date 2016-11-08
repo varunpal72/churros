@@ -43,6 +43,12 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('oauth_user_password')).sendKeys(password);
       browser.findElement(webdriver.By.id('loginBtn')).click();
       return browser.getCurrentUrl();
+    case 'actessentialsoauth':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('Username')).sendKeys(username);
+      browser.findElement(webdriver.By.id('Password')).sendKeys(password);
+      browser.findElement(webdriver.By.name('Answer')).click();
+      return browser.getCurrentUrl();
     case 'box':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('login')).sendKeys(username);
@@ -69,22 +75,27 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'dropboxbusiness':
     case 'dropbox':
       browser.get(r.body.oauthUrl);
-      return browser.findElement(webdriver.By.xpath('//input[@name="login_email"]'))
-        .then(el => {
-          el.sendKeys(username);
-          return browser.findElement(webdriver.By.xpath('//input[@name="login_password"]'));
-        })
-        .then(el => {
-          el.sendKeys(password);
-          return browser.findElement(webdriver.By.className('login-button button-primary'));
-        })
-        .then(el => {
-          el.click();
-          return browser.wait(() => {
-            return browser.getTitle().then((title) => !title);
-          }, 5000);
-        })
-        .then(() => browser.getCurrentUrl());
+      browser.findElement(webdriver.By.xpath('//input[@name="login_email"]')).sendKeys(username);
+      browser.findElement(webdriver.By.xpath('//input[@name="login_password"]')).sendKeys(password);
+      browser.findElement(webdriver.By.className('login-button button-primary')).click();
+
+      // dropbox for business handling but failing silently
+      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//*[@id="authorize-form-multiaccount"]/button[2]')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.xpath('//*[@id="authorize-form-multiaccount"]/button[1]'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+
+      // non-dropbox for business handling but failing silently
+      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//*[@id="authorize-form"]/button[2]')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.xpath('//*[@id="authorize-form"]/button[2]'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+
+      browser.wait(() => {
+        return browser.getTitle().then((title) => !title);
+      }, 5000);
+
+      return browser.getCurrentUrl();
     case 'facebooksocial':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).clear();
@@ -94,14 +105,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('loginbutton')).click();
       return browser.getCurrentUrl();
     case 'eloqua':
-      // TODO - not working yet...
       browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('login-button')).click();
-      browser.findElement(webdriver.By.id('sitename')).sendKeys(config['comany.name']);
-      browser.findElement(webdriver.By.id('username')).sendKeys(username);
-      browser.findElement(webdriver.By.id('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('submitButton')).click();
-      browser.findElement(webdriver.By.id('accept')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="login-button"]')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="sitename"]')).sendKeys(config['company.name']);
+      browser.findElement(webdriver.By.xpath('//*[@id="username"]')).sendKeys(username);
+      browser.findElement(webdriver.By.xpath('//*[@id="password"]')).sendKeys(password);
+      browser.findElement(webdriver.By.xpath('//*[@id="submitButton"]')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="accept"]')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="accept"]')).click();
       return browser.getCurrentUrl();
     case 'etsy':
       browser.get(r.body.oauthUrl);
@@ -165,12 +176,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('loginBtn')).click();
-      return browser.wait(() => {
-        try {
-          browser.findElement(webdriver.By.className('accept')).click();
-        } catch (e) {}
-        return browser.getCurrentUrl();
-      }, 5000);
+      browser.wait(() => browser.isElementPresent(webdriver.By.className('accept')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.className('accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'instagram':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('id_username')).clear();
@@ -243,15 +253,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           });
       return browser.getCurrentUrl();
     case 'quickbooks':
-      // TODO - not working quite yet...
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('Email')).sendKeys(username);
       browser.findElement(webdriver.By.name('Password')).sendKeys(password);
       browser.findElement(webdriver.By.id('ius-sign-in-submit-btn')).click();
-      try {
-        browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
-        browser.findElement(webdriver.By.id('authorizeBtn')).click();
-      } catch (e) {}
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('companySelectionWidgetCompanySelector_href')), 10000)
+        .thenCatch(r => true);
+      browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
+      browser.wait(() => webdriver.until.elementLocated(webdriver.By.id('authorizeBtn')), 7000)
+        .thenCatch(r => true);
+      browser.findElement(webdriver.By.id('authorizeBtn')).click();
+      browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
       return browser.getCurrentUrl();
     case 'servicenowoauth':
       return 'https://foo.bar.com?code=' + config.code; // they don't supply a code
@@ -270,7 +282,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).clear();
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('Login')).click();
-      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 5000)
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 10000)
         .thenCatch(r => true); // ignore
 
       browser.findElement(webdriver.By.id('oaapprove'))

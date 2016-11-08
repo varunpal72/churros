@@ -571,6 +571,12 @@
       "type": "string"
     }]
   },
+  "files": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
   "colors": {
     "fields": [{
       "path": "id",
@@ -803,11 +809,9 @@
     }]
   },
   "interactions": {
-    "fields": [
-      {
-        "path": "id",
-        "type": "string"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }

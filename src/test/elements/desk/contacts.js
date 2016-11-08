@@ -8,7 +8,10 @@ const contactUpdate = () => ({
   "last_name": "cloud"
 });
 
-const options = { churros: { updatePayload: contactUpdate() } };
+const options = {
+  churros: { updatePayload: contactUpdate() },
+  skip: true // Skipping since we cannot delete contacts
+};
 
 suite.forElement('helpdesk', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCrus();

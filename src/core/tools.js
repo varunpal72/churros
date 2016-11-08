@@ -16,12 +16,25 @@ var exports = module.exports = {};
 exports.random = () => Math.random().toString(36).substring(7);
 
 /**
+ * Generates a random string from possible and can determine length
+ * @return {string} A random, 7 character string
+ */
+exports.randomStr = (possible, len) => {
+    let text = "";
+
+    for( let i=0; i < len; i++ ) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+    return text;
+};
+
+/**
  * Generates a random email address in the @churros.com domain
  * @return {string} A random, 7-character email address
  */
 exports.randomEmail = () => {
-  var address = exports.random();
-  var domain = 'churros';
+  const address = exports.random();
+  const domain = 'churros';
   return address + '@' + domain + '.com';
 };
 
@@ -110,3 +123,9 @@ exports.wait = {
  * @return {string}      The JSON object stringified
  */
 exports.stringify = (json) => JSON.stringify(json);
+
+/**
+ * Copy an asset
+ * @param asset The absolute path to the asset (can use `require.resolve(relativePath)`)
+ */
+exports.copyAsset = (asset) => JSON.parse(JSON.stringify(require(asset)));
