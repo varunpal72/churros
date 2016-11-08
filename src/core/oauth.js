@@ -383,6 +383,23 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 
       return browser.getCurrentUrl();
 
+      case 'slack':
+        browser.get(r.body.oauthUrl);
+        // add correct creds
+        browser.findElement(webdriver.By.xpath('//*[@id="domain"]')).sendKeys(config.team);
+        browser.findElement(webdriver.By.xpath('//*[@id="submit_team_domain"]')).click();
+
+        browser.findElement(webdriver.By.xpath('//*[@id="email"]')).sendKeys(username);
+        browser.findElement(webdriver.By.xpath('//*[@id="password"]')).sendKeys(password);
+        browser.findElement(webdriver.By.xpath('//*[@id="signin_btn"]')).click();
+
+        browser.findElement(webdriver.By.xpath('//*[@id="oauth_authorizify"]')).click();
+        // browser.findElement(webdriver.By.name('oauth_authorizify')).click();
+        // browser.wait(() => {
+        //   return browser.isElementPresent(webdriver.By.id('user_name')); //slow load time for login screen
+        // }, 10000);
+        // console.log(browser.findElement(webdriver.By.id('username')));
+        return browser.getCurrentUrl();
     default:
       throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }

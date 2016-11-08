@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/channels');
+// const payload = require('./assets/channels');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 
@@ -11,7 +11,7 @@ const actions = {
   private: [ "open", "close"]
 };
 
-suite.forElement('collaboration', 'channels', { payload: payload }, (test) => {
+suite.forElement('collaboration', 'channels', { payload: createPayload }, (test) => {
   // check channel create (generally skip this one)
   test.should.return200OnPost();
   test.should.supportSr();
@@ -36,21 +36,19 @@ suite.forElement('collaboration', 'channels', { payload: payload }, (test) => {
     .then(r => cloud.update(`${test.api}/${r.id}/actions`, {qs: {action: 'rename', name: 'churros-test-channel'}}));
   });
 
-  it('should allow Create for private channels', () => {
-    let privateNotPublic = true;
-    return cloud.post('/path/to/resource', {options: "true?"})
-      .then(r => cloud.cruds(test.api, payload(privateNotPublic)))
-      .then(r => cloud.delete('/path/to/resource'));
-  });
-
-  test.should.return200OnPost();
-  test.withOptions({qs: {private: true}}).should.return200OnPost();
-  // check channel get all
-  test.should.return200OnGet();
-  test.withOptions({qs: {private: true}}).should.return200OnGet();
-  // check
-
-
+  // it('should allow Create for private channels', () => {
+  //   let privateNotPublic = true;
+  //   return cloud.post('/path/to/resource', {options: "true?"})
+  //     .then(r => cloud.cruds(test.api, payload(privateNotPublic)))
+  //     .then(r => cloud.delete('/path/to/resource'));
+  // });
+  //
+  // test.should.return200OnPost();
+  // test.withOptions({qs: {private: true}}).should.return200OnPost();
+  // // check channel get all
+  // test.should.return200OnGet();
+  // test.withOptions({qs: {private: true}}).should.return200OnGet();
+  // // check
 
   it('lukevance should insert some tests here :)', () => true);
 });
