@@ -8,11 +8,6 @@ const build = (overrides) => Object.assign({}, payload, overrides);
 const tweetsPayload = build({ status: tools.random() });
 
 suite.forElement('social', 'statuses', { payload: tweetsPayload }, (test) => {
-  it('should create and get a statuses and then patch for variant', () => {
-    let tweetId;
-    return cloud.post(test.api, tweetsPayload)
-      .then(r => tweetId = r.body.id_str)
-      .then(r => cloud.get(`${test.api}/${tweetId}`), null)
-      .then(r => cloud.delete(`${test.api}/${tweetId}`), null);
-  });
+  test.withOptions({ qs: { where: 'q = \'Jurgen Klopp\'', page: 1, pageSize: 1 } }).should.return200OnGet();
+  test.should.supportCrd();
 });

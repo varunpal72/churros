@@ -1,65 +1,56 @@
 {
   "lists": {
     "vendorName": "lists",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "statuses": {
     "vendorName": "statuses",
-    "fields": [
-      {
+    "fields": [{
         "path": "id",
         "vendorPath": "id_str"
+      },
+      {
+        "path": "wrong_id",
+        "vendorPath": "id"
       }
     ]
   },
   "accounts": {
-    "vendorName": "account/settings.json",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "vendorName": "accounts",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "blocks-id": {
-    "vendorName": "blocks/ids.json",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "vendorName": "blocks-id",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "blocks-list": {
-    "vendorName": "blocks/list.json",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "vendorName": "blocks-list",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "places": {
-    "vendorName": "geo/search.json",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "vendorName": "places",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id_str"
+    }]
   },
   "users": {
-    "vendorName": "users/search.json",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "vendorName": "users",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id_str"
+    }]
   }
 }
