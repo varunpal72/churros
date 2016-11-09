@@ -7,6 +7,7 @@ const provisioner = require('core/provisioner');
 const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
+const props = require('core/props');
 
 const createAll = (urlTemplate, list) => {
   return Object.keys(list).reduce((p, key) =>
@@ -22,6 +23,12 @@ const terminate = (error) => {
 let instanceId;
 before(() => {
   const element = argv.element;
+  logger.info('Running tests for element: %s', element);
+  if(props.getOptionalForKey(argv.element, 'skip') === true) {
+    logger.info('Skip tests for %s', element);
+    return {};
+  }
+
   return provisioner.create(element)
     .then(r => {
       expect(r).to.have.statusCode(200);

@@ -145,15 +145,18 @@ const itPostError = (name, httpCode, api, payload, options) => {
 const itCeqlSearch = (name, api, payload, field, options) => {
   const n = name || `should support searching ${api} by ${field}`;
   boomGoesTheDynamite(n, () => {
-    let id;
+    let id, value;
     return cloud.post(api, payload)
       .then(r => {
         id = r.body.id;
-        const clause = `${field}='${r.body[field]}'`; // have to escape where values with single quotes
+        value = r.body[field];
+        const clause = `${field}='${value}'`; // have to escape where values with single quotes
         const myOptions = Object.assign({}, options, { qs: { where: clause } });
         return cloud.withOptions(myOptions).get(api, (r) => {
           expect(r).to.have.statusCode(200);
-          expect(r.body.length).to.equal(1);
+          r.body.forEach(resource => {
+            expect(resource[field]).to.equal(value);
+          });
         });
       })
       .then(r => cloud.delete(api + '/' + id));
