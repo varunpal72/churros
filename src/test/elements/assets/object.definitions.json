@@ -74,6 +74,12 @@
       "type": "string"
     }]
   },
+  "purchases": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "cases": {
     "fields": [{
       "path": "id",

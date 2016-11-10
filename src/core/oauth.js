@@ -257,11 +257,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('Email')).sendKeys(username);
       browser.findElement(webdriver.By.name('Password')).sendKeys(password);
       browser.findElement(webdriver.By.id('ius-sign-in-submit-btn')).click();
-      browser.wait(() => browser.isElementPresent(webdriver.By.name('companySelectionWidgetCompanySelector_href')), 10000)
+      // browser.wait(() => browser.isElementPresent(webdriver.By.name('companySelectionWidgetCompanySelector_href')), 10000)
+      //   .thenCatch(r => true);
+      // browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('authorizeBtn')), 10000)
         .thenCatch(r => true);
-      browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
-      browser.wait(() => webdriver.until.elementLocated(webdriver.By.id('authorizeBtn')), 7000)
-        .thenCatch(r => true);
+
+      // browser.wait(() => webdriver.until.elementLocated(webdriver.By.id('authorizeBtn')), 7000)
+      //   .thenCatch(r => true);
       browser.findElement(webdriver.By.id('authorizeBtn')).click();
       browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
       return browser.getCurrentUrl();
