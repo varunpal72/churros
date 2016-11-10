@@ -1,0 +1,20 @@
+{
+  "contacts": {
+    "vendorName": "/legal/contact-information",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "orders": {
+    "vendorName": "orders",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "orderId"
+      }
+    ]
+  }
+}
