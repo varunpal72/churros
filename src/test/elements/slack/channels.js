@@ -1,26 +1,40 @@
 'use strict';
 
 const suite = require('core/suite');
-// const payload = require('./assets/channels');
 const cloud = require('core/cloud');
-const expect = require('chakram').expect;
-
 const createPayload = { name: 'churros-test-channel'};
-const actions = {
-  all: ["archive", "read", "rename", "purpose", "topic", "unarchive", "leave", "join"],
-  private: [ "open", "close"]
-};
+
 
 suite.forElement('collaboration', 'channels', { payload: createPayload }, (test) => {
-  // check channel create (generally skip this one)
+  // check create and retrieve for public channels
   test.withOptions({skip:true}).should.return200OnPost();
   test.should.supportSr();
+  // check create and retrieve for private channels
+  test.withOptions({skip:true, qs: {private: true}}).should.return200OnPost();
+  test.withOptions({ qs: {private: true}}).should.supportSr();
+  // define all supported actions and payloads
+  const actions = [
+    {action: 'rename', name: 'churros-check'},
+    {action: 'purpose', purpose: 'eat yummy churros'},
+    {action: 'topic', name: 'tasty desserts'},
+    {action: 'archive'},
+    {action: 'unarchive'},
+    {action: 'leave'},
+    {action: 'join', name: 'churros-check'},
+    {action: 'read', ts: 1412341512.123410},
+    {action: 'rename', name: 'churros-test-channel'}
+  ];
 
-// loop through actions + payloads
-// call promise/test for each
-// save channelId outside other calls
-
-  it('should allow PATCH on public channels for all actions', () => {
+  // define test template for each action
+  let actionTest = function (testName, channelId, payload, privateChannel){
+    it(testName, () => {
+      return cloud.withOptions({qs: {private: privateChannel}}).update(`${test.api}/` + channelId + '/actions', payload);
+    });
+  };
+  // save channelId outside other calls
+  let churrosChannelId = '';
+  // retrieve
+  it('should retrieve or create churros-test-channel', () => {
     return cloud.get(test.api)
     .then(response => response.body.filter(channel => channel.name === 'churros-test-channel'))
     .then(channels => {
@@ -28,32 +42,20 @@ suite.forElement('collaboration', 'channels', { payload: createPayload }, (test)
       if (channels.length > 0) {return channels[0];}
       else {return cloud.post(test.api, createPayload);}
     })
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'rename', name: 'churros-check'}))
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'purpose', purpose: 'eat yummy churros'}))
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'topic', name: 'tasty desserts'}))
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'archive'}))
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'unarchive'}))
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'leave'}))
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'join', name: 'churros-check'}))
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'read', ts: 1412341512.123410}))
-    .then(r => cloud.update(`${test.api}/${r.id}/actions`, {action: 'rename', name: 'churros-test-channel'}));
+    .then(channel => {
+      churrosChannelId = channel.id;
+    });
   });
+  // call test function for each public channel action
+  actions.forEach(action => actionTest(action.testName, churrosChannelId, action.payload, false));
 
-  // set new "it" cases for each action so as to know which is failing0
+  // define additional private channel actions
+  const privateActions = [
+    {action: "close"},
+    {action: "open"}
+  ];
+  // call test function for each private channel action
+  actions.forEach(action => actionTest(action.testName, churrosChannelId, action.payload, true));
+  privateActions.forEach(action => actionTest(action.testName, churrosChannelId, action.payload, true));
 
-  // it('should allow Create for private channels', () => {
-  //   let privateNotPublic = true;
-  //   return cloud.post('/path/to/resource', {options: "true?"})
-  //     .then(r => cloud.cruds(test.api, payload(privateNotPublic)))
-  //     .then(r => cloud.delete('/path/to/resource'));
-  // });
-  //
-  // test.should.return200OnPost();
-  // test.withOptions({qs: {private: true}}).should.return200OnPost();
-  // // check channel get all
-  // test.should.return200OnGet();
-  // test.withOptions({qs: {private: true}}).should.return200OnGet();
-  // // check
-
-  it('lukevance should insert some tests here :)', () => true);
 });
