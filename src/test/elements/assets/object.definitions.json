@@ -1,13 +1,10 @@
 {
-  "accounts": {
+"accounts": {
     "fields": [{
       "path": "id",
       "type": "string"
     }, {
       "path": "name",
-      "type": "string"
-    }, {
-      "path": "description",
       "type": "string"
     }]
   },
@@ -813,5 +810,506 @@
       "path": "id",
       "type": "string"
     }]
+  },
+"accounts": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      }
+    ]
+  },
+ "accounts": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      },
+      {
+        "path": "parentId",
+        "type": "string"
+      },
+      {
+        "path": "type",
+        "type": "string"
+      },
+      {
+        "path": "annualRevenue",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "phone",
+        "type": "string"
+      },
+      {
+        "path": "website",
+        "type": "string"
+      },
+      {
+        "path": "numberOfEmployees",
+        "type": "string"
+      },
+      {
+        "path": "billingAddress",
+        "type": "address"
+      },
+      {
+        "path": "shippingAddress",
+        "type": "address"
+      }
+    ]
+  },
+  "contacts": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "firstName",
+        "type": "string"
+      },
+      {
+        "path": "lastName",
+        "type": "string"
+      },
+      {
+        "path": "accountId",
+        "type": "string"
+      },
+      {
+        "path": "title",
+        "type": "string"
+      },
+      {
+        "path": "department",
+        "type": "string"
+      },
+      {
+        "path": "address",
+        "type": "address"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "phone",
+        "type": "string"
+      },
+      {
+        "path": "mobile",
+        "type": "string"
+      },
+      {
+        "path": "email",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      }
+    ]
+  },
+  "leads": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "firstName",
+        "type": "string"
+      },
+      {
+        "path": "lastName",
+        "type": "string"
+      },
+      {
+        "path": "company",
+        "type": "string"
+      },
+      {
+        "path": "title",
+        "type": "string"
+      },
+      {
+        "path": "source",
+        "type": "string"
+      },
+      {
+        "path": "status",
+        "type": "string"
+      },
+      {
+        "path": "address",
+        "type": "address"
+      },
+      {
+        "path": "email",
+        "type": "string"
+      },
+      {
+        "path": "phone",
+        "type": "string"
+      },
+      {
+        "path": "website",
+        "type": "string"
+      },
+      {
+        "path": "mobile",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      }
+    ]
+  },
+  "opportunities": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      },
+      {
+        "path": "accountId",
+        "type": "string"
+      },
+      {
+        "path": "type",
+        "type": "string"
+      },
+      {
+        "path": "stage",
+        "type": "string"
+      },
+      {
+        "path": "source",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "amount",
+        "type": "string"
+      },
+      {
+        "path": "closeDate",
+        "type": "string"
+      },
+      {
+        "path": "probability",
+        "type": "string"
+      },
+      {
+        "path": "contactId",
+        "type": "string"
+      }
+    ]
+  },
+  "products": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      },
+      {
+        "path": "family",
+        "type": "string"
+      },
+      {
+        "path": "line",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "sku",
+        "type": "string"
+      },
+      {
+        "path": "price",
+        "type": "string"
+      },
+      {
+        "path": "scheduleId",
+        "type": "string"
+      }
+    ]
+  },
+  "incidents": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "reporter",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "assignee",
+        "type": "string"
+      },
+      {
+        "path": "priority",
+        "type": "string"
+      },
+      {
+        "path": "status",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+        "type": "string"
+      },
+      {
+        "path": "type",
+        "type": "string"
+      }
+    ]
+  },
+  "address": {
+    "fields": [
+      {
+        "path": "street1",
+        "type": "string"
+      },
+      {
+        "path": "street2",
+        "type": "string"
+      },
+      {
+        "path": "city",
+        "type": "string"
+      },
+      {
+        "path": "countyOrDistrict",
+        "type": "string"
+      },
+      {
+        "path": "stateOrProvince",
+        "type": "string"
+      },
+      {
+        "path": "postalCode",
+        "type": "string"
+      },
+      {
+        "path": "country",
+        "type": "string"
+      }
+    ]
+  },
+  "users": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "username",
+        "type": "string"
+      },
+      {
+        "path": "email",
+        "type": "string"
+      }
+    ]
+  },
+  "house": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      },
+      {
+        "path": "ownerId",
+        "type": "string"
+      },
+      {
+        "path": "value",
+        "type": "string"
+      }
+    ]
+  },
+  "myLead": {
+    "fields": [
+      {
+        "path": "myId",
+        "type": "string"
+      }
+    ]
+  },
+  "notes": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "title",
+        "type": "string"
+      },
+      {
+        "path": "body",
+        "type": "string"
+      },
+      {
+        "path":"resource_type",
+        "type":"string"
+      },
+      {
+        "path":"resource_id",
+        "type":"string"
+      }
+    ]
+  },
+  "activities": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "content",
+        "type": "string"
+      },
+      {
+        "path": "companyId",
+        "type": "string"
+      },
+      {
+        "path": "contactId",
+        "type": "string"
+      },
+      {
+        "path": "type",
+        "type": "string"
+      },
+      {
+        "path": "body",
+        "type": "string"
+      },
+      {
+        "path": "dueDate",
+        "type": "string"
+      }
+    ]
+  },
+  "tasks": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+          "type": "string"
+      },
+      {
+        "path": "dueDate",
+        "type": "string"
+      }
+    ]
+  },
+  "calls": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+        "type": "string"
+      }
+    ]
+  },
+  "events": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+        "type": "string"
+      }
+    ]
+  },
+  "owners": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "email",
+        "type": "string"
+      }
+    ]
+  },
+  "mySugarAccounts": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      }
+    ]
   }
+
 }

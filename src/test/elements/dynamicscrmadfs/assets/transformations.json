@@ -1,0 +1,112 @@
+{
+    "accounts": {
+        "vendorName": "account",
+        "fields": [{
+            "path": "name",
+            "vendorPath": "attributes.name",
+            "type": "string"
+        }, {
+            "path": "description",
+            "vendorPath": "attributes.description",
+            "type": "string"
+        }]
+    },
+    "contacts": {
+        "vendorName": "contact",
+        "fields": [{
+            "path": "id",
+            "vendorPath": "id",
+            "type": "string"
+        }, {
+            "path": "firstName",
+            "vendorPath": "attributes.firstname",
+            "type": "string"
+        }, {
+            "path": "lastName",
+            "vendorPath": "attributes.lastname",
+            "type": "string"
+        }, {
+            "path": "email",
+            "vendorPath": "attributes.emailaddress1",
+            "type": "string"
+        }]
+    },
+    "leads": {
+        "vendorName": "lead",
+        "fields": [{
+            "path": "id",
+            "vendorPath": "id",
+            "type": "string"
+        }, {
+            "path": "firstName",
+            "vendorPath": "attributes.firstname",
+            "type": "string"
+        }, {
+            "path": "lastName",
+            "vendorPath": "attributes.lastname",
+            "type": "string"
+        }, {
+            "path": "email",
+            "vendorPath": "attributes.emailaddress1",
+            "type": "string"
+        }]
+    },
+    "opportunities": {
+        "vendorName": "opportunity",
+        "fields": [{
+            "path": "name",
+            "vendorPath": "attributes.name",
+            "type": "string"
+        }, {
+            "path": "description",
+            "vendorPath": "attributes.description",
+            "type": "string"
+        }]
+    },
+    "products": {
+        "vendorName": "product",
+        "fields": [{
+            "path": "price",
+            "vendorPath": "attributes.price",
+            "type": "string"
+        }, {
+            "path": "name",
+            "vendorPath": "attributes.name",
+            "type": "string"
+        }, {
+            "path": "sku",
+            "vendorPath": "attributes.productnumber",
+            "type": "string"
+        }, {
+            "path": "scheduleId",
+            "vendorPath": "attributes.defaultuomscheduleid",
+            "type": "string"
+        }]
+    },
+    "activities": {
+        "vendorName": "activitypointer",
+        "fields": [{
+                "path": "description",
+                "vendorPath": "attributes.description",
+                "type": "string"
+            }, {
+                "path": "subject",
+                "vendorPath": "attributes.subject",
+                "type": "string"
+            }
+
+        ]
+    },
+    "tasks": {
+        "vendorName": "task",
+        "fields": [{
+            "path": "description",
+            "vendorPath": "attributes.description",
+            "type": "string"
+        }, {
+            "path": "subject",
+            "vendorPath": "attributes.subject",
+            "type": "string"
+        }]
+    }
+}
