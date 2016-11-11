@@ -6,6 +6,9 @@
     }, {
       "path": "name",
       "type": "string"
+    }, {
+      "path": "description",
+      "type": "string"
     }]
   },
   "agents": {

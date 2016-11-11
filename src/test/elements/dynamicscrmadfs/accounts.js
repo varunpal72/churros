@@ -3,7 +3,16 @@
 const suite = require('core/suite');
 const payload = require('./assets/accounts');
 
+const options = {
+    churros: {
+        updatePayload: {
+            "name": "Robot Account Updated 1"
+        }
+    }
+};
+
 suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
- test.should.supportCruds();
+ test.withOptions(options).should.supportCruds();
  test.should.supportPagination();
 });
+
