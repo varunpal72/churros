@@ -4,7 +4,6 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const createPayload = { name: 'churros-test-channel'};
 
-
 suite.forElement('collaboration', 'channels', { payload: createPayload }, (test) => {
   // check create and retrieve for public channels
   test.withOptions({skip:true}).should.return200OnPost();

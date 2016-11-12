@@ -6,5 +6,6 @@ const payload = require('./assets/messages');
 
 suite.forElement('collaboration', 'messages', payload, (test) => {
   test.should.supportCruds();
+  test.withOptions({qs: {group: true}}).should.supportCruds();
 
 });
