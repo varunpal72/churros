@@ -57,4 +57,21 @@ suite.forElement('collaboration', 'channels', { payload: createPayload }, (test)
   actions.forEach(action => actionTest(action.testName, churrosChannelId, action.payload, true));
   privateActions.forEach(action => actionTest(action.testName, churrosChannelId, action.payload, true));
 
+  // Check to return history
+  it('should retrieve history for public channels', () => {
+    return cloud.get(`${test.api}/` + churrosChannelId + `/history`);
+  });
+  it('should retrieve history for private channels', () => {
+    return cloud.withOptions({qs: {private: true}}).get(`${test.api}/` + churrosChannelId + `/history`);
+  });
+
+  // check to invite and kick a user
+  it('should invite a user to a channel', () => {
+    return cloud.get(`/users`);
+    //get all channels
+    // save user number from channel (that is NOT creator)
+    // kick out of channel
+    // invite back to channel
+  });
+
 });
