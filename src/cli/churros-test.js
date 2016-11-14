@@ -22,6 +22,7 @@ const fromOptions = (url, options) => {
       wait: options.wait,
       load: options.load,
       loadElement: options.element,
+      start: options.start,
       browser: options.browser,
       verbose: options.verbose === undefined ? false : options.verbose, // hack...i can't figure out why it's not default to false
       externalAuth: options.externalAuth,
@@ -52,12 +53,13 @@ const isElement = (suite) => suite.startsWith('element');
 const run = (suite, options, cliArgs) => {
   const file = options.file;
   const test = options.test;
+  const start = options.start;
 
   // ugly as all get out ...
   const rootDir = path.dirname(require.main.filename);
   const rootTestDir = rootDir + '/../test';
 
-  const resources = [];
+  let resources = [];
   const resourceType = suite.split('/')[0];
 
   // always pass the lifecycle file first.  if it's an element, then use that element's lifecycle file too
@@ -70,6 +72,22 @@ const run = (suite, options, cliArgs) => {
     .filter(e => e !== 'assets' && options.exclude.indexOf(e) < 0)
     .map(e => resources.push(e)) :
     resources.push(suite.split('/')[1]);
+
+  // if they specified a start, then skip all the resources until that one
+  if (start && start.length >= 1) {
+    let folderPath = `${rootTestDir}/${resourceType}/${start}`;
+    if (!fs.existsSync(folderPath)) {
+      console.log('Invalid suite: %s', start);
+      process.exit(1);
+    }
+    const tempList = [];
+    resources.forEach((resource, index) => {
+      if(resource === start || resource > start){
+          tempList.push(resource);
+      }
+    });
+    resources = tempList;
+  }
 
   let args = `--timeout 600000 --reporter spec --ui bdd`;
   if (test) args += ` --grep '${test}'`;
@@ -139,6 +157,7 @@ commander
   .option('-x, --externalAuth', 'provision using external authentication. only for elements tests')
   .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'firefox') // will change this to phantomjs as churros becomes more mature
   .option('-s, --exclude <resource>', 'element(s) or platform resource(s) to exclude if running all tests', collect, [])
+  .option('-S, --start <suite>', 'specific suite to start with, everything before this will be skipped')
   .option('-V, --verbose', 'logging verbose mode')
   .on('--help', () => {
     console.log('  Examples:');
@@ -148,6 +167,7 @@ commander
     console.log('    $ churros test elements/closeio --test \'contacts\'');
     console.log('    $ churros test elements');
     console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
+    console.log('    $ churros test elements --start freshbooks');
     console.log('');
     console.log('    # Platform Tests');
     console.log('    $ churros test platform/notifications');
