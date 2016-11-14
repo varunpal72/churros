@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const payload = require('./assets/messages');
 
-suite.forElement('messaging', 'messages', { payload: payload }, (test) => {
+suite.forElement('messaging', 'messages', { payload: payload, skip: true }, (test) => {
 	test.should.return200OnGet();
 	test.should.supportPagination();
 

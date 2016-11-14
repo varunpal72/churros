@@ -47,7 +47,7 @@ const product = (attributeSetId) => ({
   "saveOptions": true
 });
 
-suite.forElement('ecommerce', 'categories', { payload: payload() }, (test) => {
+suite.forElement('ecommerce', 'categories', { payload: payload(), skip: true }, (test) => {
   test.should.supportCruds();
   it(`should allow SR for /hubs/ecommerce/categories-attributes`, () => {
     return cloud.get(`/hubs/ecommerce/categories-attributes`)

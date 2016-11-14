@@ -20,7 +20,7 @@ const notesPayload = () => ({
   "work_notes": "I am the churro"
 });
 
-suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
+suite.forElement('helpdesk', 'incidents', { payload: payload, skip: true }, (test) => {
   test.should.supportPagination();
   test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { where: 'sys_created_on>=\'2016-02-06T16:35:36\'' } }).should.return200OnGet();

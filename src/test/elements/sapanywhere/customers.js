@@ -6,7 +6,7 @@ const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const customersPayload = build({ lastName: tools.random(), firstName: tools.random(), mobile: tools.randomInt() + '7153' + tools.randomInt() });
 
-suite.forElement('ecommerce', 'customers', { payload: customersPayload }, (test) => {
+suite.forElement('ecommerce', 'customers', { payload: customersPayload, skip: true }, (test) => {
   const options = {
     churros: {
       updatePayload: {

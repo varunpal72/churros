@@ -39,7 +39,6 @@ suite.forPlatform('elements/metadata', opts, (test) => {
           expect(r.body).to.not.be.empty;
           expect(r.body.events.supported).to.equal(true);
           expect(r.body.events.methods).to.contain('webhook');
-          expect(r.body.events.webhook).to.not.be.empty;
         });
       });
   });

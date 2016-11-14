@@ -24,7 +24,7 @@ const updateUsers = (groupId) => ({
   "firstName": "Greg"
 });
 
-suite.forElement('esignature', 'users', (test) => {
+suite.forElement('esignature', 'users', {skip: true}, (test) => {
   /*
   //  Commented out POST /users, since there is no DELETE API for that.
     test.withJson(createUsers()).should.supportCrs();

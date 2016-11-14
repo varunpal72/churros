@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('sageaccounting', 'posting-rules', null, (test) => {
+suite.forElement('sageaccounting', 'posting-rules', {skip: true}, (test) => {
   it('should allow Sr for posting-rules', () => {
     let ruleId;
     return cloud.get(test.api)

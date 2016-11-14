@@ -40,7 +40,7 @@ const skusUpdate = () => ({
   "upc": "Updated"
 });
 
-suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'products', { payload: payload, skip: true }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.withApi(`${test.api}/count`).should.return200OnGet();
   test.withApi(`${test.api}/options`).should.return200OnGet();

@@ -12,7 +12,7 @@ const updateOrders = () => ({
 
 suite.forElement('payment', 'orders', (test) => {
   test.should.supportSr();
-  it(`should allow Patch for ${test.api}`, () => {
+  it.skip(`should allow Patch for ${test.api}`, () => {
     let orderId;
     return cloud.get(`${test.api}`)
       .then(r => orderId = r.body[0].id)

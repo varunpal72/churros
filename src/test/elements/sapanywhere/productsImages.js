@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const productPayload = require('./assets/products');
 
-suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) => {
+suite.forElement('ecommerce', 'products', { payload: productPayload, skip: true }, (test) => {
   const build = (overrides) => Object.assign({}, productPayload, overrides);
   const payload = build({ name: tools.random(), code: tools.randomInt() });
   it('should create a product and then CRDS for an image', () => {
