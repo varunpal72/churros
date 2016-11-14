@@ -53,41 +53,35 @@ const isElement = (suite) => suite.startsWith('element');
 const run = (suite, options, cliArgs) => {
   const file = options.file;
   const test = options.test;
-  const start = options.start;
 
   // ugly as all get out ...
   const rootDir = path.dirname(require.main.filename);
   const rootTestDir = rootDir + '/../test';
 
-  let resources = [];
+  const resources = [];
   const resourceType = suite.split('/')[0];
 
   // always pass the lifecycle file first.  if it's an element, then use that element's lifecycle file too
   const baseMochaPaths = [rootTestDir + '/lifecycle'];
   if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
 
-  // if we want to run multiple tests, we need to find all of the available element or platform tests and add them to our resources array
-  isRunMultiple(suite) ?
-    fs.readdirSync(`${rootTestDir}/${resourceType}`)
-    .filter(e => e !== 'assets' && options.exclude.indexOf(e) < 0)
-    .map(e => resources.push(e)) :
-    resources.push(suite.split('/')[1]);
-
-  // if they specified a start, then skip all the resources until that one
-  if (start && start.length >= 1) {
+  const isAfterStart = (start, suite) => {
+    if (!start) return true;
     let folderPath = `${rootTestDir}/${resourceType}/${start}`;
     if (!fs.existsSync(folderPath)) {
       console.log('Invalid suite: %s', start);
       process.exit(1);
     }
-    const tempList = [];
-    resources.forEach((resource, index) => {
-      if(resource === start || resource > start){
-          tempList.push(resource);
-      }
-    });
-    resources = tempList;
-  }
+    return suite >= start;
+  };
+
+  // if we want to run multiple tests, we need to find all of the available element or platform tests and add them to our resources array
+  isRunMultiple(suite) ?
+    fs.readdirSync(`${rootTestDir}/${resourceType}`)
+    .filter(e => e !== 'assets' && options.exclude.indexOf(e) < 0)
+    .filter(e => isAfterStart(options.start, e))
+    .map(e => resources.push(e)) :
+    resources.push(suite.split('/')[1]);
 
   let args = `--timeout 600000 --reporter spec --ui bdd`;
   if (test) args += ` --grep '${test}'`;
