@@ -11,7 +11,7 @@ suite.forElement('ecommerce', 'orders', { payload: payload, skip: true }, (test)
       }
     }
   };
-  test.withOptions(options).should.supportCrus();
+  test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'orderType = \'SELL_ORDER\'' } }).should.return200OnGet();
   test.withApi(test.api + '/count').should.return200OnGet();
