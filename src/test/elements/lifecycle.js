@@ -25,7 +25,7 @@ before(() => {
   const element = argv.element;
   logger.info('Running tests for element: %s', element);
   if(props.getOptionalForKey(argv.element, 'skip') === true) {
-    logger.info('Skip tests for %s', element);
+    logger.info('Skip provisioning and all tests for %s', element);
     return {};
   }
 
