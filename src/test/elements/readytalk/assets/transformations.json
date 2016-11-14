@@ -1,0 +1,11 @@
+{
+  "events": {
+    "vendorName": "/events",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
