@@ -7,6 +7,6 @@ const payload = require('./assets/vendors');
 suite.forElement('erp', 'vendors', { payload: payload }, (test) => {
     payload.companyName = tools.random();
     test.should.supportCruds();
-	  test.withOptions({ qs: { page: 1, pageSize: 5}}).should.return200OnGet();
-  	test.should.supportCeqlSearch('id');
+    test.withOptions({ qs: { page: 1, pageSize: 5}}).should.return200OnGet();
+    test.should.supportCeqlSearch('id');
 });
