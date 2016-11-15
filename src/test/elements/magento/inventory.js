@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const payload = require('./assets/inventory');
 const cloud = require('core/cloud');
 
-suite.forElement('ecommerce', 'inventory', {payload: payload}, (test) => {
+suite.forElement('ecommerce', 'inventory', {payload: payload, skip: true}, (test) => {
   test.should.return200OnGet();
   test.should.supportPagination();
   it('should allow RUS for inventory with PUT', () => {

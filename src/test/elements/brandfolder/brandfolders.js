@@ -7,7 +7,7 @@ const payload = require('./assets/brandfolders');
 const payload2 = require('./assets/brandfolders2');
 const expect = chakram.expect;
 
-suite.forElement('general', 'brandfolders', { payload: payload }, (test) => {
+suite.forElement('general', 'brandfolders', { payload: payload, skip: true }, (test) => {
   let orgId = -1;
   before(() => cloud.get(`hubs/general/organizations`)
     .then(r => orgId = r.body[0].id)

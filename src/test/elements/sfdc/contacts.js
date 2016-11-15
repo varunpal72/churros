@@ -16,7 +16,7 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportCeqlSearch('id');
 
-  it('should allow CRUDS for /contacts/:id/attachments', () => {
+  it.skip('should allow CRUDS for /contacts/:id/attachments', () => {
     let contactId;
     let attachmentId;
     return cloud.post(test.api, contact())

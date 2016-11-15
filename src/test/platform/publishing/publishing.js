@@ -9,7 +9,7 @@ const getGenerateSdkPayload = () => ({
   type: 'awslambda-native-java'
 });
 
-suite.forPlatform('publishing', { payload: payload }, (test) => {
+suite.forPlatform('publishing', { payload: payload, skip: true }, (test) => {
   let httpElement, dbElement;
   before(() => {
     return cloud.post('elements', payload)

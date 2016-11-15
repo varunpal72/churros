@@ -14,7 +14,7 @@ const options = {
 };
 */
 
-suite.forElement('humancapital', 'employees', { payload }, (test) => {
+suite.forElement('humancapital', 'employees', { payload: payload, skip: true }, (test) => {
   test.should.supportPagination();
   //test.withOptions(options).should.supportCruds();
 });
