@@ -8,7 +8,7 @@ const payload = [
     "path": "/customerComment",
     "value": "Please deliver asap."
   }
-]
+];
 
 suite.forElement('crm', 'orders', { payload: payload }, (test) => {	
  let id;
@@ -18,4 +18,4 @@ suite.forElement('crm', 'orders', { payload: payload }, (test) => {
 	  .then(r => cloud.get(`${test.api}/${id}`))
 	  .then(r => cloud.patch(`${test.api}/${id}`,payload));
 });
- });
+});

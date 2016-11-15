@@ -9,13 +9,10 @@ const payload  =  {
   "contactPersonJobTitle": tools.randomStr,
   "email": tools.randomEmail()
 
-}
-
+};
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
      it('should allow RU for /contacts', () => {
-          return cloud.get(test.api)
-          .then(r => cloud.withOptions({ qs: {locale:'en_US' }}).put(test.api,payload));
-
-
+        return cloud.get(test.api)
+        .then(r => cloud.withOptions({ qs: {locale:'en_US' }}).put(test.api,payload));
 });
 });
