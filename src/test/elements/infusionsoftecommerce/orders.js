@@ -3,6 +3,6 @@
 const suite = require('core/suite');
 
 suite.forElement('ecommerce', 'orders', null, (test) => {
-  test.withOptions({ skip: true }).should.supportSr();
+  test.should.supportSr();
   test.withOptions({ qs: { page: 1, pageSize: 1}}).should.return200OnGet();
 });
