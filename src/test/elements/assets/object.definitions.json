@@ -813,5 +813,13 @@
       "path": "id",
       "type": "string"
     }]
+  },
+ "events": {
+    "fields": [
+      {
+        "path": "id",
+        "type": "string"
+      }
+    ]
   }
 }

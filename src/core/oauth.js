@@ -391,24 +391,15 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('allow')).click();
       return browser.getCurrentUrl();
-    case 'readytalk1':
-	
-     // browser.manage().window().maximize();
+    case 'readytalk':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.id('a0-signin_easy_password')), 10000);
-      //browser.manage().window().maximize();
-      //browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('//button')), 10000);
-      //browser.findElement(webdriver.By.className('a0-active')).click(); 
       browser.findElement(webdriver.By.id('a0-signin_easy_email')).sendKeys(username);
       browser.findElement(webdriver.By.id('a0-signin_easy_password')).sendKeys(password);
       browser.manage().window().maximize(); //for maximizing the window size.
       browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('.//*[@id="a0-onestep"]/div[2]/div/form/div[3]/div/button'),10000)) ;  
       browser.findElement(webdriver.By.xpath('.//*[@id="a0-onestep"]/div[2]/div/form/div[3]/div/button')).click(); 
-      browser.manage().timeouts().implicitlyWait(200000);
-      //browser.wait(10000);
-	//browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('//button11')), 10000);
- 
- 	//browser.manage().timeouts().implicitlyWait(10,SECONDS);
+      browser.sleep(5000);
       return browser.getCurrentUrl();
     default:
       throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
