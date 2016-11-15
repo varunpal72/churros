@@ -2,13 +2,16 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/tasks');
+const tools = require('core/tools');
+const build = (overrides) => Object.assign({}, payload, overrides);
+const tasksPayload = build({ subject: tools.random(), description: tools.random() });
 
-suite.forElement('crm', 'tasks', { payload: payload }, (test) => {
+suite.forElement('crm', 'tasks', { payload: tasksPayload }, (test) => {
   const options = {
       churros: {
           updatePayload: {
-              "description": "Robot Test Task 1",
-              "subject": "Run In Circles!"
+              "description": tools.random(),
+              "subject": tools.random()
           }
       }
   };

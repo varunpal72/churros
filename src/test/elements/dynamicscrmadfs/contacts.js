@@ -2,14 +2,17 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/contacts');
+const tools = require('core/tools');
+const build = (overrides) => Object.assign({}, payload, overrides);
+const contactsPayload = build({ lastName: tools.random(), firstName: tools.random(),email:tools.randomEmail() });
 
-suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
+suite.forElement('crm', 'contacts', { payload: contactsPayload }, (test) => {
   const options = {
       churros: {
           updatePayload: {
-              "firstName": "Sideshow",
-              "lastName": "Robert",
-              "email": "weirdclown@springfield.il"
+              "firstName": tools.random(),
+              "lastName": tools.random(),
+              "email": tools.randomEmail()
           }
       }
   };

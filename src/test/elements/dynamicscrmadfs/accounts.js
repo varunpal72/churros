@@ -2,12 +2,15 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/accounts');
+const tools = require('core/tools');
+const build = (overrides) => Object.assign({}, payload, overrides);
+const accountsPayload = build({ name: tools.random()});
 
-suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
+suite.forElement('crm', 'accounts', { payload:accountsPayload }, (test) => {
   const options = {
       churros: {
           updatePayload: {
-              "name": "Robot Account Updated 1"
+              "name": tools.random()
           }
       }
   };
