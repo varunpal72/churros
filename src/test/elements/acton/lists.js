@@ -7,7 +7,7 @@ const contactUpdatePayload = require('./assets/contactsUpdate');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 payload.listname = tools.random();
-suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
+suite.forElement('marketing', 'lists', { payload: payload, skip: true }, (test) => {
   test.should.supportCruds();
 
   it('it should support GET all contacts inside a list', () => {

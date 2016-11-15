@@ -24,7 +24,7 @@ const updateFulfillment = (fulfillmentId) => ({
     "id": fulfillmentId
   }
 });
-suite.forElement('ecommerce', 'fulfillments', { payload: createFulfillment({}) }, (test) => {
+suite.forElement('ecommerce', 'fulfillments', { payload: createFulfillment({}), skip: true }, (test) => {
   let orderId, lineId, fulfillmentId;
   before(() => cloud.post(`/hubs/ecommerce/orders`, order())
     .then(r => orderId = r.body.id)

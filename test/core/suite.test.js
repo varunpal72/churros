@@ -117,6 +117,7 @@ describe('suite', () => {
     test.should.supportCrs();
     test.should.supportPagination();
     test.should.supportCeqlSearch('id');
+    test.should.supportCeqlSearchForMultipleRecords('id');
 
     /* overriding the default API that was passed in as the default in the `suite.forPlatform` */
     test

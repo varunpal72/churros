@@ -25,7 +25,7 @@ const createWorkflows = (transientDocumentId) => ({
   }
 });
 
-suite.forElement('esignature', 'workflows', (test) => {
+suite.forElement('esignature', 'workflows', {skip: true}, (test) => {
   test.should.supportSr();
   it(`should allow POST for ${test.api}/{workflowId}/agreements`, () => {
     let workflowId;

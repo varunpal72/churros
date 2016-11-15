@@ -10,7 +10,7 @@ const payload = (id) => ({
   "notes": "Client credit"
 });
 
-suite.forElement('finance', 'payments', { payload: payload() }, (test) => {
+suite.forElement('finance', 'payments', { payload: payload(), skip: true }, (test) => {
   it('should allow CRUDS for ' + test.api, () => {
     let customerId;
     return cloud.post('/hubs/finance/customers', { first_name: 'churros', last_name: 'tmp', email: 'random@churros.com' })

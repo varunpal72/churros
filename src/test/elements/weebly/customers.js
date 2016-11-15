@@ -15,7 +15,7 @@ const customerPatch = () => ({
   email : 'updated@cloud-elements.com'
 });
 
-suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'customers', { payload: payload, skip: true }, (test) => {
   test.should.supportPagination();
   it('should allow CRUDS for /customers', () => {
     let customerId;

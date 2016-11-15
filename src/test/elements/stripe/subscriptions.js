@@ -21,14 +21,17 @@ const plan = () => ({
 
 suite.forElement('payment', 'subscriptions', (test) => {
   let customerId, planId;
-  before(() => cloud.post(`/hubs/payment/customers`,customer)
+
+  before(() => cloud.post(`/hubs/payment/customers`, customer)
     .then(r => customerId = r.body.id)
-    .then(r => cloud.post(`/hubs/payment/plans`,plan()))
+    .then(r => cloud.post(`/hubs/payment/plans`, plan()))
     .then(r => planId = r.body.id)
   );
+
   it(`should allow GET for /hubs/payment/customers/{customerId}/subscriptions`, () => {
     return cloud.get(`/hubs/payment/customers/${customerId}/subscriptions`);
   });
+
   it(`should allow CRUD for /hubs/payment/customers/{customerId}/subscriptions/{subscriptionId}`, () => {
     let subscriptionId;
     return cloud.post(`/hubs/payment/customers/${customerId}/subscriptions`, createSubscription(planId))
@@ -37,10 +40,8 @@ suite.forElement('payment', 'subscriptions', (test) => {
       .then(r => cloud.patch(`/hubs/payment/customers/${customerId}/subscriptions/${subscriptionId}`, updateSubscription()))
       .then(r => cloud.delete(`/hubs/payment/customers/${customerId}/subscriptions/${subscriptionId}`));
   });
-  it(`should allow DELETE for /hubs/payment/customers/{customerId}`, () => {
-    return cloud.delete(`/hubs/payment/customers/${customerId}`);
-  });
-  it(`should allow DELETE for /hubs/payment/plans/{planId}`, () => {
-    return cloud.delete(`/hubs/payment/plans/${planId}`);
-  });
+
+  after(() => cloud.delete(`/hubs/payment/customers/${customerId}`)
+    .then(cloud.delete(`/hubs/payment/plans/${planId}`))
+  );
 });
