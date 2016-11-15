@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const expect = require('chakram').expect;
 const rootFolder = '/My Files & Folders';
 suite.forElement('documents', 'files', (test) => {
   let query = { path: rootFolder + `/file-${tools.random()}.txt` };
@@ -11,23 +10,19 @@ suite.forElement('documents', 'files', (test) => {
 
   let fileId;
   let copyId1;
-  let copyId2;
   let copyPath = { path: rootFolder + `/churros-${tools.random()}.txt`};
 
   it('Testing file uploading/downloading/metadata', () => {
-    let resbody;
-    let filePath;
-    let metadata;
     let path = __dirname + '/assets/file.txt';
     return cloud.postFile('/hubs/documents/files', path, { qs:query})
-    .then(r => fileId = r.body['id'])
+    .then(r => fileId = r.body.id)
     .then(r => cloud.get('/hubs/documents/files'+ '/' + fileId))
     .then(r => cloud.get('/hubs/documents/files'+ '/' + fileId + '/metadata'))
     .then(r => cloud.patch('hubs/documents/files/' + fileId + '/metadata', metadataPatch))
     .then(r => cloud.post('/hubs/documents/files'+ '/' + fileId + '/copy', copyPath))
-    .then(r => copyId1 = r.body['id'])
+    .then(r => copyId1 = r.body.id);
 
-  })
+  });
   test.withOptions({qs:metadataPatch}).withApi('/hubs/documents/files').should.return200OnGet();
 //  test.withOptions({qs:query}).withApi('/hubs/documents/files/metadata').should.return200OnGet();
 
@@ -44,7 +39,7 @@ suite.forElement('documents', 'files', (test) => {
   it('Testing file deleting', () => {
     let path = __dirname + '/assets/file.txt';
     return cloud.postFile('/hubs/documents/files', path, { qs:query})
-    .then(r => fileId = r.body['id'])
+    .then(r => fileId = r.body.id)
     .then(r => cloud.delete('/hubs/documents/files/' + fileId))
     .then(r => cloud.withOptions({qs:metadataPatch}).delete('/hubs/documents/files'))
     .then(r => cloud.withOptions({qs:copyPath}).delete('/hubs/documents/files'));
@@ -52,5 +47,5 @@ suite.forElement('documents', 'files', (test) => {
 
 
 
-  })
+  });
 });

@@ -1,12 +1,11 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
  const payload = require('./assets/tags');
  const cloud = require('core/cloud');
 
 
-suite.forElement('ecommerce', 'tags', (test) => {
+suite.forElement('ecommerce', 'tags', {skip: true}, (test) => {
   it('Testing tags', () => {
 
     let fileId;
@@ -15,6 +14,6 @@ suite.forElement('ecommerce', 'tags', (test) => {
     .then(r => cloud.get('/hubs/ecommerce/products/tags'))
     .then(r => cloud.get('/hubs/ecommerce/products/tags/' + fileId))
     .then(r => cloud.patch('/hubs/ecommerce/products/tags/' + fileId, payload))
-    .then(r => cloud.delete('/hubs/ecommerce/products/tags/' + fileId))
-  })
+    .then(r => cloud.delete('/hubs/ecommerce/products/tags/' + fileId));
+  });
 });

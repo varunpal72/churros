@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
  const payload = require('./assets/attributes');
  const cloud = require('core/cloud');
 
@@ -15,5 +14,5 @@ suite.forElement('ecommerce', 'attributes', (test) => {
     .then(r => cloud.get('/hubs/ecommerce/products/attributes/' + fileId))
     .then(r => cloud.patch('/hubs/ecommerce/products/attributes/' + fileId, payload))
     .then(r => cloud.delete('/hubs/ecommerce/products/attributes/' + fileId));
-  })
+  });
 });
