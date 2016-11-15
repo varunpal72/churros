@@ -20,12 +20,12 @@ exports.random = () => Math.random().toString(36).substring(7);
  * @return {string} A random, 7 character string
  */
 exports.randomStr = (possible, len) => {
-    let text = "";
+  let text = "";
 
-    for( let i=0; i < len; i++ ) {
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      }
-    return text;
+  for (let i = 0; i < len; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
 };
 
 /**
@@ -129,3 +129,5 @@ exports.stringify = (json) => JSON.stringify(json);
  * @param asset The absolute path to the asset (can use `require.resolve(relativePath)`)
  */
 exports.copyAsset = (asset) => JSON.parse(JSON.stringify(require(asset)));
+
+exports.jon = (a, b) => console.log(`${a}, ${b}`);
