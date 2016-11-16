@@ -1,6 +1,6 @@
 {
   "contacts": {
-    "vendorName": "/legal/contact-information",
+    "vendorName": "contacts",
     "fields": [
       {
         "path": "id",
