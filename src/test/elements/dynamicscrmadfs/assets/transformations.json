@@ -3,96 +3,79 @@
         "vendorName": "account",
         "fields": [{
             "path": "name",
-            "vendorPath": "attributes.name",
-            "type": "string"
+            "vendorPath": "attributes.name"
         }, {
             "path": "description",
-            "vendorPath": "attributes.description",
-            "type": "string"
+            "vendorPath": "attributes.description"
         }]
     },
     "contacts": {
         "vendorName": "contact",
         "fields": [{
             "path": "id",
-            "vendorPath": "id",
-            "type": "string"
+            "vendorPath": "id"
         }, {
             "path": "firstName",
-            "vendorPath": "attributes.firstname",
-            "type": "string"
+            "vendorPath": "attributes.firstname"
         }, {
             "path": "lastName",
-            "vendorPath": "attributes.lastname",
-            "type": "string"
+            "vendorPath": "attributes.lastname"
+
         }, {
             "path": "email",
-            "vendorPath": "attributes.emailaddress1",
-            "type": "string"
+            "vendorPath": "attributes.emailaddress1"
         }]
     },
     "leads": {
         "vendorName": "lead",
         "fields": [{
             "path": "id",
-            "vendorPath": "id",
-            "type": "string"
+            "vendorPath": "id"
         }, {
             "path": "firstName",
-            "vendorPath": "attributes.firstname",
-            "type": "string"
+            "vendorPath": "attributes.firstname"
         }, {
             "path": "lastName",
-            "vendorPath": "attributes.lastname",
-            "type": "string"
+            "vendorPath": "attributes.lastname"
         }, {
             "path": "email",
-            "vendorPath": "attributes.emailaddress1",
-            "type": "string"
+            "vendorPath": "attributes.emailaddress1"
         }]
     },
     "opportunities": {
         "vendorName": "opportunity",
         "fields": [{
             "path": "name",
-            "vendorPath": "attributes.name",
-            "type": "string"
+            "vendorPath": "attributes.name"
         }, {
             "path": "description",
-            "vendorPath": "attributes.description",
-            "type": "string"
+            "vendorPath": "attributes.description"
         }]
     },
     "products": {
         "vendorName": "product",
         "fields": [{
             "path": "price",
-            "vendorPath": "attributes.price",
-            "type": "string"
+            "vendorPath": "attributes.price"
         }, {
             "path": "name",
-            "vendorPath": "attributes.name",
-            "type": "string"
+            "vendorPath": "attributes.name"
         }, {
             "path": "sku",
-            "vendorPath": "attributes.productnumber",
-            "type": "string"
+            "vendorPath": "attributes.productnumber"
         }, {
             "path": "scheduleId",
-            "vendorPath": "attributes.defaultuomscheduleid",
-            "type": "string"
+            "vendorPath": "attributes.defaultuomscheduleid"
         }]
     },
     "activities": {
         "vendorName": "activitypointer",
         "fields": [{
                 "path": "description",
-                "vendorPath": "attributes.description",
-                "type": "string"
+                "vendorPath": "attributes.description"
             }, {
                 "path": "subject",
-                "vendorPath": "attributes.subject",
-                "type": "string"
+                "vendorPath": "attributes.subject"
             }
 
         ]
@@ -101,12 +84,11 @@
         "vendorName": "task",
         "fields": [{
             "path": "description",
-            "vendorPath": "attributes.description",
-            "type": "string"
+            "vendorPath": "attributes.description"
         }, {
             "path": "subject",
-            "vendorPath": "attributes.subject",
-            "type": "string"
+            "vendorPath": "attributes.subject"
         }]
     }
+
 }
