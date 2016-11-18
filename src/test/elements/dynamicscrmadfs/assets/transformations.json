@@ -1,19 +1,20 @@
 {
     "accounts": {
         "vendorName": "account",
-        "fields": [{
+        "fields": [
+             {
+            "path": "id",
+            "vendorPath": "attributes.accountid"
+        },{
             "path": "name",
             "vendorPath": "attributes.name"
-        }, {
-            "path": "description",
-            "vendorPath": "attributes.description"
         }]
     },
     "contacts": {
         "vendorName": "contact",
         "fields": [{
             "path": "id",
-            "vendorPath": "id"
+            "vendorPath": "attributes.contactid"
         }, {
             "path": "firstName",
             "vendorPath": "attributes.firstname"
@@ -30,7 +31,7 @@
         "vendorName": "lead",
         "fields": [{
             "path": "id",
-            "vendorPath": "id"
+            "vendorPath": "attributes.leadid"
         }, {
             "path": "firstName",
             "vendorPath": "attributes.firstname"
@@ -44,7 +45,11 @@
     },
     "opportunities": {
         "vendorName": "opportunity",
-        "fields": [{
+        "fields": [
+              {
+            "path": "id",
+            "vendorPath": "attributes.opportunityid"
+        },{
             "path": "name",
             "vendorPath": "attributes.name"
         }, {
@@ -54,35 +59,28 @@
     },
     "products": {
         "vendorName": "product",
-        "fields": [{
-            "path": "price",
-            "vendorPath": "attributes.price"
-        }, {
-            "path": "name",
-            "vendorPath": "attributes.name"
-        }, {
-            "path": "sku",
-            "vendorPath": "attributes.productnumber"
-        }, {
-            "path": "scheduleId",
-            "vendorPath": "attributes.defaultuomscheduleid"
+        "fields": [
+              {
+            "path": "id",
+            "vendorPath": "attributes.productid"
         }]
     },
     "activities": {
         "vendorName": "activitypointer",
-        "fields": [{
-                "path": "description",
-                "vendorPath": "attributes.description"
-            }, {
-                "path": "subject",
-                "vendorPath": "attributes.subject"
-            }
-
+        "fields": [
+                     {
+            "path": "id",
+            "vendorPath": "attributes.activitypointerid"
+        }
         ]
     },
     "tasks": {
         "vendorName": "task",
-        "fields": [{
+        "fields": [
+              {
+            "path": "id",
+            "vendorPath": "attributes.activityid"
+        }, {
             "path": "description",
             "vendorPath": "attributes.description"
         }, {
