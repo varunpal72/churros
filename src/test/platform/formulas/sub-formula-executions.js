@@ -288,6 +288,6 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
   after(() => {
     return cleanFormulas()
       .then(r => provisioner.delete(sfdcId))
-      .catch(e => tools.logAndThrow(`Failed to run after()`, e));
+      .catch(e => tools.logAndThrow(`Failed to run after()`, e)) ;
   });
 });
