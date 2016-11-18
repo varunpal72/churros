@@ -24,7 +24,6 @@ config.browser = (argv.browser || 'firefox'); // long term, want to change this 
 
 // this happens once
 const props = require('core/props')(config);
-
 if (argv.externalAuth) {
   const element = argv.element;
   props.setForKey(element, 'external', true);

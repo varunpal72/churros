@@ -22,6 +22,7 @@ const fromOptions = (url, options) => {
       wait: options.wait,
       load: options.load,
       loadElement: options.element,
+      start: options.start,
       browser: options.browser,
       verbose: options.verbose === undefined ? false : options.verbose, // hack...i can't figure out why it's not default to false
       externalAuth: options.externalAuth,
@@ -64,10 +65,21 @@ const run = (suite, options, cliArgs) => {
   const baseMochaPaths = [rootTestDir + '/lifecycle'];
   if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
 
+  const isAfterStart = (start, suite) => {
+    if (!start) return true;
+    let folderPath = `${rootTestDir}/${resourceType}/${start}`;
+    if (!fs.existsSync(folderPath)) {
+      console.log('Invalid suite: %s', start);
+      process.exit(1);
+    }
+    return suite >= start;
+  };
+
   // if we want to run multiple tests, we need to find all of the available element or platform tests and add them to our resources array
   isRunMultiple(suite) ?
     fs.readdirSync(`${rootTestDir}/${resourceType}`)
     .filter(e => e !== 'assets' && options.exclude.indexOf(e) < 0)
+    .filter(e => isAfterStart(options.start, e))
     .map(e => resources.push(e)) :
     resources.push(suite.split('/')[1]);
 
@@ -139,6 +151,7 @@ commander
   .option('-x, --externalAuth', 'provision using external authentication. only for elements tests')
   .option('-b, --browser <name>', 'browser to use during the selenium OAuth process', 'firefox') // will change this to phantomjs as churros becomes more mature
   .option('-s, --exclude <resource>', 'element(s) or platform resource(s) to exclude if running all tests', collect, [])
+  .option('-S, --start <suite>', 'specific suite to start with, everything before this will be skipped')
   .option('-V, --verbose', 'logging verbose mode')
   .on('--help', () => {
     console.log('  Examples:');
@@ -148,6 +161,7 @@ commander
     console.log('    $ churros test elements/closeio --test \'contacts\'');
     console.log('    $ churros test elements');
     console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
+    console.log('    $ churros test elements --start freshbooks');
     console.log('');
     console.log('    # Platform Tests');
     console.log('    $ churros test platform/notifications');

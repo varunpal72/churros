@@ -1,9 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-/* // Commented out since we are not doing POSTs
 const charge = require('./assets/charges');
-const refund = require('./assets/refunds');*/
+const refund = require('./assets/refunds');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 
@@ -13,8 +12,7 @@ const updateRefunds = () => ({
   }
 });
 
-suite.forElement('payment', 'refunds', (test) => {
-/* // Commented out the POSTs since there are no DELETE APIs for the same.
+suite.forElement('payment', 'refunds', { skip: true }, (test) => {
   let chargeId;
   before(() => cloud.post(`/hubs/payment/charges`,charge)
     .then(r => chargeId = r.body.id)
@@ -25,7 +23,7 @@ suite.forElement('payment', 'refunds', (test) => {
       .then(r => refundId = r.body.id)
       .then(r => cloud.get(`${test.api}/${refundId}`))
       .then(r => cloud.patch(`${test.api}/${refundId}`, updateRefunds()));
-  });*/
+  });
   test.should.return200OnGet();
   it(`should allow RU for /hubs/payment/charges/{chargeId}/refunds`, () => {
     let refundId;
