@@ -814,16 +814,16 @@
       "type": "string"
     }]
   },
-"accounts": {
-    "fields": [{
+  "accounts": {
+     "fields": [{
       "path": "id",
       "type": "string"
-        },{
+    }, {
       "path": "name",
       "type": "string"
     }]
-   },
- "tasks": {
+  },
+  "tasks": {
     "fields": [{
       "path": "id",
       "type": "string"
