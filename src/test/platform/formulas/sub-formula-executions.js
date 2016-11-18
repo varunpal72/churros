@@ -57,7 +57,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   const validateExecution = (response) => {
     expect(response).to.have.statusCode(200);
-    //expect(response.body).to.have.length(1);
+    expect(response.body).to.have.length(1);
     return response;
   };
 
@@ -68,7 +68,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
   };
 
   const defaultValidator = (executions) => {
-    //expect(executions).to.have.length(1);
+    expect(executions).to.have.length(1);
     const execution = executions[0];
     expect(execution.status).to.equal('success');
     const stepExecutions = execution.stepExecutions;
@@ -139,7 +139,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       const execution = executions[0];
       const stepExecutions = execution.stepExecutions;
       const lastStepExecution = stepExecutions.filter(se => se.stepName === 'A-end')[0];
-      //expect(lastStepExecution.stepExecutionValues).to.have.length(1);
+      expect(lastStepExecution.stepExecutionValues).to.have.length(1);
       expect(lastStepExecution.stepExecutionValues[0].value).to.equal('{"b":"iamb","c":"iamc"}');
     };
 
@@ -163,7 +163,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       const execution = executions[0];
       const stepExecutions = execution.stepExecutions;
       const lastStepExecution = stepExecutions.filter(se => se.stepName === 'A-end')[0];
-      //expect(lastStepExecution.stepExecutionValues).to.have.length(1);
+      expect(lastStepExecution.stepExecutionValues).to.have.length(1);
 
       const value = lastStepExecution.stepExecutionValues[0];
       expect(value.key).to.equal('A-end.createdId');
@@ -192,7 +192,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     const validator = (executions) => {
       const subFormulaExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-sub-formula')[0];
       expect(subFormulaExecution.status).to.equal('failed');
-      //expect(subFormulaExecution.stepExecutionValues).to.have.length(1);
+      expect(subFormulaExecution.stepExecutionValues).to.have.length(1);
       expect(subFormulaExecution.stepExecutionValues[0].value).to.contain('error');
     };
 
@@ -208,7 +208,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
       // validate A-sub-formula sevs
       const subFormulaSevs = subFormulaExecution.stepExecutionValues;
-      //expect(subFormulaSevs).to.have.length(1);
+      expect(subFormulaSevs).to.have.length(1);
       const subFormulaSevsJson = JSON.parse(subFormulaSevs[0].value);
       expect(subFormulaSevsJson.request).to.not.be.null;
       expect(subFormulaSevsJson.response).to.not.be.null;
@@ -217,7 +217,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       const onFailureExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-end')[0];
 
       const endSevs = onFailureExecution.stepExecutionValues;
-      //expect(endSevs).to.have.length(1);
+      expect(endSevs).to.have.length(1);
       const endSevsJson = JSON.parse(endSevs[0].value);
       expect(endSevsJson.code).to.equal(404);
       expect(endSevsJson.headers).to.not.be.null;
