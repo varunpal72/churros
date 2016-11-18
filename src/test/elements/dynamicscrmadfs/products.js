@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('crm', 'products', { payload:null }, (test) => {
+suite.forElement('crm', 'products', null, (test) => {
   test.should.supportSr(); 
   test.should.supportPagination();
   it('should support searching /hubs/crm/products by id ', () => {
