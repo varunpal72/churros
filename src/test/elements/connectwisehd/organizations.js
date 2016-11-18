@@ -6,7 +6,7 @@ const tools = require('core/tools');
 
 
 const createOrganization = (payload) => {
-  payload.companyIdentifier = payload.companyIdentifier + tools.randomInt().toString();
+  payload.companyIdentifier = tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20);
   return payload;
 };
 
