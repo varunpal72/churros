@@ -15,8 +15,8 @@ const createCustomer = (rando) => ({
 
 suite.forElement('finance', 'invoices', { payload: createInvoices() }, (test) => {
   let customerId, urnId, invoiceId;
-  it('should create a customer and then an invoice for that id', () => {
-    return cloud.post('/hubs/finance/customers', createCustomer(tools.randomInt().toString()))
+  it.skip('should create a customer and then an invoice for that id', () => {
+    return cloud.post('/hubs/finance/customers', createCustomer(tools.randomStr('0123456789', 4)))
       .then(r => customerId = r.body.id)
       .then(r => cloud.get('/hubs/finance/customers/' + customerId))
       .then(r => cloud.post(test.api, createInvoices(customerId)))
