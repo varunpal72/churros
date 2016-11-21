@@ -1,24 +1,22 @@
 {
-  "docNumber" :"CHURROS_TEST2",
-  "line": [
-    {
-      "detailType": "ACCOUNT_BASED_EXPENSE_LINE_DETAIL",
-      "amount": 711.15,
-      "accountBasedExpenseLineDetail": {
-        "taxCodeRef": {
-          "value": "NON"
-        },
-        "accountRef": {
-          "name": "11000 Accounts Receivable",
-          "value": "60"
-        },
-        "billableStatus": "NOT_BILLABLE"
+  "docNumber": "CHURROS_TEST2",
+  "line": [{
+    "detailType": "ACCOUNT_BASED_EXPENSE_LINE_DETAIL",
+    "amount": 711.15,
+    "accountBasedExpenseLineDetail": {
+      "taxCodeRef": {
+        "value": "NON"
       },
-      "id": "1",
-      "linkedTxn": [],
-      "customField": []
-    }
-  ],
+      "accountRef": {
+        "name": "11000 Accounts Receivable",
+        "value": "60"
+      },
+      "billableStatus": "NOT_BILLABLE"
+    },
+    "id": "1",
+    "linkedTxn": [],
+    "customField": []
+  }],
   "entityRef": {
     "name": "Abercrombie, Kristy:Remodel Bathroom",
     "type": "Customer",
