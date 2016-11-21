@@ -260,8 +260,9 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('ius-sign-in-submit-btn')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.name('companySelectionWidgetCompanySelector_href')), 10000)
         .thenCatch(r => true);
-      browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
-      browser.wait(() => webdriver.until.elementLocated(webdriver.By.id('authorizeBtn')), 7000)
+      browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('authorizeBtn')), 5000)
         .thenCatch(r => true);
       browser.findElement(webdriver.By.id('authorizeBtn')).click();
       browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
