@@ -18,7 +18,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
     .then(filteredIncidents => cloud.get(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}`));
   });
 
-  it('it should support PATCH', () => {
+  it.skip('it should support PATCH', () => {
     return cloud.get('/hubs/helpdesk/incidents')
     .then(r => r.body.filter(r => r.display_id))
     .then(filteredIncidents => cloud.patch(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}`, payload));

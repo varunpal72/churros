@@ -8,7 +8,7 @@ const note = {
   "description": "I am a test note"
 };
 
-suite.forElement('crm', 'leads', { payload: payload }, (test) => {
+suite.forElement('crm', 'leads', { payload: payload, skip: true }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
   let leadId, noteId;

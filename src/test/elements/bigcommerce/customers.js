@@ -34,7 +34,7 @@ const groupUpdate = () => ({
   "name": "CE Discounts - Update"
 });
 
-suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'customers', { payload: payload, skip: true }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.withApi(`${test.api}/count`).should.return200OnGet();
   test.withOptions({ qs: { where: 'fetchShippingAddresses=\'true\'' } }).should.return200OnGet();

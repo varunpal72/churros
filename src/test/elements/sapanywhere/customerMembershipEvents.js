@@ -6,7 +6,7 @@ const cloud = require('core/cloud');
 const customerPayload = require('./assets/customers');
 const membershipEventsPayload = require('./assets/membership-events');
 
-suite.forElement('ecommerce', 'customers', { payload: customerPayload }, (test) => {
+suite.forElement('ecommerce', 'customers', { payload: customerPayload, skip: true }, (test) => {
   const build = (overrides) => Object.assign({}, customerPayload, overrides);
   const payload = build({ customerName: tools.random(), lastName: tools.random(), firstName: tools.random(), mobile: tools.randomInt() + '7153' + tools.randomInt() });
   it('should create a customer and then get/post for a membership events', () => {

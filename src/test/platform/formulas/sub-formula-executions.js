@@ -126,12 +126,12 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   it('should support a formula that contains a sub-formula', () => {
     const setup = () => createSetCreate(simpleFormulas, 'B-simple-formula', 'A-sub-formula', 'A-simple-formula');
-    return executionTest(setup, 3, buildConfig(sfdcId));
+    return executionTest(setup, 4, buildConfig(sfdcId));
   });
 
   it('should support a formula having a sub-formula with a duplicate stepName in the parent and sub-formula', () => {
     const setup = () => createSetCreate(duplicateStepFormulas, 'B-duplicate-step-sub', 'formula-b-step', 'A-duplicate-step-parent');
-    return executionTest(setup, 3, buildConfig(sfdcId));
+    return executionTest(setup, 4, buildConfig(sfdcId));
   });
 
   it('should support a formula having multiple sub-formulas', () => {
@@ -149,7 +149,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastStepExecution.stepExecutionValues[0].value).to.equal('{"b":"iamb","c":"iamc"}');
     };
 
-    return executionTest(setup, 5, buildConfig(sfdcId), validator);
+    return executionTest(setup, 17, buildConfig(sfdcId), validator);
   });
 
   it('should support a formula having multiple sub-formulas and no after steps', () => {
@@ -159,7 +159,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
         .then(() => cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'A-sub-formula-no-steps-after')));
     };
 
-    return executionTest(setup, 4, buildConfig(sfdcId));
+    return executionTest(setup, 7, buildConfig(sfdcId));
   });
 
   it('should support a formula with a sub-formula that has a manual trigger type', () => {
@@ -176,7 +176,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(value.value).to.be.a('string');
     };
 
-    return executionTest(setup, 4, buildConfig(sfdcId), validator);
+    return executionTest(setup, 8, buildConfig(sfdcId), validator);
   });
 
   it('should have onSuccess or onFailure to represent the entire sub-formulas execution status', () => {
@@ -189,7 +189,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       stepExecutions.filter(se => se.stepName === 'A-end')[0].status === 'success';
     };
 
-    return executionTest(setup, 4, buildConfig(sfdcId), validator, true);
+    return executionTest(setup, 5, buildConfig(sfdcId), validator, true);
   });
 
   it('should propagate errors from sub-formulas properly', () => {
@@ -202,7 +202,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(subFormulaExecution.stepExecutionValues[0].value).to.contain('error');
     };
 
-    return executionTest(setup, 3, buildConfig(sfdcId), validator, true);
+    return executionTest(setup, 4, buildConfig(sfdcId), validator, true);
   });
 
   it('should propagate values from a sub-formula that failed but not with an error', () => {
@@ -230,7 +230,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(endSevsJson.body).to.not.be.null;
     };
 
-    return executionTest(setup, 4, buildConfig(sfdcId), validator, true);
+    return executionTest(setup, 5, buildConfig(sfdcId), validator, true);
   });
 
   it('should support passing configs to a sub-formula with different keys than parent configs', () => {
@@ -253,7 +253,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastSEVsJson.overRideConfig).to.equal('parent');
     };
 
-    return executionTest(setup, 4, instance, validator);
+    return executionTest(setup, 5, instance, validator);
   });
 
   it('should support passing configs to a sub-formula with same keys as parent and not override', () => {
@@ -281,13 +281,13 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastSEVsJson.child1.child2.child3.over).to.equal('child3');
     };
 
-    return executionTest(setup, 4, instance, validator);
+    return executionTest(setup, 11, instance, validator);
   });
 
   /* Cleanup any resources */
   after(() => {
     return cleanFormulas()
       .then(r => provisioner.delete(sfdcId))
-      .catch(e => tools.logAndThrow(`Failed to run after()`, e));
+      .catch(e => tools.logAndThrow(`Failed to run after()`, e)) ;
   });
 });

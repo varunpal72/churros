@@ -11,7 +11,7 @@ const pathUpdate = () => ({
   "path": pathUpdateString
 });
 
-suite.forElement('documents', 'files', (test) => {
+suite.forElement('documents', 'files', {skip: true}, (test) => {
   let query = { path: `/churros/CloudElements-${tools.random()}.png` };
   let path = __dirname + '/assets/CE_logo.png';
 

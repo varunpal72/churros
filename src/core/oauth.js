@@ -195,6 +195,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then(r => browser.getCurrentUrl())
           .thenCatch(r => browser.getCurrentUrl());
       }, 7000);
+    case 'infusionsoftecommerce':
     case 'infusionsoftcrm':
     case 'infusionsoftmarketing':
       browser.get(r.body.oauthUrl);
@@ -380,6 +381,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 
     case 'sapanywhere':
       browser.get(r.body.oauthUrl);
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('emailInput')), 5000)
+          .thenCatch(r => true);
       browser.findElement(webdriver.By.name('emailInput')).sendKeys(username);
       browser.findElement(webdriver.By.name('loginInputPwd')).sendKeys(password);
       browser.findElement(webdriver.By.name('loginButton')).click();
