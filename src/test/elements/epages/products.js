@@ -14,7 +14,7 @@ const updatePayload = {
 
 suite.forElement('crm', 'products', { payload: productPayload }, (test) => {
  test.should.supportPagination();
- it('should allow SRU for /hub/crm/products', () => {
+ it('should allow CRUDs for /hub/crm/products', () => {
    let id;
 	 return cloud.post(test.api, productPayload)
 	  .then(r => id =r.body.id)
