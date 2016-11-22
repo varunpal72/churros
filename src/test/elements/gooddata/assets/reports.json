@@ -1,3 +1,37 @@
 {
-  
+  "reportDefinition": {
+    "reportDefinition": {
+      "content": {
+        "filters": [],
+        "format": "grid",
+        "grid": {
+          "rows": [],
+          "columns": [
+            "metricGroup"
+          ],
+          "sort": {
+            "columns": [],
+            "rows": []
+          },
+          "columnWidths": [],
+          "metrics": [
+            {
+              "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/1507",
+              "alias": ""
+            }
+          ]
+        }
+      },
+      "meta": {
+        "title": "My fancy new report definition",
+        "summary": "",
+        "tags": "",
+        "deprecated": 0,
+        "category": "reportDefinition"
+      }
+    }
+  },
+  "report": {
+    
+  }
 }

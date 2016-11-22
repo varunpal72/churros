@@ -1,3 +1,10 @@
 {
-  
+  "accountSetting": {
+    "login": "user@login.com",
+    "password": "PASSWORD",
+    "email": "contact@email.com",
+    "verifyPassword": " PASSWORD ",
+    "firstName": "FirstName",
+    "lastName": "LastName"
+  }
 }

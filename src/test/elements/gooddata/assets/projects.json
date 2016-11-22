@@ -13,3 +13,195 @@
     }
   }
 }
+
+{
+  "reportDefinition": {
+    "content": {
+      "chart": {
+        "styles": {
+          "global": {
+            "dataPoints": {
+              "display": "none"
+            },
+            "linetype": "smooth",
+            "colorMapping": [
+              {
+                "guid": "guid1",
+                "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/941/elements?id=4"
+              },
+              {
+                "guid": "guid2",
+                "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/941/elements?id=6"
+              },
+              {
+                "guid": "guid3",
+                "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/941/elements?id=5"
+              },
+              {
+                "guid": "guid4",
+                "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/941/elements?id=3"
+              }
+            ],
+            "font": {
+              "size": 10
+            }
+          },
+          "yui_3_4_1_1_1337026599195_377636": {
+            "axis": {
+              "majorlabel": {
+                "count": 5
+              },
+              "label": {
+                "display": "none"
+              }
+            }
+          },
+          "yui_3_4_1_1_1337026599195_377638": {
+            "axis": {
+              "majorlabel": {
+                "rotation": -45
+              },
+              "label": {
+                "display": "none"
+              }
+            }
+          }
+        },
+        "buckets": {
+          "y": [
+            {
+              "id": "yui_3_4_1_1_1337026599195_377636",
+              "uri": "metric"
+            }
+          ],
+          "color": [
+            {
+              "id": "yui_3_4_1_1_1337026599195_377637",
+              "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/942"
+            }
+          ],
+          "x": [
+            {
+              "id": "yui_3_4_1_1_1337026599195_377638",
+              "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/596"
+            }
+          ],
+          "angle": []
+        },
+        "type": "line"
+      },
+      "grid": {
+        "sort": {
+          "columns": [],
+          "rows": []
+        },
+        "columnWidths": [],
+        "columns": [
+          {
+            "attribute": {
+              "alias": "",
+              "totals": [
+                []
+              ],
+              "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/596"
+            }
+          },
+          "metricGroup"
+        ],
+        "metrics": [
+          {
+            "alias": "",
+            "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/1507"
+          }
+        ],
+        "rows": [
+          {
+            "attribute": {
+              "alias": "",
+              "totals": [
+                []
+              ],
+              "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/942"
+            }
+          }
+        ]
+      },
+      "oneNumber": {
+        "labels": {}
+      },
+      "format": "chart",
+      "filters": [
+        {
+          "tree": {
+            "content": [
+              {
+                "value": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/590",
+                "position": {
+                  "column": 1,
+                  "line": 2
+                },
+                "type": "attribute object"
+              },
+              {
+                "content": [
+                  {
+                    "value": "THIS",
+                    "position": {
+                      "column": 61,
+                      "line": 2
+                    },
+                    "type": "time macro"
+                  },
+                  {
+                    "value": 14,
+                    "position": {
+                      "column": 67,
+                      "line": 2
+                    },
+                    "type": "number"
+                  }
+                ],
+                "position": {
+                  "column": 66,
+                  "line": 2
+                },
+                "type": "-"
+              },
+              {
+                "value": "THIS",
+                "position": {
+                  "column": 75,
+                  "line": 2
+                },
+                "type": "time macro"
+              }
+            ],
+            "position": {
+              "column": 52,
+              "line": 2
+            },
+            "type": "between"
+          },
+          "expression": "[/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/590] BETWEEN  This -14 AND  This "
+        }
+      ]
+    },
+    "links": {
+      "explain2": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/49197/explain2"
+    },
+    "meta": {
+      "author": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff",
+      "uri": "/gdc/md/la84vcyhrq8jwbu4wpipw66q2sqeb923/obj/49197",
+      "tags": "",
+      "created": "2013-05-17 15:51:40",
+      "identifier": "asogFntidqh7",
+      "deprecated": "0",
+      "summary": "",
+      "isProduction": 1,
+      "title": "Untitled report definition",
+      "category": "reportDefinition",
+      "updated": "2015-08-15 10:23:13",
+      "contributor": "/gdc/account/profile/876ec68f5630b38de65852ed5d6236ff"
+    }
+  }
+}
