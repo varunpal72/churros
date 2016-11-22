@@ -813,5 +813,10 @@
       "path": "id",
       "type": "string"
     }]
+  },"carts": {
+    "fields": [{
+        "path": "id",
+        "type": "string"
+      }]
   }
 }

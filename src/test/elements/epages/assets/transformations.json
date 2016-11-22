@@ -25,5 +25,23 @@
         "vendorPath": "customerId"
       }
     ]
+  },
+"carts": {
+    "vendorName": "carts",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "cartId"
+      }
+    ]
+  },
+"products": {
+    "vendorName": "products",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "productId"
+      }
+    ]
   }
 }

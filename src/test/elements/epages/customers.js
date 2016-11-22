@@ -7,20 +7,18 @@ const payload = require('./assets/customers');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const customersPayload = build({ customerNumber : tools.randomInt()});
 const updatePayload = {
-      "customers": [
-        {
           "op": "add",
           "path": "/customerNumber",
           "value": tools.randomInt()
-        }
-      ]
 };
+
 suite.forElement('crm', 'customers', { payload: customersPayload }, (test) => {
  test.should.supportPagination();
- it('should allow SRU for /hub/crm/customers', () => {
+ it('should allow CRUDs for /hub/crm/customers', () => {
    let id;
 	 return cloud.post(test.api, customersPayload)
 	  .then(r => id =r.body.id)
+	  .then(r => cloud.get(`${test.api}/${id}`))
 	  .then(r => cloud.get(`${test.api}/${id}`))
 	  .then(r => cloud.patch(`${test.api}/${id}`,updatePayload));
   });
