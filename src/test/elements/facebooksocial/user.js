@@ -64,4 +64,3 @@ suite.forElement('social', 'user',{ payload:statusPayload }, (test) => {
       .then(r =>cloud.delete(`${test.api}/comment/${commentId}`));
   });
 });
-

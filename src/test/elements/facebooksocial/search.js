@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
 
 suite.forElement('social', 'search', null, (test) => {
   it('should allow GET for hubs/social/status and then search hubs/social/search/comments and hubs/social/search/likes by statusId ', () => {
@@ -27,6 +26,6 @@ suite.forElement('social', 'search', null, (test) => {
 	
   it('should allow GET for /hubs/social/search/user', () => {
     return cloud.withOptions({ qs: { userName: 'Cloud Eles' } }).get(`${test.api}/user`)
-      .then(r => cloud.withOptions({ qs: { userName: 'Cloud Eles', page: 1, pageSize: 1 } }).get(`${test.api}/user`))
+      .then(r => cloud.withOptions({ qs: { userName: 'Cloud Eles', page: 1, pageSize: 1 } }).get(`${test.api}/user`));
   });
 });
