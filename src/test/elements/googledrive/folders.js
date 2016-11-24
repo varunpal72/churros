@@ -7,6 +7,7 @@ const payload = require('./assets/folders');
 const updatePayload ={
         path:`/${tools.random()}`
  };
+
 suite.forElement('documents', 'folders',{ payload: payload }, (test) => {
     it('should allow CRD for hubs/documents/folders and RU for hubs/documents/folders/metadata by path', () => {
     let srcPath,destPath;

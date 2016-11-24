@@ -13,6 +13,7 @@ const propertiesPayload={
             "customKey": tools.random()
   }
 };
+
 suite.forElement('documents', 'files',{ payload: payload }, (test) => {
     it('should allow ping for googledrive' , () => {
     return cloud.get(`/hubs/documents/ping`);
