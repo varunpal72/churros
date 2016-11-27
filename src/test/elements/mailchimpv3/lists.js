@@ -51,7 +51,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/activities`));
   });
 
-  it('should allow CRUDS for lists/{id}/contacts', () => {
+  it('should allow CRUDS for lists/{id}/contacts and  GET lists/{id}/contacts/{contactId}/activities', () => {
     let listId = -1;
     let contactId = -1;
     return cloud.post(test.api, payload)
@@ -59,6 +59,8 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
       .then(r => cloud.post(`${test.api}/${listId}/contacts`, contactPayload()))
       .then(r => contactId = r.body.id)
       .then(r => cloud.get(`${test.api}/${listId}/contacts/${contactId}`))
+      .then(r => cloud.get(`${test.api}/${listId}/contacts/${contactId}/activities`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/contacts/${contactId}/activities`))
       .then(r => cloud.patch(`${test.api}/${listId}/contacts/${contactId}`, contactUpdate()))
       .then(r => cloud.post(`${test.api}/${listId}/contacts`, contactPayload()))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/contacts`))
@@ -66,6 +68,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${listId}/contacts/${contactId}`))
       .then(r => cloud.delete(`${test.api}/${listId}`));
   });
+
   it('should allow CRUDS for lists/{id}/fields', () => {
     let listId = -1;
     let fieldId = -1;
@@ -79,6 +82,19 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/fields`))
       .then(r => cloud.withOptions({ qs: { where: 'type=\'text\'' } }).get(`${test.api}/${listId}/fields`))
       .then(r => cloud.delete(`${test.api}/${listId}/fields/${fieldId}`))
+      .then(r => cloud.delete(`${test.api}/${listId}`));
+  });
+
+  it('should allow CRDS for lists/{id}/webhook', () => {
+    let listId = -1;
+    let webhookId = -1;
+    return cloud.post(test.api, payload)
+      .then(r => listId = r.body.id)
+      .then(r => cloud.post(`${test.api}/${listId}/webhook`))
+      .then(r => webhookId = r.body.id)
+      .then(r => cloud.get(`${test.api}/${listId}/webhook`))
+      .then(r => cloud.get(`${test.api}/${listId}/webhook/${webhookId}`))
+      .then(r => cloud.delete(`${test.api}/${listId}/webhook/${webhookId}`))
       .then(r => cloud.delete(`${test.api}/${listId}`));
   });
 });
