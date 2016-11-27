@@ -15,7 +15,7 @@ exports.files = () => {
   suite.forElement('documents', 'files', (test) => {
 
     let path = __dirname + '/brady.jpg';
-    let query = { path: `/brady-${tools.random()}.jpg` };
+    let query = { path: `/brady-${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}.jpg` };
 
     const fileWrap = (cb) => {
       let file;
@@ -100,7 +100,7 @@ exports.folders = (test) => {
 
     const folderWrap = (cb) => {
       let folder;
-      let random = `${tools.random()}`;
+      let random = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
       folderPayload.path += `-${random}`;
       folderPayload.name += `-${random}`;
       return cloud.post('/hubs/documents/folders', folderPayload)

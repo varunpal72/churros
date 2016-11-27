@@ -74,6 +74,12 @@
       "type": "string"
     }]
   },
+  "purchases": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "cases": {
     "fields": [{
       "path": "id",
@@ -775,12 +781,6 @@
       "type": "string"
     }, {
       "path": "wrong_id",
-      "type": "string"
-    }]
-  },
-  "accounts": {
-    "fields": [{
-      "path": "id",
       "type": "string"
     }]
   },
