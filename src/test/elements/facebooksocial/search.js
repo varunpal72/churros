@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('social', 'search', null, (test) => {
-  it('should allow GET for hubs/social/status and then search hubs/social/search/comments and hubs/social/search/likes by statusId ', () => {
+  it('should allow GET for hubs/social/status and then comments and likes by statusId ', () => {
     let statusId; 
     return cloud.get('/hubs/social/status')
       .then(r => statusId = r.body[0].id)
