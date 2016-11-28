@@ -239,19 +239,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.sleep(3000);
       browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
       browser.findElement(webdriver.By.id('idSIButton9')).click()
-     // browser.findElement(webdriver.By.id('idBtn_Accept'))
         .then((element) =>
           (err) => {
             if (err.state && err.state === 'no such element') { // ignore this
             } else { webdriver.promise.rejected(err); }
           });
-      return browser.getCurrentUrl();
-//      browser.get(r.body.oauthUrl);
-  //    browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
-    //  browser.findElement(webdriver.By.id('idSIButton9')).click();
-      //browser.sleep(3000);
-      //browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
-      //browser.findElement(webdriver.By.id('idSIButton9')).click();
       return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
