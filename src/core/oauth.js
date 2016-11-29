@@ -238,13 +238,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('idSIButton9')).click(); 
       browser.sleep(3000);
       browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
-      browser.findElement(webdriver.By.id('idSIButton9')).click()
-        .then((element) =>
-          (err) => {
-            if (err.state && err.state === 'no such element') { // ignore this
-            } else { webdriver.promise.rejected(err); }
-          });
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('idBtn_Accept')), 3000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('idBtn_Accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
+    
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('Email')).sendKeys(username);
