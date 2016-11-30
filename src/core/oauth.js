@@ -243,6 +243,22 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('idBtn_Accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
+    case 'onedrivebusiness':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
+      browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
+        // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
+        // have hit our redirect URL...i think (it works :/)
+      browser.wait(() => {
+        browser.findElement(webdriver.By.id('cred_sign_in_button'))
+          .then((element) => element.click(),
+            (err) => {
+              if (err.state && err.state === 'no such element') { // ignore this
+              } else { webdriver.promise.rejected(err); }
+            });
+            return browser.getTitle().then((title) => !title);
+        }, 10000);
+      return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('Email')).sendKeys(username);
@@ -279,22 +295,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 
       browser.findElement(webdriver.By.id('oaapprove'))
         .then((element) => element.click(), (err) => {}); // ignore this
-      return browser.getCurrentUrl();
-    case 'onedrivebusiness':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
-      browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
-      // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
-      // have hit our redirect URL...i think (it works :/)
-      browser.wait(() => {
-        browser.findElement(webdriver.By.id('cred_sign_in_button'))
-          .then((element) => element.click(),
-            (err) => {
-              if (err.state && err.state === 'no such element') { // ignore this
-              } else { webdriver.promise.rejected(err); }
-            });
-        return browser.getTitle().then((title) => !title);
-      }, 10000);
       return browser.getCurrentUrl();
     case 'sage200':
       browser.get(r.body.oauthUrl);

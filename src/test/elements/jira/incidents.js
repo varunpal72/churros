@@ -28,5 +28,6 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete(test.api + '/' + incidentId));
   });
   test.should.supportCruds();
+  test.should.supportPagination();
   test.should.supportCeqlSearch('id');
 });
