@@ -3,25 +3,18 @@
 const suite = require('core/suite');
 const payload = require('./assets/projects');
 const reportDefinitionPayload = require('./assets/reports').reportDefinition;
-const reportPayload = require('./assets/reports').report;
 const cloud = require('core/cloud');
 
 suite.forElement('db', 'projects', { payload: payload }, (test) => {
-  test.withOptions({skip:true}).should.supportCruds();
+  test.withOptions({skip:true}).should.supportCrds();
   // get projects for authenticated user
   test.should.return200OnGet();
 
-  // it('should allow POST for /projects/{projectId}/report-definitions', () => {
-  //   return cloud.get(test.api)
-  //   .then(r => r.body[0].project.links.self.substr(14))
-  //   .then(projectId => cloud.post(`${test.api}/${projectId}/reports`, reportDefinitionPayload));
-  // });
-
-  // it('should allow POST for /projects/{projectId}/reports', () => {
-  //   return cloud.get(test.api)
-  //   .then(r => r.body[0].project.links.self.substr(14))
-  //   .then(projectId => cloud.post(`${test.api}/${projectId}/reports`, reportPayload));
-  // });
+  it('should allow POST for /projects/{projectId}/reports-definition', () => {
+    return cloud.get(test.api)
+    .then(r => r.body[0].project.links.self.substr(14))
+    .then(projectId => cloud.post(`${test.api}/${projectId}/reports-definition`, reportDefinitionPayload));
+  });
 
   it('should allow GET for /projects/{id}/reports', () => {
     return cloud.get(test.api)
