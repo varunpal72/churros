@@ -231,11 +231,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.xpath('/html/body/div[1]/div[3]/section/div/div/div/form[2]/div/button')).click();
       return browser.getCurrentUrl();
     case 'onedrivev2':
-
       browser.get(r.body.oauthUrl);
       browser.isElementPresent(webdriver.By.id('i0116'));
       browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
-      browser.findElement(webdriver.By.id('idSIButton9')).click(); 
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
       browser.sleep(3000);
       browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
       browser.findElement(webdriver.By.id('idSIButton9')).click();
@@ -244,7 +243,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('idBtn_Accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
-    
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('Email')).sendKeys(username);
