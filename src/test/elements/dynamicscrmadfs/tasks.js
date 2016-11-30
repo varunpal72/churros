@@ -8,12 +8,12 @@ const tasksPayload = build({ subject: tools.random(), description: tools.random(
 
 suite.forElement('crm', 'tasks', { payload: tasksPayload }, (test) => {
   const options = {
-      churros: {
-          updatePayload: {
-              "description": tools.random(),
-              "subject": tools.random()
-          }
+    churros: {
+      updatePayload: {
+        "description": tools.random(),
+        "subject": tools.random()
       }
+    }
   };
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
