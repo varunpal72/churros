@@ -24,7 +24,7 @@ const updateWidgetStatus = () => ({
   "value": "ENABLE"
 });
 
-suite.forElement('esignature', 'widgets', (test) => {
+suite.forElement('esignature', 'widgets', {skip: true}, (test) => {
   /*
   // This script breaks, as there are over 700 widgets which leads to time-out
     test.should.return200OnGet();

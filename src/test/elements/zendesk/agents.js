@@ -12,7 +12,7 @@ const options = {
   }
 };
 
-suite.forElement('helpdesk', 'agents', { payload }, (test) => {
+suite.forElement('helpdesk', 'agents', { payload: payload, skip: true }, (test) => {
   test.should.supportPagination();
   test.withOptions(options).should.supportCruds();
 });

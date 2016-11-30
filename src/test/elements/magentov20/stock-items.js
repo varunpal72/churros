@@ -48,7 +48,7 @@ const productsStockItems = () => ({
   }
 });
 
-suite.forElement('ecommerce', 'stock-items', (test) => {
+suite.forElement('ecommerce', 'stock-items', { skip: true }, (test) => {
   it(`should allow GET for ${test.api}/{sku}`, () => {
     let sku, attributeSetId;
     return cloud.get(`/hubs/ecommerce/products-attribute-sets`)

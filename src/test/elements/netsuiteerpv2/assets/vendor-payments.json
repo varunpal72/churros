@@ -6,16 +6,14 @@
     "name": "Z - Bill Payment"
   },
   "applyList": {
-    "apply": [
-      {
-        "amount": 1,
-        "apply": true,
-        "line": 0,
-        "doc": 40020,
-        "currency": "USA",
-        "type": "Bill"
-      }
-    ],
+    "apply": [{
+      "amount": 1,
+      "apply": true,
+      "line": 0,
+      "doc": 40020,
+      "currency": "USA",
+      "type": "Bill"
+    }],
     "replaceAll": true
   },
   "subsidiary": {

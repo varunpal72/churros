@@ -26,7 +26,7 @@ const options = {
   }
 };
 
-suite.forElement('helpdesk', 'agents', { payload: payload }, (test) => {
+suite.forElement('helpdesk', 'agents', { payload: payload, skip: true }, (test) => {
   test.should.supportPagination();
   test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { where: 'sys_created_on>=\'2012-11-17T23:15:20\'' } }).should.return200OnGet();
