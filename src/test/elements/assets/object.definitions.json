@@ -807,5 +807,17 @@
       "path": "id",
       "type": "string"
     }]
+  },
+  "tasks": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "description",
+      "type": "string"
+    }, {
+      "path": "subject",
+      "type": "string"
+    }]
   }
 }
