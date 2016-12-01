@@ -1,0 +1,29 @@
+{
+  "name": "Test Tester",
+  "first_name": "Test",
+  "last_name": "Tester",
+  "email1": {
+    "value": "tester@cloud-elements.com",
+    "label": "tester"
+  },
+  "email2": {
+    "value": "tester2@cloud-elements.com",
+    "label": "tester2"
+  },
+  "email3": {
+    "value": "tester3@cloud-elements.com",
+    "label": "tester3"
+  },
+  "phone1": {
+    "value": "800-456-4561",
+    "label": "p1"
+  },
+  "phone2": {
+    "value": "800-456-4562",
+    "label": "p2"
+  },
+  "phone3": {
+    "value": "800-456-4563",
+    "label": "p3"
+  }
+}
