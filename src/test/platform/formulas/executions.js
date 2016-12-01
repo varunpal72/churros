@@ -617,42 +617,4 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator))
       .then(r => cloud.delete(`/hubs/crm/contacts/${contactId}`));
   });
-
-it('should successfully stream a large amount of data using bulk APIs and a stream step in a formula', () => {
-  const configuration = { source: sfdcId, target: sfdcId, 'object.name': 'contacts' };
-  const validator = (executions) => {
-    const bulkTransferStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'bulkTransfer');
-    const bulkTransferStepExecutionValues = bulkTransferStepExecutions[0].stepExecutionValues;
-
-    bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.download.request.headers').map(sev => {
-      const sevJSON = JSON.parse(sev.value);
-      expect(sevJSON.ElementsTestHeader).to.equal('source');
-      expect(sevJSON['Elements-Formula-Step']).to.equal('bulkTransfer');
-    });
-    bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.download.request.query').map(sev => {
-      const sevJSON = JSON.parse(sev.value);
-      expect(sevJSON.ElemetsTestQuery).to.equal('source');
-    });
-    bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.upload.request.body').map(sev => {
-      const sevJSON = JSON.parse(sev.value);
-      expect(sevJSON.testMetadata).to.equal('true');
-    });
-    bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.upload.response.body').map(sev => {
-      const sevJSON = JSON.parse(sev.value);
-      expect(sevJSON.status).to.equal('CREATED');
-    });
-  };
-
-  let bulkId;
-
-  return cloud.withOptions({ qs: { q: `select * from contacts` } }).post('/hubs/crm/bulk/query')
-    .then(r => {
-      expect(r.body.status).to.equal('CREATED');
-      bulkId = r.body.id;
-    })
-    .then(r => tools.wait.upTo(10000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
-      expect(r.body.status).to.equal('COMPLETED');
-    })))
-    .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator));
-  });
 });
