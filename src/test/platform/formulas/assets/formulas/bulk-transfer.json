@@ -1,5 +1,5 @@
 {
-    "name": "bulk-transfer",
+    "name": "fileStream",
     "steps": [
         {
             "onSuccess": [
@@ -8,21 +8,24 @@
             "name": "build",
             "type": "script",
             "properties": {
-                "body": "done({\n  sourceHeaders: {\n    ElementsTestHeader: 'source'\n  },\n  sourceQuery: {\n    ElemetsTestQuery: 'source'\n  },\n  targetHeaders: {\n    'Elements-Async-Callback-Url': 'webhooks.joshuawyse.com'\n  },\n  targetMetadata: {\n    testMetadata: 'true'\n  }\n});"
+                "body": "done({\n    targetMetadataName: 'metadata', \n  sourceHeaders: {\n    ElementsTestHeader: 'source'\n  },\n  sourceQuery: {\n    ElemetsTestQuery: 'source'\n  },\n  targetHeaders: {\n    'Elements-Async-Callback-Url': 'webhooks.joshuawyse.com'\n  },\n  targetMetadata: {\n    testMetadata: 'true'\n  }\n});"
             }
         },
         {
             "name": "bulkTransfer",
-            "type": "bulkTransfer",
+            "type": "stream",
             "properties": {
-                "sourceBulkQuery": "${steps.build.sourceQuery}",
-                "targetBulkHeaders": "${steps.build.targetHeaders}",
-                "targetBulkMetadata": "${steps.build.targetMetadata}",
-                "sourceElementInstanceId": "${config.source}",
-                "targetElementInstanceId": "${config.target}",
-                "sourceBulkApi": "/hubs/crm/bulk/${trigger.args.id}/${config.object.name}",
-                "sourceBulkHeaders": "${steps.build.sourceHeaders}",
-                "targetBulkApi": "/hubs/crm/bulk/${config.object.name}"
+                "downloadQuery": "${steps.build.sourceQuery}",
+                "downloadMethod": "GET",
+                "uploadMethod": "POST",
+                "uploadHeaders": "${steps.build.targetHeaders}",
+                "uploadFormData": "${steps.build.targetMetadata}",
+                "uploadFormDataName": "${steps.build.targetMetadataName}",
+                "downloadElementInstanceId": "${config.source}",
+                "uploadElementInstanceId": "${config.target}",
+                "downloadApi": "/hubs/crm/bulk/${trigger.args.id}/${config.object.name}",
+                "downloadHeaders": "${steps.build.sourceHeaders}",
+                "uploadApi": "/hubs/crm/bulk/${config.object.name}"
             }
         }
     ],
