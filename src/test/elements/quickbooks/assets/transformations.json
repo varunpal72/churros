@@ -1,0 +1,9 @@
+{
+  "departments": {
+    "vendorName": "department",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
+  }
+}

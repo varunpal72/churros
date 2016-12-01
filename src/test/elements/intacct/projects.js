@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const payload = () => ({
-  "projectid": tools.random(),
+  "projectid": tools.randomStr("abcdefghijklmnopqrstuvwxyz", 10),
   "name": tools.random(),
   "projectcategory": "Contract"
 });

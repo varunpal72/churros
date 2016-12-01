@@ -14,7 +14,7 @@ const fieldsPayload = () => ({
   "string--key": "value"
 });
 
-suite.forElement('marketing', 'fields', null, (test) => {
+suite.forElement('marketing', 'fields', { skip: true }, (test) => {
   test.should.return200OnGet();
   it('should allow C for /hubs/marketing/contacts/{email}/fields', () => {
     let email = tools.randomEmail().toString();

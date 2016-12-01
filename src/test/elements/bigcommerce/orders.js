@@ -29,7 +29,7 @@ const shipmentsUpdate = () => ({
   "comments": "UpdateThis"
 });
 
-suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'orders', { payload: payload, skip: true }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { where: 'fetchShippingAddresses=\'true\'' } }).should.return200OnGet();
   test.withApi(`${test.api}/count`).should.return200OnGet();

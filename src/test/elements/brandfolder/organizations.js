@@ -12,7 +12,7 @@ const updatePayload = () => ({
   }
 });
 
-suite.forElement('general', 'organizations', null, (test) => {
+suite.forElement('general', 'organizations', { skip: true }, (test) => {
   it('should support RUS and sub-resources', () => {
     let orgId = -1;
     return cloud.get(test.api)

@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('helpdesk', 'attachments', (test) => {
+suite.forElement('helpdesk', 'attachments', { skip: true }, (test) => {
   it('should allow GET for attachments', () => {
     let attachmentId;
     return cloud.get(`/hubs/helpdesk/accounts`)

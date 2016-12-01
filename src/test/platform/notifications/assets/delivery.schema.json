@@ -10,6 +10,7 @@
     "status": {
       "enum": [
         "created",
+        "delivered",
         "notified",
         "retry",
         "queued"
