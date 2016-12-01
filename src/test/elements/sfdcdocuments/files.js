@@ -14,11 +14,11 @@ suite.forElement('documents', 'files',{ payload : payload }, (test) => {
     let UploadFile = __dirname + '/assets/Penguins.jpg',srcPath;
     return cloud.withOptions({ qs: { path:`/${tools.random()}` } }).postFile(`${test.api}`, UploadFile)
       .then(r => srcPath = r.body.path)
-      //.then(r => cloud.withOptions({ qs: { path:`${srcPath}` } }).get(`${test.api}`))
-      .then(r => cloud.withOptions({ qs: { path:`${srcPath}` } }).get(`${test.api}/metadata`));
-      //.then(r => cloud.withOptions({ qs: { path:`${srcPath}` } }).patch(`${test.api}/metadata`,payload))
-      //.then(r => srcPath = r.body.path)
-      //.then(r => cloud.withOptions({ qs: { path:`${srcPath}` } }).delete(`${test.api}`));
+      .then(r => cloud.withOptions({ qs: { path:`${srcPath}` } }).get(`${test.api}`))
+      .then(r => cloud.withOptions({ qs: { path:`${srcPath}` } }).get(`${test.api}/metadata`))
+      .then(r => cloud.withOptions({ qs: { path:`${srcPath}` } }).patch(`${test.api}/metadata`,payload))
+      .then(r => srcPath = r.body.path)
+      .then(r => cloud.withOptions({ qs: { path:`${srcPath}` } }).delete(`${test.api}`));
     });
 
     it('should allow CRD for hubs/documents/files and RU for hubs/documents/files/metadata by id', () => {
