@@ -1,11 +1,12 @@
 'use strict';
 
 const suite = require('core/suite');
-
+const cloud = require('core/cloud');
 suite.forElement('marketing', 'tagTypes', (test) => {
-  let tagType = "Sample TagType";
+  let tagType ;
   test.should.supportPagination();
-  test.should.supportS();
-  test.withApi(`${test.api}/${tagType}`).should.return200OnGet();
-  test.withApi(`${test.api}/${tagType}`).should.supportPagination();
+   return cloud.get(test.api)
+	.then( r => tagType = r.body[0].tagType)
+  	.then(r =>  cloud.get(`${test.api}/${tagType}`)
+  	.then(r => test.withApi(`${test.api}/${tagType}`).should.supportPagination()));
 });
