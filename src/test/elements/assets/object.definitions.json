@@ -808,15 +808,6 @@
       "type": "string"
     }]
   },
-  "accounts": {
-     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "name",
-      "type": "string"
-    }]
-  },
   "tasks": {
     "fields": [{
       "path": "id",
