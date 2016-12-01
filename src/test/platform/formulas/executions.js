@@ -577,7 +577,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
 
-  it('should successfully execute a stream step in a formula', () => {
+  it('should successfully execute a elementRequestStream step in a formula', () => {
     const configuration = { source: sfdcId, target: sfdcId, 'object.name': 'contacts' };
     const validator = (executions) => {
       const bulkTransferStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'bulkTransfer');

@@ -13,7 +13,7 @@
         },
         {
             "name": "bulkTransfer",
-            "type": "stream",
+            "type": "elementRequestStream",
             "properties": {
                 "downloadQuery": "${steps.build.sourceQuery}",
                 "downloadMethod": "GET",
