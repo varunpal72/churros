@@ -18,7 +18,7 @@ suite.forElement('helpdesk', 'contacts', { payload: contactsPayload }, (test) =>
     let contactId,activityId;
     const activityUpdatePayload =  {
         "Location": tools.random()
-    }
+    };
     return cloud.post(test.api, contactsPayload)
       .then(r => contactId = r.body.Id)
       .then(r => cloud.post(`${test.api}/${contactId}/activities`, activityPayload))
@@ -36,7 +36,7 @@ suite.forElement('helpdesk', 'contacts', { payload: contactsPayload }, (test) =>
     let contactId,taskId;
     const taskUpdatePayload =  {
         "Status": tools.random()
-    }
+    };
     return cloud.post(test.api, contactsPayload)
       .then(r => contactId = r.body.Id)
       .then(r => cloud.post(`${test.api}/${contactId}/tasks`, taskPayload))
