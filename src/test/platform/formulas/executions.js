@@ -82,15 +82,15 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
   });
 
-  after(done => {
-    if (!sfdcId) done();
-    return provisioner.delete(sfdcId)
-      .then(() => done())
-      .catch(e => {
-        console.log(`Failed to finish after()...${e}`);
-        done();
-      });
-  });
+  // after(done => {
+  //   if (!sfdcId) done();
+  //   return provisioner.delete(sfdcId)
+  //     .then(() => done())
+  //     .catch(e => {
+  //       console.log(`Failed to finish after()...${e}`);
+  //       done();
+  //     });
+  // });
 
   /**
    * The default validator which applies to *every* single formula instance execution
@@ -606,7 +606,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     return cloud.post('/hubs/crm/contacts', { LastName: 'Churros' })
       .then(r => contactId = r.body.Id)
-      .then(r => cloud.withOptions({ qs: { q: `select Id, FirstName, LastName from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
+      .then(r => cloud.withOptions({ qs: { q: `select FirstName, LastName from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
