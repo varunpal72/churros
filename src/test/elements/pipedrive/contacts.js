@@ -35,7 +35,7 @@ const contactsPayload = build({
   }
 });
 
-suite.forElement('crm', 'contacts', { payload: contactsPayload, skip: false }, (test) => {
+suite.forElement('crm', 'contacts', { payload: contactsPayload }, (test) => {
   const options = {
     churros: {
       updatePayload: {

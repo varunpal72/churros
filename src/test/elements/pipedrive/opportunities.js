@@ -7,7 +7,7 @@ const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const opportunitiesPayload = build({ title: tools.random(), value: tools.randomInt() });
 
-suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload, skip: false }, (test) => {
+suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (test) => {
   const options = {
     churros: {
       updatePayload: {

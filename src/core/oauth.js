@@ -389,6 +389,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]'))
           .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
+
     case 'twitter':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('username_or_email')).sendKeys(username);
