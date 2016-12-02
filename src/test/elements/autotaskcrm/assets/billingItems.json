@@ -1,0 +1,22 @@
+{
+  "quantity": 1,
+  "lineItemID": 0,
+  "nonBillable": 0,
+  "description": "Support Subscription (Hosted Application Subscription)",
+  "itemDate": "2012-05-15T00:00:00-0600",
+  "type": 5,
+  "accountID": 29683565,
+  "totalAmount": 100,
+  "itemName": "Hosted Application Support Subscription",
+  "allocationCodeID": 29682839,
+  "taxDollars": 0,
+  "rate": 100,
+  "extendedPrice": 100,
+  "itemApproverID": 4,
+  "purchaseOrderNumber": "",
+  "ourCost": 1.25,
+  "approvedTime": "2012-06-18T00:00:00-0600",
+  "invoiceID": 0,
+  "subType": 9,
+  "id": 5
+}
