@@ -4,10 +4,10 @@ const suite = require('core/suite');
 // const payload = require('./assets/orders');
 const cloud = require('core/cloud');
 
-suite.forElement('ecommerce', 'products', {}, (test) => {
+suite.forElement('ecommerce', 'products', { skip: true }, (test) => {
   // checkout functions available under test.should which provide a lot of pre-canned tests
   //   more information here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#adding-tests-to-an-existing-suite
- 
+
   it('should retrieve correct resource by ID', () => {
   	// test.withApi(`${test.api}/count`).;
   	let orderId;
@@ -38,8 +38,8 @@ suite.forElement('ecommerce', 'products', {}, (test) => {
   			if(r.body.length <= length){
   				return;
   			}
-  		});	
-  		
+  		});
+
   	});
 
   });
@@ -76,5 +76,3 @@ suite.forElement('ecommerce', 'products', {}, (test) => {
   // })
 
 });
-
-

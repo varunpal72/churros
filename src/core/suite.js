@@ -145,15 +145,37 @@ const itPostError = (name, httpCode, api, payload, options) => {
 const itCeqlSearch = (name, api, payload, field, options) => {
   const n = name || `should support searching ${api} by ${field}`;
   boomGoesTheDynamite(n, () => {
-    let id;
+    let id, value;
     return cloud.post(api, payload)
       .then(r => {
         id = r.body.id;
-        const clause = `${field}='${r.body[field]}'`; // have to escape where values with single quotes
+        value = r.body[field];
+        const clause = `${field}='${value}'`; // have to escape where values with single quotes
         const myOptions = Object.assign({}, options, { qs: { where: clause } });
         return cloud.withOptions(myOptions).get(api, (r) => {
           expect(r).to.have.statusCode(200);
           expect(r.body.length).to.equal(1);
+        });
+      })
+      .then(r => cloud.delete(api + '/' + id));
+  }, options ? options.skip : false);
+};
+
+const itCeqlSearchMultiple = (name, api, payload, field, options) => {
+  const n = name || `should support searching ${api} by ${field}`;
+  boomGoesTheDynamite(n, () => {
+    let id, value;
+    return cloud.post(api, payload)
+      .then(r => {
+        id = r.body.id;
+        value = r.body[field];
+        const clause = `${field}='${value}'`; // have to escape where values with single quotes
+        const myOptions = Object.assign({}, options, { qs: { where: clause } });
+        return cloud.withOptions(myOptions).get(api, (r) => {
+          expect(r).to.have.statusCode(200);
+          r.body.forEach(resource => {
+            expect(resource[field]).to.equal(value);
+          });
         });
       })
       .then(r => cloud.delete(api + '/' + id));
@@ -220,11 +242,20 @@ const runTests = (api, payload, validationCb, tests) => {
      */
     supportNextPagePagination: (amount, shouldCreate) => itNextPagePagination(name, api, payload, amount, shouldCreate, options, validationCb),
     /**
-     * Validates that the given API resource supports searching by a CEQL query.
+     * Validates that the given API resource supports searching by a CEQL query and the query finds 1 resource.
      * @param {string} field The field to search by
      * @memberof module:core/suite.test.should
      */
+
     supportCeqlSearch: (field) => itCeqlSearch(name, api, payload, field, options),
+    /**
+     * Validates that the given API resource supports searching by a CEQL query and the query may find multiple objects.
+     * Validates that the query field value matches the value that was searched for.
+     * @param {string} field The field to search by
+     * @memberof module:core/suite.test.should
+     */
+
+    supportCeqlSearchForMultipleRecords: (field) => itCeqlSearchMultiple(name, api, payload, field, options),
     /**
      * Validates that the given API resource supports CRUDS
      * @param {Function} [updateCb=chakram.put] The update callback (`chakram.patch` can also be used)

@@ -31,7 +31,7 @@ const testCreatePayment = (test, customerId) => {
 
 suite.forElement('finance', 'payments', { payload: createPayment() }, (test) => {
   let customerId;
-  it('should create a payment to the customer', () => {
+  it.skip('should create a payment to the customer', () => {
     return cloud.get('/hubs/finance/customers')
       .then(r => customerId = r.body.length > 0 ?  r.body[0].id: null)
       .then(() => testCreatePayment(test, customerId));

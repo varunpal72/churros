@@ -6,7 +6,7 @@ const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const taxPayload = build({ description: tools.random() });
 
-suite.forElement('ecommerce', 'products/product-tax-classes', { payload: taxPayload }, (test) => {
+suite.forElement('ecommerce', 'products/product-tax-classes', { payload: taxPayload, skip: true }, (test) => {
   const options = {
     churros: {
       updatePayload: {

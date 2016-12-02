@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const productPayload = require('./assets/products');
 
-suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) => {
+suite.forElement('ecommerce', 'products', { payload: productPayload, skip: true }, (test) => {
   it('should create a product and then CRDS for an attachment', () => {
     let path = __dirname + '/assets/temp.png';
     let productId, attachmentId;

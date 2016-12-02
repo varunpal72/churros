@@ -11,7 +11,7 @@ const genContact = () => JSON.stringify(Object.assign({}, contact, { Email: genE
 
 const payload = genList();
 
-suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
+suite.forElement('marketing', 'lists', { payload: payload, skip: true }, (test) => {
 	test.should.supportPagination();
 
 	/*

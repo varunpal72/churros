@@ -15,7 +15,7 @@ const updatePayload = () => ({
     }
 });
 
-suite.forElement('general', 'collections', { payload: payload }, (test) => {
+suite.forElement('general', 'collections', { payload: payload, skip: true }, (test) => {
   let orgId = -1, brandFolderId = -1;
   before(() => cloud.get(`hubs/general/organizations`)
     .then(r => orgId = r.body[0].id)

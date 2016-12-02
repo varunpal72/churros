@@ -74,6 +74,12 @@
       "type": "string"
     }]
   },
+  "purchases": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "cases": {
     "fields": [{
       "path": "id",
@@ -571,12 +577,6 @@
       "type": "string"
     }]
   },
-  "files": {
-    "fields": [{
-      "path": "id",
-      "vendorPath": "string"
-    }]
-  },
   "colors": {
     "fields": [{
       "path": "id",
@@ -778,12 +778,6 @@
       "type": "string"
     }]
   },
-  "accounts": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  },
   "blocks-id": {
     "fields": [{
       "path": "id",
@@ -818,5 +812,17 @@
         "path": "id",
         "type": "string"
       }]
+  },
+  "tasks": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "description",
+      "type": "string"
+    }, {
+      "path": "subject",
+      "type": "string"
+    }]
   }
 }

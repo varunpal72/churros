@@ -16,7 +16,7 @@ const updatePayload = () => ({
   "FirstName": "Mister"
 });
 
-suite.forElement('marketing', 'contacts', null, (test) => {
+suite.forElement('marketing', 'contacts', { skip: true }, (test) => {
 
   it('should allow CRUDS for /hubs/marketing/contacts', () => {
     let email = tools.randomEmail().toString();

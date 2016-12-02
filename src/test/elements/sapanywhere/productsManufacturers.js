@@ -6,7 +6,7 @@ const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const manufacturerPayload = build({ name: tools.random() });
 
-suite.forElement('ecommerce', 'products/manufacturers', { payload: manufacturerPayload }, (test) => {
+suite.forElement('ecommerce', 'products/manufacturers', { payload: manufacturerPayload, skip: true }, (test) => {
   const options = {
     churros: {
       updatePayload: {

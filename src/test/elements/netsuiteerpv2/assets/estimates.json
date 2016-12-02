@@ -14,20 +14,18 @@
     "internalId": "2"
   },
   "itemList": {
-    "item": [
-      {
-        "item": {
-          "internalId": "502"
-        },
-        "amount": 175,
-        "quantity": 1,
-        "description": "Merlin display phone for support calls Estimate Craeted",
-        "rate": "175.00",
-        "price": {
-          "internalId": "1"
-        }
+    "item": [{
+      "item": {
+        "internalId": "502"
+      },
+      "amount": 175,
+      "quantity": 1,
+      "description": "Merlin display phone for support calls Estimate Craeted",
+      "rate": "175.00",
+      "price": {
+        "internalId": "1"
       }
-    ]
+    }]
   },
   "job": {
     "internalId": "25374",
