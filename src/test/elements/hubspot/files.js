@@ -21,6 +21,6 @@ it('should allow CRUD for hubs/marketing/files', () => {
    .then(r => cloud.get(`${test.api}/${id}`))
    .then(r => cloud.patch(`${test.api}/${id}`,fieldsUpdate()))
    .then(r => cloud.patch(`${test.api}/${id}/archive`))
-   .then(r =>  cloud.delete(`${test.api}/${id}`))
+   .then(r =>  cloud.delete(`${test.api}/${id}`));
   });
   });

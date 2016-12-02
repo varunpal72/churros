@@ -2,9 +2,15 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/lists');
-
-
+const tools = require('core/tools');
+const options = {
+  churros: {
+    updatePayload: {
+          "name": tools.random()
+    }
+  }
+};
 suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
-  test.should.supportCruds();
+  test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
 });

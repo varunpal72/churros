@@ -5,20 +5,25 @@ const cloud = require('core/cloud');
 const payload = require('./assets/contacts');
 const propertiesPayload = require('./assets/contactsProperties');
 const tools = require('core/tools');
-
-  const propertygroups = {
+const options = {
+  churros: {
+    updatePayload: {
+        "firstName": tools.random(),
+        "lastName": tools.random()
+    }
+  }
+};
+const propertygroups = {
     "displayName": "test_churros_1",
     "displayOrder": 0,
     "name": "test12"
   };
-
   const updatePropertygroups = {
   "displayName": "test_churros1",
   "displayOrder": 0,
   "name": "test12"
   };
-
-const fieldsUpdate = {
+  const fieldsUpdate = {
   "favoritedOrder": -1,
   "hidden": false,
   "mutableDefinitionNotDeletable": false,
@@ -37,10 +42,8 @@ const fieldsUpdate = {
   "externalOptions": false,
   "favorited": false
 };
-
-
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
-  test.should.supportCruds();
+  test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
   it('should allow CRUD for hubs/marketing/contacts/properties', () => {
     let id;
@@ -51,7 +54,6 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
      .then(r => cloud.patch(`${test.api}/properties/${id}`,fieldsUpdate))
      .then(r => cloud.delete(`${test.api}/properties/${id}`));
    });
-
   it('should allow CRUD for hubs/marketing/contacts/propertygroups', () => {
   let id;
   return cloud.post(`${test.api}/propertygroups`,propertygroups)
