@@ -24,7 +24,7 @@ const interactionPayload = {
 
   "id":tools.randomInt(), 
   "token":tools.randomInt()
-}
+};
 suite.forElement('marketing', 'contacts', { payload: payload}, (test) => {
  it('should allow CUS for /contacts', () => {
    let id,value;
@@ -37,7 +37,7 @@ suite.forElement('marketing', 'contacts', { payload: payload}, (test) => {
 	  .then(r => cloud.post(`${test.api}/${id}/interactions`,interactionPayload))
           .then(r => cloud.withOptions({ qs: { where : "sinceDate = '2016-11-25T11:39:58Z'"}}).get(`/hubs/marketing/deleted-contacts`))
           .then(r => cloud.withOptions({ qs: { where : "sinceDate = '2016-11-25T11:39:58Z'"}}).get(`/hubs/marketing/changed-contacts`))
- 	  .then(r => cloud.delete(`${test.api}/${id}`))
+ 	  .then(r => cloud.delete(`${test.api}/${id}`));
 });
 });
 

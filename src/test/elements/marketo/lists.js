@@ -1,15 +1,13 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/contacts');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const build = (overrides) => Object.assign({}, payload, overrides);
 
 const contactPayload  = [
   {
     "person": {
-      "id": "16"
+      "id": tools.randomInt()
     }
   }
 ];

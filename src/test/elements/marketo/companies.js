@@ -26,7 +26,7 @@ suite.forElement('marketing', 'companies', { payload: companiesPayload}, (test) 
 	  .then(r => cloud.get(`${test.api}/${id}`))
 	  .then(r => cloud.patch(`${test.api}/${id}`,updatedPayload))
           .then(r => cloud.withOptions({ qs: {id : value }}).get(`${test.api}/${id}`))
- 	  .then(r => cloud.delete(`${test.api}/${id}`))
+ 	  .then(r => cloud.delete(`${test.api}/${id}`));
 });
 });
 
