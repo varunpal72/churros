@@ -1,47 +1,37 @@
 {
   "contacts": {
     "vendorName": "contacts",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "orders": {
     "vendorName": "orders",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "orderId"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "orderId"
+    }]
   },
-"customers": {
+  "customers": {
     "vendorName": "customers",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "customerId"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "customerId"
+    }]
   },
-"carts": {
+  "carts": {
     "vendorName": "carts",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "cartId"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "cartId"
+    }]
   },
-"products": {
+  "products": {
     "vendorName": "products",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "productId"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "productId"
+    }]
   }
 }
