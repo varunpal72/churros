@@ -808,6 +808,12 @@
       "type": "string"
     }]
   },
+  "carts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "tasks": {
     "fields": [{
       "path": "id",
