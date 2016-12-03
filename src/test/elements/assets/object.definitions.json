@@ -807,11 +807,12 @@
       "path": "id",
       "type": "string"
     }]
-  },"carts": {
+  },
+  "carts": {
     "fields": [{
-        "path": "id",
-        "type": "string"
-      }]
+      "path": "id",
+      "type": "string"
+    }]
   },
   "tasks": {
     "fields": [{
