@@ -32,27 +32,25 @@
   "toBeEmailed": false,
   "tranDate": "2016-06-11T02:00:00-05:00",
   "itemList": {
-    "item": [
-      {
-        "item": {
-          "internalId": "387",
-          "name": "ACC00001"
-        },
-        "amount": 109,
-        "quantity": 1,
-        "rate": "109.00",
-        "line": 1,
-        "price": {
-          "internalId": "1",
-          "name": "List Price"
-        },
-        "description": "400 Watt Power Supply Sample",
-        "taxCode": {
-          "internalId": "-7",
-          "name": "-Not Taxable-"
-        }
+    "item": [{
+      "item": {
+        "internalId": "387",
+        "name": "ACC00001"
+      },
+      "amount": 109,
+      "quantity": 1,
+      "rate": "109.00",
+      "line": 1,
+      "price": {
+        "internalId": "1",
+        "name": "List Price"
+      },
+      "description": "400 Watt Power Supply Sample",
+      "taxCode": {
+        "internalId": "-7",
+        "name": "-Not Taxable-"
       }
-    ],
+    }],
     "replaceAll": true
   },
   "billingAddress": {
