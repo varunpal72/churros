@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/salesOrders');
 const cloud = require('core/cloud');
 
 suite.forElement('crm', 'sales-orders', (test) => {
@@ -27,6 +26,6 @@ suite.forElement('crm', 'sales-orders', (test) => {
         return pass;
       });
   });
-  test.withOptions({ qs: { where: 'billToCountry=\'United States\'' }, skip: false }).should.return200OnGet();
+  test.withOptions({ qs: { where: 'billToCountry=\'United States\'' } }).should.return200OnGet();
   test.should.supportPagination();
 });

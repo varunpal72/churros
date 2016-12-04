@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/salesOrders');
 const cloud = require('core/cloud');
 
 suite.forElement('crm', 'invoices', (test) => {
@@ -27,6 +26,6 @@ suite.forElement('crm', 'invoices', (test) => {
         return pass;
       });
   });
-  test.withOptions({ qs: { where: 'accountID=\'29683561\'' }, skip: false }).should.return200OnGet();
+  test.withOptions({ qs: { where: 'accountID=\'29683561\'' } }).should.return200OnGet();
   test.should.supportPagination();
 });
