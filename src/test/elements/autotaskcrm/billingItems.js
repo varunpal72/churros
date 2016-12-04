@@ -5,6 +5,6 @@ const payload = require('./assets/billingItems');
 
 suite.forElement('crm', 'billing-items', { payload: payload }, (test) => {
   test.should.supportSr();
-  // test.withOptions({ qs: { where: 'userName=\'mrchurros@cloud-elements.com\'' } }).should.return200OnGet();
+  test.withOptions({ qs: { where: 'ourCost>=\'1\'' } }).should.return200OnGet();
   test.should.supportPagination();
 });
