@@ -813,5 +813,11 @@
       "path": "id",
       "type": "string"
     }]
+  },"companies": {
+    "fields": [{
+        "path": "id",
+        "type":"string"
+      }
+    ]
   }
 }

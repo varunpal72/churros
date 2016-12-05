@@ -16,5 +16,43 @@
         "vendorPath": "id"
       }
     ]
+  },
+
+  "activities": {
+    "vendorName": "activities",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+  "campaigns": {
+    "vendorName": "campaigns",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+ "companies": {
+    "vendorName": "companies",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+
+"lists": {
+    "vendorName": "lists",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
   }
 }

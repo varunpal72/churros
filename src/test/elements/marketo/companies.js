@@ -18,14 +18,14 @@ const updatedPayload  = {
    "mainPhone": tools.randomInt()
 };
 suite.forElement('marketing', 'companies', { payload: companiesPayload}, (test) => {
- it('should allow CUS for /companies', () => {
+ it('should allow CRUDS for /companies', () => {
    let id,value;
    return cloud.post(test.api,companiesPayload)
 	  .then(r => id =r.body.id)
-	  .then(r => value=`in ( ${id} )`)
+	  .then(r => value=`id in ( ${id} )`)
 	  .then(r => cloud.get(`${test.api}/${id}`))
 	  .then(r => cloud.patch(`${test.api}/${id}`,updatedPayload))
-          .then(r => cloud.withOptions({ qs: {id : value }}).get(`${test.api}/${id}`))
+          .then(r => cloud.withOptions({ qs: {where : `${value}`}}).get(`${test.api}`))
  	  .then(r => cloud.delete(`${test.api}/${id}`));
 });
 });

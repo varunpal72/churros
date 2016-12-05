@@ -12,7 +12,7 @@ const contactPayload  = [
   }
 ];
 suite.forElement('marketing', 'lists',null, (test) => {
- it('should allow CUS for /lists', () => {
+ it('should allow SR for /lists and CRDS for /contacts', () => {
    let id,contactId,objectName;
    return cloud.get(test.api)
 	  .then(r => id =r.body[0].id)
