@@ -1,6 +1,6 @@
 {
   "events": {
-    "vendorName": "/events",
+    "vendorName": "meetings",
     "fields": [
       {
         "path": "id",
