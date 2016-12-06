@@ -5,7 +5,7 @@ const suite = require('core/suite');
  const cloud = require('core/cloud');
 
 
-suite.forElement('ecommerce', 'attributes', (test) => {
+suite.forElement('ecommerce', 'attributes', {skip: true}, (test) => {
   it('Testing attributes', () => {
     let fileId;
     return cloud.post('/hubs/ecommerce/products/attributes', payload)
