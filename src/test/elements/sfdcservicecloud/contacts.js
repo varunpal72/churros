@@ -10,14 +10,26 @@ const build = (overrides) => Object.assign({}, payload, overrides);
 const contactsPayload = build({ lastName: tools.random(), firstName: tools.random(), email: tools.randomEmail() });
 
 suite.forElement('helpdesk', 'contacts', { payload: contactsPayload }, (test) => {
-  it('should allow ping for sfdcservicecloud' , () => {
+  it('should allow ping for sfdcservicecloud', () => {
     return cloud.get(`/hubs/helpdesk/ping`);
   });
 
+  it('should allow CRUDS /hubs/helpdesk/contacts ', () => {
+    let contactId;
+    return cloud.post(test.api, payload)
+      .then(r => contactId = r.body.Id)
+      .then(r => cloud.get(`${test.api}/${contactId}`))
+      .then(r => cloud.get(test.api))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
+      .then(r => cloud.withOptions({ qs: { where: `id='${contactId}'` } }).get(test.api))
+      .then(r => cloud.patch(`${test.api}/${contactId}`, contactsPayload))
+      .then(r => cloud.delete(`${test.api}/${contactId}`));
+  });
+
   it('should allow CRUDS /hubs/helpdesk/contacts/:id/activites ', () => {
-    let contactId,activityId;
-    const activityUpdatePayload =  {
-        "Location": tools.random()
+    let contactId, activityId;
+    const activityUpdatePayload = {
+      "Location": tools.random()
     };
     return cloud.post(test.api, contactsPayload)
       .then(r => contactId = r.body.Id)
@@ -33,9 +45,9 @@ suite.forElement('helpdesk', 'contacts', { payload: contactsPayload }, (test) =>
   });
 
   it('should allow CRUDS /hubs/helpdesk/contacts/:id/tasks ', () => {
-    let contactId,taskId;
-    const taskUpdatePayload =  {
-        "Status": tools.random()
+    let contactId, taskId;
+    const taskUpdatePayload = {
+      "Status": tools.random()
     };
     return cloud.post(test.api, contactsPayload)
       .then(r => contactId = r.body.Id)

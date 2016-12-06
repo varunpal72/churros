@@ -10,10 +10,22 @@ const build = (overrides) => Object.assign({}, payload, overrides);
 const incidentsPayload = build({ description: tools.random() });
 
 suite.forElement('helpdesk', 'incidents', { payload: incidentsPayload }, (test) => {
+  it('should allow CRUDS /hubs/helpdesk/incidents ', () => {
+    let incidentId;
+    return cloud.post(test.api, payload)
+      .then(r => incidentId = r.body.Id)
+      .then(r => cloud.get(`${test.api}/${incidentId}`))
+      .then(r => cloud.get(test.api))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
+      .then(r => cloud.withOptions({ qs: { where: `id='${incidentId}'` } }).get(test.api))
+      .then(r => cloud.patch(`${test.api}/${incidentId}`, incidentsPayload))
+      .then(r => cloud.delete(`${test.api}/${incidentId}`));
+  });
+
   it('should allow CRUDS /hubs/helpdesk/incidents/:id/activites ', () => {
-    let incidentId,activityId;
-    const activityUpdatePayload =  {
-        "Location": tools.random()
+    let incidentId, activityId;
+    const activityUpdatePayload = {
+      "Location": tools.random()
     };
     return cloud.post(test.api, incidentsPayload)
       .then(r => incidentId = r.body.Id)
@@ -29,9 +41,9 @@ suite.forElement('helpdesk', 'incidents', { payload: incidentsPayload }, (test) 
   });
 
   it('should allow CRUDS /hubs/helpdesk/incidents/:id/tasks ', () => {
-    let incidentId,taskId;
-    const taskUpdatePayload =  {
-        "Status": tools.random()
+    let incidentId, taskId;
+    const taskUpdatePayload = {
+      "Status": tools.random()
     };
     return cloud.post(test.api, incidentsPayload)
       .then(r => incidentId = r.body.Id)
