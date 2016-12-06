@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/projects');
-const reportDefinitionPayload = require('./assets/reports').reportDefinition;
+const reportDefinitionPayload = require('./assets/reports');
 const cloud = require('core/cloud');
 
 suite.forElement('db', 'projects', { payload: payload }, (test) => {
