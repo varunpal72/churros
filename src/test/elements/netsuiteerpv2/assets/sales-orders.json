@@ -50,29 +50,27 @@
     "addrPhone": "(303) 464-4122"
   },
   "itemList": {
-    "item": [
-      {
-        "item": {
-          "internalId": "387",
-          "name": "ACC00001"
-        },
-        "amount": 109,
-        "quantity": 1,
-        "line": 1,
-        "description": "400 Watt Power Supply",
-        "expandItemGroup": false,
-        "taxCode": {
-          "internalId": "-7",
-          "name": "-Not Taxable-"
-        },
-        "rate": "109.00",
-        "createWo": false,
-        "price": {
-          "internalId": "1",
-          "name": "List Price"
-        }
+    "item": [{
+      "item": {
+        "internalId": "387",
+        "name": "ACC00001"
+      },
+      "amount": 109,
+      "quantity": 1,
+      "line": 1,
+      "description": "400 Watt Power Supply",
+      "expandItemGroup": false,
+      "taxCode": {
+        "internalId": "-7",
+        "name": "-Not Taxable-"
+      },
+      "rate": "109.00",
+      "createWo": false,
+      "price": {
+        "internalId": "1",
+        "name": "List Price"
       }
-    ],
+    }],
     "replaceAll": true
   },
   "location": {
