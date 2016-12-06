@@ -8,17 +8,14 @@ const tasks = require('./assets/tasks');
 const cloud = require('core/cloud');
 const tasksUpdate = require('./assets/tasksUpdate');
 suite.forElement('crm', 'leads', { payload: payload }, (test) => {
-  //test.should.supportCruds();
   test.should.supportPagination();
+  test.should.supportCeqlSearch('id');
   it('should allow CRUDS for /hubs/crm/leads', () => {
-    let leadId;
-    let activityId;
-    let noteId;
-    let taskId;
-    return cloud.post(`${test.api}`, payload)
+    let leadId, activityId, noteId, taskId;
+    return cloud.post(test.api, payload)
         .then(r => leadId = r.body.id)
         .then(r => cloud.get(`${test.api}/${leadId}`))
-        .then(r => cloud.get(`${test.api}`))
+        .then(r => cloud.get(test.api))
         .then(r => cloud.patch(`${test.api}/${leadId}`, payload))
         .then(r => cloud.get(`${test.api}/${leadId}/activities`))
         .then(r => cloud.post(`${test.api}/${leadId}/activities`,activities))

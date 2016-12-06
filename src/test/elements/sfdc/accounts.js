@@ -10,15 +10,13 @@ const cloud = require('core/cloud');
 
 suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
   test.should.supportPagination();
+  test.should.supportCeqlSearch('id');
     it('should allow CRUDS for /hubs/crm/accounts', () => {
-      let accountId;
-      let activityId;
-      let noteId;
-      let taskId;
-      return cloud.post(`${test.api}`, payload)
+      let accountId, activityId, noteId, taskId;
+      return cloud.post(test.api, payload)
           .then(r => accountId = r.body.id)
           .then(r => cloud.get(`${test.api}/${accountId}`))
-          .then(r => cloud.get(`${test.api}`))
+          .then(r => cloud.get(test.api))
           .then(r => cloud.patch(`${test.api}/${accountId}`, payload))
           .then(r => cloud.get(`${test.api}/${accountId}/activities`))
           .then(r => cloud.post(`${test.api}/${accountId}/activities`,activities))

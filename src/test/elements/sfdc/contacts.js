@@ -16,16 +16,12 @@ const contact = () => ({
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportCeqlSearch('id');
-
   it('should allow CRUDS for /hubs/crm/contacts', () => {
-    let contactId;
-    let activityId;
-    let noteId;
-    let taskId;
-    return cloud.post(`${test.api}`, payload)
+    let contactId, activityId, noteId, taskId;
+    return cloud.post(test.api, payload)
         .then(r => contactId = r.body.id)
         .then(r => cloud.get(`${test.api}/${contactId}`))
-        .then(r => cloud.get(`${test.api}`))
+        .then(r => cloud.get(test.api))
         .then(r => cloud.patch(`${test.api}/${contactId}`, payload))
         .then(r => cloud.get(`${test.api}/${contactId}/activities`))
         .then(r => cloud.post(`${test.api}/${contactId}/activities`,activities))
