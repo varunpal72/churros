@@ -1,0 +1,148 @@
+{
+  "data": {
+    "clientCorporationWhiteList": {
+      "total": 0,
+      "data": []
+    },
+    "secondaryAddress": {
+      "countryCode": "US",
+      "countryName": "United States",
+      "countryID": 1
+    },
+    "notes": {
+      "total": 0,
+      "data": []
+    },
+    "references": {
+      "total": 0,
+      "data": []
+    },
+    "massMailOptOut": false,
+    "educations": {
+      "total": 0,
+      "data": []
+    },
+    "fileAttachments": {
+      "total": 0,
+      "data": []
+    },
+    "sendouts": {
+      "total": 0,
+      "data": []
+    },
+    "experience": 1,
+    "salary": 0,
+    "businessSectors": {
+      "total": 0,
+      "data": []
+    },
+    "dateAdded": 1480862364807,
+    "interviews": {
+      "total": 0,
+      "data": []
+    },
+    "password": "secretPassword",
+    "specialties": {
+      "total": 0,
+      "data": []
+    },
+    "dateLastModified": 1480865876893,
+    "tearsheets": {
+      "total": 0,
+      "data": []
+    },
+    "isEditable": true,
+    "shifts": {
+      "total": 0,
+      "data": []
+    },
+    "id": 298331,
+    "preferredContact": "Phone",
+    "tasks": {
+      "total": 0,
+      "data": []
+    },
+    "numOwners": 0,
+    "secondarySkills": {
+      "total": 0,
+      "data": []
+    },
+    "smsOptIn": false,
+    "firstName": "John",
+    "clientCorporationBlackList": {
+      "total": 0,
+      "data": []
+    },
+    "numCategories": 0,
+    "leads": {
+      "total": 0,
+      "data": []
+    },
+    "submissions": {
+      "total": 0,
+      "data": []
+    },
+    "name": "John Smith",
+    "status": "New Lead",
+    "isLockedOut": false,
+    "lastName": "Smith",
+    "placements": {
+      "total": 0,
+      "data": []
+    },
+    "travelLimit": 0,
+    "isDayLightSavings": true,
+    "certificationList": {
+      "total": 0,
+      "data": []
+    },
+    "isDeleted": true,
+    "webResponses": {
+      "total": 0,
+      "data": []
+    },
+    "dayRate": 0,
+    "primarySkills": {
+      "total": 0,
+      "data": []
+    },
+    "categories": {
+      "total": 0,
+      "data": []
+    },
+    "employmentPreference": [
+      "Permanent"
+    ],
+    "owner": {
+      "firstName": "Anthony",
+      "lastName": "Kelly",
+      "id": 263697
+    },
+    "canEnterTime": false,
+    "workHistories": {
+      "total": 0,
+      "data": []
+    },
+    "address": {
+      "countryCode": "US",
+      "countryName": "United States                                                   ",
+      "countryID": 1
+    },
+    "comments": "",
+    "willRelocate": false,
+    "employeeType": "",
+    "workAuthorized": true,
+    "personSubtype": "Candidate",
+    "timeZoneOffsetEST": 0,
+    "secondaryOwners": {
+      "total": 0,
+      "data": []
+    },
+    "category": {
+      "name": "Other Area(s)",
+      "id": 352059
+    },
+    "hourlyRate": 0,
+    "username": "user1_48538345"
+  }
+}

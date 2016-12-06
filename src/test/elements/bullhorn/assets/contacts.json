@@ -1,0 +1,39 @@
+{
+  "id": 298331,
+  "firstName": "John",
+  "lastName": "Snow",
+  "name": "John Snow",
+  "username": "john",
+  "category": {
+    "id": 23
+  },
+  "password": "password",
+  "owner": {
+    "id": 298331
+  },
+  "address": {
+    "address1": "New York",
+    "address2": "New York",
+    "city": "New York",
+    "state": "NY",
+    "zip": 12345,
+    "countryID": 2
+  },
+  "secondaryAddress": {
+    "address1": "New York",
+    "address2": "New York",
+    "city": "New York",
+    "state": "MA",
+    "zip": 54321,
+    "countryID": 1
+  },
+  "ownerCorporation": {
+    "id": 298331
+  },
+  "clientCorporation": {
+    "id": 298331
+  },
+  "userType": {
+    "id": 298331
+  }
+}
