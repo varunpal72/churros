@@ -813,11 +813,11 @@
       "path": "id",
       "type": "string"
     }]
-  },"companies": {
+  },
+  "companies": {
     "fields": [{
-        "path": "id",
-        "type":"string"
-      }
-    ]
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
