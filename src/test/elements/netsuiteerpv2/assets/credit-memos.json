@@ -37,19 +37,17 @@
     "name": "02: Boston : Overstock"
   },
   "itemList": {
-    "item": [
-      {
-        "item": {
-          "internalId": "38"
-        },
-        "amount": 32.3,
-        "quantity": 2,
-        "line": 1,
-        "orderLine": 1,
-        "description": "Seven Deadly Zins 2003",
-        "isTaxable": true
-      }
-    ],
+    "item": [{
+      "item": {
+        "internalId": "38"
+      },
+      "amount": 32.3,
+      "quantity": 2,
+      "line": 1,
+      "orderLine": 1,
+      "description": "Seven Deadly Zins 2003",
+      "isTaxable": true
+    }],
     "replaceAll": false
   },
   "billingAddress": {
