@@ -1,0 +1,20 @@
+{
+  "line": [
+    {
+      "detailType" : "SALES_ITEM_LINE_DETAIL",
+      "amount": 54756,
+      "salesItemLineDetail": {
+        "itemRef": {
+          "name": "Services",
+          "value": "99"
+        }
+      },
+      "description": "Sample CM Atul1"
+    }
+  ],
+  "totalAmt": 54756,
+  "privateNote": "Created by Atul CM Testing",
+  "customerRef": {
+    "value": "1628"
+  }
+}

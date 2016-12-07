@@ -1,0 +1,78 @@
+{
+  "syncToken": "0",
+  "docNumber": "1002",
+  "line": [
+    {
+      "detailType": "SALES_ITEM_LINE_DETAIL",
+      "amount": 50,
+      "salesItemLineDetail": {
+        "unitPrice": 10,
+        "itemRef": {
+          "name": "Stationary:Pen",
+          "value": "4"
+        },
+        "qty": 5
+      },
+      "lineNum": 1,
+      "description": "color pen",
+      "id": "1"
+    },
+    {
+      "detailType": "SALES_ITEM_LINE_DETAIL",
+      "amount": 50,
+      "salesItemLineDetail": {
+        "unitPrice": 5,
+        "itemRef": {
+          "name": "Stationary:Pencil",
+          "value": "5"
+        },
+        "qty": 10
+      },
+      "lineNum": 2,
+      "description": "color pencil",
+      "id": "2"
+    },
+    {
+      "detailType": "SUB_TOTAL_LINE_DETAIL",
+      "amount": 100
+    }
+  ],
+  "customerMemo": {
+    "value": "Stationary item sale"
+  },
+  "billAddr": {
+    "country": "india",
+    "countrySubDivisionCode": "maharashtra",
+    "city": "pune",
+    "postalCode": "411001",
+    "id": "2",
+    "line1": "abc corp, mundhwa road",
+    "lat": "18.53083",
+    "long": "73.9035229"
+  },
+  "shipAddr": {
+    "country": "india",
+    "countrySubDivisionCode": "maharashtra",
+    "city": "pune",
+    "postalCode": "411001",
+    "id": "2",
+    "line1": "abc corp, mundhwa road",
+    "lat": "18.53083",
+    "long": "73.9035229"
+  },
+  "billEmail": {
+    "address": "vinod.singh@gmail.com"
+  },
+  "salesTermRef": {
+    "value": "3"
+  },
+  "totalAmt": 100,
+  "currencyRef": {
+    "name": "Indian Rupee",
+    "value": "INR"
+  },
+  "customerRef": {
+    "name": "Mr vinod s singh sat",
+    "value": "1"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "line": [
+    {
+      "amount": 40.0,
+      "detailType": "SALES_ITEM_LINE_DETAIL",
+      "salesItemLineDetail": {
+        "itemRef": {
+          "value": "38"
+        }
+      }
+    },
+    {
+      "detailType": "SUB_TOTAL_LINE_DETAIL",
+      "amount": 40.0,
+      "customField": [],
+      "linkedTxn": []
+    }
+  ],
+  "txnTaxDetail": {
+    "totalTax": 0
+  },
+  "customerRef": {
+    "name": "75 Sunset Rd.",
+    "value": "38"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "line": [
+    {
+      "detailType": "ACCOUNT_BASED_EXPENSE_LINE_DETAIL",
+      "amount": 400,
+      "accountBasedExpenseLineDetail": {
+        "customerRef": {
+          "name": "A New Company",
+          "value": "1620"
+        },
+        "taxCodeRef": {
+          "value": "NON"
+        },
+        "accountRef": {
+          "name": "80100 Other Expenses",
+          "value": "124"
+        },
+        "billableStatus": "NOT_BILLABLE",
+        "classRef": {
+          "name": "New Construction",
+          "value": "3000000000000593298"
+        }
+      },
+      "description": "Atul Test Bill Created"
+    }
+  ],
+  "dueDate": "2016-04-17",
+  "vendorRef": {
+    "name": "Baxter, Gregory",
+    "value": "171"
+  },
+  "totalAmt": 400,
+  "txnDate": "2016-04-17"
+}

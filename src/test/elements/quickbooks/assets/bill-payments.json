@@ -1,0 +1,28 @@
+{
+  "checkPayment": {
+    "printStatus": "NOT_SET",
+    "bankAccountRef": {
+      "name": "10100 Checking",
+      "value": "58"
+    }
+  },
+  "syncToken": "0",
+  "privateNote" : "Sample Bill Payment",
+  "line": [
+    {
+      "amount": 400,
+      "linkedTxn": [
+        {
+          "txnType": "Bill",
+          "txnId": "3790"
+        }
+      ]
+    }
+  ],
+  "vendorRef": {
+    "name": "Baxter, Gregory",
+    "value": "171"
+  },
+  "payType": "CHECK",
+  "totalAmt": 400
+}

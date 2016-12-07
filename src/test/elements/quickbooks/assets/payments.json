@@ -1,0 +1,33 @@
+{
+  "syncToken": "0",
+  "line": [
+    {
+      "amount": 80,
+      "linkedTxn": [
+        {
+          "txnType": "Invoice",
+          "txnId": "42"
+        }
+      ]
+    }
+  ],
+  "depositToAccountRef": {
+    "value": "4"
+  },
+  "linkedTxn": [
+
+  ],
+  "unappliedAmt": 0,
+  "totalAmt": 80,
+  "sparse": false,
+  "currencyRef": {
+    "name": "United States Dollar",
+    "value": "USD"
+  },
+  "customerRef": {
+    "name": "Travis Waldron",
+    "value": "26"
+  },
+  "domain": "QBO",
+  "processPayment": false
+}

@@ -1,0 +1,24 @@
+{
+    "taxIdentifier": "123-45-6789",
+    "billAddr": {
+        "postalCode": "75019",
+        "countrySubDivisionCode": "TX",
+        "line1": "623 Deforest ",
+        "city": "Coppell"
+    },
+    "fax": {
+        "freeFormNumber": "510 555 5733"
+    },
+    "acctNum": "1234567",
+    "lastName": "BarveV",
+    "firstName": "Atul",
+    "vendor1099": true,
+    "balance": 0.00,
+    "termRef": {
+        "value": "6"
+    },
+    "title": "Dr.",
+    "primaryPhone": {
+        "freeFormNumber": "510 555 5723"
+    }
+}

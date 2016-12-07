@@ -1,0 +1,23 @@
+{
+  "name": "A test thing",
+  "description": "A thing needed for tests",
+  "active": true,
+  "unitPrice": 9001,
+  "incomeAccountRef": {
+    "value": "81",
+    "name": "Automobile"
+  },
+  "purchaseDesc": "",
+  "purchaseCost": 350,
+  "expenseAccountRef": {
+    "value": "81",
+    "name": ""
+  },
+  "assetAccountRef": {
+    "value": "",
+    "name": ""
+  },
+  "trackQtyOnHand": false,
+  "qtyOnHand": 42,
+  "invStartDate": "2015-2-12"
+}

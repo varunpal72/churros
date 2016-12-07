@@ -1,0 +1,41 @@
+{
+  "line": [
+    {
+      "detailType": "ITEM_BASED_EXPENSE_LINE_DETAIL",
+      "amount": 23,
+      "itemBasedExpenseLineDetail": {
+        "unitPrice": 23,
+        "itemRef": {
+          "name": "Subs:Roofing",
+          "value": "31"
+        },
+        "taxCodeRef": {
+          "value": "NON"
+        },
+        "customerRef": {
+          "name": "Melton, Johnny:Dental office",
+          "value": "33"
+        },
+        "billableStatus": "NOT_BILLABLE",
+        "classRef": {
+          "name": "New Construction",
+          "value": "3000000000000593298"
+        }
+      },
+      "description": "Roofing"
+    }
+  ],
+  "vendorRef": {
+    "name": "Sloan Roofing",
+    "value": "8"
+  },
+  "apaccountRef": {
+    "name": "20000 Accounts Payable",
+    "value": "68"
+  },
+  "totalAmt": 23,
+  "currencyRef": {
+    "name": "United States Dollar",
+    "value": "USD"
+  }
+}
