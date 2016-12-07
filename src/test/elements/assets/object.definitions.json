@@ -825,5 +825,11 @@
       "path": "subject",
       "type": "string"
     }]
+  },
+  "meetings": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
