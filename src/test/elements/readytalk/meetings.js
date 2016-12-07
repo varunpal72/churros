@@ -5,7 +5,7 @@ const cloud = require('core/cloud');
 
 suite.forElement('marketing', 'meetings', null, (test) => {
   test.should.supportSr();
-  it('it should support POST a contact inside a list', () => {
+  it('it should support GET meetings with pagination', () => {
     return cloud.get(`${test.api}?pageSize=5&page=1`);
   });
 });
