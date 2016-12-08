@@ -1,0 +1,28 @@
+{
+    "line": [{
+        "id": "1",
+        "amount": 25.0,
+        "detailType": "ITEM_BASED_EXPENSE_LINE_DETAIL",
+        "itemBasedExpenseLineDetail": {
+            "customerRef": {
+                "value": "3",
+                "name": "Cool Cars"
+            },
+            "billableStatus": "NOT_BILLABLE",
+            "itemRef": {
+                "value": "38",
+                "name": "Garden Supplies"
+            },
+            "unitPrice": 25,
+            "qty": 1,
+            "taxCodeRef": {
+                "value": "NON"
+            }
+        }
+    }],
+    "vendorRef": {
+        "value": "41",
+        "name": "Hicks Hardware"
+    },
+    "totalAmt": 25.0
+}

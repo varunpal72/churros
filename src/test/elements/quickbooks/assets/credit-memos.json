@@ -1,20 +1,20 @@
 {
-  "line": [
+    "line": [
     {
-      "detailType" : "SALES_ITEM_LINE_DETAIL",
-      "amount": 54756,
-      "salesItemLineDetail": {
-        "itemRef": {
-          "name": "Services",
-          "value": "99"
+        "amount": 50,
+        "detailType": "SALES_ITEM_LINE_DETAIL",
+        "salesItemLineDetail":
+        {
+            "itemRef":
+            {
+                "value": "3",
+                "name": "Concrete"
+            }
         }
-      },
-      "description": "Sample CM Atul1"
+    }],
+    "customerRef":
+    {
+        "value": "3",
+        "name": "CoolCars"
     }
-  ],
-  "totalAmt": 54756,
-  "privateNote": "Created by Atul CM Testing",
-  "customerRef": {
-    "value": "1628"
-  }
 }

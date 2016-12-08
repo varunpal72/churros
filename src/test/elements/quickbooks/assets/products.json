@@ -1,23 +1,36 @@
 {
-  "name": "A test thing",
-  "description": "A thing needed for tests",
-  "active": true,
-  "unitPrice": 9001,
-  "incomeAccountRef": {
-    "value": "81",
-    "name": "Automobile"
-  },
-  "purchaseDesc": "",
-  "purchaseCost": 350,
-  "expenseAccountRef": {
-    "value": "81",
-    "name": ""
-  },
-  "assetAccountRef": {
-    "value": "",
-    "name": ""
-  },
-  "trackQtyOnHand": false,
-  "qtyOnHand": 42,
-  "invStartDate": "2015-2-12"
-}
+   "syncToken": "0",
+   "reorderPoint": 10,
+   "invStartDate": "2016-12-05T00:00:00Z",
+   "qtyOnHand": 95,
+   "type": "INVENTORY",
+   "incomeAccountRef": {
+     "name": "Sales of Product Income",
+     "value": "64"
+   },
+   "sku": "SKU001",
+   "unitPrice": 0,
+   "purchaseCost": 0,
+   "taxable": false,
+   "level": 1,
+   "abatementRate": 0,
+   "subItem": true,
+   "active": true,
+   "fullyQualifiedName": "Stationary:Pen",
+   "parentRef": {
+     "name": "Stationary",
+     "value": "3"
+   },
+   "assetAccountRef": {
+     "name": "Inventory Asset",
+     "value": "66"
+   },
+   "trackQtyOnHand": true,
+   "expenseAccountRef": {
+     "name": "Cost of sales",
+     "value": "65"
+   },
+   "domain": "QBO",
+   "name": "Pen",
+   "reverseChargeRate": 0
+ }

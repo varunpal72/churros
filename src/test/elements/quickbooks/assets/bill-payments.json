@@ -1,28 +1,26 @@
 {
+  "vendorRef": {
+    "value": "56",
+    "name": "Bob's Burger Joint"
+  },
+  "payType": "CHECK",
   "checkPayment": {
-    "printStatus": "NOT_SET",
     "bankAccountRef": {
-      "name": "10100 Checking",
-      "value": "58"
+      "value": "35",
+      "name": "Checking"
     }
   },
-  "syncToken": "0",
-  "privateNote" : "Sample Bill Payment",
+  "totalAmt": 200.00,
+  "privateNote": "Acct. 1JK90",
   "line": [
     {
-      "amount": 400,
+      "amount": 200.00,
       "linkedTxn": [
         {
-          "txnType": "Bill",
-          "txnId": "3790"
+          "txnId": "234",
+          "txnType": "Bill"
         }
       ]
     }
-  ],
-  "vendorRef": {
-    "name": "Baxter, Gregory",
-    "value": "171"
-  },
-  "payType": "CHECK",
-  "totalAmt": 400
+  ]
 }

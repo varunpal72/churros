@@ -1,26 +1,20 @@
 {
-  "line": [
-    {
-      "amount": 40.0,
-      "detailType": "SALES_ITEM_LINE_DETAIL",
-      "salesItemLineDetail": {
-        "itemRef": {
-          "value": "38"
+    "line": [{
+        "id": "1",
+        "lineNum": 1,
+        "description": "Pest Control Services",
+        "amount": 35.0,
+        "detailType": "SALES_ITEM_LINE_DETAIL",
+        "salesItemLineDetail": {
+            "itemRef": {
+                "value": "10",
+                "name": "Pest Control"
+            },
+            "unitPrice": 35,
+            "qty": 1,
+            "taxCodeRef": {
+                "value": "NON"
+            }
         }
-      }
-    },
-    {
-      "detailType": "SUB_TOTAL_LINE_DETAIL",
-      "amount": 40.0,
-      "customField": [],
-      "linkedTxn": []
-    }
-  ],
-  "txnTaxDetail": {
-    "totalTax": 0
-  },
-  "customerRef": {
-    "name": "75 Sunset Rd.",
-    "value": "38"
-  }
+    }]
 }
