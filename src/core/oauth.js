@@ -56,7 +56,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('login_submit')).click();
       browser.findElement(webdriver.By.name('consent_accept')).click();
       return browser.getCurrentUrl();
-    case 'shopify':
+    case 'sharefile':
+      browser.get(r.body.oauthUrl);
+      browser.wait(webdriver.until.elementLocated(webdriver.By.id('credentials-email')), 3000);
+      browser.findElement(webdriver.By.id('credentials-email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('credentials-password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('start-button')).click();
+      browser.wait(() => {
+        return browser.getTitle().then((title) => !title);
+      }, 20000);
+      return browser.getCurrentUrl();
+   case 'shopify':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.name('login')), 1000);
       browser.findElement(webdriver.By.name('login')).clear();
