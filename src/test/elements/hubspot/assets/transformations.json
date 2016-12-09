@@ -1,38 +1,34 @@
 {
   "lists": {
     "vendorName": "lists",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "listId"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "listId"
+    }]
   },
-  "contacts":{
+  "contacts": {
     "vendorName": "contacts",
-    "fields": [
-      {
-        "path":"id",
-        "vendorPath":"vid"
+    "fields": [{
+        "path": "id",
+        "vendorPath": "vid"
       },
       {
-        "path":"firstName",
-        "vendorPath":"properties.firstname"
+        "path": "firstName",
+        "vendorPath": "properties.firstname"
       },
       {
-        "path":"lastName",
-        "vendorPath":"properties.lastname"
+        "path": "lastName",
+        "vendorPath": "properties.lastname"
       },
       {
-        "path":"email",
-        "vendorPath":"properties.email"
+        "path": "email",
+        "vendorPath": "properties.email"
       }
     ]
   },
   "accounts": {
     "vendorName": "companies",
-    "fields": [
-      {
+    "fields": [{
         "path": "id",
         "vendorPath": "companyId"
       },

@@ -7,7 +7,7 @@ suite.forElement('marketing', 'accounts', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
-            "name": tools.random()
+        "name": tools.random()
       }
     }
   };

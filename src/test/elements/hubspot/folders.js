@@ -6,7 +6,7 @@ const tools = require('core/tools');
 const options = {
   churros: {
     updatePayload: {
-          "name": tools.random()
+      "name": tools.random()
     }
   }
 };
