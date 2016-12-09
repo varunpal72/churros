@@ -9,7 +9,7 @@
       "api": "/hubs/crm/accounts",
       "elementInstanceId": "${sfdc.instance.id}",
       "retryDelay": 500,
-      "retryAttempts": 4
+      "retryAttempts": 6
     }
   }],
   "triggers": [{

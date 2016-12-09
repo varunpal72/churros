@@ -56,7 +56,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('login_submit')).click();
       browser.findElement(webdriver.By.name('consent_accept')).click();
       return browser.getCurrentUrl();
-    case 'shopify':
+    case 'sharefile':
+      browser.get(r.body.oauthUrl);
+      browser.wait(webdriver.until.elementLocated(webdriver.By.id('credentials-email')), 3000);
+      browser.findElement(webdriver.By.id('credentials-email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('credentials-password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('start-button')).click();
+      browser.wait(() => {
+        return browser.getTitle().then((title) => !title);
+      }, 20000);
+      return browser.getCurrentUrl();
+   case 'shopify':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.name('login')), 1000);
       browser.findElement(webdriver.By.name('login')).clear();
@@ -234,14 +244,30 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       browser.isElementPresent(webdriver.By.id('i0116'));
       browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.sleep(3000);
       browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
       browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('idBtn_Accept')), 3000)
+        .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.id('idBtn_Accept'))
-        .then((element) => element.click(),
-          (err) => {
-            if (err.state && err.state === 'no such element') { // ignore this
-            } else { webdriver.promise.rejected(err); }
-          });
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
+    case 'onedrivebusiness':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
+      browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
+        // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
+        // have hit our redirect URL...i think (it works :/)
+      browser.wait(() => {
+        browser.findElement(webdriver.By.id('cred_sign_in_button'))
+          .then((element) => element.click(),
+            (err) => {
+              if (err.state && err.state === 'no such element') { // ignore this
+              } else { webdriver.promise.rejected(err); }
+            });
+            return browser.getTitle().then((title) => !title);
+        }, 10000);
       return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
@@ -279,22 +305,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 
       browser.findElement(webdriver.By.id('oaapprove'))
         .then((element) => element.click(), (err) => {}); // ignore this
-      return browser.getCurrentUrl();
-    case 'onedrivebusiness':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
-      browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
-      // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
-      // have hit our redirect URL...i think (it works :/)
-      browser.wait(() => {
-        browser.findElement(webdriver.By.id('cred_sign_in_button'))
-          .then((element) => element.click(),
-            (err) => {
-              if (err.state && err.state === 'no such element') { // ignore this
-              } else { webdriver.promise.rejected(err); }
-            });
-        return browser.getTitle().then((title) => !title);
-      }, 10000);
       return browser.getCurrentUrl();
     case 'sage200':
       browser.get(r.body.oauthUrl);
@@ -385,6 +395,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('allow')).click();
       return browser.getCurrentUrl();
+
     default:
       throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }
