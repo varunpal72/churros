@@ -131,8 +131,8 @@ exports.stringify = (json) => JSON.stringify(json);
 exports.copyAsset = (asset) => JSON.parse(JSON.stringify(require(asset)));
 
 /**
- * Run the provided function x number of times. Return values are ignored
-**/
+ * Run the provided function x number of times. Return values are returned in an Array
+ **/
 const times = x => f =>
   Array(x).fill().reduce(accum => {
     accum.push(f());
