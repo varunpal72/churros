@@ -430,6 +430,18 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return manualTriggerTest('http-request-successful-formula', configuration, { foo: 'bar' }, 3, validator);
   });
 
+  it('should successfully execute a simple retry execution formula triggered manually', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        expect(e.status).to.equal('retry');
+        e.stepExecutions.filter(se => se.stepName === 'retry-execution').map(validateSuccessfulStepExecution);
+        cloud.delete(`/formulas/instances/executions/${e.id}/retries`);
+      });
+    };
+
+    return manualTriggerTest('simple-retry-execution-formula', null, 2, validator, 'retry');
+  });
+
   it('should successfully execute an element request formula with a configured api field', () => {
     const validator = (executions) => {
       executions.map(e => {
