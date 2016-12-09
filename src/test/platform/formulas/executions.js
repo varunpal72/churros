@@ -88,7 +88,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   //     });
   // });
 
-  const testWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
+  const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
     if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
     return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, null, executionStatus);
   };
@@ -116,7 +116,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     if (!triggerCb) { triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(sfdcId, numEvents, eventFileName); }
     numSes = numSes || f.steps.length + 1; // defaults to steps + trigger but for loop cases, that won't work
-    return testWrapper(test, triggerCb, f, fi, numEvents, numSes, numSevs, validatorWrapper, executionStatus);
+    return testWrapper(triggerCb, f, fi, numEvents, numSes, numSevs, validatorWrapper, executionStatus);
   };
 
   /**
@@ -151,7 +151,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     const triggerCb = (fId, fiId) => cloud.get(`/hubs/crm/accounts`);
     const numSes = f.steps.length + 1; // steps + trigger
-    return testWrapper(test, triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
+    return testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
   };
 
   /**
@@ -179,7 +179,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
     const numSes = f.steps.length + 1; // steps + trigger
-    return testWrapper(test, triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
+    return testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
   };
 
   /**
@@ -215,7 +215,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const numSes = f.steps.length + 1; // steps + trigger
     return cloud.get('/hubs/crm/ping')
       .then(r => setupCron(r))
-      .then(fi => testWrapper(test, triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus));
+      .then(fi => testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus));
   };
 
   it('should successfully execute a simple formula triggered by a single event', () => eventTriggerTest('simple-successful-formula', 1, 2));
@@ -496,7 +496,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(sfdcId, 1, 'triple-event-sfdc');
     const f = require('./assets/formulas/single-threaded-formula');
     const fi = require('./assets/formulas/basic-formula-instance');
-    return testWrapper(test, triggerCb, f, fi, 3, 2, 2, validator);
+    return testWrapper(triggerCb, f, fi, 3, 2, 2, validator);
   });
 
   it('filter steps should add their boolean value as an available step execution value', () => {
