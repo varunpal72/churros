@@ -1,14 +1,10 @@
 'use strict';
 
 const provisioner = require('core/provisioner');
-const cleaner = require('core/cleaner');
 const common = require('./assets/common');
 const logger = require('winston');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const fSchema = require('./assets/schemas/formula.schema');
-const fiSchema = require('./assets/schemas/formula.instance.schema');
-const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
 const fs = require('fs');
