@@ -14,6 +14,6 @@ suite.forElement('finance', 'journal-entries', { payload: journalentries, skip: 
       }
     }
   };
-  test.should.supportCruds();
+  test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
 });

@@ -16,6 +16,6 @@ suite.forElement('finance', 'vendor', { payload: vendor, skip: false}, (test) =>
       }
     }
   };
-  test.should.supportCruds();
+  test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
 });

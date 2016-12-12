@@ -15,7 +15,7 @@ suite.forElement('finance', 'products', { payload: products, skip: true}, (test)
       }
     }
   };
-  test.should.supportCruds();
+  test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.should.supportCeqlSearch('totalAmt');
 });
