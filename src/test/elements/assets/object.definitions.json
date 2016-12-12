@@ -825,6 +825,7 @@
       "path": "subject",
       "type": "string"
     }]
+<<<<<<< HEAD
   },
  "companies": {
     "fields": [{
@@ -832,5 +833,7 @@
         "type":"string"
       }
     ]
+=======
+>>>>>>> 6291f189e3e2e158a4ac0ff606608055f468b548
   }
 }
