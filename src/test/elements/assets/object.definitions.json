@@ -577,12 +577,6 @@
       "type": "string"
     }]
   },
-  "files": {
-    "fields": [{
-      "path": "id",
-      "vendorPath": "string"
-    }]
-  },
   "colors": {
     "fields": [{
       "path": "id",
@@ -814,10 +808,29 @@
       "type": "string"
     }]
   },
-  "companies": {
+  "carts": {
     "fields": [{
       "path": "id",
       "type": "string"
     }]
+  },
+  "tasks": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "description",
+      "type": "string"
+    }, {
+      "path": "subject",
+      "type": "string"
+    }]
+  },
+ "companies": {
+    "fields": [{
+        "path": "id",
+        "type":"string"
+      }
+    ]
   }
 }
