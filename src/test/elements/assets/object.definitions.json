@@ -827,10 +827,9 @@
     }]
   },
     "companies": {
-        "vendorName": "companies",
         "fields": [{
             "path": "id",
-            "vendorPath": "id"
+            "type": "string"
         }]
     }
 }
