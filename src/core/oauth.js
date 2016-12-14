@@ -395,7 +395,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('allow')).click();
       return browser.getCurrentUrl();
-    case 'readytalk':
+    case 'readytalkilluminate':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.name('email'), 5000));
       browser.findElement(webdriver.By.name('email')).sendKeys(username);
