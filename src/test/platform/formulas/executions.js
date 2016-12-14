@@ -439,7 +439,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
     };
 
-    return manualTriggerTest('simple-retry-execution-formula', null, 2, validator, 'retry');
+    return manualTriggerTest('simple-retry-execution-formula', null, {}, 2, validator, 'retry');
   });
 
   it('should successfully execute an element request formula with a configured api field', () => {
