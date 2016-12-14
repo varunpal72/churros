@@ -1,0 +1,9 @@
+{
+  "meetings": {
+    "vendorName": "organizers/{organizerKey}/webinars ",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "webinarKey"
+    }]
+  }
+}

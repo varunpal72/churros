@@ -170,6 +170,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('submit_approve_access')).click();
       browser.sleep(2000);
       return browser.getCurrentUrl();
+    case 'gotowebinar':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.name('emailAddress')).sendKeys(username);
+      browser.findElement(webdriver.By.name('password')).sendKeys(password);
+      browser.findElement(webdriver.By.name('submit')).click();
+      browser.findElement(webdriver.By.name('allow')).click();
+      return browser.getCurrentUrl();
     case 'hubspot':
     case 'hubspotcrm':
       browser.get(r.body.oauthUrl);
