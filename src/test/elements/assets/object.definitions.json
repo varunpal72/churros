@@ -826,6 +826,12 @@
       "type": "string"
     }]
   },
+  "meetings": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "activity-calls": {
     "fields": [{
         "path": "id",
