@@ -814,6 +814,12 @@
       "type": "string"
     }]
   },
+  "companies": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "tasks": {
     "fields": [{
       "path": "id",
