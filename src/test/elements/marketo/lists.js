@@ -22,7 +22,7 @@ suite.forElement('marketing', 'lists', null, (test) => {
       .then(r => cloud.get(`${test.api}/${id}/contacts/${contactId}`))
       .then(r => cloud.get(`${test.api}/${id}/leads/${contactId}/isMember`))
       .then(r => cloud.delete(`${test.api}/${id}/contacts/${contactId}`))
-      .then(r => objectName = 'lead')
+      .then(r => objectName = 'contacts')
       .then(r => cloud.get(`${test.api}/${id}/${objectName}`));
   });
 });
