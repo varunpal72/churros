@@ -21,7 +21,7 @@ const order = () => ({
     price: tools.randomInt()
   }]
 });
-suite.forElement('ecommerce', 'metafields', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'metafields', { payload: payload, skip: true }, (test) => {
   const objectName = 'orders';
   let orderId;
   before(() => cloud.post(`/hubs/ecommerce/orders`, order())

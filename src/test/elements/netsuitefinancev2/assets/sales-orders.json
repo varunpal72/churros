@@ -66,7 +66,6 @@
           "name": "-Not Taxable-"
         },
         "rate": "109.00",
-        "createWo": false,
         "price": {
           "internalId": "1",
           "name": "List Price"

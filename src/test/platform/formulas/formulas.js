@@ -35,7 +35,7 @@ suite.forPlatform('formulas', opts, (test) => {
   it('should not allow an invalid cron for a "scheduled" trigger', () => {
     let formulaId;
     const f = common.genFormula({});
-    const t = common.genTrigger({ properties: { cron: '0 0/14 * 1/1 * ? *' } });
+    const t = common.genTrigger({ properties: { cron: '0/30 * * 1/1 * ? *' } });
     return cloud.post(test.api, f, schema)
       .then(r => formulaId = r.body.id)
       .then(r => cloud.post(`${test.api}/${formulaId}/triggers`, t, (r) => expect(r).to.have.statusCode(400)))

@@ -25,7 +25,7 @@ const loadEventRequest = (element) => {
   }
 };
 
-suite.forPlatform('event load', (test) => {
+suite.forPlatform('event load', { skip: true }, (test) => {
   let instanceIds = [];
   const element = props.getForKey('events', 'load.element');
   const instances = props.getForKey('events', 'load.instances');

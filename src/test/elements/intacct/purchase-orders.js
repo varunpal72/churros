@@ -48,7 +48,7 @@ const payload = (vendorId, transactionId) => ({
 });
 
 const vendor = () => ({
-  "vendorid": tools.random(),
+  "vendorid": tools.randomStr("abcdefghijklmnopqrstuvwxyz", 10),
   "name": tools.random(),
   "termname": "N30",
   "taxid": "39-1837105",
@@ -203,7 +203,7 @@ const purchaseOrder = (journalid) => ({
   }
 });
 
-suite.forElement('finance', 'purchase-orders', { payload: payload() }, (test) => {
+suite.forElement('finance', 'purchase-orders', { payload: payload(), skip: true }, (test) => {
   it(`should allow CRDS for ${test.api}`, () => {
     let vendorId, transactionId, journalid;
     return cloud.post(`/hubs/finance/vendors`, vendor())

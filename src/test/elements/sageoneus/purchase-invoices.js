@@ -12,7 +12,7 @@ const paymentPayload = {
   "bank_account_id": 142271
 };
 
-suite.forElement('sageaccounting', 'purchase-invoices', { payload: payload }, (test) => {
+suite.forElement('sageaccounting', 'purchase-invoices', { payload: payload, skip: true }, (test) => {
   test.should.supportCruds(chakram.put);
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'updated_or_created_since =\'2016-06-01\'' } }).should.return200OnGet();

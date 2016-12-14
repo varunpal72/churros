@@ -56,6 +56,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('login_submit')).click();
       browser.findElement(webdriver.By.name('consent_accept')).click();
       return browser.getCurrentUrl();
+    case 'sharefile':
+      browser.get(r.body.oauthUrl);
+      browser.wait(webdriver.until.elementLocated(webdriver.By.id('credentials-email')), 3000);
+      browser.findElement(webdriver.By.id('credentials-email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('credentials-password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('start-button')).click();
+      browser.wait(() => {
+        return browser.getTitle().then((title) => !title);
+      }, 20000);
+      return browser.getCurrentUrl();
     case 'shopify':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.name('login')), 1000);
@@ -150,26 +160,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('submit')).click();
       return browser.getCurrentUrl();
     case 'googledrive':
-      // TODO - not working yet ...
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('Email')).sendKeys(username);
       browser.findElement(webdriver.By.id('next')).click();
-      const passwordCb = () => {
-        return browser.findElement(webdriver.By.id('Passwd'))
-          .then(r => {
-            r.sendKeys(password);
-            return true;
-          });
-      };
-      return browser.wait(() => {
-        return passwordCb()
-          .then(r => browser.findElement(webdriver.By.name('signIn')))
-          .then(r => r.click())
-          .then(r => browser.findElement(webdriver.By.name('submit_approve_access')))
-          .then(r => r.click())
-          .then(browser.getCurrentUrl())
-          .thenCatch(r => false);
-      }, 15000);
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('Passwd')).sendKeys(password);
+      browser.findElement(webdriver.By.id('signIn')).click();
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('submit_approve_access')).click();
+      browser.sleep(2000);
+      return browser.getCurrentUrl();
     case 'hubspot':
     case 'hubspotcrm':
       browser.get(r.body.oauthUrl);
@@ -195,6 +195,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then(r => browser.getCurrentUrl())
           .thenCatch(r => browser.getCurrentUrl());
       }, 7000);
+    case 'infusionsoftecommerce':
     case 'infusionsoftcrm':
     case 'infusionsoftmarketing':
       browser.get(r.body.oauthUrl);
@@ -243,14 +244,30 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       browser.isElementPresent(webdriver.By.id('i0116'));
       browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.sleep(3000);
       browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
       browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('idBtn_Accept')), 3000)
+        .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.id('idBtn_Accept'))
-        .then((element) => element.click(),
-          (err) => {
-            if (err.state && err.state === 'no such element') { // ignore this
-            } else { webdriver.promise.rejected(err); }
-          });
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
+    case 'onedrivebusiness':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
+      browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
+      // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
+      // have hit our redirect URL...i think (it works :/)
+      browser.wait(() => {
+        browser.findElement(webdriver.By.id('cred_sign_in_button'))
+          .then((element) => element.click(),
+            (err) => {
+              if (err.state && err.state === 'no such element') { // ignore this
+              } else { webdriver.promise.rejected(err); }
+            });
+        return browser.getTitle().then((title) => !title);
+      }, 10000);
       return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
@@ -259,8 +276,9 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('ius-sign-in-submit-btn')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.name('companySelectionWidgetCompanySelector_href')), 10000)
         .thenCatch(r => true);
-      browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href')).click();
-      browser.wait(() => webdriver.until.elementLocated(webdriver.By.id('authorizeBtn')), 7000)
+      browser.findElement(webdriver.By.name('companySelectionWidgetCompanySelector_href'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('authorizeBtn')), 5000)
         .thenCatch(r => true);
       browser.findElement(webdriver.By.id('authorizeBtn')).click();
       browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
@@ -287,22 +305,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 
       browser.findElement(webdriver.By.id('oaapprove'))
         .then((element) => element.click(), (err) => {}); // ignore this
-      return browser.getCurrentUrl();
-    case 'onedrivebusiness':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
-      browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
-      // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
-      // have hit our redirect URL...i think (it works :/)
-      browser.wait(() => {
-        browser.findElement(webdriver.By.id('cred_sign_in_button'))
-          .then((element) => element.click(),
-            (err) => {
-              if (err.state && err.state === 'no such element') { // ignore this
-              } else { webdriver.promise.rejected(err); }
-            });
-        return browser.getTitle().then((title) => !title);
-      }, 10000);
       return browser.getCurrentUrl();
     case 'sage200':
       browser.get(r.body.oauthUrl);
@@ -377,13 +379,15 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 
     case 'sapanywhere':
       browser.get(r.body.oauthUrl);
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('emailInput')), 5000)
+        .thenCatch(r => true);
       browser.findElement(webdriver.By.name('emailInput')).sendKeys(username);
       browser.findElement(webdriver.By.name('loginInputPwd')).sendKeys(password);
       browser.findElement(webdriver.By.name('loginButton')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]')), 5000)
-          .thenCatch(r => true); // ignore
+        .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]'))
-          .then((element) => element.click(), (err) => {}); // ignore this
+        .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
     case 'twitter':
       browser.get(r.body.oauthUrl);
@@ -393,12 +397,12 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.getCurrentUrl();
     case 'readytalk':
       browser.get(r.body.oauthUrl);
-      browser.wait(webdriver.until.elementLocated(webdriver.By.name('email'),5000)) ; 
+      browser.wait(webdriver.until.elementLocated(webdriver.By.name('email'), 5000));
       browser.findElement(webdriver.By.name('email')).sendKeys(username);
       browser.findElement(webdriver.By.name('password')).sendKeys(password);
-    // browser.manage().window().maximize(); //for maximizing the window size.
-      browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('.//*[@id="auth0-lock-container-1"]/div/div[2]/form/div/div/  button'),5000)) ;  
-      browser.findElement(webdriver.By.xpath('.//*[@id="auth0-lock-container-1"]/div/div[2]/form/div/div/button')).click(); 
+      // browser.manage().window().maximize(); //for maximizing the window size.
+      browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('.//*[@id="auth0-lock-container-1"]/div/div[2]/form/div/div/  button'), 5000));
+      browser.findElement(webdriver.By.xpath('.//*[@id="auth0-lock-container-1"]/div/div[2]/form/div/div/button')).click();
       browser.sleep(5000);
       return browser.getCurrentUrl();
     default:

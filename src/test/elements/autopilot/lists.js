@@ -13,7 +13,7 @@ const contactPayload = (email) => ({
   "Email": email
 });
 
-suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
+suite.forElement('marketing', 'lists', { payload: payload, skip: true }, (test) => {
   let testListId;
   before(() => {
     return cloud.get(test.api)

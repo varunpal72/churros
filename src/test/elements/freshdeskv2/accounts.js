@@ -6,6 +6,6 @@ const tools = require('core/tools');
 payload.name = tools.random();
 payload.domains = [tools.random(), tools.random()];
 
-suite.forElement('helpdesk', 'accounts', { payload: payload }, (test) => {
+suite.forElement('helpdesk', 'accounts', { payload: payload, skip: true }, (test) => {
   test.should.supportCruds();
 });
