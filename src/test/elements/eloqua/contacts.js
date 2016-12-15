@@ -5,6 +5,8 @@ const cloud = require('core/cloud');
 const tools = require('core/tools');
 const payload = require('./assets/contacts');
 
+payload.emailAddress = tools.randomEmail();
+
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   const opts = {
     churros: {

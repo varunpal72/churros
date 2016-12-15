@@ -141,7 +141,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(r => fiId = r.body.id)
       .then(() => kickOffDatFormulaCb(fId, fiId))
       .then(() => tools.wait.upTo(90000).for(common.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
-      .then(() => tools.wait.upTo(10000).for(fetchAndValidateExecutions(fiId)))
+      .then(() => tools.wait.upTo(15000).for(fetchAndValidateExecutions(fiId)))
       .then(() => common.deleteFormulaInstance(fId, fiId))
       .then(() => common.deleteFormula(fId));
   };
