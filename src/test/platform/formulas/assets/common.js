@@ -80,20 +80,20 @@ exports.defaultValidator = (executions, numEs, numSes, executionStatus) => {
   });
 };
 
+exports.execValidatorWrapper = execValidator => (executions, numEs, numSes, executionStatus, fId, fiId) => {
+  exports.defaultValidator(executions, numEs, numSes, executionStatus);
+  if (typeof execValidator === 'function') { return execValidator(executions, fId, fiId); }
+  return executions;
+};
+
 /**
  * The test wrapper to wrap them all ...
  */
 exports.testWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
-  const execValidatorWrapper = (executions, fId, fiId) => {
-    exports.defaultValidator(executions, numEs, numSes, executionStatus);
-    if (typeof execValidator === 'function') { return execValidator(executions, fId, fiId); }
-    return executions;
-  };
-
   const fetchAndValidateExecutions = (fId, fiId) => () => new Promise((res, rej) => {
     return exports.getFormulaInstanceExecutions(fiId)
     .then(r => Promise.all(r.body.map(fie => exports.getFormulaInstanceExecutionWithSteps(fie.id))))
-    .then(executions => execValidatorWrapper(executions, fId, fiId))
+    .then(executions => execValidator(executions, numEs, numSes, executionStatus, fId, fiId))
     .then(v => res(v))
     .catch(e => rej(e));
   });

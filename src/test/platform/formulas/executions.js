@@ -90,7 +90,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
   const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
     if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
-    return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, null, executionStatus);
+    return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.validatorWrapper(executionValidator), null, executionStatus);
   };
 
   /**
@@ -179,7 +179,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
     const numSes = f.steps.length + 1; // steps + trigger
-    return testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
+    return testWrapper(triggerCb, f, fi, 1, numSes, numSevs, common.validatorWrapper(validatorWrapper), executionStatus);
   };
 
   /**
@@ -215,7 +215,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const numSes = f.steps.length + 1; // steps + trigger
     return cloud.get('/hubs/crm/ping')
       .then(r => setupCron(r))
-      .then(fi => testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus));
+      .then(fi => testWrapper(triggerCb, f, fi, 1, numSes, numSevs, common.validatorWrapper(validatorWrapper), executionStatus));
   };
 
   it('should successfully execute a simple formula triggered by a single event', () => eventTriggerTest('simple-successful-formula', 1, 2));

@@ -7,15 +7,25 @@
             "name": "simple-script",
             "type": "script",
             "properties": {
-                "body": "var test = { \"integration-test-1\": 1,\n \"integration-test-2\": true,\n \"integration-test-3\": \"integration-value\" };\n \ndone(test); This here should  throw a nice error!"
+                "body": "if (trigger.args.foo === 'bar') { throw('error'); } done({});"
+            }
+        },
+        {
+            "onSuccess": [],
+            "onFailure": ["simple-script"],
+            "name": "filter",
+            "type": "filter",
+            "properties": {
+                "body": "done(false);"
             }
         }
+
     ],
     "triggers": [
         {
             "type": "manual",
             "async": true,
-            "onSuccess": ["simple-script"],
+            "onSuccess": ["filter"],
             "onFailure": []
         }
     ],
