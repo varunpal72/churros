@@ -7,6 +7,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 const moment = require('moment');
+const tools = require('tools');
 const fs = require('fs');
 const props = require('core/props');
 
