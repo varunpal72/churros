@@ -814,6 +814,12 @@
       "type": "string"
     }]
   },
+  "companies": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "tasks": {
     "fields": [{
       "path": "id",
@@ -823,6 +829,12 @@
       "type": "string"
     }, {
       "path": "subject",
+      "type": "string"
+    }]
+  },
+  "meetings": {
+    "fields": [{
+      "path": "id",
       "type": "string"
     }]
   }

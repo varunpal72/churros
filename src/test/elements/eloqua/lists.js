@@ -8,6 +8,8 @@ const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, contactsPayload, overrides);
 const contactUpdatePayload = build({ lastName: tools.random(), firstName: tools.random(), emailAddress: tools.randomEmail() });
 
+contactsPayload.emailAddress = tools.randomEmail();
+
 suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
   const opts = {
     churros: {
