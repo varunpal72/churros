@@ -78,14 +78,14 @@ exports.sleep = secs => {
 
 const waitFor = max => pred => new Promise((res, rej) => {
   const doit = (ms) => {
-    if (ms <= 0) {
-      rej(`Predicate was not true within the maximum time allowed of ${max} ms.`);
-    }
-
     return pred()
       .then(r => res(r))
       .then(r => res(r))
-      .catch(e => setTimeout(doit, 3000, ms - 3000));
+      .catch(e => {
+        if (ms - 3000 < 0) {
+          rej(e || `Predicate was not true within the maximum time allowed of ${max} ms.`);
+        }
+        setTimeout(doit, 3000, ms - 3000); });
   };
   doit(max);
 });
@@ -129,3 +129,15 @@ exports.stringify = (json) => JSON.stringify(json);
  * @param asset The absolute path to the asset (can use `require.resolve(relativePath)`)
  */
 exports.copyAsset = (asset) => JSON.parse(JSON.stringify(require(asset)));
+
+/**
+ * Run the provided function x number of times. The current index will be sent to the function
+ * as it runs through each iteration. Return values are returned in an Array.
+ **/
+const times = x => f =>
+  Array(x).fill().reduce((accum, curr, index)=> {
+    accum.push(f(index));
+    return accum;
+  }, []);
+
+exports.times = times;
