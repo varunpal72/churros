@@ -1,0 +1,21 @@
+{
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "number"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "productRefId": {
+      "type": "string"
+    },
+    "elementId": {
+      "type": "number"
+    }
+  },
+  "required": ["id"]
+}
