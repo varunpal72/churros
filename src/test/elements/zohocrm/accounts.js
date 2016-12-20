@@ -9,6 +9,7 @@ const build = (overrides) => Object.assign({}, payload, overrides);
 const build2 = (overrides) => Object.assign({}, payload2, overrides);
 const accountsPayload = build({ name: tools.random(), description: tools.random() });
 const notesPayload = build2({ Title: tools.random() });
+
 suite.forElement('crm', 'accounts', { payload: accountsPayload }, (test) => {
   it('should allow ping for zohocrm', () => {
     return cloud.get(`/hubs/crm/ping`);
