@@ -1,0 +1,11 @@
+{
+  "reports": {
+    "vendorName": "reports",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "reportId"
+      }
+    ]
+  }
+}

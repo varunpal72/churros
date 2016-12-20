@@ -7,5 +7,5 @@ const options = { payload: payload };
 suite.forElement('crm', 'contacts', options, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
-  test.should.supportCeqlSearch('lastName');
+  test.should.supportCeqlSearchForMultipleRecords('lastName');
 });

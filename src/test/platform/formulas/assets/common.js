@@ -59,6 +59,78 @@ exports.generateSfdcPollingEvent = (instanceId, payload) => {
     .post('/events/sfdcPolling/' + encodedId, payload);
 };
 
+/**
+ * The default validator which applies to *every* single formula instance execution
+ */
+exports.defaultValidator = (executions, numEs, numSes, executionStatus) => {
+  logger.debug('Validating executions with default validator');
+  expect(executions).to.have.length(numEs);
+  executions.map(e => {
+    const eStatus = (executionStatus || 'success');
+    expect(e.status).to.equal(eStatus);
+
+    logger.debug('Validating step executions with default validator');
+    expect(e.stepExecutions).to.have.length(numSes);
+    e.stepExecutions.map(se => {
+      expect(se).to.have.property('status');
+
+      logger.debug('Validating step execution values with default validator');
+      if (se.stepName === 'trigger') expect(se).to.have.property('status').and.equal('success');
+    });
+  });
+};
+
+exports.execValidatorWrapper = execValidator => (executions, numEs, numSes, executionStatus, fId, fiId) => {
+  exports.defaultValidator(executions, numEs, numSes, executionStatus);
+  if (typeof execValidator === 'function') { return execValidator(executions, fId, fiId); }
+  return executions;
+};
+
+/**
+ * The test wrapper to wrap them all ...
+ */
+exports.testWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
+  const fetchAndValidateExecutions = (fId, fiId) => () => new Promise((res, rej) => {
+    return exports.getFormulaInstanceExecutions(fiId)
+    .then(r => Promise.all(r.body.map(fie => exports.getFormulaInstanceExecutionWithSteps(fie.id))))
+    .then(executions => execValidator(executions, numEs, numSes, executionStatus, fId, fiId))
+    .then(v => res(v))
+    .catch(e => rej(e));
+  });
+
+  const instanceValidatorWrapper = fId => {
+    if (typeof instanceValidator === 'function') { return instanceValidator(fId); }
+    return Promise.resolve(fId);
+  };
+
+  const fetchAndValidateInstances = fId => () => new Promise ((res, rej) => {
+    instanceValidatorWrapper(fId)
+    .then(v => res(v))
+    .catch(e => rej(e));
+  });
+
+  let fId;
+  const fiIds = [];
+  return cleaner.formulas.withName(f.name)
+    .then(() => cloud.post(test.api, f, fSchema))
+    .then(r => fId = r.body.id)
+    .then(() => tools.times(numInstances || 1)(() => cloud.post(`/formulas/${fId}/instances`, fi, fiSchema)))
+    .then(ps => Promise.all(ps.map(p => {
+      let fiId;
+      return p
+        .then(r => {
+          fiId = r.body.id;
+          fiIds.push(fiId);
+        })
+        .then(() => kickOffDatFormulaCb(fId, fiId))
+        .then(() => tools.wait.upTo(90000).for(exports.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
+        .then(() => tools.wait.upTo(15000).for(fetchAndValidateExecutions(fId, fiId)));
+    })))
+    .then(() => tools.wait.upTo(10000).for(fetchAndValidateInstances(fId)))
+    .then(() => Promise.all(fiIds.map(fiId => exports.deleteFormulaInstance(fId, fiId))))
+    .then(() => exports.deleteFormula(fId));
+};
+
 exports.deleteFormula = (fId) => cloud.delete(`/formulas/${fId}`);
 exports.deleteFormulaInstance = (fId, fiId) => cloud.delete(`/formulas/${fId}/instances/${fiId}`);
 
