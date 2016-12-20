@@ -15,7 +15,10 @@
     },
     "elementId": {
       "type": "number"
+    },
+    "description": {
+      "type": "string"
     }
   },
-  "required": ["id"]
+  "required": ["id", "provider", "type"]
 }
