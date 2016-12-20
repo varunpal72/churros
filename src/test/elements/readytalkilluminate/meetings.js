@@ -3,9 +3,8 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('conferencing', 'meetings', null, (test) => {
+suite.forElement('conferencing', 'meetings', { skip: true }, (test) => {
   test.should.supportPagination();
-  test.should.supportCeqlSearch('id');
   it('should allow get for meetings and attendees ', () => {
     let meetingId, attendeesId;
     return cloud.withOptions({ qs: { where: "status ='ENDED'" } }).get(`${test.api}`)
