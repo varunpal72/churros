@@ -1,9 +1,28 @@
 'use strict';
 
 const suite = require('core/suite');
+const tools = require('core/tools');
+const cloud = require('core/cloud');
+const contactPayload = [{
+  "person": {
+    "id": tools.randomInt()
+  }
+}];
 
-suite.forElement('marketing', 'lists', (test) => {
-  it('should check if the lead is member of the list', () => {
-    test.withApi(`${test.api}/1001/leads/42293/isMember`).should.return200OnGet();
+suite.forElement('marketing', 'lists', null, (test) => {
+  it('should allow SR for /lists and CRDS for /contacts', () => {
+    let id, contactId, objectName;
+    return cloud.get(test.api)
+      .then(r => id = r.body[0].id)
+      .then(r => cloud.get(`${test.api}/${id}`))
+      .then(r => cloud.get(`${test.api}/${id}/contacts`))
+      .then(r => contactId = r.body[0].person.id)
+      .then(r => contactPayload[0].person.id = contactId)
+      .then(r => cloud.post(`${test.api}/${id}/contacts`, contactPayload))
+      .then(r => cloud.get(`${test.api}/${id}/contacts/${contactId}`))
+      .then(r => cloud.get(`${test.api}/${id}/leads/${contactId}/isMember`))
+      .then(r => cloud.delete(`${test.api}/${id}/contacts/${contactId}`))
+      .then(r => objectName = 'contacts')
+      .then(r => cloud.get(`${test.api}/${id}/${objectName}`));
   });
 });

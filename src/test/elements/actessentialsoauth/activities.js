@@ -6,5 +6,5 @@ const payload = require('./assets/activities');
 suite.forElement('crm', 'activities', { payload: payload }, (test) => {
   test.should.supportCrds();
   test.should.supportPagination();
-  test.should.supportCeqlSearch('subject');
+  test.should.supportCeqlSearchForMultipleRecords('subject');
 });
