@@ -1,16 +1,13 @@
 'use strict';
 
 const provisioner = require('core/provisioner');
-const cleaner = require('core/cleaner');
 const common = require('./assets/common');
 const logger = require('winston');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const fSchema = require('./assets/schemas/formula.schema');
-const fiSchema = require('./assets/schemas/formula.instance.schema');
-const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
+const tools = require('core/tools');
 const fs = require('fs');
 const props = require('core/props');
 
@@ -82,68 +79,19 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
   });
 
-  // after(done => {
-  //   if (!sfdcId) done();
-  //   return provisioner.delete(sfdcId)
-  //     .then(() => done())
-  //     .catch(e => {
-  //       console.log(`Failed to finish after()...${e}`);
-  //       done();
-  //     });
-  // });
-
-  /**
-   * The default validator which applies to *every* single formula instance execution
-   */
-  const defaultValidator = (executions, numEs, numSes, executionStatus) => {
-    logger.debug('Validating executions with default validator');
-    expect(executions).to.have.length(numEs);
-    executions.map(e => {
-      const eStatus = (executionStatus || 'success');
-      expect(e.status).to.equal(eStatus);
-
-      logger.debug('Validating step executions with default validator');
-      expect(e.stepExecutions).to.have.length(numSes);
-      e.stepExecutions.map(se => {
-        expect(se).to.have.property('status');
-
-        logger.debug('Validating step execution values with default validator');
-        if (se.stepName === 'trigger') expect(se).to.have.property('status').and.equal('success');
+  after(done => {
+    if (!sfdcId) done();
+    return provisioner.delete(sfdcId)
+      .then(() => done())
+      .catch(e => {
+        console.log(`Failed to finish after()...${e}`);
+        done();
       });
-    });
-  };
+  });
 
-  /**
-   * The test wrapper to wrap them all ...
-   */
-  const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, validator, executionStatus) => {
-    const validatorWrapper = (executions) => {
-      defaultValidator(executions, numEs, numSes, executionStatus);
-      if (typeof validator === 'function') validator(executions);
-      return executions;
-    };
-
-    const fetchAndValidateExecutions = (fiId) => () => new Promise((res, rej) => {
-      return common.getFormulaInstanceExecutions(fiId)
-        .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-        .then(executions => validatorWrapper(executions))
-        .then(v => res(v))
-        .catch(e => rej(e));
-    });
-
+  const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
     if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
-
-    let fId, fiId;
-    return cleaner.formulas.withName(f.name)
-      .then(() => cloud.post(test.api, f, fSchema))
-      .then(r => fId = r.body.id)
-      .then(() => cloud.post(`/formulas/${fId}/instances`, fi, fiSchema))
-      .then(r => fiId = r.body.id)
-      .then(() => kickOffDatFormulaCb(fId, fiId))
-      .then(() => tools.wait.upTo(90000).for(common.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
-      .then(() => tools.wait.upTo(10000).for(fetchAndValidateExecutions(fiId)))
-      .then(() => common.deleteFormulaInstance(fId, fiId))
-      .then(() => common.deleteFormula(fId));
+    return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
   };
 
   /**

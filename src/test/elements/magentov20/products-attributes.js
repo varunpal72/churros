@@ -24,7 +24,7 @@ const productsAttributes = () => ({
     "used_in_product_listing": "1",
     "is_visible": true,
     "scope": "store",
-    "attribute_code": tools.random(),
+    "attribute_code": tools.randomStr('abcdefghijklmnopqrstuvwxyz', 8),
     "frontend_input": "text",
     "is_required": true,
     "options": [],
