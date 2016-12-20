@@ -147,8 +147,8 @@ exports.folders = (test) => {
 
     it('should allow POST /folders/copy and POST /folders/:id/copy', () => {
 
-      const copy1 = { path: '/churrosCopy1' };
-      const copy2 = { path: '/churrosCopy2' };
+      const copy1 = { path: `/churrosCopy1${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}` };
+      const copy2 = { path: `/churrosCopy2${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}` };
 
       const cb = (folder) => {
         let folderCopy1, folderCopy2;
