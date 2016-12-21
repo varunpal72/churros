@@ -66,7 +66,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 20000);
       return browser.getCurrentUrl();
-   case 'shopify':
+    case 'shopify':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.name('login')), 1000);
       browser.findElement(webdriver.By.name('login')).clear();
@@ -264,8 +264,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
       browser.findElement(webdriver.By.id('cred_password_inputtext')).sendKeys(password);
-        // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
-        // have hit our redirect URL...i think (it works :/)
+      // well, not proud of this one...i thought i could use the same as sharepoint but i couldn't.  this keeps clicking the sign-in button until the title goes blank, indicating we
+      // have hit our redirect URL...i think (it works :/)
       browser.wait(() => {
         browser.findElement(webdriver.By.id('cred_sign_in_button'))
           .then((element) => element.click(),
@@ -273,8 +273,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
               if (err.state && err.state === 'no such element') { // ignore this
               } else { webdriver.promise.rejected(err); }
             });
-            return browser.getTitle().then((title) => !title);
-        }, 10000);
+        return browser.getTitle().then((title) => !title);
+      }, 10000);
       return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
@@ -387,14 +387,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'sapanywhere':
       browser.get(r.body.oauthUrl);
       browser.wait(() => browser.isElementPresent(webdriver.By.name('emailInput')), 5000)
-          .thenCatch(r => true);
+        .thenCatch(r => true);
       browser.findElement(webdriver.By.name('emailInput')).sendKeys(username);
       browser.findElement(webdriver.By.name('loginInputPwd')).sendKeys(password);
       browser.findElement(webdriver.By.name('loginButton')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]')), 5000)
-          .thenCatch(r => true); // ignore
+        .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.xpath('//div[@class="app-install"]/a/input[@type="submit"]'))
-          .then((element) => element.click(), (err) => {}); // ignore this
+        .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
     case 'twitter':
       browser.get(r.body.oauthUrl);
@@ -402,7 +402,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('allow')).click();
       return browser.getCurrentUrl();
-
+    case 'readytalkilluminate':
+      browser.get(r.body.oauthUrl);
+      browser.wait(webdriver.until.elementLocated(webdriver.By.name('email'), 5000));
+      browser.findElement(webdriver.By.name('email')).sendKeys(username);
+      browser.findElement(webdriver.By.name('password')).sendKeys(password);
+      // browser.manage().window().maximize(); //for maximizing the window size.
+      browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('.//*[@id="auth0-lock-container-1"]/div/div[2]/form/div/div/  button'), 5000));
+      browser.findElement(webdriver.By.xpath('.//*[@id="auth0-lock-container-1"]/div/div[2]/form/div/div/button')).click();
+      browser.sleep(5000);
+      return browser.getCurrentUrl();
     default:
       throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }
