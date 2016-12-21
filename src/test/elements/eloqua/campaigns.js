@@ -4,9 +4,6 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const contactsPayload = require('./assets/contacts');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, contactsPayload, overrides);
-const contactUpdatePayload = build({ lastName: tools.random(), firstName: tools.random(), emailAddress: tools.randomEmail() });
-
 contactsPayload.emailAddress = tools.randomEmail();
 
 suite.forElement('marketing', 'campaigns', null, (test) => {
@@ -20,7 +17,7 @@ suite.forElement('marketing', 'campaigns', null, (test) => {
       .then(r => contactId = r.body.id)
       .then(r => contactPostPayload = [{ "id": contactId }])
       .then(r => cloud.put(`${test.api}/${id}/contacts`,contactPostPayload))
-      .then(r => cloud.delete(`${test.api}/${id}/contacts/${contactId}`))
+      .then(r => cloud.delete(`${test.api}/${id}/contacts/${contactId}`));
 
 
   });
