@@ -4,7 +4,7 @@
   "securityLevel": "5",
   "clientPortalActive": "True",
   "dateFormat": "1",
-  "contactID": "29683590",
   "password": "123456",
-  "userName": "boby"
+  "userName": "boby",
+  "contactID": ""
 }

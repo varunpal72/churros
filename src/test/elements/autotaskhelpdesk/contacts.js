@@ -14,7 +14,7 @@ const updatePayload = {
 suite.forElement('helpdesk', 'contacts', { payload: contactPayload }, (test) => {
   const build = (overrides) => Object.assign({}, contactPayload, overrides);
   const payload = build({ lastName: tools.random(), firstName: tools.random() });
-  it('should create a contact and then get and update contact', () => {
+  it(`should support paging, Ceql search and CRU for ${test.api}`, () => {
     let contactId;
     return cloud.post(test.api, payload)
       .then(r => contactId = r.body.id)
