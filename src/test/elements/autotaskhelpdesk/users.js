@@ -8,7 +8,7 @@ const contactPayload = require('./assets/contacts');
 
 const updatePayload = {
   "userName": tools.random()
-}
+};
 
 suite.forElement('helpdesk', 'users', { payload: usersPayload }, (test) => {
   const build = (overrides) => Object.assign({}, usersPayload, overrides);

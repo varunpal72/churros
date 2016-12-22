@@ -11,7 +11,7 @@ const updatePayload = {
   "title": tools.random(),
   "priority": "1",
   "description": "This has been changed"
-}
+};
 
 suite.forElement('helpdesk', 'incidents', { payload: incidentPayload }, (test) => {
   const build = (overrides) => Object.assign({}, incidentPayload, overrides);
