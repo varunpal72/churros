@@ -2,4 +2,3 @@
 
 const documents = require('./documentsDB');
 documents.all();
-
