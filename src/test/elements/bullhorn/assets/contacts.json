@@ -1,39 +1,39 @@
 {
-  "id": 298331,
-  "firstName": "John",
-  "lastName": "Snow",
-  "name": "John Snow",
-  "username": "john",
+  "id": 298361,
+  "firstName": "test_churros3",
+  "lastName": "churros3",
+  "name": "xxxx",
+  "username": "xxxx",
   "category": {
     "id": 23
   },
-  "password": "password",
+  "password": "xxxx",
   "owner": {
-    "id": 298331
+    "id": 23
   },
   "address": {
-    "address1": "New York",
-    "address2": "New York",
-    "city": "New York",
+    "address1": "xxxx",
+    "address2": "xxxx",
+    "city": "xxxx",
     "state": "NY",
     "zip": 12345,
     "countryID": 2
   },
   "secondaryAddress": {
-    "address1": "New York",
-    "address2": "New York",
-    "city": "New York",
+    "address1": "xxxx",
+    "address2": "xxxx",
+    "city": "pxxxx",
     "state": "MA",
     "zip": 54321,
     "countryID": 1
   },
   "ownerCorporation": {
-    "id": 298331
+    "id": 123
   },
   "clientCorporation": {
-    "id": 298331
+    "id": 123
   },
   "userType": {
-    "id": 298331
+    "id": 12345
   }
 }
