@@ -1,14 +1,14 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/contacts');
+const payload = require('./assets/fairsail');
 const update = () => ({
-  "phone": "1-214-412-6308",
-  "city": "Addison"
+  "nameFS": "test1",
+  "percentIncFS": 4.28
 });
 
 const options = { churros: { updatePayload: update() } };
-suite.forElement('db', 'contacts', { payload: payload }, (test) => {
+suite.forElement('db', 'Fairsail', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();
