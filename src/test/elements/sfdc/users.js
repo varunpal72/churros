@@ -9,7 +9,8 @@ suite.forElement('crm', 'users', { payload: payload }, (test) => {
     churros: {
       updatePayload: {
         "Username": tools.randomEmail()
-      }
+      },
+      skip: true //can't delete users
     }
   };
   test.withOptions(options).should.supportCrus();
