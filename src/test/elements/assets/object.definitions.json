@@ -837,5 +837,30 @@
       "path": "id",
       "type": "string"
     }]
+  },
+  "activity-calls": {
+    "fields": [{
+        "path": "id",
+        "type": "string"
+      }, {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+        "type": "string"
+      }
+    ]
+  },
+  "activity-events": {
+    "fields": [{
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+        "type": "string"
+      }
+    ]
   }
 }
