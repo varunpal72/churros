@@ -34,7 +34,7 @@ const groupUpdate = () => ({
   "name": "CE Discounts - Update"
 });
 
-suite.forElement('ecommerce', 'customers', { payload: payload, skip: true }, (test) => {
+suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.withApi(`${test.api}/count`).should.return200OnGet();
   test.withOptions({ qs: { where: 'fetchShippingAddresses=\'true\'' } }).should.return200OnGet();
@@ -55,7 +55,7 @@ suite.forElement('ecommerce', 'customers', { payload: payload, skip: true }, (te
       .then(r => cloud.delete(`${test.api}/${customersId}/addresses/${addressId}`))
       .then(r => cloud.delete(`${test.api}/${customersId}`));
   });
-  it('should allow CRUDS for customer/groups', () => {
+  it('should allow CRUDS for customer/groups and then GET customer/groups/count', () => {
     let groupId = -1;
     return cloud.post(`${test.api}/groups`, groupCreate())
       .then(r => groupId = r.body.id)
@@ -65,6 +65,7 @@ suite.forElement('ecommerce', 'customers', { payload: payload, skip: true }, (te
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/groups`))
       .then(r => cloud.patch(`${test.api}/groups/${groupId}`, groupUpdate()))
       .then(r => cloud.get(`${test.api}/groups/${groupId}`))
-      .then(r => cloud.delete(`${test.api}/groups/${groupId}`));
+      .then(r => cloud.delete(`${test.api}/groups/${groupId}`))
+      .then(r => cloud.get(`${test.api}/groups/count`));
   });
 });
