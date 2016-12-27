@@ -12,6 +12,11 @@ suite.forElement('messaging', 'numbers', {payload: payload}, (test) => {
     return cloud.withOptions({ qs: query }).get('/hubs/messaging/numbers')
     .then(r => expect(r).to.have.statusCode(200));
   });
+  it('should allow POST', () => {
+    let payload = {"AreaCode":"510"}
+    return cloud.post('/hubs/messaging/numbers',payload)
+    .then(r => expect(r).to.have.statusCode(200));
+  });
 
   it('should allow query by countryCode', () => {
     let query = { countryCode: 'US', type: 'Local'};
