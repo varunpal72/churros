@@ -862,5 +862,17 @@
         "type": "string"
       }
     ]
+  },
+  "contactS": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
+  },
+  "company": {
+    "fields": [{
+      "path": "id",
+      "vendorPath": "string"
+    }]
   }
 }
