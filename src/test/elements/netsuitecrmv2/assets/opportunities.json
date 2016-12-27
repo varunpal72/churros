@@ -33,8 +33,6 @@
     "internalId": "1",
     "name": "02: Boston"
   },
-  "shipIsResidential": false,
-  "isBudgetApproved": false,
   "entity": {
     "internalId": "190",
     "name": "All Occassions Event Coordination"
