@@ -11,10 +11,6 @@ suite.forElement('helpdesk', 'users', (test) => {
   it('should get all users and then update the name of the first user', () => {
     let userId;
     const oldPassword = props.getOptionalForKey("desk", "password");
-    // Need to do oldPassword + '1', because we need to maintain password complexity,
-    // a random string of characters will miss thinkgs like special chars and digits
-    // that might be needed for the service. Also it would be easy to recover the account
-    // in case something goes wrong as no one will know what the random password will be.
     const newPassword = oldPassword + '1';
 
     return cloud.get(test.api)
