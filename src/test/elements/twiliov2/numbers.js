@@ -13,7 +13,7 @@ suite.forElement('messaging', 'numbers', {payload: payload}, (test) => {
     .then(r => expect(r).to.have.statusCode(200));
   });
   it('should allow POST', () => {
-    let payload = {"AreaCode":"510"}
+    let payload = {"AreaCode":"510"};
     return cloud.post('/hubs/messaging/numbers',payload)
     .then(r => expect(r).to.have.statusCode(200));
   });
