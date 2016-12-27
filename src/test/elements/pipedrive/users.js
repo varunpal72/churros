@@ -12,9 +12,10 @@ suite.forElement('crm', 'users', { payload: usersPayload }, (test) => {
     churros: {
       updatePayload: {
         "active_flag": false
-      }
+      },
+      skip: true //API doesn't support a delete
     }
   };
-  test.withOptions(options).should.supportCruds(chakram.put);
+  test.withOptions(options).should.supportCrus(chakram.put);
   test.should.supportPagination();
 });

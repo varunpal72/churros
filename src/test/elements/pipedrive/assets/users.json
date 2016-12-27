@@ -1,4 +1,5 @@
 {
-  "name": "Sally Smith",
-  "email": "random@example.com"
+  "name": "Senior Churro",
+  "email": "random@example.com",
+  "active_flag": false
 }
