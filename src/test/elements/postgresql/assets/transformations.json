@@ -7,5 +7,14 @@
         "vendorPath": "contact_id"
       }
     ]
+  },
+  "companies": {
+    "vendorName": "company",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "company_id"
+      }
+    ]
   }
 }
