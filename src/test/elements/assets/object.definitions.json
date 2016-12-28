@@ -852,6 +852,12 @@
       }
     ]
   },
+  "payroll-items": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "activity-events": {
     "fields": [{
         "path": "id",
