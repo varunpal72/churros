@@ -65,6 +65,23 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
     return testIt('manual-trigger', {}, 3, 2, execValidator, null, 'success', 1);
   });
 
+  it('should return an error for an invalid date range for execution analytics', () => {
+    const from = new Date();
+    from.setHours(from.getHours() - 1);
+    const to = new Date();
+    to.setHours(to.getHours() - 2);
+    return cloud.get(`/formulas/analytics?from=${from.toJSON()}&to=${to.toJSON()}&interval=minute`, r => expect(r).to.have.statusCode(400))
+      .then(r => expect(r.body).to.contain.all.keys(['requestId', 'message']));
+  });
+
+  it('should return an error for an invalid interval for execution analytics', () => {
+    const from = new Date();
+    from.setHours(from.getHours() - 24);
+    const to = new Date();
+    return cloud.get(`/formulas/analytics?from=${from.toJSON()}&to=${to.toJSON()}&interval=second`, r => expect(r).to.have.statusCode(400))
+      .then(r => expect(r.body).to.contain.all.keys(['requestId', 'message']));
+  });
+
   it('should return step analytics of 3 executions', () => {
     const execValidator = (executions, fId, fiId) => {
       // Get the execution analytics without from and to dates
@@ -85,6 +102,23 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
     return testIt('manual-trigger', {}, 3, 2, execValidator, null, 'success', 1);
   });
 
+  it('should return an error for an invalid date range for step execution analytics', () => {
+    const from = new Date();
+    from.setHours(from.getHours() - 1);
+    const to = new Date();
+    to.setHours(to.getHours() - 2);
+    return cloud.get(`/formulas/analytics/steps?from=${from.toJSON()}&to=${to.toJSON()}&interval=minute`, r => expect(r).to.have.statusCode(400))
+      .then(r => expect(r.body).to.contain.all.keys(['requestId', 'message']));
+  });
+
+  it('should return an error for an invalid interval for step execution analytics', () => {
+    const from = new Date();
+    from.setHours(from.getHours() - 24);
+    const to = new Date();
+    return cloud.get(`/formulas/analytics/steps?from=${from.toJSON()}&to=${to.toJSON()}&interval=second`, r => expect(r).to.have.statusCode(400))
+      .then(r => expect(r.body).to.contain.all.keys(['requestId', 'message']));
+  });
+
   it('should return status analytics of 3 executions', () => {
     const execValidator = (executions, fId, fiId) => {
       // Get the execution analytics without from and to dates
@@ -103,5 +137,22 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
     };
 
     return testIt('manual-trigger', {}, 3, 2, execValidator, null, 'success', 1);
+  });
+
+  it('should return an error for an invalid date range for execution status analytics', () => {
+    const from = new Date();
+    from.setHours(from.getHours() - 1);
+    const to = new Date();
+    to.setHours(to.getHours() - 2);
+    return cloud.get(`/formulas/analytics/statuses?from=${from.toJSON()}&to=${to.toJSON()}&interval=minute`, r => expect(r).to.have.statusCode(400))
+      .then(r => expect(r.body).to.contain.all.keys(['requestId', 'message']));
+  });
+
+  it('should return an error for an invalid interval for execution status analytics', () => {
+    const from = new Date();
+    from.setHours(from.getHours() - 24);
+    const to = new Date();
+    return cloud.get(`/formulas/analytics/statuses?from=${from.toJSON()}&to=${to.toJSON()}&interval=second`, r => expect(r).to.have.statusCode(400))
+      .then(r => expect(r.body).to.contain.all.keys(['requestId', 'message']));
   });
 });
