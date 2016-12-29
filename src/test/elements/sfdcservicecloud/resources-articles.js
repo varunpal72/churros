@@ -21,7 +21,6 @@ suite.forElement('helpdesk', 'resources/articles', { payload: articlesPayload },
       .then(r => cloud.withOptions({ qs: { where: `id='${articleId}'` } }).get(test.api))
       .then(r => cloud.patch(`${test.api}/${articleId}`, articlesPayload))
       .then(r => cloud.put(`${test.api}/${articleId}/status`, statusPayload))
-      .then(r => cloud.delete(`${test.api}/${articleId}`))
-      .then(r => cloud.withOptions({ qs: { q: "select id, name from contact where name like '%foo' limit 10 offset 0" } }).get(`/hubs/helpdesk/query`));
+      .then(r => cloud.delete(`${test.api}/${articleId}`));
   });
 });
