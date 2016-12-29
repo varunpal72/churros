@@ -29,12 +29,11 @@
     }],
     "replaceAll": false
   },
-  "companyName": "Churros Account",
+  "companyName": "Churros Test Account",
   "shipComplete": false,
-  "email": "ce2cc@ccloud-elements.com",
+  "email": "ce2ac@ccloud-elements.com",
   "sendEmail": false,
   "subsidiary": {
-    "internalId": "1",
-    "name": "Honeycomb Mfg."
+    "internalId": "1"
   }
 }
