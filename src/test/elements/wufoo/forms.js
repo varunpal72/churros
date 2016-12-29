@@ -6,31 +6,42 @@ const cloud = require('core/cloud');
 
 suite.forElement('general', 'forms', { payload: payload }, (test) => {
   test.should.return200OnGet();
-  it.skip(`should allow GET for /hubs/general/forms/{id}`, () => {
+  it(`should allow GET for /hubs/general/forms/{id}`, () => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.get(`${test.api}/${r.body[0].Hash}`));
   });
-  it.skip(`should allow GET for /hubs/general/forms/{id}/comments`, () => {
+  it(`should allow GET for /hubs/general/forms/{id}/comments`, () => {
+    let formId;
     return cloud.get(`${test.api}`)
-      .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/comments`));
+      .then(r => formId = r.body[0].Hash)
+      .then(r => cloud.get(`${test.api}/${formId}/comments`))
+      .then(r => cloud.withOptions({ qs: { where: `entryId=${r.body[0].EntryId}` } }).get(`${test.api}/${formId}/comments`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${formId}/comments`));
   });
-  it.skip(`should allow GET for /hubs/general/forms/{id}/comments-count`, () => {
+  it(`should allow GET for /hubs/general/forms/{id}/comments-count`, () => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/comments-count`));
   });
-  it.skip(`should allow GET for /hubs/general/forms/{id}/entries`, () => {
+  it(`should allow GET for /hubs/general/forms/{id}/entries`, () => {
+    let formId;
     return cloud.get(`${test.api}`)
-      .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/entries`));
+      .then(r => formId = r.body[0].Hash)
+      .then(r => cloud.get(`${test.api}/${formId}/entries`))
+      .then(r => cloud.withOptions({ qs: { where: `entryId>2` } }).get(`${test.api}/${formId}/entries`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${formId}/entries`));
   });
-  it.skip(`should allow GET for /hubs/general/forms/{id}/entries-count`, () => {
+  it(`should allow GET for /hubs/general/forms/{id}/entries-count`, () => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/entries-count`));
   });
-  it.skip(`should allow GET for /hubs/general/forms/{id}/fields`, () => {
+  it(`should allow GET for /hubs/general/forms/{id}/fields`, () => {
+    let formId;
     return cloud.get(`${test.api}`)
-      .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/fields`));
+      .then(r => formId = r.body[0].Hash)
+      .then(r => cloud.get(`${test.api}/${formId}/fields`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${formId}/fields`));
   });
-  it.skip(`should allow POST for /hubs/general/forms/{id}/entries`, () => {
+  it(`should allow POST for /hubs/general/forms/{id}/entries`, () => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.post(`${test.api}/${r.body[0].Hash}/entries`, payload));
   });
