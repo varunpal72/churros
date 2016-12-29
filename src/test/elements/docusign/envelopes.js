@@ -21,8 +21,8 @@ suite.forElement('esignature', 'envelopes', (test) => {
     return cloud.withOptions(opts).postFile(test.api, path)
       .then(r => envelopeId = r.body.envelopeId)
       .then(r => cloud.get(test.api + '/' + envelopeId, (r) => expect(r).to.have.schemaAnd200(schema)))
-      .then(r => cloud.patch(test.api + '/' + envelopeId, updatePayload, (r) => expect(r).to.have.statusCode(200)))
-      //.then(r => cloud.get(`${test.api}/${envelopeId}/custom_fields`));
+      .then(r => cloud.patch(test.api + '/' + envelopeId, updatePayload, (r) => expect(r).to.have.statusCode(200)));
+    //.then(r => cloud.get(`${test.api}/${envelopeId}/custom_fields`));
   });
 
   it('should allow creating an envelope, retrieving the created envelope\'s document(s)', () => {
