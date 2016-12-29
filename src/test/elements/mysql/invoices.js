@@ -2,12 +2,14 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/invoices');
-const update = () => ({
-  "amount": "100",
-  "quantity": "5"
-});
-
-const options = { churros: { updatePayload: update() } };
+const options = {
+  churros: {
+    updatePayload: {
+      "amount": "100",
+      "quantity": "5"
+    }
+  }
+};
 suite.forElement('db', 'invoice', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportCeqlSearch('id');
