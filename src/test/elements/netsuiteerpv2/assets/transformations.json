@@ -1,4 +1,11 @@
 {
+  "activities": {
+    "vendorName": "Task",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
   "customers": {
     "vendorName": "Customer",
     "fields": [{
