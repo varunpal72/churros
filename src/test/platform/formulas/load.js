@@ -87,7 +87,7 @@ const createXInstances = (x, formulaId, formulaInstance) => {
 /**
  * Tests formula executions under heavy load (number of events, size of events, etc.)
  */
-suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
+suite.forPlatform('formulas', { name: 'formulas load'}, (test) => {
   let sfdcId;
   before(() => cleaner.formulas.withName('complex-successful')
     .then(r => common.provisionSfdcWithWebhook())
@@ -100,7 +100,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
 
   it('should handle a very large event payload repeatedly', () => {
     const formula = require('./assets/formulas/complex-successful-formula');
-    const formulaInstance = require('./assets/formulas/complex-successful-formula-instance');
+    const formulaInstance = require('./assets/formulas/basic-formula-instance');
     formulaInstance.configuration[ 'trigger-instance' ] = sfdcId;
 
     const numFormulaInstances = 1;
