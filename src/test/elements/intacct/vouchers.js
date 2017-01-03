@@ -156,9 +156,8 @@ suite.forElement('finance', 'vouchers', { payload: payload() }, (test) => {
     let vendorId;
     return cloud.post(`/hubs/finance/vendors`, vendor())
     .then(r => vendorId = r.body.id)
-    .then(r => cloud.crds(test.api, payload(vendorId)))
+    .then(r => cloud.cruds(test.api, payload(vendorId)))
     .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });
