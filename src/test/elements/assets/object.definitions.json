@@ -164,6 +164,12 @@
       "type": "string"
     }]
   },
+  "credit-terms": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "dimensions": {
     "fields": [{
       "path": "id",
@@ -662,6 +668,12 @@
     }]
   },
   "ledger-accounts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "tax-codes": {
     "fields": [{
       "path": "id",
       "type": "string"
