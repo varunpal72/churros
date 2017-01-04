@@ -3,6 +3,7 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const fs = require('fs');
 const createPayload = require('./assets/envelopes.create.json');
 const updatePayload = require('./assets/envelopes.update.json');
 const schema = require('./assets/envelope.schema.json');
@@ -10,6 +11,7 @@ const envelopesSchema = require('./assets/envelopes.schema.json');
 const documentsSchema = require('./assets/documents.schema.json');
 const recipient = require('./assets/envelopes.recipient.json');
 const tab = require('./assets/recipients.tab.json');
+const documents = require('./assets/envelopes.documents.json');
 
 suite.forElement('esignature', 'envelopes', (test) => {
   it('should allow creating an envelope, retrieving the created envelope, updating the envelope status and retrieving the custom fields of the envelope', () => {
@@ -28,13 +30,18 @@ suite.forElement('esignature', 'envelopes', (test) => {
   it('should allow creating an envelope, retrieving the created envelope\'s document(s)', () => {
     let envelopeId = "-1";
     let path = __dirname + '/assets/MrRobotPdf.pdf';
+    let documentPath = __dirname + '/assets/Test.pdf';
     const opts = { formData: { envelope: JSON.stringify(createPayload) } };
     let documentId;
+    const putDocuments = { formData: { document: JSON.stringify(documents), file: fs.createReadStream(documentPath) } };
 
     return cloud.withOptions(opts).postFile(test.api, path)
       .then(r => envelopeId = r.body.envelopeId)
       .then(r => cloud.get(test.api + '/' + envelopeId + '/documents',
         (r) => expect(r).to.have.schemaAnd200(documentsSchema)))
+      .then(r => cloud.withOptions(putDocuments).put(test.api + '/' + envelopeId + '/documents', undefined,
+        (r) => expect(r).to.have.schemaAnd200(documentsSchema)))
+      .then(r => cloud.get(test.api + '/' + envelopeId + '/documents'))
       .then(r => documentId = r.body[0].documentId)
       .then(r => cloud.get(`${test.api}/${envelopeId}/documents/${documentId}`));
   });
