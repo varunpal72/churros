@@ -37,7 +37,7 @@ suite.forElement('helpdesk', 'incidents', { payload: incidentPayload }, (test) =
       .then(r => cloud.get(`${test.api}/${incidentId}/attachments`))
       .then(r => cloud.withOptions({
         qs: { fileName: "Test.pdf" },
-        formData: { file: fs.createReadStream(__dirname + '/assets/Test.pdf') }
+        formData: { file: fs.createReadStream(__dirname + '/assets/updatedAttachment.txt') }
       }).put(`${test.api}/${incidentId}/attachments`, undefined))
       .then(r => cloud.get(`${test.api}/${incidentId}/attachments`))
       .then(r => attachmentId = r.body[0].id)
