@@ -2,6 +2,7 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const fs = require('fs');
 const payload = require('./assets/incidents');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
@@ -26,6 +27,11 @@ suite.forElement('helpdesk', 'incidents', { payload: incidentPayload }, (test) =
       .then(r => cloud.withOptions({ qs: { where: 'priority = 1' } }).get(test.api))
       .then(r => cloud.patch(`${test.api}/${incidentId}`, updatePayload))
       .then(r => cloud.withOptions({ qs: query }).postFile(`${test.api}/${incidentId}/attachments`, __dirname + '/assets/attach.txt'))
+      .then(r => cloud.get(`${test.api}/${incidentId}/attachments`))
+      .then(r => cloud.withOptions({
+        qs: { fileName: "Test.pdf" },
+        formData: { file: fs.createReadStream(__dirname + '/assets/Test.pdf') }
+      }).put(`${test.api}/${incidentId}/attachments`, undefined))
       .then(r => cloud.get(`${test.api}/${incidentId}/attachments`))
       .then(r => attachmentId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${incidentId}/attachments/${attachmentId}`))
