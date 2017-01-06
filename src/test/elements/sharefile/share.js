@@ -1,6 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
+const tools = require('core/tools');
 const sharepayload = {
   "ShareType": "Send",
   "Title": "Sample Send Share",
@@ -12,6 +13,9 @@ const sharepayload = {
   "UsesStreamIDs": false
 };
 const folderpayload = require('./assets/folder');
+let randomStr = tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10);
+folderpayload.path += randomStr;
+folderpayload.name += randomStr;
 const cloud = require('core/cloud');
 suite.forElement('documents', 'share', (test) => {
   it('Testing share creating/getting', () => {
