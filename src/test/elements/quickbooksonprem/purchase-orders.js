@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/purchase-orders');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 const updatePayload ={ "TotalAmount": "5000.00" };
 
