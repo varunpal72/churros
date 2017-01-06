@@ -7,7 +7,7 @@ const cloud = require('core/cloud');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const articlesPayload = build({ UrlName: tools.random() });
 suite.forElement('helpdesk', 'resources/articles', { payload: articlesPayload }, (test) => {
-  it('should allow CRUDS /hubs/helpdesk/resources/articles and GET /query ', () => {
+  it('should allow CRUDS /hubs/helpdesk/resources/articles and CEQL search and pagination', () => {
     let articleId;
     let statusPayload = {
       "PublishStatus": "Draft"

@@ -1,0 +1,9 @@
+{
+  "resources-categories": {
+    "vendorName": "resources/categories",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
+  }
+}

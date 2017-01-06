@@ -898,5 +898,11 @@
       "path": "id",
       "type": "string"
     }]
+  },
+  "resources-categories": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
