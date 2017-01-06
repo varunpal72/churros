@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/payroll-wage-items');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'payroll-wage-items', { payload: payload}, (test) => {

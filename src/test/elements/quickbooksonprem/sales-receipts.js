@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/sales-receipts');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 const updatePayload ={ "RefNumber": "shortString" };
 

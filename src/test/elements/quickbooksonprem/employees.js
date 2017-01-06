@@ -2,9 +2,8 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/employees');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
-const updatePayload ={"FirstName": "shortName" }
+const updatePayload ={"FirstName": "shortName" };
 
 suite.forElement('finance', 'employees', { payload: payload}, (test) => {
     it('should support CRUDS,Pagination and CeqlSearch for /hubs/finance/employees ', () => {
