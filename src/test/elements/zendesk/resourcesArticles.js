@@ -6,7 +6,7 @@ const incidentsPayload = require('./assets/incidents');
 const articlesPayload = require('./assets/articles');
 
 suite.forElement('helpdesk', 'resources', { payload: incidentsPayload }, (test) => {
-  it('Should read delete update resource articles', () => {
+  it('should support Srud for /hubs/helpdesk/resources/articles and CEQL search', () => {
     let articleId;
     return cloud.withOptions({ qs: { where: `title='abc'` } }).get(`${test.api}/articles`)
       .then(r => articleId = r.body[0].id)

@@ -9,7 +9,7 @@ const sectionsPayload = require('./assets/sections');
 suite.forElement('helpdesk', 'resources/categories', { payload: categoryPayload }, (test) => {
   const build = (overrides) => Object.assign({}, categoryPayload, overrides);
   const payload = build({ body: tools.random() });
-  it('Should update read and delete categories sections', () => {
+  it('should support CRUDS for /hubs/helpdesk/resources/categories/:id/sections', () => {
     let categoryId, sectionId;
     return cloud.post(test.api, payload)
       .then(r => categoryId = r.body.id)
