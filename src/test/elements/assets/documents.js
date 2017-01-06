@@ -65,8 +65,8 @@ exports.files = () => {
     });
 
     it('should allow POST /files/copy and POST /files/:id/copy', () => {
-      const copy1 = { path: '/churrosCopy1' };
-      const copy2 = { path: '/churrosCopy2' };
+      const copy1 = { path: '/churrosCopy1' + tools.random() };
+      const copy2 = { path: '/churrosCopy2' + tools.random() };
 
       const cb = (file) => {
         let fileCopy1, fileCopy2;
