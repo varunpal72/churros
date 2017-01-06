@@ -2,8 +2,7 @@
   "ClassRef": {
     "ListID": "60001-1019495266"
   },
-  "InvoiceLineRet": [
-    {
+  "InvoiceLineRet": [{
       "Desc": "Blueprints (by hour)",
       "ClassRef": {
         "ListID": "60001-1019495266"
@@ -11,9 +10,9 @@
       "Rate": "100.00",
       "Amount": "1000.00",
       "Quantity": "10",
-	  "ItemRef": {
-          "ListID": "670004-1044572237" 
-        }
+      "ItemRef": {
+        "ListID": "670004-1044572237"
+      }
     },
     {
       "Desc": "Microwave - Appliance",
@@ -24,7 +23,7 @@
       "Amount": "222.00",
       "Quantity": "1",
       "ItemRef": {
-          "ListID": "670004-1044572237" 
+        "ListID": "670004-1044572237"
       }
     },
     {
@@ -35,8 +34,8 @@
       "Rate": "58.74",
       "Amount": "58.74",
       "Quantity": "1",
-	   "ItemRef": {
-          "ListID": "670004-1044572237" 
+      "ItemRef": {
+        "ListID": "670004-1044572237"
       }
     }
   ],
@@ -57,15 +56,15 @@
     "City": "San Mateo"
   },
   "TermsRef": {
-      "ListID": "20000-898307885"
-    },
+    "ListID": "20000-898307885"
+  },
   "IsToBePrinted": "false",
   "RefNumber": "99912",
   "ARAccountRef": {
-  "ListID": "50001-896816252"
+    "ListID": "50001-896816252"
   },
   "CustomerRef": {
-   "ListID": "440001-1044573108"
+    "ListID": "440001-1044573108"
   },
   "TemplateRef": {
     "ListID": "10000-896814306"
