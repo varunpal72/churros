@@ -253,10 +253,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('idBtn_Accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
-     case 'onedrive':
+    case 'onedrive':
       browser.get(r.body.oauthUrl);
-      browser.sleep(3000);
-      browser.findElement(webdriver.By.id('i0116')).sendKeys(username);  
+      browser.isElementPresent(webdriver.By.id('i0116'));
+      browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
       browser.sleep(3000);
       browser.findElement(webdriver.By.id('idSIButton9')).click();
       browser.sleep(3000);

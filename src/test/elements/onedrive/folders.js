@@ -4,8 +4,6 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const folderPayload = require('./assets/folders');
-//const build = (overrides) => Object.assign({}, payload, overrides);
-//const folderPayload = build({ name: `churros-${tools.random()}`, path: `/${tools.random()}` });
 
 suite.forElement('documents', 'folders', (test) => {
 
@@ -48,16 +46,16 @@ suite.forElement('documents', 'folders', (test) => {
     const cb = (folder) => {
       let updatedFolder;
       let folderTemp = {
-        path: folder.path+"22tt"
+        path: folder.path + "22tt"
       };
       return cloud.withOptions({ qs: { path: folder.path } }).get('/hubs/documents/folders/metadata')
         .then(r => cloud.withOptions({ qs: { path: folder.path } }).patch('/hubs/documents/folders/metadata', folderTemp))
         .then(r => updatedFolder = r.body)
         .then(r => cloud.get(`/hubs/documents/folders/${updatedFolder.id}/metadata`))
         .then(r => cloud.patch(`/hubs/documents/folders/${updatedFolder.id}/metadata`, folder));
-    
+
     };
 
     return folderWrap(cb);
-  });  
+  });
 });
