@@ -2,9 +2,6 @@
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const suite = require('core/suite');
-const logger = require('winston');
-
-const folderPayload = require('../assets/folders');
 
 suite.forElement('documents', 'files', (test) => {
 
