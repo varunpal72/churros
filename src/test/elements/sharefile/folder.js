@@ -7,11 +7,15 @@ const tools = require('core/tools');
 const rootFolder = '/My Files & Folders';
 suite.forElement('documents', 'folders', (test) => {
 
+let randomStr = tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10);
+payload.name += randomStr;
+payload.path += randomStr;
+
   it('Testing folder creating/updating/deleting', () => {
     let folderId;
     let copyPath;
-    let folderpath = rootFolder + `/churros-${tools.random()}`;
-    let metadataChange = folderpath + '/' + tools.random();
+    let folderpath = rootFolder + `/churros-${randomStr}`;
+    let metadataChange = folderpath + `/${randomStr}`;
 
     return cloud.post('/hubs/documents/folders', payload)
       .then(r => folderId = r.body.id)
