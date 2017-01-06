@@ -10,7 +10,7 @@ suite.forElement('general', 'forms', { payload: payload }, (test) => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.get(`${test.api}/${r.body[0].Hash}`));
   });
-  it(`should allow GET for /hubs/general/forms/{id}/comments`, () => {
+  it(`should allow GET, Pagination and CEQL search for /hubs/general/forms/{id}/comments`, () => {
     let formId;
     return cloud.get(`${test.api}`)
       .then(r => formId = r.body[0].Hash)
@@ -22,7 +22,7 @@ suite.forElement('general', 'forms', { payload: payload }, (test) => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/comments-count`));
   });
-  it(`should allow GET for /hubs/general/forms/{id}/entries`, () => {
+  it(`should allow GET, Pagination and CEQL search for /hubs/general/forms/{id}/entries`, () => {
     let formId;
     return cloud.get(`${test.api}`)
       .then(r => formId = r.body[0].Hash)
@@ -34,7 +34,7 @@ suite.forElement('general', 'forms', { payload: payload }, (test) => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/entries-count`));
   });
-  it(`should allow GET for /hubs/general/forms/{id}/fields`, () => {
+  it(`should allow GET and Pagination for /hubs/general/forms/{id}/fields`, () => {
     let formId;
     return cloud.get(`${test.api}`)
       .then(r => formId = r.body[0].Hash)
