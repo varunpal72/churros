@@ -40,7 +40,6 @@ const userPayload = {
 suite.forElement('conferencing', 'meetings', { payload: payload }, (test) => {
   let webinarKey;
   it('should allow CRUDS for /hubs/conferencing/meetings and then GET for /meetings/times,/meetings/upcoming and /meetings/history by meetingId', () => {
-    let updatePayload = { "subject": 'updatedMeeting', "description": 'Churros meeting has been updated' };
     return cloud.post(test.api, payload)
       .then(r => webinarKey = r.body.id)
       .then(r => cloud.get(`${test.api}/${webinarKey}`))
@@ -54,7 +53,8 @@ suite.forElement('conferencing', 'meetings', { payload: payload }, (test) => {
   });
 
   it('should allow GET for /hubs/conferencing/sessions and then GET for /hubs/conferencing/meetings/:id/sessions/:sessionId/attendees', () => {
-    let sessionKey, attendeeKey;
+    let sessionKey;
+    // let attendeeKey;
     return cloud.withOptions({ qs: { where: 'fromTime=\'2000-11-03T14:00:00Z\' AND toTime=\'2020-11-03T14:00:00Z\'' } }).get(`/hubs/conferencing/sessions`)
       .then(r => webinarKey = r.body[0].webinarKey)
       .then(r => cloud.get(`${test.api}/${webinarKey}/sessions`))
