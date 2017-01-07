@@ -39,28 +39,30 @@ const userPayload = {
 
 suite.forElement('conferencing', 'meetings', { payload: payload }, (test) => {
   let webinarKey;
-  it('should allow CRUDS for /hubs/conferencing/meetings and then GET for meetingTimes,upcomingWebinars and historicalWebinars by meetingId', () => {
+  it('should allow CRUDS for /hubs/conferencing/meetings and then GET for /meetings/times,/meetings/upcoming and /meetings/history by meetingId', () => {
     return cloud.post(test.api, payload)
       .then(r => webinarKey = r.body.id)
       .then(r => cloud.get(`${test.api}/${webinarKey}`))
-      .then(r => cloud.put(`${test.api}/${webinarKey}`, meetingsPayload))
+      .then(r => cloud.patch(`${test.api}/${webinarKey}`, meetingsPayload))
       .then(r => cloud.get(test.api))
-      .then(r => cloud.get(`${test.api}/${webinarKey}/meetingTimes`))
-      .then(r => cloud.get(`${test.api}/upcomingWebinars`))
-      .then(r => cloud.withOptions({ qs: { fromTime: '2016-11-03T14:00:00Z', toTime: '2016-11-03T14:00:00Z' } }).get(`${test.api}/historicalWebinars`))
+      .then(r => cloud.get(`${test.api}/${webinarKey}/times`))
+      .then(r => cloud.get(`${test.api}/upcoming`))
+      .then(r => cloud.withOptions({ qs: { where: 'fromTime=\'2000-11-03T14:00:00Z\' AND toTime=\'2020-11-03T14:00:00Z\'' } }).get(`${test.api}/history`))
+      .then(r => cloud.withOptions({ qs: { where: 'fromTime=\'2000-11-03T14:00:00Z\' AND toTime=\'2020-11-03T14:00:00Z\'' } }).get(test.api))
       .then(r => cloud.delete(`${test.api}/${webinarKey}`));
   });
 
-  it('should allow GET for /hubs/conferencing/sessions and then GET for /hubs/conferencing/meetings/:id/sessions/:sessionId/attendess', () => {
-    let sessionKey,attendeeKey;
-    return cloud.withOptions({ qs: { fromTime: '2000-11-03T14:00:00Z', toTime: '2020-11-03T14:00:00Z' } }).get(`/hubs/conferencing/sessions`)
+  it('should allow GET for /hubs/conferencing/sessions and then GET for /hubs/conferencing/meetings/:id/sessions/:sessionId/attendees', () => {
+    let sessionKey;
+    // let attendeeKey;
+    return cloud.withOptions({ qs: { where: 'fromTime=\'2000-11-03T14:00:00Z\' AND toTime=\'2020-11-03T14:00:00Z\'' } }).get(`/hubs/conferencing/sessions`)
       .then(r => webinarKey = r.body[0].webinarKey)
       .then(r => cloud.get(`${test.api}/${webinarKey}/sessions`))
       .then(r => sessionKey = r.body[0].sessionKey)
       .then(r => cloud.get(`${test.api}/${webinarKey}/session/${sessionKey}`))
-      .then(r => cloud.get(`${test.api}/${webinarKey}/session/${sessionKey}/attendees`))
-      .then(r => attendeeKey = r.body[0].registrantKey)
-      .then(r => cloud.get(`${test.api}/${webinarKey}/session/${sessionKey}/attendees/${attendeeKey}`));
+      .then(r => cloud.get(`${test.api}/${webinarKey}/session/${sessionKey}/attendees`)); //commenting as there isn't antendees for a newly created meeting
+      // .then(r => attendeeKey = r.body[0].registrantKey)
+      // .then(r => cloud.get(`${test.api}/${webinarKey}/session/${sessionKey}/attendees/${attendeeKey}`));
   });
 
   it('should allow CRD for /hubs/conferencing/meetings/:id/co-organizers', () => {
