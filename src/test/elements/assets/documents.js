@@ -15,7 +15,7 @@ exports.files = () => {
   suite.forElement('documents', 'files', (test) => {
 
     let path = __dirname + '/brady.jpg';
-    let query = { path: `/brady-${tools.random()}.jpg` };
+    let query = { path: `/brady-${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}.jpg` };
 
     const fileWrap = (cb) => {
       let file;
@@ -65,8 +65,8 @@ exports.files = () => {
     });
 
     it('should allow POST /files/copy and POST /files/:id/copy', () => {
-      const copy1 = { path: '/churrosCopy1' };
-      const copy2 = { path: '/churrosCopy2' };
+      const copy1 = { path: '/churrosCopy1' + tools.random() };
+      const copy2 = { path: '/churrosCopy2' + tools.random() };
 
       const cb = (file) => {
         let fileCopy1, fileCopy2;
@@ -100,7 +100,7 @@ exports.folders = (test) => {
 
     const folderWrap = (cb) => {
       let folder;
-      let random = `${tools.random()}`;
+      let random = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
       folderPayload.path += `-${random}`;
       folderPayload.name += `-${random}`;
       return cloud.post('/hubs/documents/folders', folderPayload)
@@ -147,8 +147,8 @@ exports.folders = (test) => {
 
     it('should allow POST /folders/copy and POST /folders/:id/copy', () => {
 
-      const copy1 = { path: '/churrosCopy1' };
-      const copy2 = { path: '/churrosCopy2' };
+      const copy1 = { path: `/churrosCopy1${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}` };
+      const copy2 = { path: `/churrosCopy2${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}` };
 
       const cb = (folder) => {
         let folderCopy1, folderCopy2;

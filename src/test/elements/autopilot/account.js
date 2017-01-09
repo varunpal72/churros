@@ -2,6 +2,6 @@
 
 const suite = require('core/suite');
 
-suite.forElement('marketing', 'account', null, (test) => {
+suite.forElement('marketing', 'account', { skip: true }, (test) => {
   test.should.return200OnGet();
 });

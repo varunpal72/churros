@@ -1,16 +1,13 @@
 'use strict';
 
 const provisioner = require('core/provisioner');
-const cleaner = require('core/cleaner');
 const common = require('./assets/common');
 const logger = require('winston');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const fSchema = require('./assets/schemas/formula.schema');
-const fiSchema = require('./assets/schemas/formula.instance.schema');
-const tools = require('core/tools');
 const expect = require('chakram').expect;
 const moment = require('moment');
+const tools = require('core/tools');
 const fs = require('fs');
 const props = require('core/props');
 
@@ -92,58 +89,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
   });
 
-  /**
-   * The default validator which applies to *every* single formula instance execution
-   */
-  const defaultValidator = (executions, numEs, numSes, executionStatus) => {
-    logger.debug('Validating executions with default validator');
-    expect(executions).to.have.length(numEs);
-    executions.map(e => {
-      const eStatus = (executionStatus || 'success');
-      expect(e.status).to.equal(eStatus);
-
-      logger.debug('Validating step executions with default validator');
-      expect(e.stepExecutions).to.have.length(numSes);
-      e.stepExecutions.map(se => {
-        expect(se).to.have.property('status');
-
-        logger.debug('Validating step execution values with default validator');
-        if (se.stepName === 'trigger') expect(se).to.have.property('status').and.equal('success');
-      });
-    });
-  };
-
-  /**
-   * The test wrapper to wrap them all ...
-   */
-  const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, validator, executionStatus) => {
-    const validatorWrapper = (executions) => {
-      defaultValidator(executions, numEs, numSes, executionStatus);
-      if (typeof validator === 'function') validator(executions);
-      return executions;
-    };
-
-    const fetchAndValidateExecutions = (fiId) => () => new Promise((res, rej) => {
-      return common.getFormulaInstanceExecutions(fiId)
-      .then(r => Promise.all(r.body.map(fie => common.getFormulaInstanceExecutionWithSteps(fie.id))))
-      .then(executions => validatorWrapper(executions))
-      .then (v => res(v))
-      .catch(e => rej(e));
-    });
-
+  const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
     if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
-
-    let fId, fiId;
-    return cleaner.formulas.withName(f.name)
-      .then(() => cloud.post(test.api, f, fSchema))
-      .then(r => fId = r.body.id)
-      .then(() => cloud.post(`/formulas/${fId}/instances`, fi, fiSchema))
-      .then(r => fiId = r.body.id)
-      .then(() => kickOffDatFormulaCb(fId, fiId))
-      .then(() => tools.wait.upTo(90000).for(common.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
-      .then(() => tools.wait.upTo(10000).for(fetchAndValidateExecutions(fiId)))
-      .then(() => common.deleteFormulaInstance(fId, fiId))
-      .then(() => common.deleteFormula(fId));
+    return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
   };
 
   /**
@@ -210,12 +158,12 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   /**
    * Handles the basic formula execution test for a formula that has a manual trigger type
    */
-  const manualTriggerTest = (fName, configuration, numSevs, validator, executionStatus) => {
+  const manualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus) => {
     const f = require(`./assets/formulas/${fName}`);
     let fi = { name: 'churros-manual-formula-instance' };
 
     if (configuration) {
-        fi.configuration = configuration;
+      fi.configuration = configuration;
     }
 
     const validatorWrapper = (executions) => {
@@ -230,7 +178,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       if (typeof validator === 'function') validator(executions);
     };
 
-    const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, { foo: 'bar' });
+    const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
     const numSes = f.steps.length + 1; // steps + trigger
     return testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
   };
@@ -424,10 +372,22 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const configuration = {
-        "http.request.url": props.get('url') + "/elements/api-v2/elements/sfdc"
+      "http.request.url": props.get('url') + "/elements/api-v2/elements/sfdc"
     };
 
-    return manualTriggerTest('http-request-successful-formula', configuration, 3, validator);
+    return manualTriggerTest('http-request-successful-formula', configuration, { foo: 'bar' }, 3, validator);
+  });
+
+  it('should successfully execute a simple retry execution formula triggered manually', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        expect(e.status).to.equal('retry');
+        e.stepExecutions.filter(se => se.stepName === 'retry-execution').map(validateSuccessfulStepExecution);
+        cloud.delete(`/formulas/instances/executions/${e.id}/retries`);
+      });
+    };
+
+    return manualTriggerTest('simple-retry-execution-formula', null, {}, 2, validator, 'retry');
   });
 
   it('should successfully execute an element request formula with a configured api field', () => {
@@ -439,11 +399,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const configuration = {
-        "trigger-instance": sfdcId,
-        "resource.name": "contacts"
+      "trigger-instance": sfdcId,
+      "resource.name": "contacts"
     };
 
-    return manualTriggerTest('element-request-with-configured-api-successful-formula', configuration, 7, validator);
+    return manualTriggerTest('element-request-with-configured-api-successful-formula', configuration, { foo: 'bar' }, 7, validator);
   });
 
   it('should successfully execute a large payload formula triggered by a single event', () => {
@@ -507,7 +467,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         });
       });
     };
-    return manualTriggerTest('manual-trigger', null, 2, validator);
+    return manualTriggerTest('manual-trigger', null, { foo: 'bar' }, 2, validator);
   });
 
   it('should retry a request step when the retry property is set to true', () => {
@@ -568,11 +528,53 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const eventBody = {
       message: {
         instance_id: sfdcId,
-        events: [ event ]
+        events: [event]
       }
     };
 
     let triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, eventBody);
     return eventTriggerTest('simple-successful-formula', 1, 2, null, 'success', null, null, triggerCb);
+  });
+
+
+  it('should successfully execute a elementRequestStream step in a formula', () => {
+    const configuration = { source: sfdcId, target: sfdcId, 'object.name': 'contacts' };
+    const validator = (executions) => {
+      const bulkTransferStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'bulkTransfer');
+      const bulkTransferStepExecutionValues = bulkTransferStepExecutions[0].stepExecutionValues;
+
+      bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.download.request.headers').map(sev => {
+        const sevJSON = JSON.parse(sev.value);
+        expect(sevJSON.ElementsTestHeader).to.equal('source');
+        expect(sevJSON['Elements-Formula-Step']).to.equal('bulkTransfer');
+      });
+      bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.download.request.query').map(sev => {
+        const sevJSON = JSON.parse(sev.value);
+        expect(sevJSON.ElemetsTestQuery).to.equal('source');
+      });
+      bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.upload.request.body').map(sev => {
+        const sevJSON = JSON.parse(sev.value);
+        expect(sevJSON.testMetadata).to.equal('true');
+      });
+      bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.upload.response.body').map(sev => {
+        const sevJSON = JSON.parse(sev.value);
+        expect(sevJSON.status).to.equal('CREATED');
+      });
+    };
+
+    let bulkId, contactId;
+
+    return cloud.post('/hubs/crm/contacts', { LastName: 'Churros' })
+      .then(r => contactId = r.body.Id)
+      .then(r => cloud.withOptions({ qs: { q: `select FirstName, LastName from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
+      .then(r => {
+        expect(r.body.status).to.equal('CREATED');
+        bulkId = r.body.id;
+      })
+      .then(r => tools.wait.upTo(10000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED');
+      })))
+      .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator))
+      .then(r => cloud.delete(`/hubs/crm/contacts/${contactId}`));
   });
 });

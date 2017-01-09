@@ -3,6 +3,6 @@
 const suite = require('core/suite');
 const activities = require('./assets/activities');
 
-suite.forElement('crm', 'activities', { payload: activities }, (test) => {
+suite.forElement('crm', 'activities', { payload: activities, skip: true }, (test) => {
   test.should.supportCruds();
 });

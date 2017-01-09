@@ -1,0 +1,34 @@
+{
+    "name": "simple-error",
+    "steps": [
+        {
+            "onSuccess": [],
+            "onFailure": [],
+            "name": "simple-script",
+            "type": "script",
+            "properties": {
+                "body": "if (trigger.args.foo === 'bar') { throw('error'); } done({});"
+            }
+        },
+        {
+            "onSuccess": [],
+            "onFailure": ["simple-script"],
+            "name": "filter",
+            "type": "filter",
+            "properties": {
+                "body": "done(false);"
+            }
+        }
+
+    ],
+    "triggers": [
+        {
+            "type": "manual",
+            "async": true,
+            "onSuccess": ["filter"],
+            "onFailure": []
+        }
+    ],
+    "active": true,
+    "singleThreaded": false
+}

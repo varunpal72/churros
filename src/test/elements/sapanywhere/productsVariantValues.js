@@ -6,7 +6,7 @@ const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const variantValuesPayload = build({ value: tools.random(), code: tools.random(), displayOrder: tools.randomInt() });
 
-suite.forElement('ecommerce', 'products/variant-values', { payload: variantValuesPayload }, (test) => {
+suite.forElement('ecommerce', 'products/variant-values', { payload: variantValuesPayload, skip: true }, (test) => {
   const options = {
     churros: {
       updatePayload: {

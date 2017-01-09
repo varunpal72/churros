@@ -2,6 +2,7 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/contacts');
+const tools = require('core/tools');
 
 const options = {
   churros: {
@@ -14,6 +15,8 @@ const options = {
     }
   }
 };
+
+payload.email = tools.randomEmail();
 
 suite.forElement('helpdesk', 'contacts', { payload }, (test) => {
   test.should.supportPagination();

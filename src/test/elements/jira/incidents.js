@@ -15,7 +15,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete('/hubs/helpdesk/incidents/' + incidentId));
   });
 
-  it('should allow CRUDS for /incidents/:id/attachments', () => {
+  it('should allow CRUDS for /incidents/:id/attachments and RD for /attachments', () => {
     let query = { fileName: "testfile.txt" };
     let incidentId, attachmentId;
     return cloud.post('/hubs/helpdesk/incidents', payload)
@@ -28,5 +28,6 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete(test.api + '/' + incidentId));
   });
   test.should.supportCruds();
+  test.should.supportPagination();
   test.should.supportCeqlSearch('id');
 });

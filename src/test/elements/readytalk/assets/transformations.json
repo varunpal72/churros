@@ -1,0 +1,9 @@
+{
+  "meetings": {
+    "vendorName": "meetings",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  }
+}

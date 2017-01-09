@@ -38,7 +38,7 @@ suite.forPlatform('event processing', (test) => {
       .then(r => provisioner.delete(instanceId));
   });
 
-  it('should handle GET /events/{key} with headers and parameters', () => {
+  it.skip('should handle GET /events/{key} with headers and parameters', () => {
     // this is zendesk
     let instanceId, targetId;
     return provisioner.create('zendesk', gen({}, props.getForKey('events', 'url')))

@@ -32,10 +32,28 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => cloud.delete(`/formulas/${formulaId}`));
   });
 
+  it('should not allow creating a formula with an elementRequest step that calls a bulk download API', () => {
+    let formulaId;
+    const f = common.genFormula({});
+    f.steps = [{
+      "name": "bulk-download",
+      "type": "elementRequest",
+      "properties": {
+        "elementInstanceId": "${sfdc}",
+        "api": "/hubs/crm/bulk/123/contacts",
+        "method": "GET"
+      }
+    }];
+    return cloud.post(test.api, f, (r) => {
+      expect(r).to.have.statusCode(400);
+      cloud.delete(`${test.api}/${formulaId}`);
+    });
+  });
+
   it('should not allow an invalid cron for a "scheduled" trigger', () => {
     let formulaId;
     const f = common.genFormula({});
-    const t = common.genTrigger({ properties: { cron: '0 0/14 * 1/1 * ? *' } });
+    const t = common.genTrigger({ properties: { cron: '0/30 * * 1/1 * ? *' } });
     return cloud.post(test.api, f, schema)
       .then(r => formulaId = r.body.id)
       .then(r => cloud.post(`${test.api}/${formulaId}/triggers`, t, (r) => expect(r).to.have.statusCode(400)))
