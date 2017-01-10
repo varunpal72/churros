@@ -910,5 +910,34 @@
       "path": "id",
       "type": "string"
     }]
+  },
+ "memberships": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  }, 
+"rooms": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  }, "teams": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+"messages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+"people": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }

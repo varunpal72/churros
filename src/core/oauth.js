@@ -19,6 +19,21 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
       return browser.getCurrentUrl();
+ case 'ciscospark':
+      browser.get(r.body.oauthUrl);
+      browser.isElementPresent(webdriver.By.id('IDToken1'));
+      browser.findElement(webdriver.By.id('IDToken1')).sendKeys(username);
+      browser.findElement(webdriver.By.id('IDButton2')).click();
+      browser.sleep(3000);
+      browser.findElement(webdriver.By.id('IDToken2')).sendKeys(password);
+      browser.sleep(3000);
+      browser.findElement(webdriver.By.id('Button1')).click();
+      browser.sleep(3000);
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('accept')), 3000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.name('accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'base':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('user_email')).sendKeys(username);

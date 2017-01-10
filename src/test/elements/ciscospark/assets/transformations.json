@@ -1,0 +1,47 @@
+{
+  "memberships": {
+    "vendorName": "memberships",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+"rooms": {
+    "vendorName": "rooms",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+"teams": {
+    "vendorName": "teams",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+"people": {
+    "vendorName": "people",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
+"messages": {
+    "vendorName": "messages",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}
