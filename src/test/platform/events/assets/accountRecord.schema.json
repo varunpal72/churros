@@ -4,9 +4,9 @@
     "count": {
       "type": "integer"
     },
-    "instanceId": {
+    "accountId": {
       "type": "integer"
     }
   },
-  "required": ["count", "instanceId"]
+  "required": ["count", "accountId"]
 }
