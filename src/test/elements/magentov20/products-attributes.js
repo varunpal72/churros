@@ -37,18 +37,13 @@ const productsAttributes = () => ({
   }
 });
 
-suite.forElement('ecommerce', 'products-attributes', (test) => {
-  it(`should allow CRDS for ${test.api}`, () => {
-    let attributeCode;
-    return cloud.get(`${test.api}`)
-    .then(r => attributeCode = r.body[0].attribute_code)
-    .then(r => cloud.crds(`${test.api}`, productsAttributes(attributeCode)));
-  });
+suite.forElement('ecommerce', 'products-attributes', { payload: productsAttributes() },  (test) => {
+  test.should.supportCrds();
   test.withApi(`/hubs/ecommerce/products-attributes-types`).should.return200OnGet();
   it(`should allow SR for ${test.api}/{attributeCode}/options`, () => {
     let attributeCode;
-    return cloud.get(`${test.api}`)
-    .then(r => attributeCode = r.body[0].id)
+    return cloud.post(`${test.api}`, productsAttributes())
+    .then(r => attributeCode = r.body.id)
     .then(r => cloud.get(`${test.api}/${attributeCode}/options`))
     .then(r => cloud.delete(`${test.api}/${attributeCode}`));
   });

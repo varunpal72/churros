@@ -8,7 +8,7 @@ suite.forElement('ecommerce', 'orders', null, (test) => {
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'created_at=\'2013-04-23 23:27:45\'' } }).should.return200OnGet();
   test.withOptions({ qs: { where: 'created_at>=\'2013-04-23 23:27:45\'', pageSize: 5, page: 1 } }).should.return200OnGet();
-  it('should support hold & unholding an order', () => {
+  it.skip('should support hold & unholding an order', () => {
     let orderId = -1;
     const options = { qs: { where: 'status=\'pending\'' } };
     return cloud.withOptions(options).get(test.api)
