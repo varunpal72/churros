@@ -1,0 +1,16 @@
+{
+  "employees": {
+    "vendorName": "Employee",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "payroll-items": {
+    "vendorName": "PayrollItem",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  }
+}
