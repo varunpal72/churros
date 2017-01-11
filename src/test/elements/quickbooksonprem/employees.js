@@ -3,10 +3,10 @@
 const suite = require('core/suite');
 const payload = require('./assets/employees');
 const cloud = require('core/cloud');
-const updatePayload ={"FirstName": "shortName" };
+const updatePayload = { "FirstName": "shortName" };
 
-suite.forElement('finance', 'employees', { payload: payload}, (test) => {
-    it('should support CRUDS,Pagination and CeqlSearch for /hubs/finance/employees ', () => {
+suite.forElement('finance', 'employees', { payload: payload }, (test) => {
+  it('should support CRUDS, pagination and Ceql search for /hubs/finance/employees', () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => id = r.body.ListID)
@@ -16,6 +16,6 @@ suite.forElement('finance', 'employees', { payload: payload}, (test) => {
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => updatePayload.EditSequence = r.body.EditSequence)
       .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${id}`));      
+      .then(r => cloud.delete(`${test.api}/${id}`));
   });
 });

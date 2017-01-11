@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'ledger-accounts', null , (test) => {
-    it('should support SR,Pagination and CeqlSearch for /hubs/finance/ledger-accounts ', () => {
+    it('should support SR, pagination and CeqlSearch for /hubs/finance/ledger-accounts', () => {
     let id;
     return cloud.get(test.api)
       .then(r => id = r.body[0].ListID)

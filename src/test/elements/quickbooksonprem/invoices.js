@@ -4,10 +4,10 @@ const suite = require('core/suite');
 const payload = require('./assets/invoices');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const updatePayload ={ "Memo": tools.random() };
+const updatePayload = { "Memo": tools.random() };
 
-suite.forElement('finance', 'invoices', { payload: payload}, (test) => {
-    it('should support CRUDS,Pagination for /hubs/finance/invoices ', () => {
+suite.forElement('finance', 'invoices', { payload: payload }, (test) => {
+  it('should support CRUDS, pagination for /hubs/finance/invoices', () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => id = r.body.TxnID)
@@ -17,6 +17,6 @@ suite.forElement('finance', 'invoices', { payload: payload}, (test) => {
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => updatePayload.EditSequence = r.body.EditSequence)
       .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${id}`));      
+      .then(r => cloud.delete(`${test.api}/${id}`));
   });
 });

@@ -3,10 +3,10 @@
 const suite = require('core/suite');
 const payload = require('./assets/sales-orders');
 const cloud = require('core/cloud');
-const updatePayload ={ "RefNumber": "shortString" };
+const updatePayload = { "RefNumber": "shortString" };
 
-suite.forElement('finance', 'sales-orders', { payload: payload}, (test) => {
-    it('should support CRUDS,Pagination for /hubs/finance/sales-orders ', () => {
+suite.forElement('finance', 'sales-orders', { payload: payload }, (test) => {
+  it('should support CRUDS, pagination for /hubs/finance/sales-orders', () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => id = r.body.TxnID)
@@ -16,6 +16,6 @@ suite.forElement('finance', 'sales-orders', { payload: payload}, (test) => {
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => updatePayload.EditSequence = r.body.EditSequence)
       .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${id}`));      
+      .then(r => cloud.delete(`${test.api}/${id}`));
   });
 });

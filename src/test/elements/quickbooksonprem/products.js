@@ -4,10 +4,10 @@ const suite = require('core/suite');
 const payload = require('./assets/products');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const updatePayload ={ "Name": tools.random(), "ItemType": "ItemInventory" };
+const updatePayload = { "Name": tools.random(), "ItemType": "ItemInventory" };
 
-suite.forElement('finance', 'products', { payload: payload}, (test) => {
-    it('should support CRUDS,Pagination for /hubs/finance/products ', () => {
+suite.forElement('finance', 'products', { payload: payload }, (test) => {
+  it('should support CRUDS, pagination for /hubs/finance/products', () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => id = r.body.ListID)
@@ -17,6 +17,6 @@ suite.forElement('finance', 'products', { payload: payload}, (test) => {
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => updatePayload.EditSequence = r.body.EditSequence)
       .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${id}`));      
+      .then(r => cloud.delete(`${test.api}/${id}`));
   });
 });
