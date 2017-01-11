@@ -11,7 +11,7 @@ const accountPayload = (randomName) => ({
   "category_id": 1
 });
 
-suite.forElement('sageaccounting', 'ledger-accounts', { payload: accountPayload(tools.random()) }, (test) => {
+suite.forElement('sageaccounting', 'ledger-accounts', { payload: accountPayload(tools.randomStr('abcdefghijklmnopqrstuvwxyz0123456789', 10)) }, (test) => {
   test.should.supportCrs();
   test.should.supportPagination();
 });
