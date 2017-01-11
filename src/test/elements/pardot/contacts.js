@@ -16,7 +16,7 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.get(`${test.api}/${contactId}/activities`))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${contactId}/activities`))
       .then(r => cloud.get('/hubs/marketing/activities'))
-      .then(r => cloud.get(`${test.api}/${r.body[2].prospect_id }/activities/${r.body[2].id}`))
+      .then(r => cloud.get(`${test.api}/${ r.body.filter(i => i.campaign.name === 'test camp update')[0].prospect_id }/activities/${r.body.filter(i => i.campaign.name === 'test camp update')[0].id}`))
       .then(r => cloud.get(`${test.api}/${contactId}/campaigns`))
       .then(r => cloud.get(`${test.api}/${contactId}/lists`));
   });
