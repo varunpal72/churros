@@ -161,11 +161,13 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
       // Get the execution analytics without from and to dates
       return cloud.get(`/formulas/analytics/accounts`)
       //.then(r => {console.log(r.body); return r;})
-      .then(r => expect(r.body).to.have.length(8) &&
+      .then(r => tools.wait.upTo(90000).for(() => {
+        const total = r.body.reduce((accum, curr) =>
+          accum + curr.records[0] ? (curr.records[0].success + curr.records[0].failed) : 0, 0);
+        return Promise.resolve(expect(r.body).to.have.length(8) &&
         r.body.map(s => expect(s).to.contain.all.keys(['records', 'total', 'timestamp'])) &&
-        r.body.map(s => expect(s.records[0] ? s.records[0].count : 0).to.equal(s.total)) &&
-        expect(r.body.reduce((accum, curr) => accum + curr.records[0] ? (curr.records[0].success + curr.records[0].failed) : 0, 0)).to.be.at.least(3)
-      )
+        expect(total).to.be.at.least(3));
+      }))
       // Get the execution analytics with from and to dates
       .then(() => {
         const from = new Date();
@@ -173,9 +175,11 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
         const to = new Date();
         return cloud.get(`/formulas/analytics/accounts?from=${from.toJSON()}&to=${to.toJSON()}&interval=minute`);
       })
-      .then(r => expect(r.body).to.have.length(61) &&
-        expect(r.body.reduce((accum, curr) => accum + curr.records[0] ? curr.records[0].success : 0, 0)).to.be.at.least(3) &&
-        r.body.map(s => expect(s).to.have.contain.keys(['records', 'total', 'timestamp'])));
+      .then(r =>
+        tools.wait.upTo(90000).for(() => Promise.resolve(expect(r.body).to.have.length(61) &&
+          expect(r.body.reduce((accum, curr) => accum + curr.records[0] ? curr.records[0].success : 0, 0)).to.be.at.least(3) &&
+            r.body.map(s => expect(s).to.have.contain.keys(['records', 'total', 'timestamp']))
+        )));
     };
 
     return testIt('manual-trigger', {}, 3, 2, execValidator, null, 'success', 1);
@@ -203,11 +207,13 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
       // Get the execution analytics without from and to dates
       return cloud.get(`/formulas/analytics/instances`)
       //.then(r => {console.log(r.body); return r;})
-      .then(r => expect(r.body).to.have.length(8) &&
+      .then(r => tools.wait.upTo(90000).for(() => {
+        const total = r.body.reduce((accum, curr) =>
+          accum + curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0, 0);
+        return Promise.resolve(expect(r.body).to.have.length(8) &&
         r.body.map(s => expect(s).to.contain.all.keys(['records', 'total', 'timestamp'])) &&
-        expect(r.body.reduce((accum, curr) =>
-          accum + curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0, 0)).to.be.at.least(3)
-      )
+        expect(total).to.be.at.least(3));
+      }))
       // Get the execution analytics with from and to dates
       .then(() => {
         const from = new Date();
@@ -215,11 +221,11 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
         const to = new Date();
         return cloud.get(`/formulas/analytics/instances?from=${from.toJSON()}&to=${to.toJSON()}&interval=minute`);
       })
-      .then(r => expect(r.body).to.have.length(61) &&
+      .then(r => tools.wait.upTo(90000).for(() => Promise.resolve(expect(r.body).to.have.length(61) &&
         r.body.map(s => expect(s).to.have.contain.keys(['records', 'total', 'timestamp'])) &&
         expect(r.body.reduce((accum, curr) =>
           accum + curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0, 0)).to.be.at.least(3)
-      );
+      )));
     };
 
     return testIt('manual-trigger', {}, 3, 2, execValidator, null, 'success', 1);
