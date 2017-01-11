@@ -164,6 +164,12 @@
       "type": "string"
     }]
   },
+  "credit-terms": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "dimensions": {
     "fields": [{
       "path": "id",
@@ -667,6 +673,12 @@
       "type": "string"
     }]
   },
+  "tax-codes": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "time-activities": {
     "fields": [{
       "path": "id",
@@ -852,6 +864,12 @@
       }
     ]
   },
+  "payroll-items": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "activity-events": {
     "fields": [{
         "path": "id",
@@ -862,5 +880,35 @@
         "type": "string"
       }
     ]
+  },
+  "Fairsail": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "bulky": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "company": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "invoiceitem": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "planview": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
