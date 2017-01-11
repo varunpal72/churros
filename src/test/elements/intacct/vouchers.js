@@ -24,16 +24,13 @@ const payload = (vendorId) => ({
   "currency": "USD",
   "exchratetype": "Intacct Daily Rate",
   "apadjustmentitems": {
-    "lineitem": [
-      {
-        "glaccountno": "2000",
-        "amount": "-94.63",
-        "memo": "History bill payment 100"
-      }
-    ]
+    "lineitem": [{
+      "glaccountno": "2000",
+      "amount": "-94.63",
+      "memo": "History bill payment 100"
+    }]
   }
-}
-);
+});
 
 const vendor = () => ({
   "vendorid": tools.randomStr("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz", 15),
@@ -155,10 +152,10 @@ suite.forElement('finance', 'vouchers', { payload: payload() }, (test) => {
   it(`should allow CRDS for ${test.api}`, () => {
     let vendorId;
     return cloud.post(`/hubs/finance/vendors`, vendor())
-    .then(r => vendorId = r.body.id)
-    .then(r => cloud.crds(test.api, payload(vendorId)))
-    .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
+      .then(r => vendorId = r.body.id)
+      .then(r => cloud.cruds(test.api, payload(vendorId)))
+      .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
+  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' }, skip: true }).should.return200OnGet();
 });
