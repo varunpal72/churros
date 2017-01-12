@@ -176,6 +176,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('submit_approve_access')).click();
       browser.sleep(2000);
       return browser.getCurrentUrl();
+    case 'gotowebinar':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.name('emailAddress')).sendKeys(username);
+      browser.findElement(webdriver.By.name('password')).sendKeys(password);
+      browser.findElement(webdriver.By.name('submit')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('allow')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.name('allow'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'hubspot':
     case 'hubspotcrm':
       browser.get(r.body.oauthUrl);
@@ -250,6 +260,20 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       browser.isElementPresent(webdriver.By.id('i0116'));
       browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.sleep(3000);
+      browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('idBtn_Accept')), 3000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('idBtn_Accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
+    case 'onedrive':
+      browser.get(r.body.oauthUrl);
+      browser.isElementPresent(webdriver.By.id('i0116'));
+      browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+      browser.sleep(3000);
       browser.findElement(webdriver.By.id('idSIButton9')).click();
       browser.sleep(3000);
       browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
