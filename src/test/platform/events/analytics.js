@@ -86,7 +86,7 @@ suite.forPlatform('events', { name: 'event analytics' }, (test) => {
               expect(r.body).to.have.length(61) &&
                 r.body.map(s => expect(s).to.have.contain.keys(['records', 'total', 'timestamp'])) &&
                 expect(r.body.reduce((accum, curr) =>
-                  accum + curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0, 0)).to.be.at.least(load)
+                  accum + (curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0), 0)).to.be.at.least(load)
             );
         }));
     });
@@ -133,7 +133,7 @@ suite.forPlatform('events', { name: 'event analytics' }, (test) => {
               expect(r.body).to.have.length(61) &&
                 r.body.map(s => expect(s).to.have.contain.keys(['records', 'total', 'timestamp'])) &&
                 expect(r.body.reduce((accum, curr) =>
-                  accum + curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0, 0)).to.be.at.least(load)
+                  accum + (curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0), 0)).to.be.at.least(load)
             );
         }));
     });

@@ -124,7 +124,7 @@ exports.testWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs,
         })
         .then(() => kickOffDatFormulaCb(fId, fiId))
         .then(() => tools.wait.upTo(90000).for(exports.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
-        .then(() => tools.wait.upTo(15000).for(fetchAndValidateExecutions(fId, fiId)));
+        .then(() => tools.wait.upTo(90000).for(fetchAndValidateExecutions(fId, fiId)));
     })))
     .then(() => tools.wait.upTo(10000).for(fetchAndValidateInstances(fId)))
     .then(() => Promise.all(fiIds.map(fiId => exports.deleteFormulaInstance(fId, fiId))))

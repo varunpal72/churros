@@ -208,11 +208,14 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
       return cloud.get(`/formulas/analytics/instances`)
       //.then(r => {console.log(r.body); return r;})
       .then(r => tools.wait.upTo(90000).for(() => {
-        const total = r.body.reduce((accum, curr) =>
-          accum + curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0, 0);
+        const countTotal = r.body.reduce((accum, curr) =>
+          accum + (curr.records[0] ? curr.records.reduce((a, c) => a + c.count, 0) : 0), 0);
+        const succFailTotal = r.body.reduce((accum, curr) =>
+          accum + (curr.records[0] ? curr.records.reduce((a, c) => a + c.success + c.failed, 0) : 0), 0);
         return Promise.resolve(expect(r.body).to.have.length(8) &&
-        r.body.map(s => expect(s).to.contain.all.keys(['records', 'total', 'timestamp'])) &&
-        expect(total).to.be.at.least(3));
+          r.body.map(s => expect(s).to.contain.all.keys(['records', 'total', 'timestamp'])) &&
+          expect(countTotal).to.be.at.least(3) &&
+          expect(succFailTotal).to.equal(countTotal));
       }))
       // Get the execution analytics with from and to dates
       .then(() => {
