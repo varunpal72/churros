@@ -11,7 +11,7 @@ const payload = (id) => ({
   "last_name": "Churro"
 });
 
-suite.forElement('finance', 'invoices', { payload: payload(), skip: true }, (test) => {
+suite.forElement('finance', 'invoices', { payload: payload() }, (test) => {
   it('should allow CRUDS for ' + test.api, () => {
     let customerId;
     return cloud.post('/hubs/finance/customers', { first_name: 'churros', last_name: 'tmp', email: 'random@churros.com' })
