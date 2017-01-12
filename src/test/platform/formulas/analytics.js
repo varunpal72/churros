@@ -177,7 +177,7 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
       })
       .then(r =>
         tools.wait.upTo(90000).for(() => Promise.resolve(expect(r.body).to.have.length(61) &&
-          expect(r.body.reduce((accum, curr) => accum + curr.records[0] ? curr.records[0].success : 0, 0)).to.be.at.least(3) &&
+          expect(r.body.reduce((accum, curr) => accum + (curr.records[0] ? curr.records[0].success : 0), 0)).to.be.at.least(3) &&
             r.body.map(s => expect(s).to.have.contain.keys(['records', 'total', 'timestamp']))
         )));
     };
