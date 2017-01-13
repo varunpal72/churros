@@ -106,6 +106,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
 
       return browser.getCurrentUrl();
+    case 'facebookleadads':
     case 'facebooksocial':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).clear();
