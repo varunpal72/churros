@@ -1,26 +1,45 @@
 {
-  "vendorRef": {
-    "value": "56",
-    "name": "Bob's Burger Joint"
-  },
-  "payType": "CHECK",
-  "checkPayment": {
-    "bankAccountRef": {
-      "value": "35",
-      "name": "Checking"
-    }
-  },
-  "totalAmt": 200.00,
-  "privateNote": "Acct. 1JK90",
-  "line": [
-    {
-      "amount": 200.00,
-      "linkedTxn": [
-        {
-          "txnId": "234",
-          "txnType": "Bill"
-        }
-      ]
-    }
-  ]
+	"checkPayment": {
+		"printStatus": "NEED_TO_PRINT",
+		"bankAccountRef": {
+			"name": "10100 Checking",
+			"value": "58"
+		}
+	},
+	"line": [{
+		"amount": 3459.2,
+		"linkedTxn": [{
+			"txnType": "Bill",
+			"txnId": "218"
+		}]
+	}, {
+		"amount": 810,
+		"linkedTxn": [{
+			"txnType": "Bill",
+			"txnId": "232"
+		}]
+
+	}, {
+		"amount": 210,
+		"linkedTxn": [{
+			"txnType": "Bill",
+			"txnId": "989"
+		}]
+	}],
+
+	"vendorRef": {
+		"name": "Patton Hardware Supplies",
+		"value": "11"
+	},
+
+	"payType": "CHECK",
+	"totalAmt": 4479.2,
+	"privateNote": "RC 93",
+
+	"currencyRef": {
+		"name": "United States Dollar",
+		"value": "USD"
+	},
+	"exchangeRate": 1,
+	"domain": "QBO"
 }

@@ -16,5 +16,5 @@ suite.forElement('finance', 'invoices', { payload: invoices, skip: false}, (test
   };
   test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
-  test.should.supportCeqlSearch('totalAmt');
+  test.withOptions({ qs: { where: 'totalAmt = \'1\'', page: 1, pageSize: 1 }}).should.return200OnGet();
 });

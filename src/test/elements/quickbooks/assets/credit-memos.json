@@ -1,20 +1,18 @@
 {
-    "line": [
-    {
-        "amount": 50,
-        "detailType": "SALES_ITEM_LINE_DETAIL",
-        "salesItemLineDetail":
-        {
-            "itemRef":
-            {
-                "value": "3",
-                "name": "Concrete"
-            }
-        }
-    }],
-    "customerRef":
-    {
-        "value": "3",
-        "name": "CoolCars"
-    }
+	"line": [{
+		"detailType": "SALES_ITEM_LINE_DETAIL",
+		"amount": 80,
+		"salesItemLineDetail": {
+
+			"itemRef": {
+				"name": "Deferred Revenue",
+				"value": "448"
+			}
+
+		}
+	}],
+	"customerRef": {
+		"name": "lg sam",
+		"value": "1924"
+	}
 }

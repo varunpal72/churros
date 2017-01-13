@@ -1,33 +1,69 @@
 {
-  "syncToken": "1",
-  "line": [
-    {
-      "amount": 80,
-      "linkedTxn": [
-        {
-          "txnType": "Invoice",
-          "txnId": "42"
-        }
-      ]
-    }
-  ],
-  "depositToAccountRef": {
-    "value": "4"
-  },
-  "linkedTxn": [
-
-  ],
-  "unappliedAmt": 0,
-  "totalAmt": 80,
-  "sparse": false,
-  "currencyRef": {
-    "name": "United States Dollar",
-    "value": "USD"
-  },
-  "customerRef": {
-    "name": "Travis Waldron",
-    "value": "26"
-  },
-  "domain": "QBO",
-  "processPayment": false
-}
+    "line": [
+      {
+        "lineEx": {
+          "any": [
+            {
+              "nil": false,
+              "typeSubstituted": false,
+              "globalScope": true,
+              "scope": "javax.xml.bind.JAXBElement$GlobalScope",
+              "name": "{http://schema.intuit.com/finance/v3}NameValue",
+              "declaredType": "com.intuit.schema.finance.v3.NameValue",
+              "value": {
+                "Value": "3993",
+                "Name": "txnId"
+              }
+            },
+            {
+              "nil": false,
+              "typeSubstituted": false,
+              "globalScope": true,
+              "scope": "javax.xml.bind.JAXBElement$GlobalScope",
+              "name": "{http://schema.intuit.com/finance/v3}NameValue",
+              "declaredType": "com.intuit.schema.finance.v3.NameValue",
+              "value": {
+                "Value": "6.12",
+                "Name": "txnOpenBalance"
+              }
+            },
+            {
+              "nil": false,
+              "typeSubstituted": false,
+              "globalScope": true,
+              "scope": "javax.xml.bind.JAXBElement$GlobalScope",
+              "name": "{http://schema.intuit.com/finance/v3}NameValue",
+              "declaredType": "com.intuit.schema.finance.v3.NameValue",
+              "value": {
+                "Value": "1904",
+                "Name": "txnReferenceNumber"
+              }
+            }
+          ]
+        },
+        "amount": 6.12,
+        "linkedTxn": [
+          {
+            "txnType": "Invoice",
+            "txnId": "3993"
+          }
+        ]
+      }
+    ],
+    "depositToAccountRef": {
+      "value": "58"
+    },
+    "unappliedAmt": 0,
+    "totalAmt": 6.12,
+    "sparse": false,
+    "currencyRef": {
+      "name": "United States Dollar",
+      "value": "USD"
+    },
+    "exchangeRate": 1,
+    "customerRef": {
+      "name": "lg sam",
+      "value": "1924"
+    },
+    "domain": "QBO"
+  }
