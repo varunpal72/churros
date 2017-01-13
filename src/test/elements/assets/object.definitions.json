@@ -868,12 +868,5 @@
         "type": "string"
       }
     ]
-  },
-  "products": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
   }
-
 }
