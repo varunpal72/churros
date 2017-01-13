@@ -14,20 +14,18 @@ const tab = require('./assets/recipients.tab.json');
 const documents = require('./assets/envelopes.documents.json');
 
 suite.forElement('esignature', 'envelopes', (test) => {
-  it('should allow creating an envelope, retrieving the created envelope, updating the envelope status and retrieving the custom fields of the envelope', () => {
+  it(`should support CRU on ${test.api}`, () => {
     let envelopeId = "-1";
     let path = __dirname + '/assets/MrRobotPdf.pdf';
-
     const opts = { formData: { envelope: JSON.stringify(createPayload) } };
 
     return cloud.withOptions(opts).postFile(test.api, path)
       .then(r => envelopeId = r.body.envelopeId)
-      .then(r => cloud.get(test.api + '/' + envelopeId, (r) => expect(r).to.have.schemaAnd200(schema)))
-      .then(r => cloud.patch(test.api + '/' + envelopeId, updatePayload, (r) => expect(r).to.have.statusCode(200)));
-    //.then(r => cloud.get(`${test.api}/${envelopeId}/custom_fields`));
+      .then(r => cloud.get(`${test.api}/${envelopeId}`, (r) => expect(r).to.have.schemaAnd200(schema)))
+      .then(r => cloud.patch(`${test.api}/${envelopeId}`, updatePayload, (r) => expect(r).to.have.statusCode(200)));
   });
 
-  it('should allow creating an envelope, retrieving the created envelope\'s document(s)', () => {
+  it(`should support C on ${test.api}, SRU ${test.api}/:id/documents`, () => {
     let envelopeId = "-1";
     let path = __dirname + '/assets/MrRobotPdf.pdf';
     let documentPath = __dirname + '/assets/Test.pdf';
@@ -37,18 +35,17 @@ suite.forElement('esignature', 'envelopes', (test) => {
 
     return cloud.withOptions(opts).postFile(test.api, path)
       .then(r => envelopeId = r.body.envelopeId)
-      .then(r => cloud.get(test.api + '/' + envelopeId + '/documents',
+      .then(r => cloud.get(`${test.api}/${envelopeId}/documents`,
         (r) => expect(r).to.have.schemaAnd200(documentsSchema)))
-      .then(r => cloud.withOptions(putDocuments).put(test.api + '/' + envelopeId + '/documents', undefined,
+      .then(r => cloud.withOptions(putDocuments).put(`${test.api}/${envelopeId}/documents`, undefined,
         (r) => expect(r).to.have.schemaAnd200(documentsSchema)))
-      .then(r => cloud.get(test.api + '/' + envelopeId + '/documents'))
+      .then(r => cloud.get(`${test.api}/${envelopeId}/documents`))
       .then(r => documentId = r.body[0].documentId)
       .then(r => cloud.get(`${test.api}/${envelopeId}/documents/${documentId}`));
   });
 
-  it('should get all envelopes, find one which is sent and then find its certifiates', () => {
+  it(`should support Ceql search on ${test.api} and S on ${test.api}/:id/documents/certificates`, () => {
     let envelopeId;
-
     return cloud.withOptions({ qs: { where: 'from_date=\'2015-01-01T00:00:00Z\'' } }).get(test.api)
       .then(r => envelopeId = r.body.filter(function(el) {
         return el.status === 'sent';
@@ -56,7 +53,7 @@ suite.forElement('esignature', 'envelopes', (test) => {
       .then(r => cloud.get(`${test.api}/${envelopeId}/documents/certificates`));
   });
 
-  it('should create recipients for envelopes and also tabs for recipients', () => {
+  it(`should support create on ${test.api}/:id/recipients and ${test.api}/:id/recipients/:id/tabs`, () => {
     let envelopeId = "-1";
     let path = __dirname + '/assets/MrRobotPdf.pdf';
     const opts = { formData: { envelope: JSON.stringify(createPayload) } };
