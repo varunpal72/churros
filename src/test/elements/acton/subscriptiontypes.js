@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-  suite.forElement('marketing', 'subscription-types', {skip: true}, (test) => {
+  suite.forElement('marketing', 'subscription-types', null , (test) => {
     it('it should support Adding,Removing records from a subscription type by email address', () => {
        return cloud.get(test.api)
        .then(r => cloud.patch(`${test.api}/Newsletter/optin/test%40gmail.com`))
