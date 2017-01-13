@@ -74,7 +74,7 @@ suite.forElement('ecommerce', 'products', { payload: updatePayload }, (test) => 
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'created_at=\'2013-04-24 11:19:25\'' } }).should.return200OnGet();
   test.withOptions({ qs: { where: 'created_at>=\'2013-04-24 11:19:25\'', pageSize: 5, page: 1 } }).should.return200OnGet();
-  it('this should be should support CRUS /products, CU /products/:id/inventory and GET /price-tier', () => {
+  it(`should support CRUS ${test.api}, CU ${test.api}/:id/inventory and GET ${test.api}/:id/price-tier`, () => {
     let productId = -1;
     const options = { qs: { where: 'name=\'Super-Sweet Zipties\'' } };
     return cloud.post(test.api, payload(tools.random()))
