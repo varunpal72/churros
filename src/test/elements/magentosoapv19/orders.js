@@ -7,7 +7,7 @@ suite.forElement('ecommerce', 'orders', null, (test) => {
   test.should.supportSr();
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'created_at=\'2013-04-23 23:27:45\'' } }).should.return200OnGet();
-  it.skip('should support GET invoice,shipments,hold, unholding and POST credit-memos an order', () => {
+  it.skip('should support GET invoice, shipments, hold, unholding and POST orders/:id/credit-memos an order', () => {
     let orderId = -1;
      const payload = {};
     const options = { qs: { where: 'status=\'pending\'' } };
