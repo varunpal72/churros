@@ -12,7 +12,7 @@ const updatePayload = {
   "when": "1481052621"
 };
 suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
-  it('it should support CRUDS for campaigns', () => {
+  it('should support CRUDS for campaigns', () => {
     let msgId, sendId;
     return cloud.post(test.api, payload)
       .then(r => msgId = r.body.msg_id)
