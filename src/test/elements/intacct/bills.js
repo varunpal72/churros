@@ -32,8 +32,7 @@ const payload = (vendorId) => ({
   "exchrate": "0.875",
   "nogl": "F",
   "customfields": {
-    "customfield": [
-      {
+    "customfield": [{
         "customfieldname": "TESTDATE",
         "customfieldvalue": "12/10/2009"
       },
@@ -44,25 +43,22 @@ const payload = (vendorId) => ({
     ]
   },
   "billitems": {
-    "lineitem": [
-      {
-        "glaccountno": "2000",
-        "amount": "1234.56",
-        "customfields": {
-          "customfield": [
-            {
-              "customfieldname": "TESTDATE",
-              "customfieldvalue": "12/10/2009"
-            },
-            {
-              "customfieldname": "TESTTEXT",
-              "customfieldvalue": "CustomFieldText"
-            }
-          ]
-        },
-        "billable": "false"
-      }
-    ]
+    "lineitem": [{
+      "glaccountno": "2000",
+      "amount": "1234.56",
+      "customfields": {
+        "customfield": [{
+            "customfieldname": "TESTDATE",
+            "customfieldvalue": "12/10/2009"
+          },
+          {
+            "customfieldname": "TESTTEXT",
+            "customfieldvalue": "CustomFieldText"
+          }
+        ]
+      },
+      "billable": "false"
+    }]
   }
 });
 
@@ -186,9 +182,9 @@ suite.forElement('finance', 'bills', { payload: payload() }, (test) => {
   it(`should allow CRDS for ${test.api}`, () => {
     let vendorId;
     return cloud.post(`/hubs/finance/vendors`, vendor())
-    .then(r => vendorId = r.body.id)
-    .then(r => cloud.crds(test.api, payload(vendorId)))
-    .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
+      .then(r => vendorId = r.body.id)
+      .then(r => cloud.cruds(test.api, payload(vendorId)))
+      .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
   });
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
