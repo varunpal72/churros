@@ -2,9 +2,7 @@
 
 const cloud = require('core/cloud');
 const suite = require('core/suite');
-const tools = require('core/tools');
 const chakram = require('chakram');
-const expect = chakram.expect;
 
 const objects = {
   "ChurrosOrgObjectTestContact1235678": {
@@ -68,7 +66,7 @@ suite.forPlatform('organizations/objects/definitions', { payload: objects }, (te
     const ignore = () => true;
     const promises = Object.keys(objects).map(objectName => cloud.delete(`/organizations/objects/${objectName}/definitions`, ignore));
     return Promise.all(promises);
-  }
+  };
 
   /** * Safety first... */
   before(() => deleteEm());
