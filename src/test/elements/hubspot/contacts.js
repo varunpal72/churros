@@ -5,6 +5,8 @@ const cloud = require('core/cloud');
 const payload = require('./assets/contacts');
 const propertiesPayload = require('./assets/contactsProperties');
 const tools = require('core/tools');
+const expect = require('chakram').expect;
+
 const options = {
   churros: {
     updatePayload: {
@@ -63,4 +65,21 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/propertygroups/${id}`, updatePropertygroups))
       .then(r => cloud.delete(`${test.api}/propertygroups/${id}`));
   });
+
+  it('should support bulk upload of contacts using the batch API', () => {
+    let bulkId;
+    // start bulk upload
+    return cloud.postFile('/hubs/crm/bulk/accounts', `/assets/contacts.csv`)
+      .then(r => {
+        expect(r.body.status).to.equal('CREATED');
+        bulkId = r.body.id;
+      })
+      // get bulk upload status
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED');
+      })))
+      // get bulk upload errors
+      .then(r => cloud.get(`/hubs/crm/bulk/${bulkId}/errors`));
+  });
+
 });
