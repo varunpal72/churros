@@ -1,7 +1,11 @@
 'use strict';
 
 const suite = require('core/suite');
-
-suite.forElement('finance', 'payment-methods', {skip: false}, (test) => {
-  test.should.return200OnGet();
+const tools = require('core/tools');
+const payload = require('./assets/payment-methods');
+const build = (overrides) => Object.assign({}, payload, overrides);
+const paymentMethods = build({ name: tools.random() });
+suite.forElement('finance', 'payment-methods', { payload: paymentMethods, skip: false }, (test) => {
+  test.should.supportCrs();
+  test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
 });

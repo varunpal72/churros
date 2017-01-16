@@ -1,36 +1,17 @@
 {
-   "syncToken": "0",
-   "reorderPoint": 10,
-   "invStartDate": "2016-12-05T00:00:00Z",
-   "qtyOnHand": 95,
-   "type": "INVENTORY",
-   "incomeAccountRef": {
-     "name": "Sales of Product Income",
-     "value": "64"
-   },
-   "sku": "SKU001",
-   "unitPrice": 0,
-   "purchaseCost": 0,
-   "taxable": false,
-   "level": 1,
-   "abatementRate": 0,
-   "subItem": true,
-   "active": true,
-   "fullyQualifiedName": "Stationary:Pen",
-   "parentRef": {
-     "name": "Stationary",
-     "value": "3"
-   },
-   "assetAccountRef": {
-     "name": "Inventory Asset",
-     "value": "66"
-   },
-   "trackQtyOnHand": true,
-   "expenseAccountRef": {
-     "name": "Cost of sales",
-     "value": "65"
-   },
-   "domain": "QBO",
-   "name": "Pen",
-   "reverseChargeRate": 0
- }
+  "unitPrice": 112312,
+  "purchaseCost": 0,
+  "taxable": true,
+  "description": "Selling this Item",
+  "active": true,
+  "fullyQualifiedName": "2005 something",
+  "type": "SERVICE",
+  "incomeAccountRef": {
+    "name": "15100 Vehicles",
+    "value": "65"
+  },
+  "trackQtyOnHand": false,
+
+  "name": "2005 something",
+  "sku": "SKUNUMBER"
+}
