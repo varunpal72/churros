@@ -66,20 +66,25 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/propertygroups/${id}`));
   });
 
-  it('should support bulk upload of contacts using the batch API', () => {
+  it.skip('should support bulk upload of contacts using the batch API', () => {
     let bulkId;
+    const metaData = { useBatchUpload: true };
+    const opts = { formData: { metaData: JSON.stringify(metaData) } };
+
     // start bulk upload
-    return cloud.postFile('/hubs/crm/bulk/accounts', `/assets/contacts.csv`)
+    return cloud.withOptions(opts).postFile('/hubs/marketing/bulk/contacts', `${__dirname}/assets/contacts.csv`)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
       // get bulk upload status
-      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/marketing/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
+        expect(r.body.recordsCount).to.equal(2);
+        expect(r.body.recordsFailedCount).to.equal(0);
       })))
       // get bulk upload errors
-      .then(r => cloud.get(`/hubs/crm/bulk/${bulkId}/errors`));
+      .then(r => cloud.get(`/hubs/marketing/bulk/${bulkId}/errors`));
   });
 
 });
