@@ -2,7 +2,6 @@
 
 const cloud = require('core/cloud');
 const suite = require('core/suite');
-const chakram = require('chakram');
 
 const objects = {
   "ChurrosOrgObjectTestContact1235678": {
