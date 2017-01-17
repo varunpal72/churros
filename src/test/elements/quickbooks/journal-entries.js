@@ -4,9 +4,9 @@ const suite = require('core/suite');
 const payload = require('./assets/journal-entries');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
-const journalentries = build({ docNumber: tools.random()});
+const journalentries = build({ docNumber: tools.random() });
 
-suite.forElement('finance', 'journal-entries', { payload: journalentries, skip: false}, (test) => {
+suite.forElement('finance', 'journal-entries', { payload: journalentries }, (test) => {
   const options = {
     churros: {
       updatePayload: {

@@ -6,7 +6,7 @@ const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const invoices = build({ docNumber: tools.random() });
 
-suite.forElement('finance', 'invoices', { payload: invoices, skip: false }, (test) => {
+suite.forElement('finance', 'invoices', { payload: invoices }, (test) => {
   const options = {
     churros: {
       updatePayload: {
