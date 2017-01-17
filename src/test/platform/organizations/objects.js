@@ -2,6 +2,7 @@
 
 const cloud = require('core/cloud');
 const suite = require('core/suite');
+const expect = require('chakram').expect;
 
 const objects = {
   "ChurrosOrgObjectTestContact1235678": {
@@ -73,17 +74,11 @@ suite.forPlatform('organizations/objects/definitions', { payload: objects }, (te
   it('Should throw a 409 when associated transformations exist on one or more object definitions', () => {
     return cloud.post('/organizations/objects/definitions', objects)
       //create a transformation
-      .then(r => cloud.post(`/organizations/elements/sfdc/transformations/ChurrosOrgObjectTestContact1235678`,transformation,true))
+      .then(r => cloud.post(`/organizations/elements/sfdc/transformations/ChurrosOrgObjectTestContact1235678`,transformation))
       //run the delete test for organizations/objects/definitions, return false if anything but 409 is returned
-      .then(() => cloud.delete(test.api, (r) => {
-        if(r.statusCode===409){
-          return true;
-        } else {
-          return false;
-        }
-      }))
+      .then(() => cloud.delete(test.api, (r) => expect(r).to.have.statusCode(409)))
       //delete the created transformation
-      .then(() => cloud.delete(`/organizations/elements/sfdc/transformations/ChurrosOrgObjectTestContact1235678`,true))
+      .then(() => cloud.delete(`/organizations/elements/sfdc/transformations/ChurrosOrgObjectTestContact1235678`))
       //clean up the created objects
       .then(() => deleteEm());
   });
