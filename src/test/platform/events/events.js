@@ -1,5 +1,6 @@
 'use strict';
 
+const common = require('./common');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
@@ -13,27 +14,11 @@ const eventSchema = require('./assets/event.schema.json');
 const eventsSchema = require('./assets/events.schema.json');
 
 const signatureKey = 'abcd1234efgh5678';
-const gen = (opts, url) => ({
-  'event.notification.enabled': opts['event.notification.enabled'] || true,
-  'event.notification.callback.url': url,
-  'event.notification.signature.key': signatureKey
-});
-
-const loadEventRequest = (element) => {
-  try {
-    let filename = `./assets/${element}.event.json`;
-    delete require.cache[require.resolve(filename)];
-    return require(filename);
-  } catch (e) {
-    logger.error('No %s.event.json file found in the events/assets directory.  Please create this file before this element can be tested with events', element);
-    process.exit(1);
-  }
-};
 
 suite.forPlatform('events', (test) => {
   let instanceId;
   const element = props.getForKey('events', 'element');
-  before(done => provisioner.create(element, gen({}, props.getForKey('events', 'url')))
+  before(done => provisioner.create(element, common.gen({}, props.getForKey('events', 'url'), signatureKey))
     .then(r => instanceId = r.body.id)
     .then(r => done()));
 
@@ -41,7 +26,7 @@ suite.forPlatform('events', (test) => {
     .then(r => done()));
 
   it('should handle receiving x number of events for an element instance', () => {
-    const payload = loadEventRequest(element);
+    const payload = common.loadEventRequest(element);
     const load = props.getForKey('events', 'load');
     const wait = props.getForKey('events', 'wait');
 
