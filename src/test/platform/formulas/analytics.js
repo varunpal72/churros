@@ -5,6 +5,8 @@ const expect = require('chakram').expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const suite = require('core/suite');
+const props = require('core/props');
+const logger = require('winston');
 
 const defaultTriggerCb = numEs => (fId, fiId) =>
   Promise.all(tools.times(numEs)(index => {
@@ -12,6 +14,11 @@ const defaultTriggerCb = numEs => (fId, fiId) =>
   }));
 
 suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
+
+  if (props.get('url').indexOf('snapshot') < 0 && props.get('url').indexOf('staging') < 0 && props.get('url').indexOf('production') < 0) {
+    logger.warn('Unable to formula analytics locally. Skipping.');
+    return;
+  }
 
   /**
    * Handles the basic formula execution test for a formula that has a manual trigger type
