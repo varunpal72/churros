@@ -66,7 +66,7 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/propertygroups/${id}`));
   });
 
-  it.skip('should support bulk upload of contacts using the batch API', () => {
+  it('should support bulk upload of contacts using the batch API', () => {
     let bulkId;
     const metaData = { useBatchUpload: true };
     const opts = { formData: { metaData: JSON.stringify(metaData) } };
