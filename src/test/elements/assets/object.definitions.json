@@ -914,5 +914,11 @@
       "path": "id",
       "type": "string"
     }]
+  },
+  "messages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
