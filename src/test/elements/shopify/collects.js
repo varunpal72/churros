@@ -25,7 +25,7 @@ suite.forElement('ecommerce', 'collects', (test) => {
   );
   test.should.return200OnGet();
   test.withApi(`/hubs/ecommerce/collects-count`).should.return200OnGet();
-  it(`should allow GET for /hubs/ecommerce/collects/{collectId}`, () => {
+  it(`should allow CRD for /hubs/ecommerce/collects`, () => {
     let collectId;
     return cloud.post(`/hubs/ecommerce/collects`,collects(productId, customCollectId))
     .then(r => collectId = r.body.id)
