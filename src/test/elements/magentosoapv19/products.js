@@ -74,7 +74,7 @@ suite.forElement('ecommerce', 'products', { payload: updatePayload }, (test) => 
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'created_at=\'2013-04-24 11:19:25\'' } }).should.return200OnGet();
   test.withOptions({ qs: { where: 'created_at>=\'2013-04-24 11:19:25\'', pageSize: 5, page: 1 } }).should.return200OnGet();
-  it('should support CRUS and sub-resources', () => {
+  it(`should support CRUS ${test.api}, CU ${test.api}/:id/inventory and GET ${test.api}/:id/price-tier`, () => {
     let productId = -1;
     const options = { qs: { where: 'name=\'Super-Sweet Zipties\'' } };
     return cloud.post(test.api, payload(tools.random()))
@@ -83,7 +83,7 @@ suite.forElement('ecommerce', 'products', { payload: updatePayload }, (test) => 
       .then(r => cloud.patch(`${test.api}/${productId}`, updatePayload))
       .then(r => cloud.withOptions(options).get(test.api))
       .then(r => cloud.get(`${test.api}/${productId}/inventory`))
-      .then(r => cloud.patch(`${test.api}/${productId}/inventory`, inventoryUpdate()));
-
+      .then(r => cloud.patch(`${test.api}/${productId}/inventory`, inventoryUpdate()))
+      .then(r => cloud.get(`${test.api}/${productId}/price-tier`));
   });
 });

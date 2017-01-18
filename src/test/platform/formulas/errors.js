@@ -23,7 +23,6 @@ const defaultValidator = (executions, numEs, numSes, executionStatus) => {
   });
 };
 
-
 const defaultTriggerCb = numEs => (fId, fiId) =>
   Promise.all(tools.times(numEs)(index => {
     return cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, { foo: `${(index + 1) % numEs === 0 ? 'baz' : 'bar'}` });

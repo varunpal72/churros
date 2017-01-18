@@ -10,8 +10,8 @@ const payload = () => ({
   "compound": 0
 });
 
-suite.forElement('finance', 'taxes', { payload: payload(), skip: true }, (test) => {
+suite.forElement('finance', 'taxes', { payload: payload() }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
-  test.should.supportCeqlSearch('compound');
+  test.withOptions({ qs: { where: 'compound = 0' } }).should.return200OnGet();
 });

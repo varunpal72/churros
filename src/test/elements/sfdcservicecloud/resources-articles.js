@@ -5,17 +5,22 @@ const payload = require('./assets/articles');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const build = (overrides) => Object.assign({}, payload, overrides);
-const articlesPayload = build({ ArticleType: tools.random(), summary: tools.random(), Title: tools.random(), UrlName: tools.random() });
+const articlesPayload = build({ UrlName: tools.random() });
 suite.forElement('helpdesk', 'resources/articles', { payload: articlesPayload }, (test) => {
-  it('should allow CRUDS /hubs/helpdesk/resources/articles ', () => {
+  it('should allow CRUDS /hubs/helpdesk/resources/articles and CEQL search and pagination', () => {
     let articleId;
-    return cloud.post(test.api, payload)
+    let statusPayload = {
+      "PublishStatus": "Draft"
+    };
+
+    return cloud.post('/hubs/helpdesk/resources/articles', articlesPayload)
       .then(r => articleId = r.body.Id)
       .then(r => cloud.get(`${test.api}/${articleId}`))
       .then(r => cloud.get(test.api))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
       .then(r => cloud.withOptions({ qs: { where: `id='${articleId}'` } }).get(test.api))
       .then(r => cloud.patch(`${test.api}/${articleId}`, articlesPayload))
+      .then(r => cloud.put(`${test.api}/${articleId}/status`, statusPayload))
       .then(r => cloud.delete(`${test.api}/${articleId}`));
   });
 });
