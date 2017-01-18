@@ -16,7 +16,7 @@ const defaultTriggerCb = numEs => (fId, fiId) =>
 suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
 
   if (props.get('url').indexOf('snapshot') < 0 && props.get('url').indexOf('staging') < 0 && props.get('url').indexOf('production') < 0) {
-    logger.warn('Unable to formula analytics locally. Skipping.');
+    logger.warn('Unable to run formula analytics locally. Skipping.');
     return;
   }
 
