@@ -15,7 +15,7 @@ suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (tes
   let elements_total_count;
 
 
-    it('should allow GET of Pipedrive filters', () => {
+    it('should allow get of pipedrive filters', () => {
         return cloud.get('/hubs/crm/filters')
         .then(r => elements_total_count = r.response.headers['elements-returned-count']);
 
@@ -35,7 +35,7 @@ suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (tes
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'title = \'Demo Deal NEW\'' } }).should.return200OnGet();
 
-  it('Count of Pipedrive filters should remain the same', () => {
+  it('count of pipedrive filters should remain the same', () => {
       return cloud.get('/hubs/crm/filters')
       .then(r => expect(r.response.headers['elements-returned-count']).to.equal(elements_total_count));
 
