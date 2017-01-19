@@ -2,10 +2,7 @@
 
 const suite = require('core/suite');
 const chakram = require('chakram');
-const payload = require('./assets/opportunities');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
-const build = (overrides) => Object.assign({}, payload, overrides);
 const expect = chakram.expect;
 
 
