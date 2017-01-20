@@ -34,5 +34,14 @@
         "vendorPath": "keys.id"
       }
     ]
+  },
+  "jobs": {
+    "vendorName": "job",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "job_id"
+      }
+    ]
   }
 }
