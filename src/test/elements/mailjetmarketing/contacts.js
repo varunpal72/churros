@@ -16,7 +16,7 @@ suite.forElement('marketing', 'contacts', { payload: contactsPayload }, (test) =
     let contactID;
     return cloud.post(test.api, contactsPayload)
       .then(r => contactID = r.body.ID)
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1, where: 'LastUpdateAt =\'2017-01-19\'' } }).get(test.api))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1, where: `LastUpdateAt ='2017-01-19'` } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${contactID}`))
       .then(r => cloud.patch(`${test.api}/${contactID}`, updatePayload));
   });
