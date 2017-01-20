@@ -1,6 +1,6 @@
 {
-  "memberships": {
-    "vendorName": "memberships",
+"channels": {
+    "vendorName": "channels",
     "fields": [
       {
         "path": "id",
@@ -8,8 +8,8 @@
       }
     ]
   },
-"rooms": {
-    "vendorName": "rooms",
+"groups": {
+    "vendorName": "groups",
     "fields": [
       {
         "path": "id",
@@ -17,17 +17,8 @@
       }
     ]
   },
-"teams": {
-    "vendorName": "teams",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
-  },
-"people": {
-    "vendorName": "people",
+"users": {
+    "vendorName": "users",
     "fields": [
       {
         "path": "id",

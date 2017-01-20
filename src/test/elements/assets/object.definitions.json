@@ -917,24 +917,13 @@
       "type": "string"
     }]
   }, 
-"rooms": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  }, "teams": {
+ "channels": {
     "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-"messages": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  },
-"people": {
+ "messages": {
     "fields": [{
       "path": "id",
       "type": "string"
