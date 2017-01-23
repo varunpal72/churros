@@ -8,11 +8,12 @@ suite.forElement('helpdesk', 'agents', null, (test) => {
     return cloud.withOptions({ qs: { page: 2 } }).get(test.api);
   });
 
-  it(`should allow S for ${test.api} and ${test.api}/{id}/incidents`, () => {
+  it(`should allow SR for ${test.api} and S for ${test.api}/{id}/incidents`, () => {
     let agentId;
 
     return cloud.get(test.api)
       .then(r => agentId = r.body[0].id)
+      .then(r => cloud.get(`${test.api}/${agentId}`))
       .then(r => cloud.get(`${test.api}/${agentId}/incidents`));
   });
 });

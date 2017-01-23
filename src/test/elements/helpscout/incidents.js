@@ -24,13 +24,13 @@ suite.forElement('helpdesk', 'incidents', null, (test) => {
   payload.customer.email = email;
   payload.threads[0].createdBy.email = email;
 
-  it(`should allow allow CRUDS for ${test.api}, S for ${test.api}/{id}/comments and DS for ${attachmentsApi}`, () => {
+  it(`should allow allow CRUDS for ${test.api}, R for ${test.api}/{id}/comments and RD for ${attachmentsApi}`, () => {
     let incidentId;
     let threadId;
     // let attachmentId;
 
     return cloud.post(test.api, payload)
-      .then(r => cloud.get(`${test.api}`))
+      .then(r => cloud.get(test.api))
       .then(r => incidentId = r.body.filter(function(incident) {
         return incident.customer ? incident.customer.email ? incident.customer.email === email : false : false;
       })[0].id)
