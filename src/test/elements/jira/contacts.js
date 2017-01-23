@@ -1,8 +1,12 @@
 'use strict';
 
 const suite = require('core/suite');
+const tools = require('core/tools');
 const cloud = require('core/cloud');
 const payload = require('./assets/contact');
+
+payload.emailAddress = tools.randomEmail();
+payload.name += tools.random();
 
 suite.forElement('helpdesk', 'contacts', {payload:payload}, (test) => {
   let contactId;
