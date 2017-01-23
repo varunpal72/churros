@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const payload = require('./assets/orders');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
 
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
 
