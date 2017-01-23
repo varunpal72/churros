@@ -1,0 +1,17 @@
+{
+  "subject": "Test Incident",
+  "customer": {
+    "email": "customer@churros.com"
+  },
+  "threads": [{
+    "type": "customer",
+    "createdBy": {
+      "email": "customer@churros.com",
+      "type": "customer"
+    },
+    "body": "This is a test incident",
+    "attachments": [{
+      "hash": ""
+    }]
+  }]
+}
