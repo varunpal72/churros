@@ -1,38 +1,30 @@
 {
-"channels": {
+  "channels": {
     "vendorName": "channels",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
-"groups": {
+  "groups": {
     "vendorName": "groups",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
-"users": {
+  "users": {
     "vendorName": "users",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
-"messages": {
+  "messages": {
     "vendorName": "messages",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   }
 }

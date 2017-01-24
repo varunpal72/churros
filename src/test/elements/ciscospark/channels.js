@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const payload = require('./assets/channels');
 
 suite.forElement('collaboration', 'channels', { payload: payload }, (test) => {
-   const opts = {
+  const opts = {
     churros: {
       updatePayload: {
         title: 'Churros Test Update'
@@ -12,5 +12,4 @@ suite.forElement('collaboration', 'channels', { payload: payload }, (test) => {
     }
   };
   test.withOptions(opts).should.supportCruds(chakram.put);
-
 });

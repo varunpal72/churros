@@ -872,12 +872,12 @@
   },
   "activity-events": {
     "fields": [{
-        "path": "id",
-        "type": "string"
-      }, {
-        "path": "subject",
-        "type": "string"
-      }]
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "subject",
+      "type": "string"
+    }]
   },
   "contactS": {
     "fields": [{
@@ -915,19 +915,13 @@
       "type": "string"
     }]
   },
- "memberships": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  }, 
- "channels": {
+  "channels": {
     "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
- "messages": {
+  "messages": {
     "fields": [{
       "path": "id",
       "type": "string"
