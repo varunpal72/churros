@@ -14,9 +14,22 @@ const cloud = require('core/cloud');
 
 var exports = module.exports = {};
 
+const genInstance = (config) =>
+  ({
+    name: config.name || 'churros-instance',
+    element: { key: config.element },
+    configuration: config.config
+  });
+
 const genConfig = (props, args) => {
   const config = props;
-  if (args) Object.keys(args).forEach(k => config[k] = args[k]);
+  if (args) {
+    Object.keys(args)
+      .filter(k => k !== 'name')
+      .map(k => config[k] = args[k]);
+    config.name = args.name || 'churros-instance';
+  }
+  console.log(config);
   return config;
 };
 
@@ -39,11 +52,8 @@ const parseProps = (element) => {
 };
 
 const createInstance = (element, config, providerData, baseApi) => {
-  const instance = {
-    name: 'churros-instance',
-    element: { key: element },
-    configuration: config
-  };
+  const instance = genInstance(config);
+
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
@@ -157,6 +167,7 @@ const oauth1 = (element, args) => {
 const orchestrateCreate = (element, args, baseApi, cb) => {
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
+  config.element = element;
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
 
@@ -181,7 +192,7 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
 
 /**
  * Provision an element using just the partial OAuth flow.
- * @param {tring} element The element key
+ * @param {string} element The element key
  * @param {Object} args Any other args to pass when provisioning the element
  * @param {string} baseApi The base API
  * @return {Promise}  A promise that will resolve to the response after the partial OAuth flow is complete

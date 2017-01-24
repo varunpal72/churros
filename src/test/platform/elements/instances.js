@@ -125,4 +125,9 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => provisioner.delete(instance.id, 'elements/shopify/instances'))
       .then(r => cloud.delete(`elements/${clone.key}`));
   });
+
+  it('should sanitize element instance name on create', () => {
+    return provisioner.create('sfdc')
+      .then(r => cloud.delete(`elements/${r.body.id}`));
+  });
 });
