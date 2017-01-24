@@ -11,7 +11,7 @@ suite.forElement('collaboration', 'groups', { payload: payload }, (test) => {
     let userUpdatedPayload = {
       isModerator: false
     };
-    return cloud.post(`${test.api}`, payload)
+    return cloud.post(test.api, payload)
       .then(r => groupId = r.body.id)
       .then(r => cloud.post(`${test.api}/${groupId}/users`, usersPayload))
       .then(r => id = r.body.id)

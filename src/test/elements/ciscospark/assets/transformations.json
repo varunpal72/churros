@@ -20,6 +20,13 @@
       "vendorPath": "id"
     }]
   },
+  "organizations": {
+    "vendorName": "organizations",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
   "messages": {
     "vendorName": "messages",
     "fields": [{
