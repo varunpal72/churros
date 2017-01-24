@@ -10,7 +10,6 @@ suite.forElement('helpdesk', 'folders', null, (test) => {
 
   it(`should allow S for ${test.api} and ${test.api}/{id}/incidents`, () => {
     let folderId;
-
     return cloud.get(test.api)
       .then(r => folderId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${folderId}/incidents`));

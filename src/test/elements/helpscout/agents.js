@@ -10,7 +10,6 @@ suite.forElement('helpdesk', 'agents', null, (test) => {
 
   it(`should allow SR for ${test.api} and S for ${test.api}/{id}/incidents`, () => {
     let agentId;
-
     return cloud.get(test.api)
       .then(r => agentId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${agentId}`))

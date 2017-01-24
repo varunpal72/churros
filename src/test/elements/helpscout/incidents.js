@@ -13,7 +13,6 @@ const email = tools.randomEmail();
 suite.forElement('helpdesk', 'incidents', null, (test) => {
   /*
   let attachmentHash;
-
   it(`should allow allow C for ${attachmentsApi}`, () => {
     return cloud.postFile(attachmentsApi, __dirname + "/assets/attachment.txt")
       .then(r => attachmentHash = r.body.hash);
@@ -28,7 +27,6 @@ suite.forElement('helpdesk', 'incidents', null, (test) => {
     let incidentId;
     let threadId;
     // let attachmentId;
-
     return cloud.post(test.api, payload)
       .then(r => cloud.get(test.api))
       .then(r => incidentId = r.body.filter(function(incident) {

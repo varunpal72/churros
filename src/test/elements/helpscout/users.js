@@ -18,7 +18,6 @@ const updatePayload = {
 suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
   it(`should allow allow CRUS for ${test.api} and S for ${test.api}/{userId}/incidents`, () => {
     let userId;
-
     return cloud.post(test.api, payload)
       .then(r => cloud.get(`${test.api}`))
       .then(r => userId = r.body.filter(function(user) {
