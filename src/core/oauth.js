@@ -278,6 +278,20 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('idBtn_Accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
+    case 'onedrive':
+      browser.get(r.body.oauthUrl);
+      browser.isElementPresent(webdriver.By.id('i0116'));
+      browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+      browser.sleep(3000);
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.sleep(3000);
+      browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('idBtn_Accept')), 3000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('idBtn_Accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'onedrivebusiness':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('cred_userid_inputtext')).sendKeys(username);
