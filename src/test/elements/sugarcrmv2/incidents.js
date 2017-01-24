@@ -39,7 +39,7 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.post(`${test.api}/${incidentId}/notes`, note))
       .then(r => noteId = r.body.id)
       .then(r => cloud.withOptions(attachments).put(`${test.api}/${incidentId}/notes/${noteId}/attachments`, undefined))
-   // .then(r => cloud.get(`${test.api}/${incidentId}/notes/${noteId}/attachments`)) ...currently this Api is not working from CE side.
+      .then(r => cloud.get(`${test.api}/${incidentId}/notes/${noteId}/attachments`))
       .then(r => cloud.delete(`${test.api}/${incidentId}/notes/${noteId}/attachments`))
       .then(r => cloud.delete(`${test.api}/${incidentId}/notes/${noteId}`))
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
