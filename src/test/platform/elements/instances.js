@@ -126,8 +126,25 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => cloud.delete(`elements/${clone.key}`));
   });
 
-  it('should sanitize element instance name on create', () => {
-    return provisioner.create('sfdc')
-      .then(r => cloud.delete(`elements/${r.body.id}`));
+  it('should sanitize element instance name on create and update', () => {
+    let id;
+    return provisioner.create('sfdc', {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss</a>'})
+      .then(r => id = r.body.id)
+      .then(() => cloud.get(`/instances/${id}`))
+      .then(r => expect(r.body.name).to.equal('churros-xss'))
+      .then(() => cloud.patch(`/instances/${id}`, {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss-updated</a>'}))
+      .then(r => expect(r.body.name).to.equal('churros-xss-updated'))
+      .then(() => provisioner.delete(id));
+  });
+
+  it('should sanitize element instance tags on create and update', () => {
+    let id;
+    return provisioner.create('sfdc', {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss</a>'})
+      .then(r => id = r.body.id)
+      .then(() => cloud.get(`/instances/${id}`))
+      .then(r => expect(r.body.name).to.equal('churros-xss') && expect(r.body.tags[0]).to.equal('churros-xss'))
+      .then(() => cloud.patch(`/instances/${id}`, {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss-updated</a>'}))
+      .then(r => expect(r.body.name).to.equal('churros-xss-updated'))
+      .then(() => provisioner.delete(id));
   });
 });

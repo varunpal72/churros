@@ -16,21 +16,23 @@ var exports = module.exports = {};
 
 const genInstance = (config) =>
   ({
-    name: config.name || 'churros-instance',
+    name: config.name,
     element: { key: config.element },
-    configuration: config.config
+    configuration: config.ec
   });
 
 const genConfig = (props, args) => {
-  const config = props;
-  if (args) {
-    Object.keys(args)
-      .filter(k => k !== 'name')
-      .map(k => config[k] = args[k]);
-    config.name = args.name || 'churros-instance';
-  }
-  console.log(config);
-  return config;
+  const config = Object.assign({}, props, args);
+
+  const name = (args && args.name) ? args.name : 'churros-instance';
+  const tags = (args && args.tags) ? args.tags : undefined;
+  delete config.name;
+
+  return {
+    ec: config,
+    name: name,
+    tags: tags
+  };
 };
 
 const parseProps = (element) => {
@@ -174,13 +176,13 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
   switch (type) {
     case 'oauth1':
     case 'oauth2':
-      config['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
+      config.ec['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
         props.get('oauth.callback.url') :
         props.getForKey(element, 'oauth.callback.url');
-      logger.debug('Using callback URL: ' + config['oauth.callback.url']);
+      logger.debug('Using callback URL: ' + config.ec['oauth.callback.url']);
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
-        .then(r => oauth(element, r, config))
+        .then(r => oauth(element, r, config.ec))
         .then(r => cb(type, config, r));
     case 'custom':
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
@@ -210,7 +212,7 @@ exports.create = (element, args, baseApi) => {
   const cb = (type, config, r) => {
     const external = props.getOptionalForKey(element, 'external');
 
-    if (external && type === 'oauth2') return createExternalInstance(element, config, r);
+    if (external && type === 'oauth2') return createExternalInstance(element, config.ec, r);
     if (external && type === 'oauth1') throw Error('External Authentication via churros is not yet implemented for OAuth1');
 
     return createInstance(element, config, r, baseApi);
