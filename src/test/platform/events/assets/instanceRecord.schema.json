@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties": {
+    "count": {
+      "type": "integer"
+    },
+    "success": {
+      "type": "integer"
+    },
+    "failed": {
+      "type": "integer"
+    },
+    "instanceId": {
+      "type": "integer"
+    }
+  },
+  "required": ["count", "instanceId", "success", "failed"]
+}

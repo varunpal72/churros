@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/incidents');
 const commentPayload = require('./assets/incidentComments');
-
+ const notifyPayload= require('./assets/notification');
 suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
 
   it('should allow CRUDS for /incidents/:id/comments', () => {
@@ -15,9 +15,10 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete('/hubs/helpdesk/incidents/' + incidentId));
   });
 
-  it('should allow CRUDS for /incidents/:id/attachments', () => {
+  it('should allow CRUDS for /incidents/:id/attachments and RD for /attachments', () => {
     let query = { fileName: "testfile.txt" };
     let incidentId, attachmentId;
+   
     return cloud.post('/hubs/helpdesk/incidents', payload)
       .then(r => incidentId = r.body.id)
       .then(r => cloud.withOptions({ qs: query }).postFile('hubs/helpdesk/incidents/' + incidentId + '/attachments', __dirname + '/assets/attach.txt'))
@@ -25,6 +26,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => attachmentId = r.body[0].id)
       .then(r => cloud.get('/hubs/helpdesk/attachments/' + attachmentId))
       .then(r => cloud.delete('/hubs/helpdesk/attachments/' + attachmentId))
+      .then(r => cloud.post('/hubs/helpdesk/incidents/' + incidentId + '/notifications',notifyPayload))
       .then(r => cloud.delete(test.api + '/' + incidentId));
   });
   test.should.supportCruds();

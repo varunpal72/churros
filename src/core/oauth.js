@@ -29,6 +29,20 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
       browser.findElement(webdriver.By.className('btn')).click();
       return browser.getCurrentUrl();
+    case 'ciscospark':
+      browser.get(r.body.oauthUrl);
+      browser.isElementPresent(webdriver.By.id('IDToken1'));
+      browser.findElement(webdriver.By.id('IDToken1')).sendKeys(username);
+      browser.findElement(webdriver.By.id('IDButton2')).click();
+      browser.wait(webdriver.until.elementLocated(webdriver.By.id('IDToken2')), 3000);
+      browser.findElement(webdriver.By.id('IDToken2')).sendKeys(password);
+      browser.wait(webdriver.until.elementLocated(webdriver.By.id('Button1')), 3000);
+      browser.findElement(webdriver.By.id('Button1')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('accept')), 6000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.name('accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'desk':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('user_session_email')).sendKeys(username);
@@ -170,6 +184,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('submit_approve_access')).click();
       browser.sleep(2000);
       return browser.getCurrentUrl();
+    case 'gotowebinar':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.name('emailAddress')).sendKeys(username);
+      browser.findElement(webdriver.By.name('password')).sendKeys(password);
+      browser.findElement(webdriver.By.name('submit')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('allow')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.name('allow'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'hubspot':
     case 'hubspotcrm':
       browser.get(r.body.oauthUrl);
@@ -244,6 +268,20 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       browser.isElementPresent(webdriver.By.id('i0116'));
       browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.sleep(3000);
+      browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
+      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('idBtn_Accept')), 3000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('idBtn_Accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
+    case 'onedrive':
+      browser.get(r.body.oauthUrl);
+      browser.isElementPresent(webdriver.By.id('i0116'));
+      browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
+      browser.sleep(3000);
       browser.findElement(webdriver.By.id('idSIButton9')).click();
       browser.sleep(3000);
       browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
