@@ -1,41 +1,19 @@
 {
-  "lastName": "ChurrosTest",
-  "title": "VP Sales",
-  "employeeStatus": {
-    "internalId": "3",
-    "name": "Regular - Full Time"
+  "itemType": {
+    "internalId": "16",
+    "name": "Deduction"
   },
-  "currency": {
-    "internalId": "1",
-    "name": "USA"
+  "vendor": {
+    "internalId": "15",
+    "name": "Carbray Insurance Agency"
   },
-  "email": "churros@cloud-elements.com",
-  "approver": {
-    "internalId": "1302",
-    "name": "Mark Jones"
-  },
-  "initials": "RT",
-  "workCalendar": {
-    "internalId": "1",
-    "name": "Default Work Calendar"
-  },
-  "birthDate": -438278400000,
+  "name": "Churros Sample Item",
   "subsidiary": {
     "internalId": "1",
     "name": "Honeycomb Mfg."
   },
-  "firstName": "churros",
-  "employeeType": {
-    "internalId": "1",
-    "name": "Officer"
-  },
-  "phone": "650-555-9788",
-  "location": {
-    "internalId": "2",
-    "name": "01: San Francisco"
-  },
-  "supervisor": {
-    "internalId": "1302",
-    "name": "Mark Jones"
+  "liabilityAccount": {
+    "internalId": "30",
+    "name": "2040 Payroll Liabilities"
   }
 }

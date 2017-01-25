@@ -1,5 +1,5 @@
 {
-  "lastName":"ChurrosTest",
+  "lastName":"ChurrosTestEmp",
   "title":"VP Sales",
   "employeeStatus":{
     "internalId":"3",
@@ -9,7 +9,7 @@
     "internalId":"1",
     "name":"USA"
   },
-  "email":"churros@cloud-elements.com",
+  "email":"churros-test@cloud-elements.com",
   "approver":{
     "internalId":"1302",
     "name":"Mark Jones"
@@ -24,7 +24,7 @@
     "internalId":"1",
     "name":"Honeycomb Mfg."
   },
-  "firstName":"churros",
+  "firstName":"churros-test-emp",
   "employeeType":{
     "internalId":"1",
     "name":"Officer"
