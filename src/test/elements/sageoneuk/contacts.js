@@ -7,5 +7,5 @@ const chakram = require('chakram');
 suite.forElement('sageaccounting', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds(chakram.put);
   test.should.supportPagination();
-  test.should.supportCeqlSearch('email');
+  test.should.supportCeqlSearchForMultipleRecords('email');
 });

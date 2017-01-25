@@ -1,6 +1,6 @@
 {
-  "departments": {
-    "vendorName": "department",
+  "products": {
+    "vendorName": "products",
     "fields": [{
       "path": "id",
       "vendorPath": "Id"

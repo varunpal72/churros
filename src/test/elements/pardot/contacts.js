@@ -9,12 +9,14 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.should.supportCeqlSearch('id');
 
-  it('should allow GET for contacts/:id/activities,contacts/:id/campaigns and contacts/:id/lists', () => {
-    let contactId = -1;
+  it('should allow GET for contacts/:id/activities,contacts/:id/activities/:id,contacts/:id/campaigns and contacts/:id/lists', () => {
+    let contactId;
     return cloud.get(test.api)
       .then(r => contactId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${contactId}/activities`))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${contactId}/activities`))
+      .then(r => cloud.get('/hubs/marketing/activities'))
+      .then(r => cloud.get(`${test.api}/${ r.body.filter(i => i.campaign.name === 'test camp update')[0].prospect_id }/activities/${r.body.filter(i => i.campaign.name === 'test camp update')[0].id}`))
       .then(r => cloud.get(`${test.api}/${contactId}/campaigns`))
       .then(r => cloud.get(`${test.api}/${contactId}/lists`));
   });

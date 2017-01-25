@@ -1,0 +1,24 @@
+{
+    "primaryEmailAddr": {
+        "address": "atulb@yahoo.com"
+    },
+    "familyName": "Barve2",
+    "givenName": "Atul",
+    "title": "Mr.",
+    "billAddr": {
+        "postalCode": "75019",
+        "countrySubDivisionCode": "TX",
+        "line1": "623 Deforest Court",
+        "city": "Coppell"
+    },
+    "fax": {
+        "freeFormNumber": "(214) 111-2222"
+    },
+    "primaryPhone": {
+        "freeFormNumber": "415-555-6579"
+    },
+    "notes": "My First QB Customer",
+    "mobile": {
+        "freeFormNumber": "(214) 111-2222"
+    }
+}

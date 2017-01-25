@@ -1,0 +1,40 @@
+{
+	"deliveryoptions": {
+		"deliveryoption": "print"
+	},
+	"contactlist": {
+		"contactitem": [{
+			"category": "Primary Contact",
+			"contactname": "Thomas Smith1(C10056)"
+		}, {
+			"category": "Bill To Contact",
+			"contactname": "Thomas Smith1(C10056)"
+		}, {
+			"category": "Ship To Contact",
+			"contactname": "Thomas Smith1(C10056)"
+		}]
+	},
+	"recordno": 28,
+	"comments": "WAT",
+	"visibility": {
+		"visibility_type": null
+	},
+	"totaldue": 2300,
+	"whenmodified": "08/12/2016 05:26:37",
+	"contactinfo": {
+		"contact": {
+			"contactname": "Thomas Smith1(C10056)",
+			"printas": "Thomas Smith1",
+			"companyname": "Thomas Smith1",
+			"taxable": true,
+			"firstname": "Thomas",
+			"lastname": "Smith1"
+		}
+	},
+	"customerid": 10056,
+	"name": "Thomas Smith1",
+	"status": "active",
+	"primary": {
+		"contactname": "Thomas Smith1(C10056)"
+	}
+}
