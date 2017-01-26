@@ -3,9 +3,8 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/jobs');
-
-suite.forElement('marketing', 'jobs', { payload: payload }, (test) => {
-
+//Adding skip as there is no delete
+suite.forElement('marketing', 'jobs', { payload: payload, skip: true }, (test) => {
   it('should support POST /jobs and GET /jobs/:id', () => {
     let jobId;
     return cloud.post(test.api, payload)

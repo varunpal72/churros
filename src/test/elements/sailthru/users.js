@@ -6,10 +6,9 @@ const cloud = require('core/cloud');
 const payload = require('./assets/users');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const userPayload = build({ email: tools.randomEmail() });
-suite.forElement('marketing', 'users', { payload: userPayload }, (test) => {
-
+// Adding skip as there is no delete
+suite.forElement('marketing', 'users', { payload: userPayload, skip: true }, (test) => {
   it('should support CRUS for users', () => {
-
     const updatePayload = {
       "email": "xyz@yahoo.com"
     };
