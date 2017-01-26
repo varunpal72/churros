@@ -108,6 +108,28 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => cloud.delete(`${test.api}/${formulaId}`));
   });
 
+  it('should allow PATCHing a formula', () => {
+    const f = common.genFormula({});
+    const patchBody = {
+      name: `updated-name-${tools.random()}`,
+      active: false,
+      description: 'updated-description'
+    };
+
+    const validator = (formula) => {
+      expect(formula.name).to.equal(patchBody.name);
+      expect(formula.active).to.equal(patchBody.active);
+      expect(formula.description).to.equal(patchBody.description);
+    };
+
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.patch(`${test.api}/${formulaId}`, patchBody))
+      .then(r => validator(r.body))
+      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+  });
+
   test
     .withApi(test.api + '/-1/export')
     .should.return404OnGet();
