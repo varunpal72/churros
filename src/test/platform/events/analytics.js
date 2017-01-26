@@ -15,6 +15,11 @@ const accountAnalyticsSchema = require('./assets/accountAnalytics.schema.json');
 const signatureKey = '1234efgh5678dcba';
 
 suite.forPlatform('events', { name: 'event analytics' }, (test) => {
+  if (props.get('url').indexOf('snapshot') < 0 && props.get('url').indexOf('staging') < 0 && props.get('url').indexOf('production') < 0) {
+    logger.warn('Unable to run formula analytics locally. Skipping.');
+    return;
+  }
+
   let instanceId;
   const element = props.getForKey('events', 'element');
   before(done => provisioner.create(element, common.gen({}, props.getForKey('events', 'url'), signatureKey))
