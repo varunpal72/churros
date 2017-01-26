@@ -926,5 +926,11 @@
       "path": "id",
       "type": "string"
     }]
+  },
+  "pages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
   }
 }
