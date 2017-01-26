@@ -50,6 +50,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('user_session_submit')).click();
       browser.findElement(webdriver.By.name('commit')).click();
       return browser.getCurrentUrl();
+    case 'actoneb':
     case 'acton':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('authorizeLink')).click();
