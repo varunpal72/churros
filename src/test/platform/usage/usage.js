@@ -14,7 +14,7 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
   before(done => {
     // create sfdc instance and make API call to populate usage, just in case
     today = moment().format('YYYY[-]MM[-]DD');
-    yestermonth = moment().subtract(31, 'days').format('YYYY[-]MM[-]DD');
+    yestermonth = moment().subtract(30, 'days').format('YYYY[-]MM[-]DD');
     futureToday = moment().add(1, 'days').format('YYYY[-]MM[-]DD');
     futureTomorrow = moment().add(2, 'days').format('YYYY[-]MM[-]DD');
     // create a sfdc instance and make a request to populate usage
@@ -37,7 +37,7 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
   it('should support usage retrieve and search', () => {
     return cloud.get('usage', usageSchema)
       .then(r => trafficId = r.body[ 0 ].traffic_id)
-      .then(r => cloud.withOptions({ qs: { from: yestermonth, to: today, hub: 'crm', 'keys[]': 'sfdc', 'tags[]': 'churros-instance', status: 'success', searchText: 'AccountId' } }).get('usage', usageSchema))
+      .then(r => cloud.withOptions({ qs: { from: yestermonth, to: futureToday, hub: 'crm', 'keys[]': 'sfdc', 'tags[]': 'churros-instance', status: 'success', searchText: 'AccountId' } }).get('usage', usageSchema))
       .then(r => cloud.get(`usage/${trafficId}`));
   });
 
