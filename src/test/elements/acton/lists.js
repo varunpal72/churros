@@ -13,44 +13,47 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
 
   it('it should support GET all contacts inside a list', () => {
     return cloud.get('/hubs/marketing/lists')
-    .then(r => r.body.filter(r => r.id))
-    .then(filteredLists => cloud.get(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`));
+      .then(r => r.body.filter(r => r.id))
+      .then(filteredLists => cloud.get(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`));
   });
 
   it('it should support POST a contact inside a list', () => {
     return cloud.get('/hubs/marketing/lists')
-    .then(r => r.body.filter(r => r.id))
-    .then(filteredLists => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload));
+      .then(r => r.body.filter(r => r.id))
+      .then(filteredLists => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload));
   });
 
   it('it should support GET a contact inside a list', () => {
     let filteredLists;
 
     return cloud.get('/hubs/marketing/lists')
-    .then(r => r.body.filter(r => r.id))
-    .then(fi => filteredLists = fi)
-    .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
-    .then(contacts => cloud.get(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`));
+      .then(r => r.body.filter(r => r.id))
+      .then(fi => filteredLists = fi)
+      .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
+      .then(contacts => cloud.get(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`));
   });
 
   it('it should support PATCH a contact inside a list', () => {
     let filteredLists;
 
     return cloud.get('/hubs/marketing/lists')
-    .then(r => r.body.filter(r => r.id))
-    .then(fi => filteredLists = fi)
-    .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
-    .then(contacts => cloud.patch(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`, contactUpdatePayload));
+      .then(r => r.body.filter(r => r.id))
+      .then(fi => filteredLists = fi)
+      .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
+      .then(contacts => cloud.patch(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`, contactUpdatePayload));
   });
 
   it('it should support DELETE a contact inside a list', () => {
     let filteredLists;
 
     return cloud.get('/hubs/marketing/lists')
-    .then(r => r.body.filter(r => r.id))
-    .then(fi => filteredLists = fi)
-    .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
-    .then(contacts => cloud.delete(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`));
+      .then(r => r.body.filter(r => r.id))
+      .then(fi => filteredLists = fi)
+      .then(() => cloud.post(`/hubs/marketing/lists/${filteredLists[0].id}/contacts`, contactPayload))
+      .then(contacts => cloud.delete(`/hubs/marketing/lists/${filteredLists[0].id}/contacts/${contacts.body[0].id}`));
   });
 
+  it('should sleep for 60 seconds to avoid rate limits', () => {
+    return tools.sleep(60);
+  });
 });
