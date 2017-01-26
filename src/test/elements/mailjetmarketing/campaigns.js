@@ -3,13 +3,15 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/campaigns');
-const expect = require('chakram').expect;
 
-suite.forElement('marketing', 'campaigns', { payload: payload, skip: true }, (test) => {
-	test.should.supportPagination();
-	test.should.return200OnGet();
-
-	it('should support PATCH', () => {
-		cloud.update(`/hubs/marketing/campaigns/1`, payload, r => expect(r).to.have.statusCode(200));
-	});
+suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
+  test.should.supportPagination();
+  test.withOptions({ qs: { where: `updated_from ='2017-01-19'` } }).should.return200OnGet();
+  it(`should support SRU for ${test.api}`, () => {
+    let campaignId;
+    return cloud.get(test.api)
+      .then(r => campaignId = r.body[0].ID)
+      .then(r => cloud.get(`${test.api}/${campaignId}`))
+      .then(r => cloud.patch(`/hubs/marketing/campaigns/1`, payload));
+  });
 });
