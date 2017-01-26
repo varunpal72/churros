@@ -921,13 +921,13 @@
       "type": "string"
     }]
   },
-  "messages": {
+  "pages": {
     "fields": [{
       "path": "id",
       "type": "string"
     }]
   },
-  "pages": {
+   "messages": {
     "fields": [{
       "path": "id",
       "type": "string"
