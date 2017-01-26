@@ -24,12 +24,13 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
   });
 
-  it(`should support GET and pagination for /hubs/crm/incindents/:incidentIdId/history`, () => {
+  it('should support GET and pagination for /hubs/crm/incindents/:incidentIdId/history', () => {
     return cloud.get(test.api)
       .then(r => incidentId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${incidentId}/history`))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${incidentId}/history`));
   });
+
   let path = __dirname + '/assets/temp.jpg';
   const attachments = { formData: { file: fs.createReadStream(path) } };
   it('should support RUD for incidents/notes/attachments', () => {
@@ -38,7 +39,7 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.post(`${test.api}/${incidentId}/notes`, note))
       .then(r => noteId = r.body.id)
       .then(r => cloud.withOptions(attachments).put(`${test.api}/${incidentId}/notes/${noteId}/attachments`, undefined))
-   // .then(r => cloud.get(`${test.api}/${incidentId}/notes/${noteId}/attachments`)) 
+      .then(r => cloud.get(`${test.api}/${incidentId}/notes/${noteId}/attachments`))
       .then(r => cloud.delete(`${test.api}/${incidentId}/notes/${noteId}/attachments`))
       .then(r => cloud.delete(`${test.api}/${incidentId}/notes/${noteId}`))
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
