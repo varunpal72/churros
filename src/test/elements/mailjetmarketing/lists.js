@@ -9,7 +9,8 @@ const build = (overrides) => Object.assign({}, payload, overrides);
 const listPayload = build({ Name: tools.random() });
 
 suite.forElement('marketing', 'lists', { payload: listPayload }, (test) => {
-
+  test.should.supportPagination();
+  test.withOptions({ qs: { where: `CreatedAt ='2017-01-19'` } }).should.return200OnGet();
   it(`should support CRUDS for ${test.api}`, () => {
     let updatePayload = {
       "Name": tools.random()
@@ -17,8 +18,6 @@ suite.forElement('marketing', 'lists', { payload: listPayload }, (test) => {
     let listID;
     return cloud.post(test.api, listPayload)
       .then(r => listID = r.body.ID)
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
-      .then(r => cloud.withOptions({ qs: { where: `CreatedAt ='2017-01-19'` } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${listID}`))
       .then(r => cloud.patch(`${test.api}/${listID}`, updatePayload))
       .then(r => cloud.delete(`${test.api}/${listID}`));
