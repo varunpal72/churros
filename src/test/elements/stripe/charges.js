@@ -9,19 +9,16 @@ const updateCharges = () => ({
   "receipt_email": tools.randomEmail()
 });
 
-suite.forElement('payment', 'charges', { payload: payload, skip: true }, (test) => {
+suite.forElement('payment', 'charges', { payload: payload }, (test) => {
   test.should.supportCrs();
-  it(`should allow CU for ${test.api}`, () => {
+  it(`should allow CUS for ${test.api}`, () => {
     let chargeId;
     return cloud.post(`${test.api}`, payload)
       .then(r => chargeId = r.body.id)
-      .then(r => cloud.patch(`${test.api}/${chargeId}`,updateCharges()));
+      .then(r => cloud.patch(`${test.api}/${chargeId}`, updateCharges()))
+      .then(r => cloud.post(`${test.api}/${chargeId}/capture`))
+      .then(r => cloud.withOptions({ qs: { where: `currency='usd' and  created=1485255289` } }).get(test.api));
   });
-  test.should.supportSr();
-  it(`should allow Patch for ${test.api}`, () => {
-    let chargeId;
-    return cloud.get(`${test.api}`)
-      .then(r => chargeId = r.body[0].id)
-      .then(r => cloud.patch(`${test.api}/${chargeId}`,updateCharges()));
-  });
+  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
 });
