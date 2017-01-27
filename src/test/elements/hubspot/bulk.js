@@ -3,7 +3,6 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const props = require('core/props');
 const tools = require('core/tools');
 
 suite.forElement('marketing', 'bulk', (test) => {
