@@ -104,12 +104,12 @@ suite.forElement('finance', 'employees', { payload: payload() }, (test) => {
   it(`should allow PATCH for ${test.api}/{id}`, () => {
     let employeeId, contactName;
     return cloud.post(test.api, payload())
-    .then(r => employeeId = r.body.id)
-    .then(r => cloud.get(`${test.api}/${employeeId}`))
-    .then(r => contactName = r.body.personalinfo.contact.contactname)
-    .then(r => cloud.patch(`${test.api}/${employeeId}`, employeesPatch(contactName)))
-    .then(r => cloud.delete(`${test.api}/${employeeId}`));
+      .then(r => employeeId = r.body.id)
+      .then(r => cloud.get(`${test.api}/${employeeId}`))
+      .then(r => contactName = r.body.personalinfo.contact.contactname)
+      .then(r => cloud.patch(`${test.api}/${employeeId}`, employeesPatch(contactName)))
+      .then(r => cloud.delete(`${test.api}/${employeeId}`));
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
+  test.withName('should support updated > {date} Ceql search').withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });

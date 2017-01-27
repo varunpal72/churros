@@ -28,8 +28,7 @@ const payload = () => ({
   "currency": "USD",
   "exchrate": "0.875",
   "customfields": {
-    "customfield": [
-      {
+    "customfield": [{
         "customfieldname": "TESTDATer1",
         "customfieldvalue": "12/10/2001"
       },
@@ -40,14 +39,12 @@ const payload = () => ({
     ]
   },
   "invoiceitems": {
-    "lineitem": [
-      {
+    "lineitem": [{
         "glaccountno": "4000",
         "amount": "3133",
         "departmentid": "10",
         "customfields": {
-          "customfield": [
-            {
+          "customfield": [{
               "customfieldname": "TESTDATer2",
               "customfieldvalue": "12/10/2002"
             },
@@ -63,8 +60,7 @@ const payload = () => ({
         "amount": "40",
         "departmentid": "10",
         "customfields": {
-          "customfield": [
-            {
+          "customfield": [{
               "customfieldname": "TESTDATEer3",
               "customfieldvalue": "12/10/2003"
             },
@@ -84,5 +80,5 @@ suite.forElement('finance', 'invoices', { payload: payload() }, (test) => {
     return cloud.cruds(test.api, payload());
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
+  test.withName('should support updated > {date} Ceql search').withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });
