@@ -1,0 +1,8 @@
+{
+  "ItemNumber" : "testItemRest120201",
+  "Description" : "A testy churros product",
+  "OrganizationId" : 204,
+  "Name" : "Test Product Name REST",
+  "DefaultUOMCode" : "Ea",
+  "ProductTypeCode" : "GOODS"
+}
