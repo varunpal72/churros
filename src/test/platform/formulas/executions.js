@@ -571,7 +571,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
-      .then(r => tools.wait.upTo(10000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(20000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
       })))
       .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator))

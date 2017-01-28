@@ -11,7 +11,7 @@ const payload = () => ({
   "inventory": "10"
 });
 
-suite.forElement('finance', 'items', { payload: payload(), skip: true }, (test) => {
+suite.forElement('finance', 'items', { payload: payload() }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
 });
