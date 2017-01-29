@@ -28,6 +28,7 @@ suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
           .then(r => cloud.post(`${test.api}/${accountId}/notes`,notes))
           .then(r => noteId = r.body.Id)
           .then(r => cloud.get(`${test.api}/${accountId}/notes/${noteId}`))
+          .then(r => cloud.patch(`${test.api}/${accountId}/notes/${noteId}`,notes))
           .then(r => cloud.delete(`${test.api}/${accountId}/notes/${noteId}`))
           .then(r => cloud.post(`${test.api}/${accountId}/tasks`,tasks))
           .then(r => taskId = r.body.Id)
