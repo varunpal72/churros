@@ -10,5 +10,6 @@ const payload = {
   }
 };
 suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
+  test.withOptions({ qs: { page: 1 } }).should.return200OnGet();
   test.should.supportCruds();
 });
