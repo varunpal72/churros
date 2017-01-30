@@ -933,7 +933,6 @@
       "type": "string"
     }]
   },
-
   "installedProducts": {
     "fields": [{
       "path": "id",
@@ -946,8 +945,6 @@
       "type": "string"
     }]
   },
-
-
   "workOrders": {
     "fields": [{
       "path": "id",
