@@ -927,7 +927,34 @@
       "type": "string"
     }]
   },
-   "messages": {
+  "messages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+
+  "installedProducts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "orderParts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+
+
+  "workOrders": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "serviceContracts": {
     "fields": [{
       "path": "id",
       "type": "string"
