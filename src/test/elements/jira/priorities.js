@@ -7,7 +7,7 @@ const uri = '/hubs/helpdesk/priorities';
 suite.forElement('helpdesk', 'priorities', (test) => {
 let priorityId;
   it('should allow CRUDS for /priorities', () => {
-    cloud.get(uri)
+    return cloud.get(uri)
     .then(r => priorityId = r.body[0].id)
     .then(r => cloud.get(uri + '/' + priorityId));
   });
