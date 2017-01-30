@@ -7,7 +7,7 @@ const schema = require('./assets/task.schema.json');
 const tasksSchema = require('./assets/tasks.schema.json');
 
 suite.forElement('ocr', 'tasks', (test) => {
-  it('should allow creating a task for an uploaded a file, and should get the created task', () => {
+  it('should allow creating a task for an uploaded a file, get the created task and delete task', () => {
     let taskId = "-1";
     let path = __dirname + '/assets/brady.jpg';
 
