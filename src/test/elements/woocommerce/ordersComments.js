@@ -31,11 +31,11 @@ const createOrder = (customerId, productId) => {
 const payload = {
   "note": "Churros Comment",
   "customer_note": false
-}
+};
 
 const update = {
   "note": "Updated Churros Comment"
-}
+};
 
 suite.forElement('ecommerce', 'ordersComments', { payload: order }, (test) => {
   let commentApi = orderApi + '/';
