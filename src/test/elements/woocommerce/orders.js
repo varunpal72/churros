@@ -5,6 +5,8 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const order = require('./assets/orders');
 const product = require('./assets/products');
+const productApi = '/hubs/ecommerce/products';
+const customerApi = '/hubs/ecommerce/customers';
 
 const customer = () => ({
   first_name: 'Bill',
@@ -25,21 +27,25 @@ const createOrder = (customerId, productId) => {
   return newOrder;
 };
 
-suite.forElement('ecommerce', 'orders', { payload: order, skip: true }, (test) => {
-  it('should allow CRUDS for ' + test.api, () => {
-    let customerId, productId, orderId;
-    return cloud.post('/hubs/ecommerce/customers', customer())
-      .then(r => customerId = r.body.id)
-      .then(r => cloud.post('/hubs/ecommerce/products', product))
-      .then(r => productId = r.body.id)
-      .then(r => cloud.post(test.api, createOrder(customerId, productId)))
-      .then(r => orderId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + orderId))
-      .then(r => cloud.update(test.api + '/' + orderId, order))
-      .then(r => cloud.get('/hubs/ecommerce/products/' + productId+'/orders'))
-      .then(r => cloud.delete('/hubs/ecommerce/orders/' + orderId))
-      .then(r => cloud.delete('/hubs/ecommerce/customers/' + customerId))
-      .then(r => cloud.delete('/hubs/ecommerce/products/' + productId));
-  });
+suite.forElement('ecommerce', 'orders', { payload: order }, (test) => {
+  it('should allow CRUDS for ' + test.api + ', S for ' +
+    customerApi + '/{id}/orders and S for ' + productApi + '/{id}/orders', () => {
+      let customerId, productId, orderId;
+      return cloud.post(customerApi, customer())
+        .then(r => customerId = r.body.id)
+        .then(r => cloud.post(productApi, product))
+        .then(r => productId = r.body.id)
+        .then(r => cloud.post(test.api, createOrder(customerId, productId)))
+        .then(r => orderId = r.body.id)
+        .then(r => cloud.get(test.api + '/' + orderId))
+        .then(r => cloud.update(test.api + '/' + orderId, order))
+        .then(r => cloud.get(customerApi + '/' + customerId + '/orders'))
+        .then(r => cloud.get(productApi + '/' + productId + '/orders'))
+        .then(r => cloud.get(test.api))
+        .then(r => cloud.delete(test.api + '/' + orderId))
+        .then(r => cloud.delete(productApi + '/' + productId))
+        .then(r => cloud.delete(customerApi + '/' + customerId));
+    });
+
   test.should.supportPagination();
 });

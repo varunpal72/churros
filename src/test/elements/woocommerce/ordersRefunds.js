@@ -29,31 +29,35 @@ const createOrder = (customerId, productId) => {
 };
 
 const payload = {
-  "note": "Churros Comment",
-  "customer_note": false
-}
+  "order_refund": {
+    "amount": "10"
+  }
+};
 
 const update = {
-  "note": "Updated Churros Comment"
-}
+  "order_refund": {
+    "reason": "faulty product"
+  }
+};
 
-suite.forElement('ecommerce', 'ordersComments', { payload: order }, (test) => {
-  let commentApi = orderApi + '/';
-  it('should allow CRUDS for ' + commentApi + '{id}/comments', () => {
-    let customerId, productId, orderId, commentId;
+suite.forElement('ecommerce', 'ordersRefunds', { payload: order }, (test) => {
+  let refundApi = orderApi + '/';
+  it('should allow CRUDS paginating with page and pageSize for ' + refundApi + '{id}/refunds', () => {
+    let customerId, productId, orderId, refundId;
     return cloud.post(customerApi, customer())
       .then(r => customerId = r.body.id)
       .then(r => cloud.post(productApi, product))
       .then(r => productId = r.body.id)
       .then(r => cloud.post(orderApi, createOrder(customerId, productId)))
       .then(r => orderId = r.body.id)
-      .then(r => commentApi = commentApi + orderId + '/comments')
-      .then(r => cloud.post(commentApi, payload))
-      .then(r => commentId = r.body.id)
-      .then(r => cloud.get(`${commentApi}/${commentId}`))
-      .then(r => cloud.patch(`${commentApi}/${commentId}`, update))
-      .then(r => cloud.get(commentApi))
-      .then(r => cloud.delete(`${commentApi}/${commentId}`))
+      .then(r => refundApi = refundApi + orderId + '/refunds')
+      .then(r => cloud.post(refundApi, payload))
+      .then(r => refundId = r.body.id)
+      .then(r => cloud.get(`${refundApi}/${refundId}`))
+      .then(r => cloud.patch(`${refundApi}/${refundId}`, update))
+      .then(r => cloud.get(refundApi))
+      .then(r => cloud.get(refundApi, { qs: { page: 1, pageSize: 1 } }))
+      .then(r => cloud.delete(`${refundApi}/${refundId}`))
       .then(r => cloud.delete(orderApi + '/' + orderId))
       .then(r => cloud.delete(customerApi + '/' + customerId))
       .then(r => cloud.delete(productApi + '/' + productId));

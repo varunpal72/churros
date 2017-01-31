@@ -1,18 +1,19 @@
 'use strict';
 
 const suite = require('core/suite');
- const payload = require('./assets/attributes');
- const cloud = require('core/cloud');
+const payload = require('./assets/attributes');
+const cloud = require('core/cloud');
+const tools = require('core/tools');
+const api = '/hubs/ecommerce/products/attributes';
 
-
-suite.forElement('ecommerce', 'attributes', {skip: true}, (test) => {
-  it('Testing attributes', () => {
-    let fileId;
-    return cloud.post('/hubs/ecommerce/products/attributes', payload)
-    .then(r => fileId = r.body.product_attribute.id)
-    .then(r => cloud.get('/hubs/ecommerce/products/attributes'))
-    .then(r => cloud.get('/hubs/ecommerce/products/attributes/' + fileId))
-    .then(r => cloud.patch('/hubs/ecommerce/products/attributes/' + fileId, payload))
-    .then(r => cloud.delete('/hubs/ecommerce/products/attributes/' + fileId));
+suite.forElement('ecommerce', 'attributes', null, (test) => {
+  it(`should allow CRUDS for ${api}`, () => {
+    let attributeId;
+    return cloud.post(api, payload)
+      .then(r => attributeId = r.body.id)
+      .then(r => cloud.get(api))
+      .then(r => cloud.get(api + '/' + attributeId))
+      .then(r => cloud.patch(api + '/' + attributeId, { product_attribute: { name: tools.random() } }))
+      .then(r => cloud.delete(api + '/' + attributeId));
   });
 });

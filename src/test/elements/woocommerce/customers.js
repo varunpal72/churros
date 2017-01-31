@@ -11,7 +11,7 @@ const customer = (custom) => ({
   password: tools.random()
 });
 
-suite.forElement('ecommerce', 'customers', { payload: customer({}), skip: true }, (test) => {
-  test.should.supportCruds();
+suite.forElement('ecommerce', 'customers', { payload: customer({}) }, (test) => {
+  test.withOptions({ churros: { updatePayload: { first_name: tools.random() } } }).should.supportCruds();
   test.should.supportPagination();
 });
