@@ -15,7 +15,7 @@ suite.forElement('payment', 'orders', (test) => {
   test.should.supportSr();
   it(`should allow CU for ${test.api}`, () => {
     let orderId;
-    return cloud.post(`${test.api}`, payload)
+    return cloud.post(test.api, payload)
       .then(r => orderId = r.body.id)
       .then(r => cloud.patch(`${test.api}/${orderId}`, updateOrders()))
       .then(r => cloud.withOptions({ qs: { where: `created >= 1464041554` } }).get(test.api))

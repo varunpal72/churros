@@ -13,7 +13,7 @@ suite.forElement('payment', 'transfers', (test) => {
   test.should.supportSr();
   it(`should allow PATCH for ${test.api}`, () => {
     let transferId;
-    return cloud.post(`${test.api}`, payload)
+    return cloud.post(test.api, payload)
       .then(r => transferId = r.body.id)
       .then(r => cloud.patch(`${test.api}/${transferId}`, updateTransfers()))
       .then(r => cloud.withOptions({ qs: { where: `created >= 1463760971` } }).get(test.api))
