@@ -17,4 +17,5 @@ suite.forElement('crm', 'leads', { payload: tasksPayload }, (test) => {
   };
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
+  test.should.supportCeqlSearchForMultipleRecords('subject');
 });
