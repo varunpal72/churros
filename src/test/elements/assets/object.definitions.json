@@ -739,6 +739,12 @@
       "type": "string"
     }]
   },
+  "friendships": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "terms": {
     "fields": [{
       "path": "id",
@@ -872,12 +878,12 @@
   },
   "activity-events": {
     "fields": [{
-        "path": "id",
-        "type": "string"
-      }, {
-        "path": "subject",
-        "type": "string"
-      }]
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "subject",
+      "type": "string"
+    }]
   },
   "contactS": {
     "fields": [{

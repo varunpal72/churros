@@ -7,9 +7,12 @@ const payload = require('./assets/friendships');
 suite.forElement('social', 'friendships', { payload: payload }, (test) => {
   it(`should support CDS for ${test.api}`, () => {
     let userId;
+    let sourceScreenName;
     return cloud.post(test.api, payload)
-      .then(r => cloud.withOptions({ qs: { where: 'source_screen_name = \'madhuri_ce\' and target_screen_name = \'johnsnow_ce\'' } }).get(test.api))
-      .then(r => userId = r.body.target.id_str)
+      .then(r => cloud.get('/hubs/social/accounts/settings'))
+      .then(r => sourceScreenName = r.body.screen_name)
+      .then(r => cloud.withOptions({ qs: { where: `source_screen_name = \'${sourceScreenName}\' and target_screen_name = \'${payload.screen_name}\'` } }).get(test.api))
+      .then(r => userId = r.body.id)
       .then(r => cloud.delete(`${test.api}/${userId}`));
   });
   test.withApi(`${test.api}/incoming`).should.supportPagination();
