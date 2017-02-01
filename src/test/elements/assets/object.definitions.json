@@ -296,7 +296,7 @@
       "type": "string"
     }, {
       "path": "name",
-      "type": "Name"
+      "type": "string"
     }, {
       "path": "accountId",
       "type": "string"
