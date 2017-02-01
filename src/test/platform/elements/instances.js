@@ -86,13 +86,13 @@ suite.forPlatform('elements/instances', opts, (test) => {
       return r.body.filter(config => config.key === 'filter.response.nulls')[0];
     };
 
-    const validateNoNulls = (isZero) => {
+    const validateNullsPresent = (shouldHaveNulls) => {
       return cloud.get('hubs/crm/contacts?pageSize=1')
         .then(r => {
           let keys = Object.keys(r.body[0]);
           return keys.filter(key => r.body[0][key] === null);
         })
-        .then(r => expect(r.length === 0).to.equal(isZero));
+        .then(r => expect(r.length > 0).to.equal(shouldHaveNulls));
     };
 
     let configuration;
@@ -103,12 +103,12 @@ suite.forPlatform('elements/instances', opts, (test) => {
         configuration = r;
         expect(configuration.propertyValue).to.equal('true');
       })
-      .then(r => validateNoNulls(true))
+      .then(r => validateNullsPresent(false))
 
       .then(r => cloud.patch(`/instances/${sfdcId}/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'false' })))
       .then(r => cloud.get(`/instances/${sfdcId}/configuration/${r.body.id}`))
       .then(r => expect(r.body.propertyValue).to.equal('false'))
-      .then(r => validateNoNulls(false));
+      .then(r => validateNullsPresent(true));
   });
 
   it('should support CRUD by key', () => crudsInstance('elements/jira/instances'));
