@@ -127,4 +127,18 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => cloud.delete(`${test.api}/${formulaId}/monitored`, {}))
       .then(r => cloud.delete(`${test.api}/${formulaId}`));
   });
+
+  it('should sanitize formula name on create and update', () => {
+    const name = `churros-xss-${tools.random()}`;
+    const updatedName = `churros-xss-updated-${tools.random()}`;
+    const f = common.genFormula({ name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${name}</a>` });
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => formulaId = r.body.id)
+      .then(() => cloud.get(`${test.api}/${formulaId}`))
+      .then(r => expect(r.body.name).to.equal(name))
+      .then(() => cloud.put(`${test.api}/${formulaId}`, { name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${updatedName}</a>`}))
+      .then(r => expect(r.body.name).to.equal(updatedName))
+      .then(() => cloud.delete(`${test.api}/${formulaId}`));
+  });
 });
