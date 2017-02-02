@@ -11,9 +11,8 @@ suite.forElement('esignature', 'envelopes', { payload: payload }, (test) => {
     "value": "CANCEL"
   };
 
-
-  it('should allow GET for /hubs/esignature/envelopes', () => {
-    return cloud.get(`${test.api}`)
+  it('should allow CRDS for /hubs/esignature/envelopes and sub-resources', () => {
+    return cloud.get(test.api)
       .then(r => cloud.withOptions(opts).postFile(`${test.api}`, `${__dirname}/assets/attach.txt`))
       .then(r => agreementId = r.body.envelopeId)
       .then(r => cloud.get(`${test.api}/${agreementId}`))
@@ -22,7 +21,5 @@ suite.forElement('esignature', 'envelopes', { payload: payload }, (test) => {
       .then(r => cloud.get(`${test.api}/${agreementId}/documents/${documentId}`))
       .then(r => cloud.get(`${test.api}/${agreementId}/signed-documents`))
       .then(r => cloud.put(`${test.api}/${agreementId}/status`, statusPayload));
-
   });
-
 });
