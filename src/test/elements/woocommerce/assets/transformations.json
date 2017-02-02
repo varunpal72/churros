@@ -21,7 +21,7 @@
     }]
   },
   "discounts": {
-    "vendorName": "coupons",
+    "vendorName": "discounts",
     "fields": [{
       "path": "id",
       "vendorPath": "id"
