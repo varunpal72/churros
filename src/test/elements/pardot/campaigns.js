@@ -11,7 +11,7 @@ suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.withName('should support searching campaigns by created_after').withOptions({ qs: { where: 'created_after=\'2015-01-01\'' } }).should.return200OnGet();
 
-  it('should allow PUT for /hubs/marketing/campaigns/:id/contacts', () => {
+  it('should allow PUT for /campaigns/:id/contacts and /campaigns/:id/leads', () => {
     let campaignId, contactId, leadId, contactCampaignPayload, leadCampaignPayload;
     return cloud.get(test.api)
       .then(r => campaignId = r.body[0].id)
