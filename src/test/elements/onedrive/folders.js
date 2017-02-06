@@ -13,12 +13,15 @@ suite.forElement('documents', 'folders', (test) => {
     folderPayload.path += `-${random}`;
     folderPayload.name += `-${random}`;
     let copyPath = "/"+tools.random()+"/"+ folderPayload.name;
+    let copyPath2 = "/"+tools.random()+"/"+ folderPayload.name;
     const build = (overrides) => Object.assign({}, folderPayload, overrides);
     const folderCopyPayload = build({ name: folderPayload.name, path: copyPath });
+    const folderCopyPayload2 = build({ name: folderPayload.name, path: copyPath2 });
     return cloud.post('/hubs/documents/folders', folderPayload)
       .then(r => folder = r.body)
       .then(r => cb(folder))
       .then(r => cloud.withOptions({ qs: { path: folder.path } }).post('/hubs/documents/folders/copy',folderCopyPayload))
+      .then(r => cloud.post(`/hubs/documents/folders/${folder.id}/copy`,folderCopyPayload2))
       .then(r => cloud.withOptions({ qs: { path: folder.path } }).delete('/hubs/documents/folders'));
   };
 
