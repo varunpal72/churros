@@ -5,15 +5,19 @@ const payload = require('./assets/contacts');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
-  //test.should.supportCruds();
-  //test.should.supportPagination();
-  const build = (overrides) => Object.assign({}, payload, overrides);
-  const contactsPayload = build({ lastName: tools.random(), firstName: tools.random() });
-  it('should get all the activities of the contact', () => {
+  test.should.supportPagination();
+  it('should test CRUD for contacts and get all activities', () => {
+    const updatePayload =  {
+      "properties": {
+        "lastName": tools.random()
+      }
+    };
     let contactId;
-    return cloud.get(`${test.api}/396139/activities`);
-    //cloud.post(test.api, contactsPayload)
-    //  .then(r => contactId = r.body.vid)
-    //  .then(r => cloud.get(`${test.api}/${contactId}/activities`));
+    return cloud.post(test.api, payload)
+      .then(r => contactId = r.body.vid)
+      .then(r => cloud.get(`${test.api}/${contactId}`))
+      .then(r => cloud.get(`${test.api}/${contactId}/activities`))
+      .then(r => cloud.patch(`${test.api}/${contactId}`, updatePayload))
+      .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
