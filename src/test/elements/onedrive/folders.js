@@ -11,14 +11,18 @@ suite.forElement('documents', 'folders', (test) => {
     let folder;
     let random = `${tools.random()}`;
     folderPayload.path += `-${random}`;
-    folderPayload.name += `-${random}`;
+    folderPayload.name += `-${random}`
+    let copyPath = "/"+tools.random()+"/"+ folderPayload.name;
+    const build = (overrides) => Object.assign({}, folderPayload, overrides);
+    const folderCopyPayload = build({ name: folderPayload.name, path: copyPath });
     return cloud.post('/hubs/documents/folders', folderPayload)
       .then(r => folder = r.body)
       .then(r => cb(folder))
+      .then(r => cloud.withOptions({ qs: { path: folder.path } }).post('/hubs/documents/folders/copy',folderCopyPayload))
       .then(r => cloud.withOptions({ qs: { path: folder.path } }).delete('/hubs/documents/folders'));
   };
 
-  it('should allow CD /folders', () => {
+  it('should allow CD /folders and should allow POST /folders/{id}/copy and POST /folders/copy', () => {
     let folder1;
     return cloud.post('/hubs/documents/folders', folderPayload)
       .then(r => folder1 = r.body)
@@ -55,7 +59,6 @@ suite.forElement('documents', 'folders', (test) => {
         .then(r => cloud.patch(`/hubs/documents/folders/${updatedFolder.id}/metadata`, folder));
 
     };
-
     return folderWrap(cb);
   });
 });
