@@ -22,7 +22,7 @@ suite.forElement('documents', 'folders', (test) => {
       .then(r => cloud.withOptions({ qs: { path: folder.path } }).delete('/hubs/documents/folders'));
   };
 
-  it('should allow CD /folders and should allow POST /folders/{id}/copy and POST /folders/copy', () => {
+  it('should allow CD /folders', () => {
     let folder1;
     return cloud.post('/hubs/documents/folders', folderPayload)
       .then(r => folder1 = r.body)
