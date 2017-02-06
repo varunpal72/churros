@@ -11,7 +11,7 @@ suite.forElement('documents', 'folders', (test) => {
     let folder;
     let random = `${tools.random()}`;
     folderPayload.path += `-${random}`;
-    folderPayload.name += `-${random}`
+    folderPayload.name += `-${random}`;
     let copyPath = "/"+tools.random()+"/"+ folderPayload.name;
     const build = (overrides) => Object.assign({}, folderPayload, overrides);
     const folderCopyPayload = build({ name: folderPayload.name, path: copyPath });
