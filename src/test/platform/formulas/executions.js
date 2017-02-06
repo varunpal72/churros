@@ -454,7 +454,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
   });
 
-  it('should support logging on a script step that fails', () => {
+  it('should return any console.log statements on a script step that fails', () => {
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
