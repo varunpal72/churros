@@ -7,15 +7,15 @@ const cloud = require('core/cloud');
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportPagination();
   it('should test CRUD for contacts and get all activities', () => {
-    const updatePayload =  {
+    const updatePayload = {
       "properties": {
         "lastName": tools.random()
       }
     };
     let contactId;
-    const options = { qs: { pageSize: 1}};
+    const options = { qs: { pageSize: 1 } };
     return cloud.post(test.api, payload)
-      .then(r => contactId = r.body.vid)
+      .then(r => contactId = r.body.id)
       .then(r => cloud.get(`${test.api}/${contactId}`))
       .then(r => cloud.get(`${test.api}`))
       .then(r => cloud.get(`${test.api}/${contactId}/activities`))
@@ -26,4 +26,3 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
-
