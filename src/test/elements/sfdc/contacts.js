@@ -38,8 +38,9 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 
-  it.skip('should allow CRUDS for /contacts/:id/attachments', () => {
+  it('should allow CRUDS for /contacts/:id/attachments', () => {
     let contactId, attachmentId;
+
     return cloud.post(test.api, contact())
       .then(r => contactId = r.body.id)
       .then(r => cloud.postFile(`/hubs/crm/Contact/${contactId}/attachments`, __dirname + '/assets/attach.txt'))
