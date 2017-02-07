@@ -22,7 +22,7 @@ suite.forElement('crm', 'deals', { payload: payload }, (test) => {
 
   test.withOptions({skip:false}).should.supportCrus();
   test.should.supportPagination();
-  test.should.supportCeqlSearchForMultipleRecords('LastName');
+  test.should.supportCeqlSearchForMultipleRecords('DealSize');
 
   // delete contact and account created for deal
   after(() => cloud.delete(`hubs/crm/accounts/${payload.CustomerId}`)
