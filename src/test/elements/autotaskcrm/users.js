@@ -8,9 +8,8 @@ const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 
 suite.forElement('crm', 'users', { payload: payload }, (test) => {
-  let userpayload;  
-  it(`should support CRUS, pagination and where for /hubs/crm/users`, () => {
-    let contactId,userId,userPayload;
+    it(`should support CRUS, pagination and where for /hubs/crm/users`, () => {
+    let userId,userPayload;
     return cloud.post('/hubs/crm/contacts', contactPayload)
       .then(r => userPayload = build({ userName: tools.randomEmail(), contactID: r.body.id }))
       .then(r => cloud.post(test.api, userPayload))
