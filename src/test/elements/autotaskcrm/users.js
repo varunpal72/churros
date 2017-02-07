@@ -9,7 +9,7 @@ const build = (overrides) => Object.assign({}, payload, overrides);
 
 suite.forElement('crm', 'users', { payload: payload }, (test) => {
   let userpayload;  
-  it(`should support CRUS for /hubs/crm/users`, () => {
+  it(`should support CRUS, pagination and where for /hubs/crm/users`, () => {
     let contactId,userId,userPayload;
     return cloud.post('/hubs/crm/contacts', contactPayload)
       .then(r => userPayload = build({ userName: tools.randomEmail(), contactID: r.body.id }))
