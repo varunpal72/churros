@@ -968,5 +968,11 @@
       "path": "id",
       "type": "string"
     }]
-  }
+  },
+  "stacks": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ }  
 }
