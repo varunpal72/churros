@@ -13,12 +13,17 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
       }
     };
     let contactId;
+    const options = { qs: { pageSize: 1}};
     return cloud.post(test.api, payload)
-      .then(r => contactId = r.body.id)
+      .then(r => contactId = r.body.vid)
       .then(r => cloud.get(`${test.api}/${contactId}`))
       .then(r => cloud.get(`${test.api}`))
       .then(r => cloud.get(`${test.api}/${contactId}/activities`))
+      .then(r => cloud.withOptions(options).get(`${test.api}/${contactId}/activities`))
+      .then(r => options.qs.nextPage = r.response.headers['elements-next-page-token'])
+      .then(r => cloud.withOptions(options).get(`${test.api}/${contactId}/activities`))
       .then(r => cloud.patch(`${test.api}/${contactId}`, updatePayload))
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
+
