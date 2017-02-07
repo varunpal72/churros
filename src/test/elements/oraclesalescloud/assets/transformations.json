@@ -17,6 +17,15 @@
       }
     ]
   },
+  "activities": {
+    "vendorName": "activities",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "ActivityNumber"
+      }
+    ]
+  },
   "leads": {
     "vendorName": "leads",
     "fields": [
