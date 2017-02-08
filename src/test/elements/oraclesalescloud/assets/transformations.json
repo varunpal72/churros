@@ -43,14 +43,5 @@
         "vendorPath": "OptyNumber"
       }
     ]
-  },
-  "products": {
-    "vendorName": "products",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "productsUniqID"
-      }
-    ]
   }
 }
