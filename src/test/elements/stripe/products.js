@@ -9,4 +9,7 @@ const createProduct = () => ({
 
 suite.forElement('payment', 'products', { payload: createProduct() }, (test) => {
   test.should.supportCruds();
+  test.withApi(test.api).withOptions({ qs: { where: `active='true'` } }).should.return200OnGet();
+  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
 });

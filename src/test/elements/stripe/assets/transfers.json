@@ -1,0 +1,9 @@
+{
+  "statement_descriptor": "aaa",
+  "amount": 400,
+  "metadata": {},
+  "destination": "acct_188ReCA6PwQn1VtN",
+  "description": "f25rlp41tx83k66jvpldi",
+  "currency": "usd",
+  "source_type": "card"
+}
