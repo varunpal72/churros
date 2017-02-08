@@ -16,6 +16,7 @@ suite.forElement('documents', 'files', (test) => {
       .then(r => fileId = r.body.id)
       .then(r => cloud.get('/hubs/documents/files' + '/' + fileId))
       .then(r => cloud.get('/hubs/documents/files' + '/' + fileId + '/metadata'))
+      .then(r => cloud.withOptions({ qs: query }).get('/hubs/documents/files/metadata'))
       .then(r => cloud.withOptions({ qs: query }).get('/hubs/documents/files'))
       .then(r => cloud.withOptions({ qs: query }).delete('/hubs/documents/files'));
 
@@ -25,6 +26,7 @@ suite.forElement('documents', 'files', (test) => {
     let path = __dirname + '/assets/file.txt';
     return cloud.postFile('/hubs/documents/files', path, { qs: query })
       .then(r => fileId = r.body.id)
+      .then(r => cloud.withOptions({ qs: query }).patch('hubs/documents/files/metadata', metadataPatch))
       .then(r => cloud.patch('hubs/documents/files/' + fileId + '/metadata', metadataPatch))
       .then(r => cloud.withOptions({ qs: metadataPatch }).delete('/hubs/documents/files'));
 

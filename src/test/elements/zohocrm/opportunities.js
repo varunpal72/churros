@@ -21,6 +21,7 @@ suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (tes
   };
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
+  test.should.supportCeqlSearchForMultipleRecords('name');
 
   it('should allow CRUDS for leads/{id}/notes', () => {
     let opportunityId = -1;

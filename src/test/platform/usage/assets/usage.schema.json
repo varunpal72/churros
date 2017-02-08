@@ -41,6 +41,12 @@
       },
       "traffic_date": {
         "type": "string"
+      },
+      "company_external_id": {
+        "type": "string"
+      },
+      "company_external_name": {
+        "type": "string"
       }
     },
     "required": [
@@ -53,7 +59,9 @@
       "request_uri",
       "element_api",
       "request_id",
-      "traffic_date"
+      "traffic_date",
+      "company_external_id",
+      "company_external_name"
     ]
   }
 }

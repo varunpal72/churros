@@ -5,8 +5,8 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const payload = () => ({
- "classid": tools.random(),
- "name": "Churros tests"
+  "classid": tools.random(),
+  "name": "Churros tests"
 });
 
 suite.forElement('finance', 'classes', { payload: payload() }, (test) => {
@@ -14,5 +14,5 @@ suite.forElement('finance', 'classes', { payload: payload() }, (test) => {
     return cloud.cruds(test.api, payload());
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
+  test.withName('should support updated > {date} Ceql search').withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });

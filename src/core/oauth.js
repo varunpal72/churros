@@ -15,6 +15,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('j_username')).sendKeys(username);
       browser.findElement(webdriver.By.name('j_password')).sendKeys(password);
       browser.findElement(webdriver.By.id('login')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('allow-button')), 3000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('allow-button'))
+        .then((element) => element.click(), (err) => {}); // ignore this
       browser.wait(() => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
@@ -29,6 +33,20 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
       browser.findElement(webdriver.By.className('btn')).click();
       return browser.getCurrentUrl();
+    case 'ciscospark':
+      browser.get(r.body.oauthUrl);
+      browser.isElementPresent(webdriver.By.id('IDToken1'));
+      browser.findElement(webdriver.By.id('IDToken1')).sendKeys(username);
+      browser.findElement(webdriver.By.id('IDButton2')).click();
+      browser.wait(webdriver.until.elementLocated(webdriver.By.id('IDToken2')), 3000);
+      browser.findElement(webdriver.By.id('IDToken2')).sendKeys(password);
+      browser.wait(webdriver.until.elementLocated(webdriver.By.id('Button1')), 3000);
+      browser.findElement(webdriver.By.id('Button1')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('accept')), 6000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.name('accept'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'desk':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('user_session_email')).sendKeys(username);
@@ -36,6 +54,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('user_session_submit')).click();
       browser.findElement(webdriver.By.name('commit')).click();
       return browser.getCurrentUrl();
+    case 'actoneb':
     case 'acton':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('authorizeLink')).click();
@@ -106,6 +125,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
 
       return browser.getCurrentUrl();
+    case 'facebookleadads':
     case 'facebooksocial':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).clear();
