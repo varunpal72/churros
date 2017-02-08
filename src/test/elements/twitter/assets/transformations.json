@@ -46,6 +46,13 @@
       "vendorPath": "id_str"
     }]
   },
+  "friendships": {
+    "vendorName": "friendships",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "target.id_str"
+    }]
+  },
   "users": {
     "vendorName": "users",
     "fields": [{

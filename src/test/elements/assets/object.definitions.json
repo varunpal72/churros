@@ -751,6 +751,12 @@
       "type": "string"
     }]
   },
+  "friendships": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "terms": {
     "fields": [{
       "path": "id",
