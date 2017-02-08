@@ -6,7 +6,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportPagination();
-  it('should test CRUD for contacts and get all activities', () => {
+  it('should test CRUD for /contacts and GET /contacts/{id}/activities', () => {
     const updatePayload = {
       "properties": {
         "lastName": tools.random()
