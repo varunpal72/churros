@@ -149,6 +149,12 @@ describe('cloud', () => {
       .put('/foo/456')
       .reply(404, (uri, requestBody) => {
         return { message: 'No foo found with the given ID' };
+      })
+      .put('/foo/file')
+      .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
+      .put('/foo/bad/file')
+      .reply(404, (uri, requestBody) => {
+        return { message: 'No resource found at /foo/bad/file' };
       });
 
     /** DELETE **/
@@ -310,6 +316,34 @@ describe('cloud', () => {
     const filePath = '.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));
     return cloud.patchFile('/foo/bad/file', filePath)
+      .then(r => {
+        throw Error('Where my error at?');
+      })
+      .catch(r => {
+        fs.unlink(filePath);
+        return true;
+      });
+  });
+ it('should support put file', () => {
+    // should really NOT depend on the file system here :/
+    const filePath = '.put1.tmp';
+    fs.closeSync(fs.openSync(filePath, 'w'));
+    return cloud.putFile('/foo/file', filePath)
+      .then(r => fs.unlink(filePath));
+  });
+
+  it('should support put file with options', () => {
+    // should really NOT depend on the file system here :/
+    const filePath = '.put2.tmp';
+    fs.closeSync(fs.openSync(filePath, 'w'));
+    return cloud.withOptions({ json: false }).putFile('/foo/file', filePath)
+      .then(r => fs.unlink(filePath));
+  });
+
+  it('should throw an error if put file validation fails', () => {
+    const filePath = '.tmp';
+    fs.closeSync(fs.openSync(filePath, 'w'));
+    return cloud.putFile('/foo/bad/file', filePath)
       .then(r => {
         throw Error('Where my error at?');
       })
