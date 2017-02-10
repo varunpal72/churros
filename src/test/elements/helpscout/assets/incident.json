@@ -11,7 +11,7 @@
     },
     "body": "This is a test incident",
     "attachments": [{
-      "hash": ""
+      "hash": "attachmentHash"
     }]
   }]
 }
