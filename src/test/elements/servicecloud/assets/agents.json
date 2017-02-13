@@ -1,0 +1,27 @@
+{
+  "attributes": {
+    "accountLocked": true,
+    "canModifyEmailSignature": true,
+    "forcePasswordChange": true,
+    "passwordNeverExpires": true,
+    "permanentlyDisabled": true,
+    "staffAssignmentDisabled": true,
+    "viewsReportsDisabled": true
+  },
+  "login": "john",
+  "newPassword": "Bhushan@123",
+  "name": {
+    "last": "abbyy",
+    "first": "rose"
+  },
+  "profile": {
+    "id": {
+      "id": 3
+    }
+  },
+  "staffGroup": {
+    "id": {
+      "id": 100395
+    }
+  }
+}
