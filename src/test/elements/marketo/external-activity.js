@@ -14,7 +14,7 @@ const activityPayload = build({
 });
 
 suite.forElement('marketing', 'external-activity', { payload: activityPayload }, (test) => {
-  it('should allow GET external-activity/types, POST external-activity/type, PATCH external-activity/type/${apiName}/approve and PATCH external-activity/type/${apiName}/attributes ', () => {
+  it('should allow GET external-activity/types, POST external-activity/type, PATCH external-activity/type/{apiName}/approve and PATCH external-activity/type/{apiName}/attributes ', () => {
     let apiName;
     return cloud.get(`${test.api}/types`)
       .then(r => cloud.post(`${test.api}/type`, activityPayload))
