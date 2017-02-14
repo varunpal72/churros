@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/incident-types');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 const updatePayload = {
   "displayOrder": 789

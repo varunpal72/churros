@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 
-suite.forElement('helpdesk', 'contacts', { payload: con }, (test) => {
+suite.forElement('helpdesk', 'contacts', (test) => {
   const updatePayload = {
     "login": tools.random()
   };

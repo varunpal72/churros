@@ -3,13 +3,12 @@
 const suite = require('core/suite');
 const payload = require('./assets/incidents');
 const incidentsCommentspayload = require('./assets/incidentsComments');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
 
   it('should allow CRUDS for incedents', () => {
-    let incidentID, commentID;
+    let incidentID;
     return cloud.post(test.api, payload)
       .then(r => incidentID = r.body.id.id)
       .then(r => cloud.get(`${test.api}/${incidentID}`))
