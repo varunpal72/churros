@@ -2,6 +2,7 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const tools = require('core/tools');
 const payload = require('./assets/contacts');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);

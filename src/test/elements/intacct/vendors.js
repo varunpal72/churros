@@ -125,5 +125,5 @@ suite.forElement('finance', 'vendors', { payload: payload() }, (test) => {
     return cloud.crds(test.api, payload());
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' }, skip: true }).should.return200OnGet();
+  test.withName('should support updated > {date} Ceql search').withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });

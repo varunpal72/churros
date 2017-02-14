@@ -1,8 +1,6 @@
 {
-    "FromEmail":"mailjet@cloud-elements.com",
-    "FromName":"Claude",
-    "Subject":"Have you heard the one about churros?",
-    "Text-part":"Churros are testy!",
-    "Html-part":"<h3>Churros</h3><br />are<br /><br /><br /><br /><br /><sup><small>wait for it...</small></sup><br /><br /><br /><br /> testy",
-    "Recipients":[{"Email":"developer@cloud-elements.com"}]
+  "subject": "Have you heard the one about churros?",
+  "message": "Churros are testy!",
+  "from": "mailjet@cloud-elements.com",
+  "to": "devnull@cloud-elements.com"
 }

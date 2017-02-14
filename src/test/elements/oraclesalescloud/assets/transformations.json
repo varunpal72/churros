@@ -1,0 +1,47 @@
+{
+  "contacts": {
+    "vendorName": "contacts",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "PartyNumber"
+      }
+    ]
+  },
+  "accounts": {
+    "vendorName": "accounts",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "PartyNumber"
+      }
+    ]
+  },
+  "leads": {
+    "vendorName": "leads",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "LeadId"
+      }
+    ]
+  },
+  "opportunities": {
+    "vendorName": "opportunities",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "OptyNumber"
+      }
+    ]
+  },
+  "products": {
+    "vendorName": "products",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "productsUniqID"
+      }
+    ]
+  }
+}

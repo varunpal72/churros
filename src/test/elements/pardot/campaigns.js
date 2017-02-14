@@ -2,9 +2,12 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const tools = require('core/tools');
 const payload = require('./assets/campaigns');
 const contactsPayload = require('./assets/contacts');
 const leadsPayload = require('./assets/leads');
+
+contactsPayload.email = tools.randomEmail();
 
 suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
   test.should.supportCrus();

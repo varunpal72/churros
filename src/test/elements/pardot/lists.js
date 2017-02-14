@@ -2,11 +2,14 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const tools = require('core/tools');
 const payload = require('./assets/lists');
 const contactPayload = require('./assets/contacts');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, contactPayload, overrides);
 const contactPayload1 = build({ email: tools.randomEmail() });
+
+contactPayload.email = tools.randomEmail();
 
 suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
   test.should.supportCruds();

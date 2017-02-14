@@ -206,6 +206,18 @@
       "type": "string"
     }]
   },
+  "eloquaCustomObject": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "name",
+      "type": "string"
+    }, {
+      "path": "email",
+      "type": "string"
+    }]
+  },
   "employees": {
     "fields": [{
       "path": "id",
@@ -284,7 +296,7 @@
       "type": "string"
     }, {
       "path": "name",
-      "type": "Name"
+      "type": "string"
     }, {
       "path": "accountId",
       "type": "string"
@@ -739,6 +751,12 @@
       "type": "string"
     }]
   },
+  "friendships": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "terms": {
     "fields": [{
       "path": "id",
@@ -872,12 +890,12 @@
   },
   "activity-events": {
     "fields": [{
-        "path": "id",
-        "type": "string"
-      }, {
-        "path": "subject",
-        "type": "string"
-      }]
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "subject",
+      "type": "string"
+    }]
   },
   "contactS": {
     "fields": [{
@@ -914,5 +932,53 @@
       "path": "id",
       "type": "string"
     }]
-  }
+  },
+  "channels": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "pages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "messages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "installedProducts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "orderParts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "workOrders": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "serviceContracts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "stacks": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ }  
 }

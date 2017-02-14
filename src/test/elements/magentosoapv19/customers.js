@@ -5,6 +5,8 @@ const payload = require('./assets/customers');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 
+payload.email = tools.randomEmail();
+
 const updatePayload = (randomEmail) => ({
   "email": randomEmail,
   "firstname": "Mister",

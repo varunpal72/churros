@@ -13,15 +13,29 @@
       "vendorPath": "Id"
     }]
   },
-  "campaigns": {
-    "vendorName": "Campaign",
+  "activities": {
+    "vendorName": "Event",
     "fields": [{
       "path": "id",
       "vendorPath": "Id"
     }]
   },
-  "attachments": {
-    "vendorName": "Attachment",
+  "notes": {
+    "vendorName": "Note",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
+  },
+  "tasks": {
+    "vendorName": "Task",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "Id"
+    }]
+  },
+  "campaigns": {
+    "vendorName": "Campaign",
     "fields": [{
       "path": "id",
       "vendorPath": "Id"
