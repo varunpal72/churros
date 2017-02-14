@@ -73,6 +73,11 @@ const itCrs = (name, api, payload, validationCb, options) => {
   boomGoesTheDynamite(n, () => cloud.withOptions(options).crs(api, payload, validationCb), options ? options.skip : false);
 };
 
+const itCr = (name, api, payload, validationCb, options) => {
+  const n = name || `should allow CR for ${api}`;
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).cr(api, payload, validationCb), options ? options.skip : false);
+};
+
 const itPagination = (name, api, options, validationCb) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
   const newOptions = Object.assign({}, options, { qs: { page: 1, pageSize: 1 } });
@@ -295,7 +300,7 @@ const runTests = (api, payload, validationCb, tests) => {
      */
     supportSr: () => itSr(name, api, validationCb, options),
     /**
-     * Validates that the given API resource supports
+     * Validates that the given API resource supports S
      * @memberof module:core/suite.test.should
      */
     supportS: () => itS(name, api, validationCb, options),
@@ -304,6 +309,11 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test.should
      */
     supportCrs: () => itCrs(name, api, payload, validationCb, options),
+    /**
+     * Validates that the given API resource supports CR
+     * @memberof module:core/suite.test.should
+     */
+    supportCr: () => itCr(name, api, payload, validationCb, options),
   });
 
   const using = (myApi, myValidationCb, myPayload, myOptions, myName) => ({
