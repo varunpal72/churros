@@ -102,6 +102,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 
       return browser.getCurrentUrl();
     case 'dropboxbusiness':
+    case 'dropboxbusinessv2':
+    case 'dropboxv2':
     case 'dropbox':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.xpath('//input[@name="login_email"]')).sendKeys(username);
