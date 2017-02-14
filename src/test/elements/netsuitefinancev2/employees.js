@@ -6,6 +6,7 @@ const payload = require('./assets/employees');
 
 payload.lastName += tools.random();
 payload.title += tools.random();
+payload.email = tools.randomEmail();
 
 suite.forElement('finance', 'employees', { payload: payload }, (test) => {
   	test.should.supportCruds();
