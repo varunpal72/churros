@@ -1,4 +1,3 @@
-/** @module core/cloud */
 'use strict';
 
 const tools = require('core/tools');
@@ -152,6 +151,23 @@ const patchFile = (api, filePath, options) => {
 exports.patchFile = patchFile;
 
 /**
+ * HTTP PUT a file
+ * @param  {string} api        The API to call
+ * @param  {string} filePath   The local file system path to the file to upload
+ * @return {Promise}           A Promise that resolves to the HTTP response
+ */
+const putFile = (api, filePath, options) => {
+  options = (options || {});
+  options.formData = { file: fs.createReadStream(filePath) };
+
+  logger.debug('PUT %s with multipart/form-data file');
+  return chakram.put(api, undefined, options)
+    .then(r => validator(undefined)(r))
+    .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
+};
+exports.putFile = putFile;
+
+/**
  * Create, retrieve and delete a resource by its `id` field
  * @param {string} api The API to Create
  * @param {Object} payload The JSON payload used to Create
@@ -159,6 +175,7 @@ exports.patchFile = patchFile;
  * @param {Object} options The optional request options
  * @return {Promise}  The Promise that resolves to the last HTTP response
  */
+
 const crd = (api, payload, validationCb, options) => {
   return post(api, payload, validationCb, options)
     .then(r => get(api + '/' + r.body.id, validationCb, options))
@@ -246,6 +263,7 @@ exports.withOptions = (options) => {
     post: (api, payload, validationCb) => post(api, payload, validationCb, options),
     postFile: (api, filePath) => postFile(api, filePath, options),
     patchFile: (api, filePath) => patchFile(api, filePath, options),
+    putFile: (api, filePath) => putFile(api, filePath, options),
     put: (api, payload, validationCb) => put(api, payload, validationCb, options),
     patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
     update: (api, payload, validationCb, chakramCb) => update(api, payload, validationCb, chakramCb, options),
@@ -301,4 +319,5 @@ exports.createEvents = (element, replacements, eventRequest, numEvents) => {
     promises.push(response);
   }
   return chakram.all(promises);
+
 };
