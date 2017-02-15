@@ -5,7 +5,8 @@ const payload = require('./assets/leads');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const contactsPayload = build({ email: tools.randomEmail() });
-suite.forElement('marketing', 'leads', { payload: payload }, (test) => {
+
+suite.forElement('marketing', 'leads', { payload: contactsPayload }, (test) => {
   test.should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.should.supportCeqlSearch('id');
