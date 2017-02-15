@@ -2,9 +2,11 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
 const payload = require('./assets/lists');
 const contactPayload = require('./assets/contacts');
+const tools = require('core/tools');
+const build = (overrides) => Object.assign({}, contactPayload, overrides);
+const contactPayload1 = build({ email: tools.randomEmail() });
 
 contactPayload.email = tools.randomEmail();
 
@@ -17,7 +19,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     let listId, listContactPayload,contactId;
     return cloud.post(test.api, payload)
       .then(r => listId = r.body.id)
-      .then(r => cloud.post(`/hubs/marketing/contacts`, contactPayload))
+      .then(r => cloud.post(`/hubs/marketing/contacts`, contactPayload1))
       .then(r => contactId = r.body.id)
       .then(r => listContactPayload = [{ "id": contactId }])
       .then(r => cloud.post(`${test.api}/${listId}/contacts`, listContactPayload))

@@ -2,13 +2,20 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
 const payload = require('./assets/contacts');
+const tools = require('core/tools');
+const build = (overrides) => Object.assign({}, payload, overrides);
+const contactsPayload = build({ email: tools.randomEmail() });
 
-payload.email = tools.randomEmail();
-
-suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
-  test.should.supportCruds();
+suite.forElement('marketing', 'contacts', { payload: contactsPayload }, (test) => {
+  const options = {
+    churros: {
+      updatePayload: {
+        "email": tools.randomEmail()
+      }
+    }
+  };
+  test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.should.supportCeqlSearch('id');
 
