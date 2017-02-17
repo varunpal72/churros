@@ -178,4 +178,12 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => expect(r.body.name).to.equal('churros-xss-updated'))
       .then(() => provisioner.delete(id));
   });
+
+  it('should fail with 401 for deleted instance api call', () => {
+    let instanceId;
+    return provisioner.create('sfdc')
+      .then(r => instanceId = r.body.id)
+      .then(() => provisioner.delete(instanceId))
+      .then(() => cloud.get('hubs/crm/account?pageSize=1', (r) => expect(r).to.have.statusCode(401)));
+  });
 });
