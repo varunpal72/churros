@@ -52,7 +52,7 @@ suite.forPlatform('publishing', { payload: payload }, (test) => {
   });
 
 
-  it('should allow AWS lambda autogenerate and deploy to AWS ', () => {
+  it.skip('should allow AWS lambda autogenerate and deploy to AWS ', () => {
     let publishPayload = getPublishSdkPayload();
     publishPayload.publishMetaData.amazons3InstanceId = s3InstanceId;
     publishPayload.publishMetaData.cloudformationInstanceId = awscfInstanceId;
