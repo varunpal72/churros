@@ -4,6 +4,8 @@ const suite = require('core/suite');
 const payload = require('./assets/incidents');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const chakram = require('chakram');
+const expect = chakram.expect;
 let email = tools.randomEmail();
 payload.email = email;
 payload.name = tools.random();
@@ -17,7 +19,11 @@ payload.type = types[Math.floor(Math.random() * types.length)];
 suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
-  test.withName(`should support searching ${test.api} by updated_since`).withOptions({ qs: { where: 'updated_since=\'2016-01-01\'' } }).should.return200OnGet();
+  test
+    .withName(`should support searching ${test.api} by updated_since`)
+    .withOptions({ qs: { where: 'updated_since=\'2016-01-01\'' } })
+    .withValidation((r) => expect(r.body).to.not.be.empty)
+    .should.return200OnGet();
   it('should support GET /hubs/helpdesk/incidents/:id/comments ', () => {
     let id;
     return cloud.post(test.api, payload)
