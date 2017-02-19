@@ -24,7 +24,7 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
       .then(r => options.qs.nextPage = r.response.headers['elements-next-page-token'])
       .then(r => cloud.withOptions(options).get(`${test.api}/${contactId}/activities`))
       .then(r => cloud.patch(`${test.api}/${contactId}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${contactId}`))
+      .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
 
