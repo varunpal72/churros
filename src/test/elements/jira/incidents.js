@@ -38,6 +38,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
 
     return cloud.post('/hubs/helpdesk/incidents', payload)
       .then(r => incidentId = r.body.id)
+      .then(r => cloud.cd('/hubs/helpdesk/incidents/' + incidentId + '/comments', commentPayload))
       .then(r => cloud.get(`${test.api}/${incidentId}/history`))
       .then(r => historyId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${incidentId}/history/${historyId}`))
