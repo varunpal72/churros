@@ -7,7 +7,7 @@ const cloud=require('core/cloud');
 const InvoicePayload =require('./assets/invoices');
 const subscriptionPayload =require('./assets/subscriptions');
 const paymentMethodPayload = require('./assets/paymentMethod');
-//const paymentPayload = build({ CreditCardAddress1: tools.random()});
+
 suite.forElement('payment', 'payments', { payload: payload }, (test) => {
 let rateId,charge;
  before(() => { return cloud.get(`/hubs/payment/products`)
