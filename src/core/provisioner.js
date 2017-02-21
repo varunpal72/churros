@@ -5,6 +5,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const tools = require('core/tools');
 const props = require('core/props');
+const suite = require('core/suite');
 const urlParser = require('url');
 const logger = require('winston');
 const o = require('core/oauth');
@@ -35,6 +36,8 @@ const genConfig = (props, args) => {
   };
 };
 
+exports.genConfig = genConfig
+
 const parseProps = (element) => {
   const args = {
     username: props.getForKey(element, 'username'),
@@ -53,21 +56,25 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
-const createInstance = (element, config, providerData, baseApi) => {
+const createInstance = (element, config, providerData, baseApi, log) => {
+  log = log == undefined || log ? true : false
   const instance = genInstance(config);
-
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
 
-  return cloud.post(baseApi, instance)
+  return cloud.post(baseApi, instance, null, log)
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       defaults.token(r.body.token);
       return r;
     })
-    .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
+    .catch(r => {
+      // TODO - JJW - check if r has statusCode 401 and if so, throw new Error({apiResponse: })
+      if (log) return tools.logAndThrow('Failed to create an instance of %s', r, element)
+      return r;
+    });
 };
 
 const createExternalInstance = (element, config, providerData) => {
@@ -111,7 +118,9 @@ const createExternalInstance = (element, config, providerData) => {
         "externalAuthentication": "initial"
       };
       res(cloud.post('/instances', instanceBody));
-    });
+    }).catch(r => {
+      rej(r)
+    })
   });
 };
 
@@ -158,6 +167,15 @@ const oauth1 = (element, args) => {
     });
 };
 
+exports.changeCreds = (config, possibleConfigs) => {
+  const badEc = Object.assign({}, config.ec);
+  Object.keys(badEc).forEach(key => possibleConfigs.forEach(possible => {
+    if (key.toLowerCase().includes(possible.toLowerCase())) {
+      badEc[key] = "BadCred"
+    }
+  }))
+  return Object.assign({}, config, {ec: badEc});
+}
 /**
  * Handles orchestrating this create, which can flow different ways depending on what type of
  * provisioning this element support
@@ -166,9 +184,9 @@ const oauth1 = (element, args) => {
  * @param  {string} baseApi  The base API
  * @return {Promise}         JS promise that resolves to the instance created
  */
-const orchestrateCreate = (element, args, baseApi, cb) => {
+const orchestrateCreate = (element, config, args, baseApi, cb, log) => {
   const type = props.getOptionalForKey(element, 'provisioning');
-  const config = genConfig(props.all(element), args);
+  // config = config ? genConfig(props.all(element), args) : config
   config.element = element;
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
@@ -188,7 +206,7 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
       return require(cp).create(config);
     default:
-      return createInstance(element, config, undefined, baseApi);
+      return createInstance(element, config, undefined, baseApi, log);
   }
 };
 
@@ -208,17 +226,19 @@ exports.partialOauth = (element, args, baseApi) => orchestrateCreate(element, ar
  * @param {string} baseApi The base API
  * @return {Promise}  A promise that resolves to the HTTP response after attempting to create the element instance
  */
-exports.create = (element, args, baseApi) => {
+exports.create = (element, args, baseApi, config, log) => {
   const cb = (type, config, r) => {
     const external = props.getOptionalForKey(element, 'external');
 
-    if (external && type === 'oauth2') return createExternalInstance(element, config.ec, r);
+    if (external && type === 'oauth2') {
+      return createExternalInstance(element, config.ec, r);
+    }
     if (external && type === 'oauth1') throw Error('External Authentication via churros is not yet implemented for OAuth1');
 
-    return createInstance(element, config, r, baseApi);
+    return createInstance(element, config, r, baseApi, log);
   };
 
-  return orchestrateCreate(element, args, baseApi, cb);
+  return orchestrateCreate(element, config, args, baseApi, cb, log);
 };
 
 /**
@@ -227,7 +247,7 @@ exports.create = (element, args, baseApi) => {
  * @param {string} baseApi The base API
  * @return {Promise}  A promise that resolves to the HTTP response after attempting to delete this element instance
  */
-exports.delete = (id, baseApi) => {
+const deleteInstance = (id, baseApi) => {
   if (!id) return;
 
   baseApi = (baseApi) ? baseApi : '/instances';
@@ -239,3 +259,5 @@ exports.delete = (id, baseApi) => {
     })
     .catch(r => tools.logAndThrow('Failed to delete element instance with ID: %s', r, id));
 };
+
+exports.delete = (id, baseApi) => deleteInstance(id, baseApi)

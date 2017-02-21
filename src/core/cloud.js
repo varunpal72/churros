@@ -31,11 +31,14 @@ const validator = (validationCb) => {
   }
 };
 
-const post = (api, payload, validationCb, options) => {
+const post = (api, payload, validationCb, options, log) => {
+  log = log == undefined || log ? true : false
   logger.debug('POST %s with options %s and body %s', api, options, payload);
   return chakram.post(api, payload, options)
     .then(r => validator(validationCb)(r))
-    .catch(r => tools.logAndThrow('Failed to create or validate: %s', r, api));
+    .catch(r => {
+      return log ? tools.logAndThrow('Failed to create or validate: %s', r, api) : r
+    });
 };
 /**
  * HTTP POST
@@ -45,7 +48,7 @@ const post = (api, payload, validationCb, options) => {
  * @param  {Object} options       The optional request options to use on this HTTP request
  * @return {Promise}  A Promise that resolves to the HTTP response
  */
-exports.post = (api, payload, validationCb) => post(api, payload, validationCb, null);
+exports.post = (api, payload, validationCb, log) => post(api, payload, validationCb, null, log);
 
 const get = (api, validationCb, options) => {
   logger.debug('GET %s with options %s', api, options);
