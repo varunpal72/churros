@@ -29,7 +29,7 @@ suite.forElement('payment', 'subscriptions', { payload: payload }, (test) => {
       });
   });
   test.should.supportPagination();
-  it(`should allow CRUDS ${test.api}`, () => {
+  it(`should allow CRUDS ${test.api}` , POST ${test.api}/preview , PUT ${test.api}/{id}/renew and PUT ${test.api}/{id}/cancel, () => {
     let id, customerId;
     const previewPayload = {
       "contractEffectiveDate": "2015-1-15",
