@@ -56,7 +56,5 @@ suite.forElement('payment', 'customers', { payload: payload }, (test) => {
       .then(r => cloud.post(`${test.api}/${customerId}/invoices`, invoicePayload))
       .then(r => cloud.get(`${test.api}/${customerId}/invoices`));
 
-
   });
-
 });

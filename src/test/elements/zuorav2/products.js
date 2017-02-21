@@ -9,12 +9,12 @@ const accountsPayload = build({ Name: tools.random(), SKU: tools.random() });
 
 suite.forElement('payment', 'products', { payload: accountsPayload }, (test) => {
   test.should.supportPagination();
-const options = {
+  const options = {
     churros: {
       updatePayload: {
         "Name": tools.random()
       }
     }
   };
-test.withOptions(options).should.supportCruds(chakram.put);
+  test.withOptions(options).should.supportCruds(chakram.put);
 });

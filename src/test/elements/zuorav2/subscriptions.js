@@ -39,7 +39,6 @@ suite.forElement('payment', 'subscriptions', { payload: payload }, (test) => {
     const renewUpdatePayload = { "collect": false, "invoice": true };
 
     const cancleUpdatePayload = { "cancellationEffectiveDate": "2015-01-31", "cancellationPolicy": "SpecificDate", "collect": false, "invoice": true };
-
     return cloud.post(`/hubs/payment/customers`, customerPayload)
       .then(r => customerId = r.body.id)
       .then(r => payload.accountKey = customerId)
