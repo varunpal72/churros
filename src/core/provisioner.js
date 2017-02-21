@@ -67,7 +67,9 @@ const createInstance = (element, config, providerData, baseApi, log) => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
-      defaults.token(r.body.token);
+      if (log) {
+        defaults.token(r.body.token);
+      }
       return r;
     })
     .catch(r => {

@@ -35,7 +35,7 @@ before(() => {
 
   // checkCreds("Doesn't provision with bad API key", ['api.key'], config, element)
   // checkCreds("Doesn't provision with bad API secret", ['api.secret'], config, element)
-  checkCreds("Doesn't provision with bad Username and password", ['user', 'password'], config, element)
+  // checkCreds("Doesn't provision with bad Username and password", ['user', 'password'], config, element)
 
   return provisioner.create(element, null, null, config)
     .then(r => {
@@ -68,6 +68,7 @@ before(() => {
 });
 
 after(done => {
+  instanceIds.forEach(id => provisioner.delete(id))
   instanceId ?
     provisioner.delete(instanceId)
     .then(() => done())
@@ -84,9 +85,7 @@ function checkCreds (title, arrCreds, config, element) {
       .then(r => {
           if (r.body) {
             if(r.body.id) {
-              // return provisioner.delete(r.body.id)
-              // .then(r => r.body.id)
-              // .catch(e => r.body.id)
+              instanceIds.push(r.body.id)
               return r.body.id
             } else {
               return null
@@ -96,7 +95,9 @@ function checkCreds (title, arrCreds, config, element) {
           }
         })
         .catch(e => null)
-        .then(res => expect(res).to.not.exist)
+        .then(res => {
+          expect(res).to.not.exist
+        })
     } else {
       return;
     }
