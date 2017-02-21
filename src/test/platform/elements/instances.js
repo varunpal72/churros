@@ -119,7 +119,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
   });
 
   it('should support search tags', () => {
-    return cloud.withOptions({qs:{where:`tags='churros-instance'`}}).get('instances')
+    return cloud.withOptions({qs:{where:`tags='churros-instance'`}}).get('/instances')
     .then(r => expect(r.body.length).to.be.above(0));
   });
 
