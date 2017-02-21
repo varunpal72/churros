@@ -6,7 +6,7 @@ const chakram = require('chakram');
 const tools = require('core/tools');
 
 suite.forElement('payment', 'customers', { payload: payload }, (test) => {
-const options = {
+  const options = {
     churros: {
       updatePayload: {
         "name": tools.random()
@@ -14,5 +14,5 @@ const options = {
     }
   };
   test.should.supportPagination();
-test.withOptions(options).should.supportCruds(chakram.put);
+  test.withOptions(options).should.supportCruds(chakram.put);
 });

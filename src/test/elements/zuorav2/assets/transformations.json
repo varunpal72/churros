@@ -6,35 +6,35 @@
       "vendorPath": "accountId"
     }]
   },
-"payment-methods": {
+  "payment-methods": {
     "vendorName": "payment-methods",
     "fields": [{
       "path": "id",
       "vendorPath": "Id"
     }]
   },
-"payments": {
+  "payments": {
     "vendorName": "payments",
     "fields": [{
       "path": "id",
       "vendorPath": "Id"
     }]
   },
-"products": {
+  "products": {
     "vendorName": "products",
     "fields": [{
       "path": "id",
       "vendorPath": "Id"
     }]
   },
-"invoices": {
+  "invoices": {
     "vendorName": "invoices",
     "fields": [{
       "path": "id",
       "vendorPath": "Id"
     }]
   },
-"subscriptions": {
+  "subscriptions": {
     "vendorName": "subscriptions",
     "fields": [{
       "path": "id",
