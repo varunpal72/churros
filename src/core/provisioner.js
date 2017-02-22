@@ -59,11 +59,12 @@ const createInstance = (element, config, providerData, baseApi, log) => {
   log = log === undefined || log ? true : false;
   const instance = genInstance(config);
   baseApi = (baseApi) ? baseApi : '/instances';
-
+  console.log('2', element);
   if (providerData) instance.providerData = providerData;
 
   return cloud.post(baseApi, instance, null, log)
     .then(r => {
+      console.log('3', r.body);
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       if (log) {
@@ -239,7 +240,7 @@ exports.create = (element, args, baseApi, config, log) => {
       return createExternalInstance(element, config.ec, r);
     }
     if (external && type === 'oauth1') throw Error('External Authentication via churros is not yet implemented for OAuth1');
-
+    console.log('1', element);
     return createInstance(element, config, r, baseApi, log);
   };
 
