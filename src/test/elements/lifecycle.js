@@ -15,7 +15,7 @@ const createAll = (urlTemplate, list) => {
     p.then(() => cloud.post(util.format(urlTemplate, key), list[key])),
     Promise.resolve(true)); // initial
 };
-
+var instanceIds = [];
 //Changes the config and tries to provision with the bad creds
 const checkCreds = (title, arrCreds, config, element) => {
   it(title, () => {
@@ -55,7 +55,6 @@ const terminate = (error) => {
 };
 
 let instanceId;
-var instanceIds = [];
 before(() => {
   const element = argv.element;
   const config = provisioner.genConfig(props.all(element));
