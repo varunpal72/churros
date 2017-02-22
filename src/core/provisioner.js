@@ -35,7 +35,7 @@ const genConfig = (props, args) => {
   };
 };
 
-exports.genConfig = genConfig
+exports.genConfig = genConfig;
 
 const parseProps = (element) => {
   const args = {
@@ -56,7 +56,7 @@ const parseProps = (element) => {
 };
 
 const createInstance = (element, config, providerData, baseApi, log) => {
-  log = log == undefined || log ? true : false
+  log = log === undefined || log ? true : false;
   const instance = genInstance(config);
   baseApi = (baseApi) ? baseApi : '/instances';
 
@@ -72,8 +72,7 @@ const createInstance = (element, config, providerData, baseApi, log) => {
       return r;
     })
     .catch(r => {
-      // TODO - JJW - check if r has statusCode 401 and if so, throw new Error({apiResponse: })
-      if (log) return tools.logAndThrow('Failed to create an instance of %s', r, element)
+      if (log) return tools.logAndThrow('Failed to create an instance of %s', r, element);
       return r;
     });
 };
@@ -120,8 +119,8 @@ const createExternalInstance = (element, config, providerData) => {
       };
       res(cloud.post('/instances', instanceBody));
     }).catch(r => {
-      rej(r)
-    })
+      rej(r);
+    });
   });
 };
 
@@ -168,13 +167,18 @@ const oauth1 = (element, args) => {
     });
 };
 
+/**
+ * Changes a config on the keys you provide
+ * @param {object} config The original config
+ * @param {array} possibleConfigs The keys you want to change the value for
+ */
 exports.changeCreds = (config, possibleConfigs) => {
   const badEc = Object.assign({}, config.ec);
   Object.keys(badEc).forEach(key => possibleConfigs.forEach(possible => {
     if (key.toLowerCase().includes(possible.toLowerCase())) {
-      badEc[key] = "BadCred"
+      badEc[key] = "BadCred";
     }
-  }))
+  }));
   return Object.assign({}, config, {ec: badEc});
 }
 /**
@@ -260,4 +264,4 @@ const deleteInstance = (id, baseApi) => {
     .catch(r => tools.logAndThrow('Failed to delete element instance with ID: %s', r, id));
 };
 
-exports.delete = (id, baseApi) => deleteInstance(id, baseApi)
+exports.delete = (id, baseApi) => deleteInstance(id, baseApi);

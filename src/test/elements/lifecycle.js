@@ -22,7 +22,7 @@ const terminate = (error) => {
 };
 
 let instanceId;
-var instanceIds = []
+var instanceIds = [];
 before(() => {
   const element = argv.element;
   const config = provisioner.genConfig(props.all(element));
@@ -32,9 +32,9 @@ before(() => {
     return {};
   }
 
-  checkCreds("Doesn't provision with bad API key", ['api.key'], config, element)
-  checkCreds("Doesn't provision with bad API secret", ['api.secret'], config, element)
-  checkCreds("Doesn't provision with bad Username and password", ['user', 'password'], config, element)
+  checkCreds("Doesn't provision with bad API key", ['api.key'], config, element);
+  checkCreds("Doesn't provision with bad API secret", ['api.secret'], config, element);
+  checkCreds("Doesn't provision with bad Username and password", ['user', 'password'], config, element);
 
   return provisioner.create(element, null, null, config)
     .then(r => {
@@ -67,7 +67,7 @@ before(() => {
 });
 
 after(done => {
-  instanceIds.forEach(id => provisioner.delete(id))
+  instanceIds.forEach(id => provisioner.delete(id));
   instanceId ?
     provisioner.delete(instanceId)
     .then(() => done())
@@ -75,34 +75,35 @@ after(done => {
     done();
 });
 
+//Changes the config and tries to provision with the bad creds
 function checkCreds (title, arrCreds, config, element) {
   it(title, () => {
     var type = props.getOptionalForKey(element, 'provisioning');
     if (type === "oauth2" && arrCreds.includes("user") || arrCreds.includes("password")) {
       return;
     }
-    var badConfig = provisioner.changeCreds(config, arrCreds)
-    var configStr = JSON.stringify(config)
-    if (JSON.stringify(badConfig) != configStr) {
+    var badConfig = provisioner.changeCreds(config, arrCreds);
+    var configStr = JSON.stringify(config);
+    if (JSON.stringify(badConfig) !== configStr) {
       return provisioner.create(element, null, null, badConfig, false)
       .then(r => {
           if (r.body) {
             if(r.body.id) {
-              instanceIds.push(r.body.id)
-              return r.body.id
+              instanceIds.push(r.body.id);
+              return r.body.id;
             } else {
-              return null
+              return null;
             }
           } else {
-              return null
+              return null;
           }
         })
         .catch(e => null)
         .then(res => {
-          expect(res).to.not.exist
+          expect(res).to.not.exist;
         })
     } else {
       return;
     }
-  })
+  });
 }

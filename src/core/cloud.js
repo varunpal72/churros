@@ -32,12 +32,12 @@ const validator = (validationCb) => {
 };
 
 const post = (api, payload, validationCb, options, log) => {
-  log = log == undefined || log ? true : false
+  log = log === undefined || log ? true : false;
   logger.debug('POST %s with options %s and body %s', api, options, payload);
   return chakram.post(api, payload, options)
     .then(r => validator(validationCb)(r))
     .catch(r => {
-      return log ? tools.logAndThrow('Failed to create or validate: %s', r, api) : r
+      return log ? tools.logAndThrow('Failed to create or validate: %s', r, api) : r;
     });
 };
 /**
