@@ -31,4 +31,3 @@ suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
 suite.forElement('crm', `accounts/${accountsId}/activities`, { payload: payload }, (test) => {
   test.should.supportNextPagePagination(1);
 });
-
