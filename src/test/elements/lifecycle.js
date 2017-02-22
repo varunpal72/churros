@@ -76,7 +76,7 @@ after(done => {
 });
 
 //Changes the config and tries to provision with the bad creds
-function checkCreds (title, arrCreds, config, element) {
+var checkCreds = (title, arrCreds, config, element) {
   it(title, () => {
     var type = props.getOptionalForKey(element, 'provisioning');
     if (type === "oauth2" && arrCreds.includes("user") || arrCreds.includes("password")) {
@@ -101,7 +101,7 @@ function checkCreds (title, arrCreds, config, element) {
         .catch(e => null)
         .then(res => {
           expect(res).to.not.exist;
-        })
+        });
     } else {
       return;
     }
