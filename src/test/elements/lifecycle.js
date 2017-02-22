@@ -20,9 +20,6 @@ var instanceIds = [];
 const checkCreds = (title, arrCreds, config, element) => {
   it(title, () => {
     var type = props.getOptionalForKey(element, 'provisioning');
-    if (type === "oauth2" && arrCreds.includes("user") || arrCreds.includes("password")) {
-      return;
-    }
     var badConfig = provisioner.changeCreds(config, arrCreds);
     var configStr = JSON.stringify(config);
     if (JSON.stringify(badConfig) !== configStr) {
