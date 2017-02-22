@@ -33,9 +33,9 @@ before(() => {
     return {};
   }
 
-  // checkCreds("Doesn't provision with bad API key", ['api.key'], config, element)
-  // checkCreds("Doesn't provision with bad API secret", ['api.secret'], config, element)
-  // checkCreds("Doesn't provision with bad Username and password", ['user', 'password'], config, element)
+  checkCreds("Doesn't provision with bad API key", ['api.key'], config, element)
+  checkCreds("Doesn't provision with bad API secret", ['api.secret'], config, element)
+  checkCreds("Doesn't provision with bad Username and password", ['user', 'password'], config, element)
 
   return provisioner.create(element, null, null, config)
     .then(r => {
@@ -78,6 +78,10 @@ after(done => {
 
 function checkCreds (title, arrCreds, config, element) {
   it(title, () => {
+    var type = props.getOptionalForKey(element, 'provisioning');
+    if (type === "oauth2" && arrCreds.includes("user") || arrCreds.includes("password")) {
+      return;
+    }
     var badConfig = provisioner.changeCreds(config, arrCreds)
     var configStr = JSON.stringify(config)
     if (JSON.stringify(badConfig) != configStr) {
