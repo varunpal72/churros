@@ -5,7 +5,6 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const tools = require('core/tools');
 const props = require('core/props');
-const suite = require('core/suite');
 const urlParser = require('url');
 const logger = require('winston');
 const o = require('core/oauth');
@@ -188,7 +187,6 @@ exports.changeCreds = (config, possibleConfigs) => {
  */
 const orchestrateCreate = (element, config, args, baseApi, cb, log) => {
   const type = props.getOptionalForKey(element, 'provisioning');
-  // config = config ? genConfig(props.all(element), args) : config
   config.element = element;
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');

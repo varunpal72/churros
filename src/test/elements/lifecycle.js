@@ -9,7 +9,6 @@ const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
 const props = require('core/props');
-const suite = require('core/suite');
 
 const createAll = (urlTemplate, list) => {
   return Object.keys(list).reduce((p, key) =>
