@@ -182,38 +182,6 @@ exports.changeCreds = (config, possibleConfigs) => {
   return Object.assign({}, config, {ec: badEc});
 };
 
-//Changes the config and tries to provision with the bad creds
-exports.checkCreds = (title, arrCreds, config, element) => {
-  it(title, () => {
-    var type = props.getOptionalForKey(element, 'provisioning');
-    if (type === "oauth2" && arrCreds.includes("user") || arrCreds.includes("password")) {
-      return;
-    }
-    var badConfig = provisioner.changeCreds(config, arrCreds);
-    var configStr = JSON.stringify(config);
-    if (JSON.stringify(badConfig) !== configStr) {
-      return provisioner.create(element, null, null, badConfig, false)
-      .then(r => {
-          if (r.body) {
-            if(r.body.id) {
-              instanceIds.push(r.body.id);
-              return r.body.id;
-            } else {
-              return null;
-            }
-          } else {
-              return null;
-          }
-        })
-        .catch(e => null)
-        .then(res => {
-          expect(res).to.not.exist;
-        });
-    } else {
-      return;
-    }
-  });
-}
 /**
  * Handles orchestrating this create, which can flow different ways depending on what type of
  * provisioning this element support

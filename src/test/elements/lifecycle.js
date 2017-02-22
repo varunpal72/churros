@@ -16,6 +16,39 @@ const createAll = (urlTemplate, list) => {
     Promise.resolve(true)); // initial
 };
 
+//Changes the config and tries to provision with the bad creds
+const checkCreds = (title, arrCreds, config, element) => {
+  it(title, () => {
+    var type = props.getOptionalForKey(element, 'provisioning');
+    if (type === "oauth2" && arrCreds.includes("user") || arrCreds.includes("password")) {
+      return;
+    }
+    var badConfig = provisioner.changeCreds(config, arrCreds);
+    var configStr = JSON.stringify(config);
+    if (JSON.stringify(badConfig) !== configStr) {
+      return provisioner.create(element, null, null, badConfig, false)
+      .then(r => {
+          if (r.body) {
+            if(r.body.id) {
+              instanceIds.push(r.body.id);
+              return r.body.id;
+            } else {
+              return null;
+            }
+          } else {
+              return null;
+          }
+        })
+        .catch(e => null)
+        .then(res => {
+          expect(res).to.not.exist;
+        });
+    } else {
+      return;
+    }
+  });
+};
+
 const terminate = (error) => {
   logger.error('Failed to initialize element: %s', error);
   process.exit(1);
@@ -74,36 +107,3 @@ after(done => {
     .catch(r => logger.error('Failed to delete element instance: %s', r)) :
     done();
 });
-
-//Changes the config and tries to provision with the bad creds
-var checkCreds = (title, arrCreds, config, element) => {
-  it(title, () => {
-    var type = props.getOptionalForKey(element, 'provisioning');
-    if (type === "oauth2" && arrCreds.includes("user") || arrCreds.includes("password")) {
-      return;
-    }
-    var badConfig = provisioner.changeCreds(config, arrCreds);
-    var configStr = JSON.stringify(config);
-    if (JSON.stringify(badConfig) !== configStr) {
-      return provisioner.create(element, null, null, badConfig, false)
-      .then(r => {
-          if (r.body) {
-            if(r.body.id) {
-              instanceIds.push(r.body.id);
-              return r.body.id;
-            } else {
-              return null;
-            }
-          } else {
-              return null;
-          }
-        })
-        .catch(e => null)
-        .then(res => {
-          expect(res).to.not.exist;
-        });
-    } else {
-      return;
-    }
-  });
-}
