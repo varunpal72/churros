@@ -1,17 +1,14 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/leads');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const tasksPayload = build({ subject: tools.random(), description: tools.random() });
+const payload = require('./assets/tasks');
 
-suite.forElement('crm', 'leads', { payload: tasksPayload }, (test) => {
+suite.forElement('crm', 'tasks', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
-        "subject": tools.random(),
-        "description": tools.random()
+        "Subject": tools.random()
       }
     }
   };
