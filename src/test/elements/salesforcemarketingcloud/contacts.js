@@ -37,5 +37,5 @@ suite.forElement('marketing', 'contacts', { payload: contactsPayload}, (test) =>
 	  .then(r => cloud.patch(`${test.api}/${id}`,updatedPayload))
  	  .then(r => cloud.get(`${test.api}`), { qs: { key: 'Email Addresses',value:'${tools.randomStr()}' } });
 });
+test.should.supportPagination();
 });
-
