@@ -120,18 +120,16 @@ suite.forPlatform('elements/instances', opts, (test) => {
 
   it('should support search tags', () => {
     return cloud.withOptions({qs:{where:`tags='churros-instance'`}}).get('instances')
-    .then(r => {for( var i=0; i< r.body.length; i++){
-      var hasTag = 'false';
-      for( var tagIdx = 0; tagIdx < r.body[i].tags.length; tagIdx++){
-        if(r.body[i].tags[tagIdx] === 'churros-instance'){
-          hasTag = 'true';
-          break;
-        }
+    .then(r => {
+      r.body.map(s => {
+        expect(s.tags.includes('churros-instance')).to.equal(true);
       }
-      expect(hasTag).to.equal('true');
-    }
+    );});
+
+
+
   });
-  });
+
 
   it('should support update with reprovision by key', () => updateInstanceWithReprovision('/instances', instanceSchema));
 
