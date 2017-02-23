@@ -1,7 +1,8 @@
 'use strict';
 
 const cloud = require('core/cloud');
-const expect = require('chakram').expect;
+const chakram = require('chakram');
+const expect = chakram.expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
 const argv = require('optimist').argv;
@@ -57,32 +58,51 @@ before(() => {
     });
 });
 
+const makeInstance = (element, config) => {
+  return {
+    name: tools.random(),
+    element: { key: element },
+    configuration: config
+  };
+};
+
+let badInstanceIds = [];
 it('should not allow provisioning with bad credentials', () => {
+  let tests = [];
   const config = props.all(element);
-  const badConfig = Object.keys(config).reduce((accum, configKey) => {
+  const type = props.getOptionalForKey(element, 'provisioning');
+  const passThrough = (r) => r;
+
+  let badConfig = Object.keys(config).reduce((accum, configKey) => {
     accum[configKey] = 'IAmBad';
     return accum;
   }, {});
 
-  const passThrough = (r) => r ;
-
-  const elementInstance = {
-    name: tools.random(),
-    element: { key: element },
-    configuration: badConfig
-  };
-
-  let badInstanceId;
-  return cloud.post(`/instances`, elementInstance, passThrough)
+  let elementInstance = makeInstance(element, badConfig);
+  tests.push(cloud.post(`/instances`, elementInstance, passThrough)
     .then(r => {
-      expect(r).to.have.statusCode(401);
-      badInstanceId = r.body.id;
-    })
-    .then(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null)
-    .catch(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null);
+      badInstanceIds.push(r.body.id);
+      expect(r.body.id, 'Provisioned with bad credentials with an id of ' + r.body.id).to.not.exist;
+    }));
+
+  if (type === 'oauth2' || type === 'oauth1') {
+    badConfig = Object.keys(config).reduce((accum, configKey) => {
+      accum[configKey] = configKey.toLowerCase().includes('key') ? 'IAmBad' : config[configKey];
+      return accum;
+    }, {});
+    elementInstance = makeInstance(element, badConfig);
+    tests.push(cloud.post(`/instances`, elementInstance, passThrough)
+      .then(r => {
+        badInstanceIds.push(r.body.id);
+        expect(r.body.id, 'Provisioned with bad credentials with an id of ' + r.body.id).to.not.exist;
+      }));
+  }
+
+  return chakram.waitFor(tests);
 });
 
 after(done => {
+  badInstanceIds.forEach(id => cloud.delete(id));
   instanceId ? provisioner
         .delete(instanceId)
         .then(() => done())
