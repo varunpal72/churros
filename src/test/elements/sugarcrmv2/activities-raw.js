@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('crm', 'activities-raw', null, (test) => {
+suite.forElement('crm', 'activities-raw', (test) => {
     let id;
     it(`should support GET, pagination and Ceql search for /hubs/crm/activities-raw`, () => {
     return cloud.get(test.api)
