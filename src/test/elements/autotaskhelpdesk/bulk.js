@@ -25,7 +25,7 @@ suite.forElement('helpdesk', 'bulk', null, (test) => {
             })))
             .then(r => cloud.withOptions({ headers: { accept: "application/json" }, qs: { json: '{ "convertToNativeType": "false" }' }}).get(`/hubs/helpdesk/bulk/${bulkId}/contacts`, r => {
               console.log(r);
-                r.body.every(contact => expect(contact).to.have.property('firstName','Rick'));
+                r.body.forEach(contact => expect(contact).to.have.property('firstName','Rick'));
             }))
             .then(r => cloud.withOptions({ headers: { accept: "text/csv" } }).get(`/hubs/helpdesk/bulk/${bulkId}/contacts`, r => {
                 expect(r.body).to.contain('Rick');
