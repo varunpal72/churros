@@ -5,6 +5,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
+const tools = require('core/tools');
 const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
