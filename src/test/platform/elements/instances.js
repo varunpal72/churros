@@ -123,11 +123,8 @@ suite.forPlatform('elements/instances', opts, (test) => {
     .then(r => {
       r.body.map(s => {
         expect(s.tags.includes('churros-instance')).to.equal(true);
-      }
-    );});
-
-
-
+      });
+    });
   });
 
 
