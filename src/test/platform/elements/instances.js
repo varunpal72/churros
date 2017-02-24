@@ -80,6 +80,37 @@ suite.forPlatform('elements/instances', opts, (test) => {
     return sfdcId ? provisioner.delete(sfdcId) : true;
   });
 
+  it('should support using filter.response.nulls config to filter out or display nulls', () => {
+    const validate = (r) => {
+      expect(r.body.length).to.be.above(0);
+      return r.body.filter(config => config.key === 'filter.response.nulls')[0];
+    };
+
+    const validateNullsPresent = (shouldHaveNulls) => {
+      return cloud.get('hubs/crm/contacts?pageSize=1')
+        .then(r => {
+          let keys = Object.keys(r.body[0]);
+          return keys.filter(key => r.body[0][key] === null);
+        })
+        .then(r => expect(r.length > 0).to.equal(shouldHaveNulls));
+    };
+
+    let configuration;
+
+    return cloud.get(`/instances/${sfdcId}/configuration`)
+      .then(r => validate(r))
+      .then(r => {
+        configuration = r;
+        expect(configuration.propertyValue).to.equal('true');
+      })
+      .then(r => validateNullsPresent(false))
+
+      .then(r => cloud.patch(`/instances/${sfdcId}/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'false' })))
+      .then(r => cloud.get(`/instances/${sfdcId}/configuration/${r.body.id}`))
+      .then(r => expect(r.body.propertyValue).to.equal('false'))
+      .then(r => validateNullsPresent(true));
+  });
+
   it('should support CRUD by key', () => crudsInstance('elements/jira/instances'));
 
   it('should support CRUD by ID', () => {
@@ -146,5 +177,13 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(() => cloud.patch(`/instances/${id}`, {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss-updated</a>'}))
       .then(r => expect(r.body.name).to.equal('churros-xss-updated'))
       .then(() => provisioner.delete(id));
+  });
+
+  it('should fail with 401 for deleted instance api call', () => {
+    let instanceId;
+    return provisioner.create('sfdc')
+      .then(r => instanceId = r.body.id)
+      .then(() => provisioner.delete(instanceId))
+      .then(() => cloud.get('hubs/crm/account?pageSize=1', (r) => expect(r).to.have.statusCode(401)));
   });
 });

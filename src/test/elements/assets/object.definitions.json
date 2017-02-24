@@ -751,6 +751,12 @@
       "type": "string"
     }]
   },
+  "friendships": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "terms": {
     "fields": [{
       "path": "id",
@@ -968,5 +974,11 @@
       "path": "id",
       "type": "string"
     }]
-  }
+  },
+  "stacks": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ }  
 }

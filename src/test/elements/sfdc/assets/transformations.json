@@ -41,13 +41,6 @@
       "vendorPath": "Id"
     }]
   },
-  "attachments": {
-    "vendorName": "Attachment",
-    "fields": [{
-      "path": "id",
-      "vendorPath": "Id"
-    }]
-  },
   "leads": {
     "vendorName": "Lead",
     "fields": [{

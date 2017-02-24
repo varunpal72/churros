@@ -11,6 +11,9 @@ const payload = () => ({
   "id": tools.random()
 });
 
-suite.forElement('payment', 'plans', { payload: payload ()}, (test) => {
+suite.forElement('payment', 'plans', { payload: payload() }, (test) => {
   test.should.supportCruds();
+  test.withApi(test.api).withOptions({ qs: { where: `created >= 1463157076` } }).should.return200OnGet();
+  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
 });

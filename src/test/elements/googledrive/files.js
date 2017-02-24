@@ -4,6 +4,8 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const payload = require('./assets/files');
+payload.path = `/${tools.random()}`;
+
 const updatePayload ={
         name: tools.random(),
         path:`/${tools.random()}`

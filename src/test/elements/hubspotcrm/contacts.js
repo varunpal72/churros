@@ -4,6 +4,7 @@ const suite = require('core/suite');
 const payload = require('./assets/contacts');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+var contactsId = 396139;
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportPagination();
   it('should test CRUD for /contacts and GET /contacts/{id}/activities', () => {
@@ -26,3 +27,7 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
+
+suite.forElement('crm', `contacts/${contactsId}/activities`, { payload: payload }, (test) => {
+  test.should.supportNextPagePagination(1);
+}); 

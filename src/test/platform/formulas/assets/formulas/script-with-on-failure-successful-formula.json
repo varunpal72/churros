@@ -9,7 +9,7 @@
             "name": "bad-script-step",
             "type": "script",
             "properties": {
-                "body": "This is an invalid script step;"
+                "body": "console.log('print'); throw('This is an invalid script step');"
             }
         },
         {
