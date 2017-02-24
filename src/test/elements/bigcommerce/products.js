@@ -40,7 +40,7 @@ const skusUpdate = () => ({
   "upc": "Updated"
 });
 
-suite.forElement('ecommerce', 'products', { payload: payload, skip: true }, (test) => {
+suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.withApi(`${test.api}/count`).should.return200OnGet();
   test.withApi(`${test.api}/options`).should.return200OnGet();
@@ -95,7 +95,7 @@ suite.forElement('ecommerce', 'products', { payload: payload, skip: true }, (tes
       .then(r => cloud.patch(`${test.api}/${productId}/images/${imageId}`, imagesUpdate()))
       .then(r => cloud.delete(`${test.api}/${productId}/images/${imageId}`));
   });
-  it('should support CRUDS for products/skus', () => {
+  it.skip('should support CRUDS for products/skus', () => {
     let skuId = -1;
     return cloud.post(`${test.api}/${productId}/skus`, skusPayload)
       .then(r => skuId = r.body.id)

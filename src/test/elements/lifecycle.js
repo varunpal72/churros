@@ -9,7 +9,6 @@ const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
 const props = require('core/props');
-const tools = require('core/tools');
 
 const createAll = (urlTemplate, list) => {
   return Object.keys(list)
@@ -100,7 +99,6 @@ it('should not allow provisioning with bad credentials', () => {
 
   return chakram.waitFor(tests);
 });
-
 after(done => {
   badInstanceIds.forEach(id => cloud.delete(id));
   instanceId ? provisioner

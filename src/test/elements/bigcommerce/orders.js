@@ -37,7 +37,7 @@ suite.forElement('ecommerce', 'orders', { payload: payload, skip: true }, (test)
   test.withApi(`${test.api}/shipments/count`).should.return200OnGet();
   test.withApi(`${test.api}/statuses`).should.supportSr();
   test.should.supportPagination();
-  test.should.supportCeqlSearch('payment_method');
+  test.should.supportCeqlSearchForMultipleRecords('payment_method');
 
   let orderId = -1;
   before(() => cloud.post(test.api, payload)

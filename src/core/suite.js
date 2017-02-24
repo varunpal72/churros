@@ -83,7 +83,14 @@ const itPagination = (name, api, options, validationCb) => {
   const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 1 : 1 : 1;
   const page = options ? options.qs ? options.qs.page ? options.qs.page : 1 : 1 : 1;
   const newOptions = Object.assign({}, options, { qs: { page: page, pageSize: pageSize } });
-  boomGoesTheDynamite(n, () => cloud.withOptions(newOptions).get(api, (r) => expect(r.body).to.have.length(pageSize)), options ? options.skip : false);
+  boomGoesTheDynamite(n, () => {
+    return cloud.withOptions(newOptions).get(api)
+    .then((r) => {
+      if(r.body && r.body.length > 0){
+        expect(r.body).to.have.length(pageSize);
+      }
+    });
+  }, options ? options.skip : false);
 };
 
 const paginate = (api, options, validationCb, nextPage, page, max, all) => {
