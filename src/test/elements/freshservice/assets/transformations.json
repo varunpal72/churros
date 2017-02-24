@@ -17,13 +17,6 @@
       }
     ]
   },
-  "incidents": {
-    "vendorName": "tickets",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "display_id"
-      }
-    ]
+  "incidents":{
   }
 }
