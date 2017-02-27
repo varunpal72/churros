@@ -118,6 +118,16 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => crudsInstance(`elements/${r.body.id}/instances`));
   });
 
+  it('should support search tags', () => {
+    return cloud.withOptions({qs:{'tags[]': 'churros-instance'}}).get('instances')
+    .then(r => {
+      r.body.map(s => {
+        expect(s.tags.includes('churros-instance')).to.equal(true);
+      });
+    });
+  });
+
+
   it('should support update with reprovision by key', () => updateInstanceWithReprovision('/instances', instanceSchema));
 
   it('should support get instance specific docs', () => {
