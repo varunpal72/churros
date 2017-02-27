@@ -1,11 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/agents');
 const tools = require('core/tools');
-const cloud = require('core/cloud');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const agentsPayload = build({
+const payload = {
   "attributes": {
     "accountLocked": true,
     "canModifyEmailSignature": true,
@@ -31,21 +28,15 @@ const agentsPayload = build({
       "id": 100395
     }
   }
-});
+};
 
-suite.forElement('helpdesk', 'agents', { payload: agentsPayload }, (test) => {
+suite.forElement('helpdesk', 'agents', { payload: payload }, (test) => {
   const updatePayload = {
-    "login": tools.random()
+        "login": tools.random()
   };
 
-  it('should allow CRUDS for agents', () => {
-    let agentID;
-    return cloud.post(test.api, agentsPayload)
-      .then(r => agentID = r.body.id.id)
-      .then(r => cloud.get(`${test.api}/${agentID}`))
-      .then(r => cloud.patch(`${test.api}/${agentID}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${agentID}`))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
-      .then(r => cloud.withOptions({ qs: { where: `login='Admin1'` } }).get(test.api));
-  });
+  test.withOptions({ churros: { updatePayload: updatePayload } }).should.supportCruds();
+  test.should.supportPagination();
+  test.should.supportCeqlSearch('login');
+
 });
