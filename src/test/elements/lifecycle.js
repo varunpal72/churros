@@ -40,7 +40,26 @@ before(() => {
       if (fs.existsSync(objectDefinitionsFile + '.json')) {
         logger.debug('Setting up object definitions');
         const url = `/instances/${instanceId}/objects/%s/definitions`;
-        return createAll(url, require(objectDefinitionsFile));
+
+        // only create object definitions for the resources that are being transformed for this element.  If there
+        // aren't any transformations, no need to create any object definitions.
+        const transformationsFile = `${__dirname}/${element}/assets/transformations`;
+        if (!fs.existsSync(transformationsFile + '.json')) {
+          logger.debug(`No transformations found for ${element} so not going to create object definitions`);
+          return null;
+        }
+
+        const transformations = require(transformationsFile);
+        const allObjectDefinitions = require(objectDefinitionsFile);
+        const objectDefinitions = Object.keys(allObjectDefinitions)
+          .reduce((accum, objectDefinitionName) => {
+            if (transformations[objectDefinitionName]) {
+              accum[objectDefinitionName] = allObjectDefinitions[objectDefinitionName];
+            }
+            return accum;
+          }, {});
+
+        return createAll(url, objectDefinitions);
       }
     })
     .then(r => {
