@@ -1,8 +1,7 @@
 'use strict';
 
 const cloud = require('core/cloud');
-const chakram = require('chakram');
-const expect = chakram.expect;
+const expect = require('chakram').expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
 const tools = require('core/tools');
@@ -66,9 +65,8 @@ const makeInstance = (element, config) => {
   };
 };
 
-let badInstanceIds = [];
 it('should not allow provisioning with bad credentials', () => {
-  let tests = [];
+  let badInstanceId;
   const config = props.all(element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const passThrough = (r) => r;
@@ -79,29 +77,17 @@ it('should not allow provisioning with bad credentials', () => {
   }, {});
 
   let elementInstance = makeInstance(element, badConfig);
-  tests.push(cloud.post(`/instances`, elementInstance, passThrough)
-    .then(r => {
-      badInstanceIds.push(r.body.id);
-      expect(r.body.id, 'Provisioned with bad credentials with an id of ' + r.body.id).to.not.exist;
-    }));
-
   if (type === 'oauth2' || type === 'oauth1') {
-    badConfig = Object.keys(config).reduce((accum, configKey) => {
-      accum[configKey] = configKey.toLowerCase().includes('key') ? 'IAmBad' : config[configKey];
-      return accum;
-    }, {});
-    elementInstance = makeInstance(element, badConfig);
-    tests.push(cloud.post(`/instances`, elementInstance, passThrough)
-      .then(r => {
-        badInstanceIds.push(r.body.id);
-        expect(r.body.id, 'Provisioned with bad credentials with an id of ' + r.body.id).to.not.exist;
-      }));
+    elementInstance.providerData = {code: 'IAmBad'};
   }
 
-  return chakram.waitFor(tests);
+  return cloud.post(`/instances`, elementInstance, passThrough)
+    .then(r => badInstanceId = r.body.id)
+    .then(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null)
+    .catch(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null)
+    .then(r => expect(badInstanceId, 'Provisioned with bad credentials with an id of ' + badInstanceId).to.not.exist);
 });
 after(done => {
-  badInstanceIds.forEach(id => cloud.delete(id));
   instanceId ? provisioner
         .delete(instanceId)
         .then(() => done())
