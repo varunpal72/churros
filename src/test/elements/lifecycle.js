@@ -78,6 +78,7 @@ before(() => {
 
 it('should not allow provisioning with bad credentials', () => {
   let badInstanceId;
+  let res;
   const config = props.all(element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const passThrough = (r) => r;
@@ -97,10 +98,14 @@ it('should not allow provisioning with bad credentials', () => {
   }
 
   return cloud.post(`/instances`, elementInstance, passThrough)
-    .then(r => badInstanceId = r.body.id)
+    .then(r => {
+      res = r;
+      console.log(r.response.statusCode);
+      badInstanceId = r.body.id;
+    })
     .then(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null)
     .catch(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null)
-    .then(r => expect(badInstanceId, 'Provisioned with bad credentials with an id of ' + badInstanceId).to.not.exist);
+    .then(r => expect(res.response.statusCode).to.not.equal(200));
 });
 after(done => {
   instanceId ? provisioner
