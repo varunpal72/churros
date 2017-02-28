@@ -11,7 +11,7 @@ suite.forElement('documents', 'members', { payload: payload }, (test) => {
 
   test.should.return200OnGet();
 
-  it('should support CR for ${test.api}/memebrs', () => {
+  it('should support CD for ${test.api}/memebrs', () => {
     let id;
     return cloud.post(`${test.api}`,payload)
             .then(r => id=r.body.complete[0].profile.team_member_id)
