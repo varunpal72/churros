@@ -77,8 +77,6 @@ before(() => {
 });
 
 it('should not allow provisioning with bad credentials', () => {
-  let badInstanceId;
-  let res;
   const config = props.all(element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const passThrough = (r) => r;
@@ -96,15 +94,21 @@ it('should not allow provisioning with bad credentials', () => {
   if (type === 'oauth2' || type === 'oauth1') {
     elementInstance.providerData = {code: 'IAmBad'};
   }
+  const responseCodeValidator = (statusCode) => {
+    expect(statusCode).to.be.above(400);
+    expect(statusCode).to.be.below(500);
+  };
 
   return cloud.post(`/instances`, elementInstance, passThrough)
-    .then(r => {
-      res = r;
-      badInstanceId = r.body.id;
-    })
-    .then(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null)
-    .catch(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null)
-    .then(r => expect(res.response.statusCode).to.not.equal(200));
+     .then(r => {
+        // if we received a 200 status code, then that's actually bad, as we are validating that an element instance is *not* created with bad configs.  lets delete the newly created element instance, and then do our assertions to show the failed test
+        if (r.response.statusCode === 200) {
+           return cloud.delete(`/instances/${r.body.id}`)
+              .then(() => responseCodeValidator(r.response.statusCode));
+        }
+        // cool, element instance was *not* created, lets make sure we got the right response code
+       responseCodeValidator(r.response.statusCode);
+     });
 });
 after(done => {
   instanceId ? provisioner
