@@ -76,26 +76,22 @@ before(() => {
     });
 });
 
-const makeInstance = (element, config) => {
-  return {
-    name: tools.random(),
-    element: { key: element },
-    configuration: config
-  };
-};
-
 it('should not allow provisioning with bad credentials', () => {
   let badInstanceId;
   const config = props.all(element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const passThrough = (r) => r;
 
-  let badConfig = Object.keys(config).reduce((accum, configKey) => {
+  const badConfig = Object.keys(config).reduce((accum, configKey) => {
     accum[configKey] = 'IAmBad';
     return accum;
   }, {});
 
-  let elementInstance = makeInstance(element, badConfig);
+  const elementInstance = {
+    name: tools.random(),
+    element: { key: element },
+    configuration: badConfig
+  };
   if (type === 'oauth2' || type === 'oauth1') {
     elementInstance.providerData = {code: 'IAmBad'};
   }
