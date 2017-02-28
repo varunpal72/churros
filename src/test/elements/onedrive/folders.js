@@ -12,16 +12,9 @@ suite.forElement('documents', 'folders', (test) => {
     let random = `${tools.random()}`;
     folderPayload.path += `-${random}`;
     folderPayload.name += `-${random}`;
-    let copyPath = "/"+tools.random()+"/"+ folderPayload.name;
-    let copyPath2 = "/"+tools.random()+"/"+ folderPayload.name;
-    const build = (overrides) => Object.assign({}, folderPayload, overrides);
-    const folderCopyPayload = build({ name: folderPayload.name, path: copyPath });
-    const folderCopyPayload2 = build({ name: folderPayload.name, path: copyPath2 });
     return cloud.post('/hubs/documents/folders', folderPayload)
       .then(r => folder = r.body)
       .then(r => cb(folder))
-      .then(r => cloud.withOptions({ qs: { path: folder.path } }).post('/hubs/documents/folders/copy',folderCopyPayload))
-      .then(r => cloud.post(`/hubs/documents/folders/${folder.id}/copy`,folderCopyPayload2))
       .then(r => cloud.withOptions({ qs: { path: folder.path } }).delete('/hubs/documents/folders'));
   };
 
@@ -63,5 +56,23 @@ suite.forElement('documents', 'folders', (test) => {
 
     };
     return folderWrap(cb);
+  });
+
+  it('should allow copying a folder by path and id', () => {
+    let folder1,folder2,folder3;
+    let copyPath = "/"+tools.random()+"/"+ folderPayload.name;
+    let copyPath2 = "/"+tools.random()+"/"+ folderPayload.name;
+    const build = (overrides) => Object.assign({}, folderPayload, overrides);
+    const folderCopyPayload = build({ name: folderPayload.name, path: copyPath });
+    const folderCopyPayload2 = build({ name: folderPayload.name, path: copyPath2 });
+    return cloud.post('/hubs/documents/folders', folderPayload)
+      .then(r => folder1 = r.body)
+      .then(r => cloud.withOptions({ qs: { path: folder1.path } }).post('/hubs/documents/folders/copy',folderCopyPayload))
+      .then(r => folder2 = r.body)
+      .then(r => cloud.post(`/hubs/documents/folders/${folder1.id}/copy`,folderCopyPayload2))
+      .then(r => folder3 = r.body)
+      .then(r => cloud.delete(`/hubs/documents/folders/${folder1.id}`))
+      .then(r => cloud.delete(`/hubs/documents/folders/${folder2.id}`))
+      .then(r => cloud.delete(`/hubs/documents/folders/${folder3.id}`));
   });
 });
