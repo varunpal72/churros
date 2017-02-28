@@ -7,7 +7,7 @@ const cloud = require('core/cloud');
 
 suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
 
-  it('should allow up for incedentsComments', () => {
+  it('should allow RUS for incident comments', () => {
     let incidentID;
     return cloud.post(test.api, payload)
       .then(r => incidentID = r.body.id)
