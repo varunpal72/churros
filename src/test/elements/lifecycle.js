@@ -100,7 +100,6 @@ it('should not allow provisioning with bad credentials', () => {
   return cloud.post(`/instances`, elementInstance, passThrough)
     .then(r => {
       res = r;
-      console.log(r.response.statusCode);
       badInstanceId = r.body.id;
     })
     .then(r => badInstanceId ? cloud.delete(`/instances/${badInstanceId}`) : null)
