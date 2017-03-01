@@ -2,6 +2,8 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/products');
+const tools = require('core/tools');
+payload.itemId += tools.randomInt();
 
 suite.forElement('erp', 'products', { payload: payload }, (test) => {
   test.should.supportCruds();
