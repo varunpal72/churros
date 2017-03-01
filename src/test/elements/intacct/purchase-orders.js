@@ -14,18 +14,16 @@ const payload = (vendorId, transactionId) => ({
   "vendorid": vendorId,
   "basecurr": "USD",
   "potransitems": {
-    "potransitem": [
-      {
-        "itemid": 905,
-        "itemdesc": "AP5131 Access Point",
-        "unit": "Each",
-        "quantity": 2,
-        "totalamount": 400,
-        "warehouseid": "WH1",
-        "price": 200,
-        "retailprice": 0
-      }
-    ]
+    "potransitem": [{
+      "itemid": 905,
+      "itemdesc": "AP5131 Access Point",
+      "unit": "Each",
+      "quantity": 2,
+      "totalamount": 400,
+      "warehouseid": "WH1",
+      "price": 200,
+      "retailprice": 0
+    }]
   },
   "datecreated": {
     "month": "08",
@@ -178,8 +176,7 @@ const purchaseOrder = (journalid) => ({
   "description": "From XML API",
   "referenceno": "9876",
   "gltransactionentries": {
-    "glentry": [
-      {
+    "glentry": [{
         "trtype": "credit",
         "amount": "9876",
         "glaccountno": "1400",
@@ -207,15 +204,15 @@ suite.forElement('finance', 'purchase-orders', { payload: payload(), skip: true 
   it(`should allow CRDS for ${test.api}`, () => {
     let vendorId, transactionId, journalid;
     return cloud.post(`/hubs/finance/vendors`, vendor())
-    .then(r => vendorId = r.body.id)
-    .then(r => cloud.get(`/hubs/finance/transactions`))
-    .then(r => journalid = r.body[0].journalid)
-    .then(r => cloud.post(`/hubs/finance/transactions`, purchaseOrder(journalid)))
-    .then(r => transactionId = r.body.id)
-    .then(r => cloud.crds(test.api, payload(vendorId, transactionId)))
-    .then(r => cloud.delete(`/hubs/finance/transactions/${transactionId}`))
-    .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
+      .then(r => vendorId = r.body.id)
+      .then(r => cloud.get(`/hubs/finance/transactions`))
+      .then(r => journalid = r.body[0].journalid)
+      .then(r => cloud.post(`/hubs/finance/transactions`, purchaseOrder(journalid)))
+      .then(r => transactionId = r.body.id)
+      .then(r => cloud.crds(test.api, payload(vendorId, transactionId)))
+      .then(r => cloud.delete(`/hubs/finance/transactions/${transactionId}`))
+      .then(r => cloud.delete(`/hubs/finance/vendors/${vendorId}`));
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
+  test.withName('should support updated > {date} Ceql search').withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });

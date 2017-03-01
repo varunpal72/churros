@@ -61,6 +61,30 @@ suite.forPlatform('formulas', opts, (test) => {
       return cloud.put(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance);
     });
 
+    it('should sanitize formula instance tags on create and update', () => {
+      const name = 'xss-instance';
+      const updatedName = 'xss-instance-update';
+      const formulaInstance = require('./assets/formulas/basic-formula-instance');
+
+      let fiId;
+
+      formulaInstance.name = `<a href="#" onClick="javascript:alert(\'xss\');return false;">${name}</a>`;
+      formulaInstance.configuration['trigger-instance'] = elementInstanceId;
+
+      return common.createFormulaInstance(formulaId, formulaInstance)
+        .then(fi => {
+          fiId = fi.id;
+          expect(fi.name).to.equal(name);
+          return fi;
+        })
+        .then(fi => {
+          fi.name = `<a href="#" onClick="javascript:alert(\'xss\');return false;">${updatedName}</a>`;
+          return cloud.put(`${test.api}/${formulaId}/instances/${fiId}`, fi);
+        })
+        .then(r => expect(r.body.name).to.equal(updatedName))
+        .then(r => common.deleteFormulaInstance(formulaId, fiId));
+    });
+
     it('should allow CRUD a formula instance with notification settings', () => {
       const formulaInstance = require('./assets/formulas/basic-formula-instance');
       formulaInstance.configuration['trigger-instance'] = elementInstanceId;

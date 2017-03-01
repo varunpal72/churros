@@ -46,6 +46,14 @@ suite.forElement('documents', 'files', (test) => {
     return fileWrap(cb);
   });
 
+  it('should allow R /files/links and R /files/:id/links', () => {
+    const cb = (file) => {
+      return cloud.withOptions({ qs: { path: file.path } }).get('/hubs/documents/files/links')
+      .then(r => cloud.get(`/hubs/documents/files/${file.id}/links`));
+    };
+    return fileWrap(cb);
+  });
+
   it('should allow POST /files/copy and POST /files/:id/copy', () => {
     const copy1 = { path: '/churrosCopy' + tools.randomStr("abcdeiouABCDEIOU", 6) };
     const copy2 = { path: '/churrosCopy' + tools.randomStr("abcdeiouABCDEIOU", 6) };

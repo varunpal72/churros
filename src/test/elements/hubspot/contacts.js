@@ -7,6 +7,8 @@ const propertiesPayload = require('./assets/contactsProperties');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 
+payload.email = tools.randomEmail();
+
 const options = {
   churros: {
     updatePayload: {

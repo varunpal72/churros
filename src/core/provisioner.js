@@ -14,10 +14,25 @@ const cloud = require('core/cloud');
 
 var exports = module.exports = {};
 
+const genInstance = (config) =>
+  ({
+    name: config.name,
+    element: { key: config.element },
+    configuration: config.ec
+  });
+
 const genConfig = (props, args) => {
-  const config = props;
-  if (args) Object.keys(args).forEach(k => config[k] = args[k]);
-  return config;
+  const config = Object.assign({}, props, args);
+
+  const name = (args && args.name) ? args.name : 'churros-instance';
+  const tags = (args && args.tags) ? args.tags : undefined;
+  delete config.name;
+
+  return {
+    ec: config,
+    name: name,
+    tags: tags
+  };
 };
 
 const parseProps = (element) => {
@@ -39,11 +54,8 @@ const parseProps = (element) => {
 };
 
 const createInstance = (element, config, providerData, baseApi) => {
-  const instance = {
-    name: 'churros-instance',
-    element: { key: element },
-    configuration: config
-  };
+  const instance = genInstance(config);
+
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
@@ -157,19 +169,20 @@ const oauth1 = (element, args) => {
 const orchestrateCreate = (element, args, baseApi, cb) => {
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
+  config.element = element;
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
 
   switch (type) {
     case 'oauth1':
     case 'oauth2':
-      config['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
+      config.ec['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
         props.get('oauth.callback.url') :
         props.getForKey(element, 'oauth.callback.url');
-      logger.debug('Using callback URL: ' + config['oauth.callback.url']);
+      logger.debug('Using callback URL: ' + config.ec['oauth.callback.url']);
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
-        .then(r => oauth(element, r, config))
+        .then(r => oauth(element, r, config.ec))
         .then(r => cb(type, config, r));
     case 'custom':
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
@@ -181,7 +194,7 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
 
 /**
  * Provision an element using just the partial OAuth flow.
- * @param {tring} element The element key
+ * @param {string} element The element key
  * @param {Object} args Any other args to pass when provisioning the element
  * @param {string} baseApi The base API
  * @return {Promise}  A promise that will resolve to the response after the partial OAuth flow is complete
@@ -199,7 +212,7 @@ exports.create = (element, args, baseApi) => {
   const cb = (type, config, r) => {
     const external = props.getOptionalForKey(element, 'external');
 
-    if (external && type === 'oauth2') return createExternalInstance(element, config, r);
+    if (external && type === 'oauth2') return createExternalInstance(element, config.ec, r);
     if (external && type === 'oauth1') throw Error('External Authentication via churros is not yet implemented for OAuth1');
 
     return createInstance(element, config, r, baseApi);

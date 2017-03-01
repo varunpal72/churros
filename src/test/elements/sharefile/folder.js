@@ -30,7 +30,7 @@ payload.path += randomStr;
 
   test.withOptions({ qs: { path: '/' } }).withApi('/hubs/documents/folders/metadata').should.return200OnGet();
 
-  it.skip('Testing folder updating', () => {
+  it('Testing folder updating', () => {
     return cloud.withOptions({ qs: { path: '/My Files & Folders' } }).get('/hubs/documents/folders/contents')
       .then(r => cloud.withOptions({ qs: { path: r.body[0].path } }).patch('/hubs/documents/folders/metadata', r.body[0]))
       .then(r => cloud.patch('/hubs/documents/folders/' + r.body.id + '/metadata', r.body))

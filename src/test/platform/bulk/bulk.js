@@ -91,4 +91,32 @@ suite.forPlatform('bulk', (test) => {
       })));
   });
 
+  it('should support paged error retrieval', () => {
+      let bulkId;
+      // start bulk upload
+      const options = { qs: { pageSize: 30 } };
+      return cloud.postFile('/hubs/crm/bulk/bad', __dirname + `/assets/${element}.bad.csv`)
+          .then(r => {
+              expect(r.body.status).to.equal('CREATED');
+              bulkId = r.body.id;
+          })
+          // get bulk upload status
+          .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+              expect(r.body.status).to.equal('COMPLETED');
+          })))
+          // get bulk upload errors
+          .then(r => cloud.withOptions(options).get(`/hubs/crm/bulk/${bulkId}/errors`))
+          .then(r => {
+              expect(r.response.headers['elements-returned-count']).to.equal('30');
+              expect(r.body.length).to.equal(30);
+              options.qs.nextPage = r.response.headers['elements-next-page-token'];
+          })
+          .then(r => cloud.withOptions(options).get(`/hubs/crm/bulk/${bulkId}/errors`))
+          .then(r => {
+              expect(r).to.not.have.header('elements-next-page-token');
+              expect(r.response.headers['elements-returned-count']).to.equal('7');
+              expect(r.body.length).to.equal(7);
+          });
+  });
+
 });
