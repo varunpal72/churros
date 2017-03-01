@@ -12,7 +12,7 @@ suite.forElement('payment', 'subscriptions', { payload: payload }, (test) => {
   };
   let rateId, charge;
   before(() => {
-    return cloud.get(`/hubs/payment/products`)
+    return cloud.withOptions({ qs: { where: 'expand=true' } }).get(`/hubs/payment/products`)
       .then(r => {
         var match = r.body.filter(function(list) {
           return list.productRatePlans.length !== 0;
@@ -28,7 +28,8 @@ suite.forElement('payment', 'subscriptions', { payload: payload }, (test) => {
         }
       });
   });
-  test.should.supportPagination();
+  test.withName('should support CreatedDate > {date} Ceql search').withOptions({ qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' } }).should.return200OnGet();
+  test.should.supportNextPagePagination(2);
   it(`should allow CRUDS ${test.api}, POST ${test.api}/preview , PUT ${test.api}/{id}/renew and PUT ${test.api}/{id}/cancel`, () => {
     let id, customerId;
     const previewPayload = {
@@ -56,7 +57,6 @@ suite.forElement('payment', 'subscriptions', { payload: payload }, (test) => {
     };
     previewPayload.subscribeToRatePlans[0].productRatePlanId = rateId;
     previewPayload.subscribeToRatePlans[0].chargeOverrides[0].productRatePlanChargeId = charge;
-
 
     const renewUpdatePayload = {
       "collect": false,

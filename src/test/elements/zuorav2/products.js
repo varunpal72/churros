@@ -8,7 +8,6 @@ const build = (overrides) => Object.assign({}, payload, overrides);
 const accountsPayload = build({ Name: tools.random(), SKU: tools.random() });
 
 suite.forElement('payment', 'products', { payload: accountsPayload }, (test) => {
-  test.should.supportPagination();
   const options = {
     churros: {
       updatePayload: {
@@ -17,4 +16,6 @@ suite.forElement('payment', 'products', { payload: accountsPayload }, (test) => 
     }
   };
   test.withOptions(options).should.supportCruds(chakram.put);
+  test.should.supportNextPagePagination(2);
+  test.should.supportCeqlSearch('id');
 });

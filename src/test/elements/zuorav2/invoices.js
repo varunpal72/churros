@@ -3,16 +3,28 @@
 const suite = require('core/suite');
 const payload = require('./assets/invoices');
 const customerPayload = require('./assets/customers');
-const tools = require('core/tools');
+const chakram = require('chakram');
 const subscriptionPayload = require('./assets/subscriptions');
+const tools = require('core/tools');
 const cloud = require('core/cloud');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const invoicesPayload = build({ CreditCardAddress1: tools.random() });
-suite.forElement('payment', 'invoices', { payload: invoicesPayload }, (test) => {
 
-  let rateId, charge;
+suite.forElement('payment', 'invoices', { payload: invoicesPayload }, (test) => {
+  let customerId, rateId, charge;
+  const options = {
+    churros: {
+      updatePayload: {
+        "Status": "Canceled"
+      }
+    }
+  };
+  const ceqlOptions = {
+    name: "'should support CreatedDate > {date} Ceql search'",
+    qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' }
+  };
   before(() => {
-    return cloud.get(`/hubs/payment/products`)
+    cloud.withOptions({ qs: { where: 'expand=true' } }).get(`/hubs/payment/products`)
       .then(r => {
         var match = r.body.filter(function(list) {
           return list.productRatePlans.length !== 0;
@@ -26,30 +38,15 @@ suite.forElement('payment', 'invoices', { payload: invoicesPayload }, (test) => 
         } else {
           // bail
         }
-      });
-  });
-  test.should.supportPagination();
-  it(`should allow CRUDS ${test.api}`, () => {
-    const updatePayload = { "Status": "Canceled" };
-    const date = subscriptionPayload.contractEffectiveDate;
-    payload.InvoiceDate = date;
-    payload.TargetDate = date;
-    // const customerUpdatePayload ={"status":"Active"}
-    let sid, id, customerId;
-    // invoicePayload.AccountId=customerId;
-    return cloud.post(`/hubs/payment/customers`, customerPayload)
-      .then(r => customerId = r.body.id)
+      })
+      .then(r => cloud.post(`/hubs/payment/customers`, customerPayload))
+      .then(r => customerId = r.body.id ? r.body.id : r.body.accountId)
       .then(r => subscriptionPayload.accountKey = customerId)
       .then(r => cloud.post(`/hubs/payment/subscriptions`, subscriptionPayload))
-      .then(r => sid = r.body.id)
-      .then(r => payload.AccountId = customerId)
-      .then(r => cloud.post(`${test.api}`, payload))
-      .then(r => id = r.body.id)
-      //.then(r => cloud.get(`${test.api}`))
-      .then(r => cloud.get(`${test.api}/${id}`))
-      .then(r => cloud.get(`${test.api}`))
-      .then(r => cloud.put(`${test.api}/${id}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${id}`))
-      .then(r => cloud.delete(`/hubs/payment/customers/${customerId}`));
+      .then(r => invoicesPayload.AccountId = customerId);
   });
+  test.should.supportNextPagePagination(2);
+  test.withOptions(ceqlOptions).should.return200OnGet();
+  test.withOptions(options).should.supportCruds(chakram.put);
+  after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));
 });
