@@ -233,6 +233,12 @@
       "type": "string"
     }]
   },
+  "incident-types": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "invoices": {
     "fields": [{
       "path": "id",

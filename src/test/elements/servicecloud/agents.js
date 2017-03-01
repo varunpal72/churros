@@ -13,7 +13,7 @@ const payload = {
     "viewsReportsDisabled": true
   },
   "login": tools.random(),
-  "newPassword": tools.random() + "@Abc123",
+  "newPassword": tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10) + "@Abc123",
   "name": {
     "last": tools.random(),
     "first": tools.random()
