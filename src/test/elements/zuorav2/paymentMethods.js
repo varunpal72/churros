@@ -26,7 +26,6 @@ suite.forElement('payment', 'payment-methods', { payload: paymentPayload }, (tes
       .then(r => customerId = r.body.id)
       .then(r => paymentPayload.AccountId = customerId);
   });
-  test.withName('should support CreatedDate > {date} Ceql search').withOptions({ qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' } }).should.return200OnGet();
   test.should.supportNextPagePagination(2);
   test.withOptions(ceqlOptions).should.return200OnGet();
   test.withOptions(options).should.supportCruds(chakram.put);

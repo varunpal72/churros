@@ -7,18 +7,18 @@ const customerPayload = require('./assets/customers');
 const cloud = require('core/cloud');
 const chakram = require('chakram');
 suite.forElement('payment', 'subscriptions', { payload: payload }, (test) => {
- const options = {
+  const options = {
     churros: {
       updatePayload: {
-       "notes": tools.random()
+        "notes": tools.random()
       }
     }
   };
-const ceqlOptions = {
+  const ceqlOptions = {
     name: "'should support CreatedDate > {date} Ceql search'",
     qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' }
   };
-  let rateId, charge,customerId;
+  let rateId, charge, customerId;
   before(() => {
     return cloud.withOptions({ qs: { where: 'expand=true' } }).get(`/hubs/payment/products`)
       .then(r => {
@@ -35,7 +35,7 @@ const ceqlOptions = {
           // bail
         }
       })
-      .then(r=> cloud.post(`/hubs/payment/customers`, customerPayload))
+      .then(r => cloud.post(`/hubs/payment/customers`, customerPayload))
       .then(r => customerId = r.body.id)
       .then(r => payload.accountKey = customerId);
   });
@@ -43,11 +43,10 @@ const ceqlOptions = {
   test.withOptions(ceqlOptions).should.return200OnGet();
   test.should.supportNextPagePagination(2);
   test.withOptions(options).should.supportCruds(chakram.put);
-              
 
 
- it(`POST ${test.api}/preview `, () => {
-    let id;
+
+  it(`POST ${test.api}/preview `, () => {
     const previewPayload = {
       "contractEffectiveDate": "2015-1-15",
       "initialTerm": 12,
@@ -73,35 +72,34 @@ const ceqlOptions = {
     };
     previewPayload.subscribeToRatePlans[0].productRatePlanId = rateId;
     previewPayload.subscribeToRatePlans[0].chargeOverrides[0].productRatePlanChargeId = charge;
-      return cloud.post(`${test.api}/preview`, previewPayload);
-});
- it(`should  PUT ${test.api}/{id}/renew `, () => {
+    return cloud.post(`${test.api}/preview`, previewPayload);
+  });
+  it(`should  PUT ${test.api}/{id}/renew `, () => {
 
     let id;
     const renewUpdatePayload = {
       "collect": false,
       "invoice": true
-    };   
-     return cloud.post(`${test.api}`, payload)
-             .then(r => id = r.body.id)
-             .then(r => cloud.put(`${test.api}/${id}/renew`, renewUpdatePayload))
+    };
+    return cloud.post(`${test.api}`, payload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.put(`${test.api}/${id}/renew`, renewUpdatePayload));
 
-});
- it(`should  PUT ${test.api}/{id}/renew `, () => {
+  });
+  it(`should  PUT ${test.api}/{id}/renew `, () => {
 
     let id;
-      const cancleUpdatePayload = {
+    const cancleUpdatePayload = {
       "cancellationEffectiveDate": "2015-01-31",
       "cancellationPolicy": "SpecificDate",
       "collect": false,
       "invoice": true
     };
-     return cloud.post(`${test.api}`, payload)
-             .then(r => id = r.body.id)
-             .then(r => cloud.put(`${test.api}/${id}/cancel`, cancleUpdatePayload))
+    return cloud.post(`${test.api}`, payload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.put(`${test.api}/${id}/cancel`, cancleUpdatePayload));
 
-});
-
+  });
 
   after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));
 });
