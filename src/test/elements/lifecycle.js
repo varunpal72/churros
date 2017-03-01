@@ -95,7 +95,7 @@ it('should not allow provisioning with bad credentials', () => {
     elementInstance.providerData = {code: 'IAmBad'};
   }
   const responseCodeValidator = (statusCode) => {
-    expect(statusCode).to.be.above(400);
+    expect(statusCode).to.be.above(399);
     expect(statusCode).to.be.below(500);
   };
 
