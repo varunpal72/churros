@@ -44,7 +44,7 @@
       "type": "string"
     }]
   },
-  "location": {
+  "locations": {
     "fields": [{
       "path": "id",
       "type": "string"
@@ -928,6 +928,12 @@
     }]
   },
    "messages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "location": {
     "fields": [{
       "path": "id",
       "type": "string"
