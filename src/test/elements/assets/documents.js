@@ -111,6 +111,9 @@ exports.folders = (test) => {
 
     it('should allow CD /folders and DELETE /folders/:id', () => {
       let folder1, folder2;
+      let random1 = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
+      folderPayload.path += `-${random1}`;
+      folderPayload.name += `-${random1}`;
       return cloud.post('/hubs/documents/folders', folderPayload)
         .then(r => folder1 = r.body)
         .then(r => cloud.withOptions({ qs: { path: folder1.path } }).delete('/hubs/documents/folders'))

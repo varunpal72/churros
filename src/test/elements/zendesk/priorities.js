@@ -8,7 +8,7 @@ const updatePayload = () => ({
 
 suite.forElement('helpdesk', 'priorities', null , (test) => {
   test.should.supportPagination();
-  it(`should allow GET and PATCH for ${test.api}`, () => {
+  it.skip(`should allow GET and PATCH for ${test.api}`, () => {
     let priorityId;
     return cloud.get(test.api)
     .then(r => priorityId = r.body[0].id)
