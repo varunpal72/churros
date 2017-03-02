@@ -17,6 +17,15 @@
       }
     ]
   },
+  "customers": {
+    "vendorName": "ClientPortalUser",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
   "opportunities": {
     "vendorName": "Opportunity",
     "fields": [
@@ -36,7 +45,7 @@
     ]
   },
   "users": {
-    "vendorName": "ClientPortalUser",
+    "vendorName": "Resource",
     "fields": [
       {
         "path": "id",

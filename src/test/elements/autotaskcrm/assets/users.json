@@ -1,11 +1,28 @@
 {
-  "clientPortalActive": true,
-  "contactID": 4,
-  "dateFormat": 1,
-  "id": "0",
-  "numberFormat": 22,
-  "password": "yourmom",
-  "securityLevel": 5,
-  "timeFormat": 19,
-  "userName": "mrchurros@cloud-elements.com"
-}
+    "dateFormat": "MM/dd/yyyy",
+    "payrollType": 1,
+    "title": "",
+    "accountingReferenceID": "",
+    "officeExtension": "",
+    "email3": "",
+    "email2": "",
+    "password": "******",
+    "officePhone": "",
+    "numberFormat": "X,XXX.XX",
+    "email": "billybob@apitest.com",
+    "internalCost": 50,
+    "initials": "",
+    "homePhone": "",
+    "userName": "billybob",
+    "userDefinedFields": {
+      "userDefinedField": []
+    },
+    "firstName": "Billy",
+    "mobilePhone": "",
+    "locationID": 29683381,
+    "timeFormat": "hh:mm a",
+    "middleName": "",
+    "userType": 10,
+    "emailTypeCode": "PRIMARY",
+    "resourceType": "Employee"
+  }
