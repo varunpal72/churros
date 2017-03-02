@@ -6,7 +6,7 @@ const taskPayload = require('./assets/task');
 const cloud = require('core/cloud');
 const commentPayload = require('./assets/comments');
 
-suite.forElement('helpdesk', 'incidents', { skip: true, payload: payload }, (test) => {
+suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.should.return200OnGet();
 
   it('it should support POST', () => {
