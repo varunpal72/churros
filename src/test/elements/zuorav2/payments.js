@@ -17,7 +17,7 @@ suite.forElement('payment', 'payments', { payload: payload }, (test) => {
       }
     }
   };
-  let customerId, invoiceId;
+  let customerId, invoiceId,sId,pId;
   const date = subscriptionPayload.contractEffectiveDate;
   InvoicePayload.InvoiceDate = date;
   InvoicePayload.TargetDate = date;
@@ -46,19 +46,24 @@ suite.forElement('payment', 'payments', { payload: payload }, (test) => {
       .then(r => customerId = r.body.id ? r.body.id : r.body.accountId)
       .then(r => subscriptionPayload.accountKey = customerId)
       .then(r => cloud.post(`/hubs/payment/subscriptions`, subscriptionPayload))
+      .then(r => sId = r.body.id)
       .then(r => InvoicePayload.AccountId = customerId)
       .then(r => cloud.post(`/hubs/payment/invoices`, InvoicePayload))
       .then(r => invoiceId = r.body.id)
       .then(r => cloud.put(`/hubs/payment/invoices/${invoiceId}`, updateInvoicePayload))
       .then(r => paymentMethodPayload.AccountId = customerId)
       .then(r => cloud.post(`/hubs/payment/payment-methods`, paymentMethodPayload))
-      .then(r => payload.PaymentMethodId = r.body.id)
+      .then(r => pId = r.body.id)
+      .then(r => payload.PaymentMethodId = pId)
       .then(r => payload.AccountId = customerId)
       .then(r => payload.InvoiceId = invoiceId);
   });
   test.withOptions(ceqlOptions).should.return200OnGet();
   test.should.supportNextPagePagination(2);
   test.withOptions(options).should.supportCruds(chakram.put);
-  after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));
+  after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));               
+
+
+
 
 });
