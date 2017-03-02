@@ -7,7 +7,7 @@ const contactPayload = require('./assets/contacts');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 
-suite.forElement('crm', 'customers', { payload: payload, skip: false}, (test) => {
+suite.forElement('crm', 'customers', { payload: payload, skip: true}, (test) => {
     it(`should support CRUS, pagination and where for /hubs/crm/customers`, () => {
     let userId,userPayload;
     return cloud.post('/hubs/crm/contacts', contactPayload)

@@ -16,7 +16,7 @@ const confirmEmailProp = (users) => {
   }
 };
 
-suite.forElement('crm', 'users', { skip: false}, (test) => {
+suite.forElement('crm', 'users', { skip: true}, (test) => {
     test.should.supportSr();
     test.should.supportPagination();
     it('should support PATCH for /hubs/crm/users/{id}', () => {
