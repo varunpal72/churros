@@ -6,12 +6,12 @@ const cloud = require('core/cloud');
 const folderPayload = require('./assets/folders');
 
 suite.forElement('documents', 'folders', (test) => {
+  let random = `${tools.random()}`;
+  folderPayload.path += `-${random}`;
+  folderPayload.name += `-${random}`;
 
   const folderWrap = (cb) => {
     let folder;
-    let random = `${tools.random()}`;
-    folderPayload.path += `-${random}`;
-    folderPayload.name += `-${random}`;
     return cloud.post('/hubs/documents/folders', folderPayload)
       .then(r => folder = r.body)
       .then(r => cb(folder))
