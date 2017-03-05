@@ -1,14 +1,17 @@
 'use strict';
 
+const expect = require('chakram').expect;
 const suite = require('core/suite');
 const payload = require('./assets/contacts');
-const tools = require('core/tools');
-payload.email = tools.randomEmail();
+const cloud = require('core/cloud');
 
-suite.forElement('helpdesk', 'contacts', { payload: payload, skip: true }, (test) => {
-  // checkout functions available under test.should which provide a lot of pre-canned tests
-  //   more information here: https://github.com/cloud-elements/churros/blob/master/CONTRIBUTING.md#adding-tests-to-an-existing-suite
-
-
+suite.forElement('helpdesk', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();
+  test.should.supportPagination();
+
+  it('should not allow malformed bulk query and throw a 400', () => {
+    return cloud.withOptions({ qs: { q: 'select * contacts'} })
+      .post('/hubs/helpdesk/bulk/query', null,
+            r => { (expect(r).to.have.statusCode(400) && expect(r.body.message).to.include('Error parsing query')); });
+  });
 });

@@ -1,3 +1,6 @@
 {
-    "description": "Integration Test Company"
+  "customer": {
+    "name": "sampleChurros",
+    "description": "random description"
+  }
 }

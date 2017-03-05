@@ -95,4 +95,10 @@ describe('tools', () => {
   it('should allow stringifying an object', () => tools.stringify({ foo: 'bar' }));
 
   it('should allow loading an asset file', () => tools.copyAsset(require.resolve('./assets/test.json')));
+
+  it('should allow running a function x number of times', () => {
+    const res = tools.times(5)(() => 'foo');
+    expect(res).to.have.length(5);
+    res.map(r => expect(r).to.equal('foo'));
+  });
 });

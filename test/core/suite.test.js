@@ -102,6 +102,10 @@ describe('suite', () => {
       .withApi('/foo/pagination')
       .should.supportNextPagePagination(1);
 
+    test
+      .withApi('/foo/pagination')
+      .should.supportPagination();
+
     /* no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above */
     test.should.return200OnPost();
     test.should.return404OnGet(456);
@@ -115,7 +119,7 @@ describe('suite', () => {
     test.should.supportCd();
     test.should.supportCrds();
     test.should.supportCrs();
-    test.should.supportPagination();
+    test.should.supportCr();
     test.should.supportCeqlSearch('id');
     test.should.supportCeqlSearchForMultipleRecords('id');
 

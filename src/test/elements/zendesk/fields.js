@@ -1,7 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
+const tools = require('core/tools');
 const payload = require('./assets/fields');
+
+payload.key += tools.random();
 
 const options = {
   churros: {

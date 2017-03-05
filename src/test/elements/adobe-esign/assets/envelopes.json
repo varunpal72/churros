@@ -1,0 +1,14 @@
+{
+  "documentCreationInfo": {
+    "name": "madhurikadam",
+    "recipientSetInfos": [{
+      "recipientSetMemberInfos": [{
+        "email": "madhurikadam@gslanb.com"
+      }],
+      "recipientSetRole": "SIGNER"
+    }],
+    "signatureType": "ESIGN",
+    "signatureFlow": "SENDER_SIGNATURE_NOT_REQUIRED"
+
+  }
+}

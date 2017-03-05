@@ -13,14 +13,14 @@ exports.create = (config) => {
       .forBrowser(b)
       .build();
 
-  return browser.get(config['login.url'])
+  return browser.get(config.ec['login.url'])
     .then(() => {return browser.findElement(webdriver.By.name('user'));})
     .then(e => {
-      e.sendKeys(config.username);
+      e.sendKeys(config.ec.username);
       return browser.findElement(webdriver.By.name('pass'));
     })
     .then(e => {
-      e.sendKeys(config.password);
+      e.sendKeys(config.ec.password);
       return browser.findElement(webdriver.By.className('login-btn submit-btn'));
     })
     .then(e => {e.click();})
@@ -28,7 +28,7 @@ exports.create = (config) => {
       return browser.wait(webdriver.until.elementLocated(webdriver.By.className('app-title')), 5000);
     })
     .then(() => {
-      return browser.get(config['app.install.url'])
+      return browser.get(config.ec['app.install.url'])
       .then(() => {
         return browser.wait(webdriver.until.elementLocated(webdriver.By.className('topbar__action topbar__forward  ')), 3000);
       })
@@ -44,14 +44,14 @@ exports.create = (config) => {
       // parse the authorization_code out of user_login
       const query = urlParser.parse(e, true).query;
       const body = {
-        name: 'my instance name',
+        name: config.name,
         element: {
           key:'weebly'
         },
         configuration:{
-          'oauth.api.key':config['client.id'],
-          'oauth.api.secret': config['client.secret'],
-          'site.id': config['site.id']
+          'oauth.api.key':config.ec['client.id'],
+          'oauth.api.secret': config.ec['client.secret'],
+          'site.id': config.ec['site.id']
         },
         providerData: {
           code: query.authorization_code

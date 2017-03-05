@@ -1,9 +1,9 @@
 'use strict';
 
 const suite = require('core/suite');
-
-suite.forElement('finance', 'customers', (test) => {
-  test.should.supportSr();
+const payload = require('./assets/customers');
+suite.forElement('finance', 'customers', { payload: payload }, (test) => {
+  test.should.supportCruds();
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
+  test.withName('should support updated > {date} Ceql search').withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } }).should.return200OnGet();
 });

@@ -25,9 +25,6 @@ suite.forElement('collaboration', 'messages', payload, (test) => {
     .then(r => cloud.withOptions({qs: {group: true}}).remove(`${test.api}/${createdId}`));
   });
 
-
-
-
 });
 
 // total endppints = 43
