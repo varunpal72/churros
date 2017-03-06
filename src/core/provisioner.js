@@ -46,8 +46,7 @@ const parseProps = (element) => {
         callbackUrl: (props.getOptionalForKey(element, 'oauth.callback.url') || props.get('oauth.callback.url')),
         scope: props.getOptionalForKey(element, 'oauth.scope'),
         siteAddress: props.getOptionalForKey(element, 'site.address'),
-        subdomain: props.getOptionalForKey(element, 'subdomain'),
-        'paypalv2.sandbox': props.getOptionalForKey(element, 'paypalv2.sandbox')
+        subdomain: props.getOptionalForKey(element, 'subdomain')        
       }
     }
   };
@@ -106,8 +105,7 @@ const createExternalInstance = (element, config, providerData) => {
           "oauth.api.secret": apiSecret,
           "oauth.resource.url": props.getOptionalForKey(element, 'site.address'),
           "site.url": props.getOptionalForKey(element, 'site.address'),
-          "site.address": props.getOptionalForKey(element, 'site.address'),
-          "paypalv2.sandbox": props.getOptionalForKey(element, 'paypalv2.sandbox')
+          "site.address": props.getOptionalForKey(element, 'site.address')
         },
         "name": `${element} external auth churros`,
         "externalAuthentication": "initial"
