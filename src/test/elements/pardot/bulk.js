@@ -20,7 +20,7 @@ suite.forElement('marketing', 'bulk', null, (test) => {
                 expect(r.body.status).to.equal('COMPLETED');
                 expect(r.body.recordsCount).to.equal(60);
                 expect(r.body.recordsFailedCount).to.equal(0);
-            })))
+            })));
     });
 
     it('should report an error on a bulk upload with no key (email/id)', () => {
@@ -35,7 +35,7 @@ suite.forElement('marketing', 'bulk', null, (test) => {
             .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/marketing/bulk/${bulkId}/status`, r => {
                 expect(r.body.status).to.equal('ABORTED');
                 expect(r.body.error).to.equal("All prospects require either 'email' or 'id'");
-            })))
+            })));
     });
 
     it('should report an error on a bulk upload with an invalid field', () => {
