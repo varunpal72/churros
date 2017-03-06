@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');
 
 suite.forElement('payment', 'chargify-events', (test) => {
   test.withOptions({
