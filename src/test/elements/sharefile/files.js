@@ -1,5 +1,6 @@
 'use strict';
 
+const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
@@ -16,6 +17,7 @@ suite.forElement('documents', 'files', (test) => {
       .then(r => fileId = r.body.id)
       .then(r => cloud.get('/hubs/documents/files' + '/' + fileId))
       .then(r => cloud.get('/hubs/documents/files' + '/' + fileId + '/metadata'))
+      .then(r => cloud.withOptions({ qs: query }).get('/hubs/documents/files/metadata'))
       .then(r => cloud.withOptions({ qs: query }).get('/hubs/documents/files'))
       .then(r => cloud.withOptions({ qs: query }).delete('/hubs/documents/files'));
 
@@ -25,6 +27,7 @@ suite.forElement('documents', 'files', (test) => {
     let path = __dirname + '/assets/file.txt';
     return cloud.postFile('/hubs/documents/files', path, { qs: query })
       .then(r => fileId = r.body.id)
+      .then(r => cloud.withOptions({ qs: query }).patch('hubs/documents/files/metadata', metadataPatch))
       .then(r => cloud.patch('hubs/documents/files/' + fileId + '/metadata', metadataPatch))
       .then(r => cloud.withOptions({ qs: metadataPatch }).delete('/hubs/documents/files'));
 
@@ -44,6 +47,15 @@ suite.forElement('documents', 'files', (test) => {
     let path = __dirname + '/assets/file.txt';
     return cloud.postFile('/hubs/documents/files', path, { qs: query })
       .then(r => fileId = r.body.id)
+      .then(r => cloud.delete('/hubs/documents/files/' + fileId));
+  });
+
+  it('should support links for files', () => {
+    let path = __dirname + '/assets/file.txt';
+    return cloud.postFile('/hubs/documents/files', path, { qs: query })
+      .then(r => fileId = r.body.id)
+      .then(r => cloud.get("/hubs/documents/files/" + fileId + "/links"))
+      .then(r => expect(r).to.have.statusCode(200) && expect(r.body.providerViewLink).to.not.be.null)
       .then(r => cloud.delete('/hubs/documents/files/' + fileId));
   });
 });

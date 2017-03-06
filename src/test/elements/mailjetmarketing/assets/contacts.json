@@ -1,7 +1,7 @@
 {
-  "Email": "tom.brady@cloud-elements.com",
+  "Email": "abc@cloud-elements.com",
   "IsOptInPending": false,
-  "foo": "Bar",
-  "Name": "Tom Brady",
+  "foo": "abc",
+  "Name": "aaa bbb",
   "IsExcludedFromCampaigns": false
 }

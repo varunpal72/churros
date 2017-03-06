@@ -43,14 +43,5 @@
         "vendorPath": "id"
       }
     ]
-  },
-  "products": {
-    "vendorName": "Product",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
   }
 }

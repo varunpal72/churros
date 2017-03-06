@@ -73,10 +73,24 @@ const itCrs = (name, api, payload, validationCb, options) => {
   boomGoesTheDynamite(n, () => cloud.withOptions(options).crs(api, payload, validationCb), options ? options.skip : false);
 };
 
+const itCr = (name, api, payload, validationCb, options) => {
+  const n = name || `should allow CR for ${api}`;
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).cr(api, payload, validationCb), options ? options.skip : false);
+};
+
 const itPagination = (name, api, options, validationCb) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
-  const newOptions = Object.assign({}, options, { qs: { page: 1, pageSize: 1 } });
-  boomGoesTheDynamite(n, () => cloud.withOptions(newOptions).get(api, validationCb), options ? options.skip : false);
+  const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 1 : 1 : 1;
+  const page = options ? options.qs ? options.qs.page ? options.qs.page : 1 : 1 : 1;
+  const newOptions = Object.assign({}, options, { qs: { page: page, pageSize: pageSize } });
+  boomGoesTheDynamite(n, () => {
+    return cloud.withOptions(newOptions).get(api)
+    .then((r) => {
+      if(r.body && r.body.length > 0){
+        expect(r.body).to.have.length(pageSize);
+      }
+    });
+  }, options ? options.skip : false);
 };
 
 const paginate = (api, options, validationCb, nextPage, page, max, all) => {
@@ -295,7 +309,7 @@ const runTests = (api, payload, validationCb, tests) => {
      */
     supportSr: () => itSr(name, api, validationCb, options),
     /**
-     * Validates that the given API resource supports
+     * Validates that the given API resource supports S
      * @memberof module:core/suite.test.should
      */
     supportS: () => itS(name, api, validationCb, options),
@@ -304,6 +318,11 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test.should
      */
     supportCrs: () => itCrs(name, api, payload, validationCb, options),
+    /**
+     * Validates that the given API resource supports CR
+     * @memberof module:core/suite.test.should
+     */
+    supportCr: () => itCr(name, api, payload, validationCb, options),
   });
 
   const using = (myApi, myValidationCb, myPayload, myOptions, myName) => ({

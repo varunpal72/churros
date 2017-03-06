@@ -21,6 +21,7 @@ suite.forElement('crm', 'contacts', { payload: contactsPayload }, (test) => {
   };
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
+  test.should.supportCeqlSearchForMultipleRecords('email');
 
   it('should allow CRUDS for contacts/{id}/notes', () => {
     let contactId = -1;

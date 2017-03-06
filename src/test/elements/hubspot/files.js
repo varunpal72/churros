@@ -18,6 +18,7 @@ suite.forElement('marketing', 'files', null, (test) => {
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => cloud.patch(`${test.api}/${id}`, fieldsUpdate()))
       .then(r => cloud.patch(`${test.api}/${id}/archive`))
-      .then(r => cloud.delete(`${test.api}/${id}`));
+      .then(r => cloud.delete(`${test.api}/${id}`))
+      .then(r => cloud.delete(`${test.api}/cdn/files/${id}`));
   });
 });

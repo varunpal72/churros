@@ -454,6 +454,22 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
   });
 
+  it('should return any console.log statements on a script step that fails', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        const ses = e.stepExecutions;
+        expect(ses).to.have.length(3);
+        ses.filter(se => se.stepName === 'bad-script-step').map(validateErrorStepExecution);
+
+        const consolidated = consolidateStepExecutionValues(ses);
+        expect(consolidated['bad-script-step.error']).to.contains('This is an invalid script step');
+        expect(consolidated['bad-script-step.console']).to.contains('print');
+      });
+    };
+
+    return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
+  });
+
   it('should show a successful execution, even if the last step is a filter step that returns false', () => eventTriggerTest('filter-returns-false', 1, 2));
 
   it('should support a manual trigger type on a formula', () => {
@@ -571,7 +587,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
-      .then(r => tools.wait.upTo(10000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(20000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
       })))
       .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator))
