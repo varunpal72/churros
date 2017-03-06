@@ -17,6 +17,15 @@
       }
     ]
   },
+  "activities": {
+    "vendorName": "activities",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "ActivityNumber"
+      }
+    ]
+  },
   "leads": {
     "vendorName": "leads",
     "fields": [
@@ -32,15 +41,6 @@
       {
         "path": "id",
         "vendorPath": "OptyNumber"
-      }
-    ]
-  },
-  "products": {
-    "vendorName": "products",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "productsUniqID"
       }
     ]
   }
