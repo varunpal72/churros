@@ -1,21 +1,12 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');
 const tools = require('core/tools');
 const subscriptionPayload = require('./assets/subscriptions');
+subscriptionPayload.customer_attributes.reference = tools.random();
 
-suite.forElement('payment', 'subscriptions', (test) => {
-  test.should.return200OnGet();
-  it(`should allow GET for ${test.api}/{subscriptionId}`, () => {
-    let subscriptionId;
-    const updatePayload = subscriptionPayload;
-    updatePayload.customer_attributes.reference = tools.random();
-    return cloud.post(`${test.api}`, updatePayload)
-      .then(r => subscriptionId = r.body.id)
-      .then(r => cloud.get(`${test.api}`))
-      .then(r => cloud.get(`${test.api}/${subscriptionId}`))
-      .then(r => cloud.delete(`${test.api}/${subscriptionId}`));
-  });
+suite.forElement('payment', 'subscriptions', { payload: subscriptionPayload }, (test) => {
+  test.withOptions({ qs: { where: 'direction=\'desc\''}}).should.return200OnGet();
+  test.should.supportCrds();
   test.should.supportPagination();
 });
