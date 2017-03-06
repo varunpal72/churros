@@ -18,7 +18,7 @@ suite.forElement('payment', 'customers', { payload: payload }, (test) => {
     }
   };
  const ceqlOptions = {
-    name: "'should support CreatedDate > {date} Ceql search'",
+    name: "should support CreatedDate > {date} Ceql search",
     qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' }
   };
 
@@ -41,7 +41,7 @@ suite.forElement('payment', 'customers', { payload: payload }, (test) => {
       });
   });
 
-  test.withOptions(ceqlOptions).should.return200OnGet();
+  test.withName(ceqlOptions.name).withOptions(ceqlOptions).should.return200OnGet();
   test.should.supportNextPagePagination(2, true);
   test.withOptions(options).should.supportCruds(chakram.put);
 

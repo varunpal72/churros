@@ -22,7 +22,7 @@ suite.forElement('payment', 'payments', { payload: payload }, (test) => {
   InvoicePayload.InvoiceDate = date;
   InvoicePayload.TargetDate = date;
   const ceqlOptions = {
-    name: "'should support CreatedDate > {date} Ceql search'",
+    name: "should support CreatedDate > {date} Ceql search",
     qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' }
   };
   const updateInvoicePayload = { "Status": "Posted" };
@@ -58,10 +58,10 @@ suite.forElement('payment', 'payments', { payload: payload }, (test) => {
       .then(r => payload.AccountId = customerId)
       .then(r => payload.InvoiceId = invoiceId);
   });
-  test.withOptions(ceqlOptions).should.return200OnGet();
+  test.withName(ceqlOptions.name).withOptions(ceqlOptions).should.return200OnGet();
   test.should.supportNextPagePagination(2);
   test.withOptions(options).should.supportCruds(chakram.put);
-  after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));               
+  after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));
 
 
 

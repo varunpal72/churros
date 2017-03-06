@@ -18,7 +18,7 @@ suite.forElement('payment', 'payment-methods', { payload: paymentPayload }, (tes
     }
   };
   const ceqlOptions = {
-    name: "'should support CreatedDate > {date} Ceql search'",
+    name: "should support CreatedDate > {date} Ceql search",
     qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' }
   };
   before(() => {
@@ -27,7 +27,7 @@ suite.forElement('payment', 'payment-methods', { payload: paymentPayload }, (tes
       .then(r => paymentPayload.AccountId = customerId);
   });
   test.should.supportNextPagePagination(2);
-  test.withOptions(ceqlOptions).should.return200OnGet();
+  test.withName(ceqlOptions.name).withOptions(ceqlOptions).should.return200OnGet();
   test.withOptions(options).should.supportCruds(chakram.put);
   after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));
 });

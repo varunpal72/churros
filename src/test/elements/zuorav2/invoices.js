@@ -20,7 +20,7 @@ suite.forElement('payment', 'invoices', { payload: invoicesPayload }, (test) => 
     }
   };
   const ceqlOptions = {
-    name: "'should support CreatedDate > {date} Ceql search'",
+    name: "should support CreatedDate > {date} Ceql search",
     qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' }
   };
   before(() => {
@@ -46,7 +46,7 @@ suite.forElement('payment', 'invoices', { payload: invoicesPayload }, (test) => 
       .then(r => invoicesPayload.AccountId = customerId);
   });
   test.should.supportNextPagePagination(2);
-  test.withOptions(ceqlOptions).should.return200OnGet();
+  test.withName(ceqlOptions.name).withOptions(ceqlOptions).should.return200OnGet();
   test.withOptions(options).should.supportCruds(chakram.put);
   after(() => cloud.delete(`/hubs/payment/customers/${customerId}`));
 });

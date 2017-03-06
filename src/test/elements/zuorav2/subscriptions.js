@@ -15,7 +15,7 @@ suite.forElement('payment', 'subscriptions', { payload: payload }, (test) => {
     }
   };
 const ceqlOptions = {
-    name: "'should support CreatedDate > {date} Ceql search'",
+    name: "should support CreatedDate > {date} Ceql search",
     qs: { where: 'CreatedDate>\'2017-02-22T08:21:00.000Z\'' }
   };
   let rateId, charge,customerId;
@@ -40,10 +40,10 @@ const ceqlOptions = {
       .then(r => payload.accountKey = customerId);
   });
 
-  test.withOptions(ceqlOptions).should.return200OnGet();
+  test.withName(ceqlOptions.name).withOptions(ceqlOptions).should.return200OnGet();
   test.should.supportNextPagePagination(2);
   test.withOptions(options).should.supportCruds(chakram.put);
-              
+
 
 
  it.skip(`should allow POST ${test.api}/preview `, () => {
@@ -80,7 +80,7 @@ const ceqlOptions = {
     const renewUpdatePayload = {
       "collect": false,
       "invoice": true
-    };   
+    };
      return cloud.post(`${test.api}`, payload)
              .then(r => id = r.body.id)
              .then(r => cloud.put(`${test.api}/${id}/renew`, renewUpdatePayload));
