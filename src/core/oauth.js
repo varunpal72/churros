@@ -315,14 +315,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
       return browser.getCurrentUrl();
-   case 'newpaypal':
+   case 'paypalv2':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.sleep(2000);
       browser.findElement(webdriver.By.id('btnLogin')).click();
-      browser.sleep(5000);
-      browser.wait(() => browser.isElementPresent(webdriver.By.id('agreeConsent')), 3000)
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('agreeConsent')), 8000)
         .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.id('agreeConsent'))
         .then((element) => element.click(), (err) => {}); // ignore this
