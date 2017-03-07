@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-// const payload = require('./assets/orders');
 const cloud = require('core/cloud');
 const payload = require('./assets/products');
 const options = {
@@ -54,7 +53,7 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
       });
   });
 
-  it(`should support Ru for ${test.api}/{id}/inventory`, () => {
+  it(`should support US for ${test.api}/{id}/inventory`, () => {
     let productId;
     let inventoryPayload = {
       "products": {
