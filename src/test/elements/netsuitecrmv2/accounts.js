@@ -10,6 +10,7 @@ const payload = require('./assets/accounts');
 
 suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
   test.should.supportCruds();
+  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.supportPagination();
   test.withOptions({ qs: { page: 1,
                            pageSize: 5,
                            where : "`custom.multi.scriptId` = 'custentity1' and `custom.multi.value.internalId` = 1"
