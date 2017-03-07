@@ -1,7 +1,9 @@
 'use strict';
 
 const suite = require('core/suite');
+const tools = require('core/tools');
 const payload = require('./assets/contacts');
+payload.firstName = tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10);
 
 suite.forElement('erp', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();

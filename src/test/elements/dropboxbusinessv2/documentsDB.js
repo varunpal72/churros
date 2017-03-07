@@ -107,13 +107,13 @@ exports.ping = () => {
 
 exports.folders = (test) => {
   suite.forElement('documents', 'folders', (test) => {
-
+    let random = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
+    folderPayload.path += `-${random}`;
+    folderPayload.name += `-${random}`;
+    
     // let memberId = "dbmid:AADkTHIEUNMxlMLbejOdxXt8bZsciJP1sRE";
     const folderWrap = (cb) => {
       let folder;
-      let random = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
-      folderPayload.path += `-${random}`;
-      folderPayload.name += `-${random}`;
       return cloud.withOptions({ headers: { "Elements-As-Team-Member": memberId } }).post('/hubs/documents/folders', folderPayload)
         .then(r => folder = r.body)
         .then(r => cb(folder))
