@@ -52,6 +52,7 @@ before(() => {
       return Promise.resolve(url);
     }
     const port = props.getForKey('events', 'port');
+    return Promise.resolve();
     return tunnel.start(port)
       .then(url => props.setForKey('events', 'url', url));
   };
