@@ -20,6 +20,14 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   test.withOptions(opts).should.supportCruds();
   test.should.supportPagination();
   test.should.supportCeqlSearch('id');
+  test.withOptions({ qs: { page: 1,
+                           pageSize: 5,
+                           where : "lastUpdatedAt > 1417556990"
+                         } }).should.return200OnGet();
+                         test.withOptions({ qs: { page: 1,
+                                                  pageSize: 5,
+                                                  where : "lastUpdatedAt > '2017-01-01'"
+                                                } }).should.return200OnGet();
 
   it('should allow GET hubs/marketing/contacts/{contactId}/activities', () => {
     let contactId;
