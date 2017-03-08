@@ -120,6 +120,7 @@ describe('suite', () => {
     test.should.supportCrds();
     test.should.supportCrs();
     test.should.supportCr();
+    test.should.supportCs();
     test.should.supportCeqlSearch('id');
     test.should.supportCeqlSearchForMultipleRecords('id');
 
