@@ -1,21 +1,45 @@
 {
-  "type": "object",
-  "properties": {
-    "objectName": {
-      "type": "string"
+    "definitions": {
+        "field": {
+            "type": "object",
+            "properties": {
+                "path": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "level": {
+                  "enum": [ "organization", "account", "instance" ]
+                }
+            },
+            "required": [
+              "path",
+              "type",
+              "level"
+            ]
+        }
     },
-    "vendorName": {
-      "type": "string"
+    "type": "object",
+    "properties": {
+        "objectName": {
+            "type": "string"
+        },
+        "vendorName": {
+            "type": "string"
+        },
+        "fields": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/field"
+            }
+        },
+        "configuration": {
+            "type": "array"
+        }
     },
-    "fields": {
-      "type": "array"
-    },
-    "configuration": {
-      "type": "array"
-    }
-  },
-  "required": [
-    "vendorName",
-    "fields"
-  ]
+    "required": [
+        "vendorName",
+        "fields"
+    ]
 }
