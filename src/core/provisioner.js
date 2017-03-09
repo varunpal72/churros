@@ -46,7 +46,7 @@ const parseProps = (element) => {
         callbackUrl: (props.getOptionalForKey(element, 'oauth.callback.url') || props.get('oauth.callback.url')),
         scope: props.getOptionalForKey(element, 'oauth.scope'),
         siteAddress: props.getOptionalForKey(element, 'site.address'),
-        subdomain: props.getOptionalForKey(element, 'subdomain')        
+        subdomain: props.getOptionalForKey(element, 'subdomain')
       }
     }
   };
@@ -231,7 +231,10 @@ exports.delete = (id, baseApi) => {
   if (!id) return;
 
   baseApi = (baseApi) ? baseApi : '/instances';
-  return cloud.delete(`${baseApi}/${id}`)
+  // when running the delete API, don't include the element token in the auth header
+  const {userSecret, orgSecret} = defaults.secrets();
+  const headers = {Authorization: `User ${userSecret}, Organization ${orgSecret}`};
+  return cloud.withOptions({headers}).delete(`${baseApi}/${id}`)
     .then(r => {
       logger.debug(`Deleted element instance with ID: ${id}`);
       defaults.reset();
