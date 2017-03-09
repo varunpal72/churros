@@ -9,7 +9,7 @@ const statusPayload = build({ message: tools.random() });
 
 suite.forElement('social', 'user',{ payload:statusPayload }, (test) => {
   let userId,statusId;
-  it('should allow GET for hubs/social/user/me and Then GET user by id ', () => {
+  it('should allow GET for hubs/social/user/me and GET user by id ', () => {
     return cloud.get(`${test.api}/me`)
       .then(r => userId = r.body.id)
       .then(r =>cloud.get(`${test.api}/${userId}`));
@@ -63,7 +63,7 @@ suite.forElement('social', 'user',{ payload:statusPayload }, (test) => {
       .then(r =>cloud.get(`${test.api}/context/${contextId}`));
   });
 
-  it('should allow CREATE for hubs/social/status/{statusId}/comments and then DELETE /hubs/social/user/comment/{commentId} ', () => {
+  it('should allow CREATE for hubs/social/status/{statusId}/comments and DELETE /hubs/social/user/comment/{commentId} ', () => {
     let commentId;
     return cloud.post(`hubs/social/status/${statusId}/comments`,payload)
       .then(r => commentId = r.body.id)
