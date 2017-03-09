@@ -58,21 +58,22 @@ suite.forElement('documents', 'folders', (test) => {
     return folderWrap(cb);
   });
 
-  it('should allow copying a folder by path and id', () => {
-    let folder1,folder2,folder3;
-    let copyPath = "/"+tools.random()+"/"+ folderPayload.name;
-    let copyPath2 = "/"+tools.random()+"/"+ folderPayload.name;
-    const build = (overrides) => Object.assign({}, folderPayload, overrides);
-    const folderCopyPayload = build({ name: folderPayload.name, path: copyPath });
-    const folderCopyPayload2 = build({ name: folderPayload.name, path: copyPath2 });
-    return cloud.post('/hubs/documents/folders', folderPayload)
-      .then(r => folder1 = r.body)
-      .then(r => cloud.withOptions({ qs: { path: folder1.path } }).post('/hubs/documents/folders/copy',folderCopyPayload))
-      .then(r => folder2 = r.body)
-      .then(r => cloud.post(`/hubs/documents/folders/${folder1.id}/copy`,folderCopyPayload2))
-      .then(r => folder3 = r.body)
-      .then(r => cloud.delete(`/hubs/documents/folders/${folder1.id}`))
-      .then(r => cloud.delete(`/hubs/documents/folders/${folder2.id}`))
-      .then(r => cloud.delete(`/hubs/documents/folders/${folder3.id}`));
+  it('should allow POST /folders/copy and POST /folders/:id/copy', () => {
+
+    const copy1 = { path: `/churrosCopy1${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}` };
+    const copy2 = { path: `/churrosCopy2${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}` };
+
+    const cb = (folder) => {
+      let folderCopy1, folderCopy2;
+      return cloud.withOptions({ qs: { path: folder.path } }).post('/hubs/documents/folders/copy', copy1)
+        .then(r => folderCopy1 = r.body)
+        .then(() => cloud.post(`/hubs/documents/folders/${folder.id}/copy`, copy2))
+        .then(r => folderCopy2 = r.body)
+        .then(() => cloud.delete(`/hubs/documents/folders/${folderCopy1.id}`))
+        .then(() => cloud.delete(`/hubs/documents/folders/${folderCopy2.id}`));
+    };
+
+    return folderWrap(cb);
   });
+
 });
