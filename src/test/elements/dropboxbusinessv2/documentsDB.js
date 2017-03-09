@@ -1,4 +1,6 @@
 'use strict';
+
+const expect = require('chakram').expect;
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const suite = require('core/suite');
@@ -43,8 +45,33 @@ exports.files = () => {
 
     it('should allow GET /files/links and /files/:id/links', () => {
       const cb = (file) => {
-        return cloud.withOptions({ headers: { "Elements-As-Team-Member": memberId } }).get(`/hubs/documents/files/${file.id}/links`)
-          .then(() => cloud.withOptions({ qs: { path: file.path }, headers: { "Elements-As-Team-Member": memberId } }).get('/hubs/documents/files/links'));
+        return cloud.withOptions({ headers: { "Elements-As-Team-Member": memberId } })
+          .get(`/hubs/documents/files/${file.id}/links`)
+          .then(r => expect(r.body).to.not.contain.key('raw'))
+          .then(() => cloud.withOptions({
+              qs: { path: file.path },
+              headers: { "Elements-As-Team-Member": memberId }
+            })
+            .get('/hubs/documents/files/links')
+            .then(r => expect(r.body).to.not.contain.key('raw'))
+          );
+      };
+
+      return fileWrap(cb);
+    });
+
+    it('should allow GET /files/links and /files/:id/links with raw payload', () => {
+      const cb = (file) => {
+        return cloud.withOptions({ qs: { raw: true }, headers: { "Elements-As-Team-Member": memberId } })
+          .get(`/hubs/documents/files/${file.id}/links`)
+          .then(r => expect(r.body).to.contain.key('raw'))
+          .then(() => cloud.withOptions({
+              qs: { path: file.path, raw: true },
+              headers: { "Elements-As-Team-Member": memberId }
+            })
+            .get('/hubs/documents/files/links')
+            .then(r => expect(r.body).to.contain.key('raw'))
+          );
       };
 
       return fileWrap(cb);
@@ -110,7 +137,7 @@ exports.folders = (test) => {
     let random = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
     folderPayload.path += `-${random}`;
     folderPayload.name += `-${random}`;
-    
+
     // let memberId = "dbmid:AADkTHIEUNMxlMLbejOdxXt8bZsciJP1sRE";
     const folderWrap = (cb) => {
       let folder;

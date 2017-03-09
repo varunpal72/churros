@@ -55,7 +55,17 @@ suite.forElement('documents', 'files', (test) => {
     return cloud.postFile('/hubs/documents/files', path, { qs: query })
       .then(r => fileId = r.body.id)
       .then(r => cloud.get("/hubs/documents/files/" + fileId + "/links"))
-      .then(r => expect(r).to.have.statusCode(200) && expect(r.body.providerViewLink).to.not.be.null)
+      .then(r => expect(r).to.have.statusCode(200) && expect(r.body.providerViewLink).to.not.be.null && expect(r.body).to.not.contain.key('raw'))
+      .then(r => cloud.delete('/hubs/documents/files/' + fileId));
+  });
+
+  it('should support links for files/links with raw payload', () => {
+    let path = __dirname + '/assets/file.txt';
+    let filePath;
+    return cloud.postFile('/hubs/documents/files', path, { qs: query })
+      .then(r => { fileId = r.body.id; filePath = r.body.path; })
+      .then(r => cloud.withOptions({ qs: { path: filePath, raw: true } }).get("/hubs/documents/files/links"))
+      .then(r => expect(r).to.have.statusCode(200) && expect(r.body.providerViewLink).to.not.be.null && expect(r.body).to.contain.key('raw'))
       .then(r => cloud.delete('/hubs/documents/files/' + fileId));
   });
 });
