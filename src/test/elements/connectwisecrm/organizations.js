@@ -5,7 +5,7 @@ const payload = require('./assets/organizations');
 const tools = require('core/tools');
 
 const createOrganization = (payload) => {
-  payload.companyIdentifier = payload.companyIdentifier + tools.randomInt().toString();
+  payload.companyIdentifier = payload.companyIdentifier + tools.randomStr('abcdefghijklmnopqrstuvwxyz0123456789', 10);
   return payload;
 };
 

@@ -1,12 +1,4 @@
 {
     "FirstName": "John",
-    "LastName": "Smith",
-    "Address": [
-        {
-            "Address1": "100 Oracle Parkway",
-            "City": "Redwood Shores",
-            "Country": "US",
-            "State": "CA"
-        }
-    ]
+    "LastName": "Smith"
 }

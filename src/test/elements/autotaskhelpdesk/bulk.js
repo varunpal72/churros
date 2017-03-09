@@ -23,8 +23,9 @@ suite.forElement('helpdesk', 'bulk', null, (test) => {
                 expect(r.body.recordsCount > 0).to.be.true;
                 expect(r.body.recordsFailedCount).to.equal(0);
             })))
-            .then(r => cloud.withOptions({ headers: { accept: "application/json" }}).get(`/hubs/helpdesk/bulk/${bulkId}/contacts`, r => {
-                r.body.every(contact => expect(contact).to.have.property('firstName','Rick'));
+            .then(r => cloud.withOptions({ headers: { accept: "application/json" }, qs: { json: '{ "convertToNativeType": "false" }' }}).get(`/hubs/helpdesk/bulk/${bulkId}/contacts`, r => {
+              console.log(r);
+                r.body.forEach(contact => expect(contact).to.have.property('firstName','Rick'));
             }))
             .then(r => cloud.withOptions({ headers: { accept: "text/csv" } }).get(`/hubs/helpdesk/bulk/${bulkId}/contacts`, r => {
                 expect(r.body).to.contain('Rick');
