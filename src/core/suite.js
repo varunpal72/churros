@@ -90,19 +90,18 @@ const itPagination = (name, api, options, validationCb) => {
     return cloud.withOptions(option).get(api)
     .then((r) => {
       if(r.body && r.body.length > 0) {
-        result.body = r.body
-        return expect(result.body).to.have.length(option.qs.pageSize)
+        result.body = r.body;
+        return expect(result.body.length).to.be.below(option.qs.pageSize + 1);
       }
-    })
-  }
+    });
+  };
   return boomGoesTheDynamite(n, () => {
     var promise = [getWithOptions(options1, result1),
                    getWithOptions(options2, result2),
-                   getWithOptions(options3, result3)]
+                   getWithOptions(options3, result3)];
     return chakram.waitFor(promise)
-    .then(() => {
-      expect(result3.body).to.deep.equal(result1.body.concat(result2.body))})
-  }, options ? options.skip : false)
+    .then(() => expect(result3.body).to.deep.equal(result1.body.concat(result2.body)));
+  }, options ? options.skip : false);
 };
 
 const paginate = (api, options, validationCb, nextPage, page, max, all) => {
