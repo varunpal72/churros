@@ -16,4 +16,15 @@ suite.forElement('crm', 'metadata', (test) => {
                 expect(metadata.updateable).to.exist;
             });
     });
+
+    it('should include picklist for contact metadata', () => {
+      const validateSalutation = (fields) => {
+        let isPicklist = false;
+        fields.forEach(field => isPicklist = (field.vendorPath === 'Salutation' && field.vendorNativeType === 'picklist' && expect(field).to.contain.key('picklistValues')));
+        return isPicklist;
+      };
+
+      return cloud.get(uri)
+        .then(r => validateSalutation(r.body.fields));
+    });
 });
