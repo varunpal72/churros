@@ -1,6 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
+const tools = require('core/tools');
 const payload = require('./assets/products');
 const brandsPayload = require('./assets/brands');
 const categoriesPayload = require('./assets/categories');
@@ -39,6 +40,8 @@ const imagesUpdate = () => ({
 const skusUpdate = () => ({
   "upc": "Updated"
 });
+
+brandsPayload.name = tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10);
 
 suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
