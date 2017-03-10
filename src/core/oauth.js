@@ -15,6 +15,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('j_username')).sendKeys(username);
       browser.findElement(webdriver.By.name('j_password')).sendKeys(password);
       browser.findElement(webdriver.By.id('login')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('allow-button')), 3000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('allow-button'))
+        .then((element) => element.click(), (err) => {}); // ignore this
       browser.wait(() => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
@@ -98,6 +102,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
 
       return browser.getCurrentUrl();
     case 'dropboxbusiness':
+    case 'dropboxbusinessv2':
+    case 'dropboxv2':
     case 'dropbox':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.xpath('//input[@name="login_email"]')).sendKeys(username);
@@ -308,6 +314,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
             });
         return browser.getTitle().then((title) => !title);
       }, 10000);
+      return browser.getCurrentUrl();
+   case 'paypalv2':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('password')).sendKeys(password);
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('btnLogin')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('agreeConsent')), 8000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('agreeConsent'))
+        .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);

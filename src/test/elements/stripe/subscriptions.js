@@ -29,7 +29,8 @@ suite.forElement('payment', 'subscriptions', (test) => {
   );
 
   it(`should allow GET for /hubs/payment/customers/{customerId}/subscriptions`, () => {
-    return cloud.get(`/hubs/payment/customers/${customerId}/subscriptions`);
+    return cloud.get(`/hubs/payment/customers/${customerId}/subscriptions`)
+      .then(r => cloud.withOptions({ qs: { pageSize: 1 } }).get(`/hubs/payment/customers/${customerId}/subscriptions`));
   });
 
   it(`should allow CRUD for /hubs/payment/customers/{customerId}/subscriptions/{subscriptionId}`, () => {

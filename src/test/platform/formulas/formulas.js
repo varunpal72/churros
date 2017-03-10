@@ -4,6 +4,7 @@ const provisioner = require('core/provisioner');
 const tools = require('core/tools');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const cleaner = require('core/cleaner');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const schema = require('./assets/schemas/formula.schema');
@@ -148,5 +149,23 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => cloud.put(`${test.api}/${formulaId}/monitored`, {}))
       .then(r => cloud.delete(`${test.api}/${formulaId}/monitored`, {}))
       .then(r => cloud.delete(`${test.api}/${formulaId}`));
+  });
+
+  it('should sanitize formula name on create and update', () => {
+    const name = `churros-xss`;
+    const putName = `churros-xss-put`;
+    const patchName = `churros-xss-patch`;
+    const f = common.genFormula({ name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${name}</a>` });
+    let formulaId;
+    return cleaner.formulas.withName([name, putName, patchName])
+      .then(() => common.createFormula(f, `<a href="#" onClick="javascript:alert(\'xss\');return false;">${name}</a>`))
+      .then(f => formulaId = f.id)
+      .then(() => cloud.get(`${test.api}/${formulaId}`))
+      .then(r => expect(r.body.name).to.equal(name))
+      .then(() => cloud.put(`${test.api}/${formulaId}`, { name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${putName}</a>`}))
+      .then(r => expect(r.body.name).to.equal(putName))
+      .then(() => cloud.patch(`${test.api}/${formulaId}`, { name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${patchName}</a>`}))
+      .then(r => expect(r.body.name).to.equal(patchName))
+      .then(() => cloud.delete(`${test.api}/${formulaId}`));
   });
 });

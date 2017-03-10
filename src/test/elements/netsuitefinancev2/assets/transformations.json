@@ -6,6 +6,20 @@
       "vendorPath": "internalId"
     }]
   },
+  "projects": {
+    "vendorName": "Job",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "bills": {
+    "vendorName": "Bill",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
   "vendors": {
     "vendorName": "Vendor",
     "fields": [{
