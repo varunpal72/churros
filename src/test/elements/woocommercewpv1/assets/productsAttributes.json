@@ -1,0 +1,7 @@
+{
+  "name": "Color",
+  "slug": "pa_color",
+  "type": "select",
+  "order_by": "menu_order",
+  "has_archives": true
+}
