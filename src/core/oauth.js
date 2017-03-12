@@ -207,11 +207,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('loginBtn')).click();
-      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[2]')), 5000)
+      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]')), 5000)
         .thenCatch(r => true); // ignore
-      browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[2]'))
+      browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]'))
         .then((element) => element.click(), (err) => {}); // ignore this
-        browser.sleep(1000);
+      browser.sleep(5000);
       return browser.getCurrentUrl();
     case 'hubspotcrm':
       browser.get(r.body.oauthUrl);
