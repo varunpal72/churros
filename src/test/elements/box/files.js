@@ -25,7 +25,7 @@ suite.forElement('documents', 'files', null, (test) => {
       .then(r => cloud.delete(test.api + '/' + fileId));
   });
 
-  it('should support links for files without raw payload', () => {
+  it('should support links for files/:id/links without raw payload', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
     let query = { path: `/brady-${tools.random()}.jpg` };
