@@ -80,7 +80,7 @@ const itCr = (name, api, payload, validationCb, options) => {
 
 const itPagination = (name, api, options, validationCb) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
-  const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 1 : 1 : 1;
+  const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 2 : 2 : 2;
   const page = options ? options.qs ? options.qs.page ? options.qs.page : 1 : 1 : 1;
   const options1 = Object.assign({}, options, { qs: { page: page, pageSize: pageSize } });
   const options2 = Object.assign({}, options, { qs: { page: page + 1, pageSize: pageSize } });
@@ -90,20 +90,19 @@ const itPagination = (name, api, options, validationCb) => {
     return cloud.withOptions(option).get(api)
     .then((r) => {
       if(r.body && r.body.length > 0) {
-        if (r.response.headers.hasOwnProperty('elements-next-page-token')) {
-          return;
-        }
         result.body = r.body;
         expect(result.body.length).to.be.below(option.qs.pageSize + 1);
-        return r;
+        return r.response.headers['elements-next-page-token'];
       }
     });
   };
   return boomGoesTheDynamite(n, () => {
     return getWithOptions(options1, result1)
-    .then(() => getWithOptions(options2, result2))
-    .then(() => getWithOptions(options3, result3))
-    .then(() => expect(result3.body).to.deep.equal(result1.body.concat(result2.body)));
+    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage }} : options2, result2))
+    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
+    .then(() => {
+      return expect(result3.body).to.deep.equal(result1.body.concat(result2.body))
+    });
   }, options ? options.skip : false);
 };
 
