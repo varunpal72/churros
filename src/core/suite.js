@@ -90,6 +90,9 @@ const itPagination = (name, api, options, validationCb) => {
     return cloud.withOptions(option).get(api)
     .then((r) => {
       if(r.body && r.body.length > 0) {
+        if (r.response.headers.hasOwnProperty('elements-next-page-token')) {
+          return;
+        }
         result.body = r.body;
         expect(result.body.length).to.be.below(option.qs.pageSize + 1);
         return r;
@@ -98,13 +101,8 @@ const itPagination = (name, api, options, validationCb) => {
   };
   return boomGoesTheDynamite(n, () => {
     return getWithOptions(options1, result1)
-    .then(r => {
-      console.log(r.response.headers['elements-next-page-token']);
-      return r.response.headers['elements-next-page-token'] ? r.response.headers['elements-next-page-token'] : ''
-    })
-    .then(nextPage => getWithOptions({ qs: { page: page + 1, pageSize: pageSize, nextPage: nextPage }}, result2))
+    .then(() => getWithOptions(options2, result2))
     .then(() => getWithOptions(options3, result3))
-    // return chakram.waitFor(promise)
     .then(() => expect(result3.body).to.deep.equal(result1.body.concat(result2.body)));
   }, options ? options.skip : false);
 };
