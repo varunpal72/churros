@@ -101,7 +101,7 @@ const itPagination = (name, api, options, validationCb) => {
     .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage }} : options2, result2))
     .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
     .then(() => {
-      return expect(result3.body).to.deep.equal(result1.body.concat(result2.body))
+      return expect(result3.body).to.deep.equal(result1.body.concat(result2.body));
     });
   }, options ? options.skip : false);
 };
