@@ -7,6 +7,8 @@
 const logger = require('winston');
 const sleep = require('sleep');
 const fs = require('fs');
+const webdriver = require('selenium-webdriver');
+const props = require('core/props');
 
 var exports = module.exports = {};
 
@@ -148,11 +150,9 @@ exports.times = times;
 **/
 
 exports.runFile = (element, filePath, method) => {
-  // if (fs.existsSync(filePath)) {
-  //     const script = require(filePath);
-  //     return script(element, method);
-  // } else {
-  //   Promise.resolve(null);
-  // }
-  return fs.existsSync(filePath) ? require(filePath)(element, method) : Promise.resolve(null)
+  const b = props.get('browser');
+  const browser = new webdriver.Builder()
+    .forBrowser(b)
+    .build();
+  return fs.existsSync(filePath) ? require(filePath)(element, method, browser) : Promise.resolve(null)
 };

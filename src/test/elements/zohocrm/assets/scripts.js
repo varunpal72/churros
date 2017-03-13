@@ -3,16 +3,12 @@
 const webdriver = require('selenium-webdriver');
 const props = require('core/props');
 
-module.exports = (element, method) => {
+module.exports = (element, method, browser) => {
   const config = {
     username: props.getForKey(element, 'username'),
     password: props.getForKey(element, 'password')
   };
 
-  const b = props.get('browser');
-  const browser = new webdriver.Builder()
-    .forBrowser(b)
-    .build();
   switch (method) {
     case 'before':
       browser.get("https://accounts.zoho.com/u/h#sessions/userauthtoken");
