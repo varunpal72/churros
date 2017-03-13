@@ -6,6 +6,7 @@
 
 const logger = require('winston');
 const sleep = require('sleep');
+const fs = require('fs');
 
 var exports = module.exports = {};
 
@@ -141,3 +142,17 @@ const times = x => f =>
   }, []);
 
 exports.times = times;
+
+/**
+* Run a selenium file
+**/
+
+exports.runFile = (element, filePath, method) => {
+  // if (fs.existsSync(filePath)) {
+  //     const script = require(filePath);
+  //     return script(element, method);
+  // } else {
+  //   Promise.resolve(null);
+  // }
+  return fs.existsSync(filePath) ? require(filePath)(element, method) : Promise.resolve(null)
+};
