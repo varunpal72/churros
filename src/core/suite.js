@@ -103,12 +103,14 @@ const itPagination = (name, api, options, validationCb) => {
   };
   return boomGoesTheDynamite(n, () => {
     return getWithOptions(options1, result1)
-    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage }} : options2, result2))
+    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage, page: page+1 }} : options2, result2))
     .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
     .then(() => {
-      expect(result3.body[0]).to.deep.equal(result1.body[0]);
-      expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
-      expect(result3.body[pageSize]).to.deep.equal(result2.body[0]);
+      if (result3.body.length === pageSize*2 && result1.body.length === pageSize && result2.body.length === pageSize) {
+        expect(result3.body[0]).to.deep.equal(result1.body[0]);
+        expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
+        expect(result3.body[pageSize]).to.deep.equal(result2.body[0]);
+      }
       return expect(result3.body).to.deep.equal(result1.body.concat(result2.body));
     });
   }, options ? options.skip : false);
