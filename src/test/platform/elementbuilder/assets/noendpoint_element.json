@@ -1,0 +1,205 @@
+{
+  "bulkUploadEnabled": false,
+  "image": "http://developers.cloud-elements.com/assets/img/default-ce-logo-element-builder.png",
+  "private": true,
+  "configuration": [
+    {
+      "internal": false,
+      "companyConfig": false,
+      "defaultValue": "0",
+      "displayOrder": 1,
+      "active": true,
+      "description": "No Endpoint Pagination Start Index",
+      "type": "TEXTFIELD_32",
+      "resellerConfig": false,
+      "required": false,
+      "hideFromConsole": true,
+      "name": "Pagination Start Index",
+      "groupControl": false,
+      "key": "pagination.page.startindex"
+    },
+    {
+      "internal": false,
+      "companyConfig": false,
+      "defaultValue": "https://noendpoint.com",
+      "displayOrder": 1,
+      "active": true,
+      "description": "No Endpoint Base URL",
+      "type": "TEXTFIELD_1000",
+      "resellerConfig": false,
+      "required": false,
+      "hideFromConsole": true,
+      "name": "Base URL",
+      "groupControl": false,
+      "key": "base.url"
+    },
+    {
+      "internal": false,
+      "companyConfig": false,
+      "defaultValue": "page",
+      "displayOrder": 1,
+      "active": true,
+      "description": "No Endpoint Pagination Type",
+      "type": "TEXTFIELD_32",
+      "resellerConfig": false,
+      "required": false,
+      "hideFromConsole": true,
+      "name": "Pagination Type",
+      "groupControl": false,
+      "key": "pagination.type"
+    },
+    {
+      "internal": false,
+      "companyConfig": false,
+      "defaultValue": "100",
+      "displayOrder": 1,
+      "active": true,
+      "description": "No Endpoint Max Page Size (or limit)",
+      "type": "TEXTFIELD_32",
+      "resellerConfig": false,
+      "required": false,
+      "hideFromConsole": true,
+      "name": "Max Page Size (or limit)",
+      "groupControl": false,
+      "key": "pagination.max"
+    },
+    {
+      "internal": false,
+      "companyConfig": false,
+      "defaultValue": "",
+      "displayOrder": 2,
+      "active": true,
+      "description": "No Endpoint Username",
+      "type": "TEXTFIELD_32",
+      "resellerConfig": false,
+      "required": true,
+      "hideFromConsole": false,
+      "name": "Username",
+      "groupControl": false,
+      "key": "username"
+    },
+    {
+      "internal": false,
+      "companyConfig": false,
+      "defaultValue": "",
+      "displayOrder": 3,
+      "active": true,
+      "description": "No Endpoint Password",
+      "type": "PASSWORD",
+      "resellerConfig": false,
+      "required": true,
+      "hideFromConsole": false,
+      "name": "Password",
+      "groupControl": false,
+      "key": "password"
+    }
+  ],
+  "active": true,
+  "description": "This Element has no endpoint, handling all the magic in pre/post hooks",
+  "resources": [
+    {
+      "nextPageKey": "",
+      "path": "/hubs/general/firstrequest",
+      "paginationType": "VENDOR_SUPPORTED",
+      "vendorMethod": "GET",
+      "method": "GET",
+      "nextResource": "GET:/secondrequest",
+      "response": {
+        "contentType": "application/json"
+      },
+      "description": "First API Request",
+      "model": {
+        "transform": false,
+        "name": "firstrequest",
+        "rawSwagger": {
+          "firstrequest": {
+            "id": "firstrequest",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "id": {
+                "format": "int32",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "swagger": {
+          "firstrequest": {
+            "id": "firstrequest",
+            "properties": {
+              "description": {
+                "type": "string"
+              },
+              "id": {
+                "format": "int32",
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "type": "api",
+      "hooks": [
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\"continue\": false\n})",
+          "type": "preRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "var response = {\n\t\"id\": 123\n};\n\ndone ({\n\t\"response_body\": response\n})",
+          "type": "postRequest"
+        }
+      ],
+      "vendorPath": ""
+    },
+    {
+      "nextPageKey": "",
+      "path": "/hubs/general/secondrequest",
+      "paginationType": "VENDOR_SUPPORTED",
+      "vendorMethod": "GET",
+      "method": "GET",
+      "nextResource": "",
+      "response": {
+        "contentType": "application/json"
+      },
+      "description": "Second API Request which adds description",
+      "type": "apiNoDocumentation",
+      "hooks": [
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\"continue\": false\n})",
+          "type": "preRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "var response = {\n\t\"id\": request_previous_response.id,\n\t\"description\": \"From second request\"\n};\n\ndone ({\n\t\"response_body\": response\n})",
+          "type": "postRequest"
+        }
+      ],
+      "vendorPath": ""
+    }
+  ],
+  "protocolType": "http",
+  "cloneable": true,
+  "transformationsEnabled": true,
+  "bulkDownloadEnabled": false,
+  "deleted": false,
+  "hub": "general",
+  "typeOauth": false,
+  "name": "No Endpoint",
+  "trialAccount": false,
+  "hooks": [],
+  "parameters": [],
+  "beta": false,
+  "key": "noendpoint",
+  "authentication": {
+    "type": "basic"
+  }
+}
