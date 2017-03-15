@@ -6,12 +6,7 @@ const cloud = require('core/cloud');
 
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
 
-  it(`should support CRUDS for ${test.api}`, () => {
-    let orderID;
-    return cloud.post(test.api, payload)
-      .then(r => orderID = r.body.OrderID)
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
-      .then(r => cloud.withOptions({ qs: { where: `OrderDateUtc='1/23/2017'` } }).get(test.api))
-      .then(r => cloud.get(`${test.api}/${orderID}`));
-  });
+  test.should.supportCrs();
+  test.withOptions({ qs: { where: 'OrderDateUtc>=\'3/15/2014 6:51:29 PM\'' } }).should.return200OnGet();
+ 
 });
