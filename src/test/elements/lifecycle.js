@@ -11,7 +11,7 @@ const logger = require('winston');
 const props = require('core/props');
 
 const createAll = (urlTemplate, list) => {
-  return Object.keys(list)
+  return Object.keys(list).sort()
     .reduce((p, key) => p.then(() => cloud.post(util.format(urlTemplate, key), list[key])), Promise.resolve(true)); // initial
 };
 
@@ -20,7 +20,7 @@ const terminate = error => {
   process.exit(1);
 };
 
-const element = argv.element;
+let element = argv.element;
 let instanceId;
 
 before(() => {
@@ -35,6 +35,9 @@ before(() => {
     .then(r => {
       expect(r).to.have.statusCode(200);
       instanceId = r.body.id;
+      if (element.includes('--')) {
+        element = element.substring(0, element.indexOf('--'));
+      }
       // object definitions file exists? create the object definitions on the instance
       const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
       if (fs.existsSync(objectDefinitionsFile + '.json')) {
@@ -58,7 +61,6 @@ before(() => {
             }
             return accum;
           }, {});
-
         return createAll(url, objectDefinitions);
       }
     })
