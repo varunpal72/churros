@@ -14,23 +14,37 @@ const getElementId = (key) => {
 
 suite.forPlatform('elementbuilder', {}, (test) => {
   let createdNoendpoint;
-  before(() => {
-    return cloud.post('elements', noendpointElement)
-      .then(r => createdNoendpoint = r.body);
+  let noendpointInstanceId;
+  before(() => cloud.post('elements', noendpointElement)
+      .then(r => createdNoendpoint = r.body)
+      .then(r => provisioner.create('noendpoint', undefined, 'elements/noendpoint/instances'))
+      .then(r => noendpointInstanceId = r.body.id));
+
+  it('should support calling multiple endpoint chain requests', () => {
+      return cloud.get(`/hubs/general/firstrequest`, (r) => {
+          expect(r).to.have.schemaAnd200(noendpointInstanceSchema);
+      });
   });
 
-  it('should support creating an instance of multiple endpoint element', () => {
-    let noendpointInstanceId;
-    return provisioner.create('noendpoint', undefined, 'elements/noendpoint/instances')
-      .then(r => noendpointInstanceId = r.body.id)
-      .then(r => cloud.get(`/hubs/general/firstrequest`, (r) => {
-        expect(r).to.have.schemaAnd200(noendpointInstanceSchema);
-      }))
-      .then(r => provisioner.delete(noendpointInstanceId, 'elements/noendpoint/instances'));
+  it('should support calling http in hook requests', () => {
+      return cloud.get(`/hubs/general/httprequest`, (r) => {
+          expect(r.body).to.not.be.empty;
+      });
+  });
+
+  it('should support calling https in hook requests', () => {
+      return cloud.get(`/hubs/general/httpsrequest`, (r) => {
+          expect(r.body).to.not.be.empty;
+      });
+  });
+
+  it('should fail if chain is more than 3', () => {
+      return cloud.get(`/hubs/general/one`, (r) => expect(r).to.have.statusCode(400))
   });
 
   after(() => {
-    return cloud.delete(`elements/${createdNoendpoint.id}`);
+    return provisioner.delete(noendpointInstanceId, 'elements/noendpoint/instances')
+        .then(r => cloud.delete(`elements/${createdNoendpoint.id}`));
   });
 
 });
