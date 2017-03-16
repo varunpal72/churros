@@ -107,4 +107,9 @@ describe('tools', () => {
     .then(r => tools.runFile('foo', './fake/file/path', 'bar'))
     .then(r => expect(r).to.equal(null));
   });
+  it('should get base element', () => {
+    const element = 'hubspot--oauth2';
+    const baseElement = 'hubspot';
+    return expect(tools.getBaseElement(element)).to.equal(baseElement);
+  });
 });

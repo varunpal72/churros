@@ -20,7 +20,7 @@ const terminate = error => {
   process.exit(1);
 };
 
-const element = argv.element;
+let element = argv.element;
 let instanceId;
 
 before(() => {
@@ -36,6 +36,7 @@ before(() => {
       .then(r => {
         expect(r).to.have.statusCode(200);
         instanceId = r.body.id;
+        element = tools.getBaseElement(element);
         // object definitions file exists? create the object definitions on the instance
         const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
         if (fs.existsSync(objectDefinitionsFile + '.json')) {

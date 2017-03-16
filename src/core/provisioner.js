@@ -54,6 +54,7 @@ const parseProps = (element) => {
 };
 
 const createInstance = (element, config, providerData, baseApi) => {
+  config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
 
   baseApi = (baseApi) ? baseApi : '/instances';
@@ -81,6 +82,7 @@ const createExternalInstance = (element, config, providerData) => {
   if (!tokenUrl) {
     throw Error("Token URL must be present in the element props as 'tokenUrl'");
   }
+  let instanceElement = tools.getBaseElement(element);
 
   return new Promise((res, rej) => {
     r.post({
@@ -97,7 +99,7 @@ const createExternalInstance = (element, config, providerData) => {
       let refreshToken = body.refresh_token;
       instanceBody = {
         "element": {
-          "key": element
+          "key": instanceElement
         },
         "configuration": {
           "oauth.user.refresh_token": refreshToken,
@@ -116,7 +118,8 @@ const createExternalInstance = (element, config, providerData) => {
 };
 
 const oauth = (element, args, config) => {
-  const url = `/elements/${element}/oauth/url`;
+  let urlElement = tools.getBaseElement(element);
+  const url = `/elements/${urlElement}/oauth/url`;
   logger.debug('GET %s with options %s', url, args.options);
   return cloud.withOptions(args.options).get(url)
     .then(r => {
