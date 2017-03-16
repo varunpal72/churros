@@ -20,4 +20,8 @@ suite.forElement('ecommerce', 'customers', { payload: customer({}) }, (test) => 
     .then(r => cloud.get(`${test.api}/${customertId}/abandoned-checkouts`))
     .then(r => cloud.delete(`${test.api}/${customertId}`));
   });
+  it('should allow GET for /customers with use of the `orderBy` parameter', () => {
+    return cloud.withOptions({qs: {orderBy: 'updated_at'}}).get(test.api)
+      .then(r => cloud.withOptions({qs: {orderBy: 'created_at'}}).get(test.api));
+  });
 });
