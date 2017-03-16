@@ -54,9 +54,7 @@ const parseProps = (element) => {
 };
 
 const createInstance = (element, config, providerData, baseApi) => {
-  if (element.includes('--')) {
-    config.element = element.substring(0, element.indexOf('--'));
-  }
+  config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
 
   baseApi = (baseApi) ? baseApi : '/instances';
@@ -84,10 +82,7 @@ const createExternalInstance = (element, config, providerData) => {
   if (!tokenUrl) {
     throw Error("Token URL must be present in the element props as 'tokenUrl'");
   }
-  let instanceElement = element;
-  if (element.includes('--')) {
-    instanceElement = element.substring(0, element.indexOf('--'));
-  }
+  let instanceElement = tools.getBaseElement(element);
 
   return new Promise((res, rej) => {
     r.post({
@@ -123,10 +118,7 @@ const createExternalInstance = (element, config, providerData) => {
 };
 
 const oauth = (element, args, config) => {
-  let urlElement = element;
-  if (element.includes('--')) {
-    urlElement = element.substring(0, element.indexOf('--'));
-  }
+  let urlElement = tools.getBaseElement(element);
   const url = `/elements/${urlElement}/oauth/url`;
   logger.debug('GET %s with options %s', url, args.options);
   return cloud.withOptions(args.options).get(url)

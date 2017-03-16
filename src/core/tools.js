@@ -150,3 +150,7 @@ exports.times = times;
 exports.runFile = (element, filePath, method) => {
   return fs.existsSync(filePath) ? require(filePath)(element, method) : Promise.resolve(null);
 };
+
+exports.getBaseElement = (str) => {
+  return str.includes('--') ? str.substring(0, str.indexOf('--')) : str;
+};
