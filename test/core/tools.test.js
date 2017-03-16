@@ -101,4 +101,10 @@ describe('tools', () => {
     expect(res).to.have.length(5);
     res.map(r => expect(r).to.equal('foo'));
   });
+  it('should run a script file', () => {
+    tools.runFile('foo', './assets/testScript.js', 'bar')
+    .then(r => expect(r).to.equal('foo:bar'))
+    .then(r => tools.runFile('foo', './fake/file/path', 'bar'))
+    .then(r => expect(r).to.equal(null));
+  });
 });
