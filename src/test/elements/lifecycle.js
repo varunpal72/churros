@@ -11,7 +11,7 @@ const logger = require('winston');
 const props = require('core/props');
 
 const createAll = (urlTemplate, list) => {
-  return Object.keys(list).sort()
+  return Object.keys(list)
     .reduce((p, key) => p.then(() => cloud.post(util.format(urlTemplate, key), list[key])), Promise.resolve(true)); // initial
 };
 
@@ -52,6 +52,7 @@ before(() => {
             logger.debug(`No transformations found for ${element} so not going to create object definitions`);
             return null;
           }
+
           const transformations = require(transformationsFile);
           const allObjectDefinitions = require(objectDefinitionsFile);
           const objectDefinitions = Object.keys(allObjectDefinitions)
