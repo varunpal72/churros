@@ -8,7 +8,7 @@
             "name": "build",
             "type": "script",
             "properties": {
-                "body": "done({\n    targetMetadataName: 'metadata', \n  sourceHeaders: {\n    ElementsTestHeader: 'source'\n  },\n  sourceQuery: {\n    ElemetsTestQuery: 'source'\n  },\n  targetHeaders: {\n    'Elements-Async-Callback-Url': 'webhooks.joshuawyse.com'\n  },\n  targetMetadata: {\n    testMetadata: 'true'\n  }\n});"
+                "body": "done({\n    targetMetadataName: 'metaData', \n  sourceHeaders: {\n    ElementsTestHeader: 'source'\n  },\n  sourceQuery: {\n    ElemetsTestQuery: 'source'\n  },\n  targetHeaders: {\n    'Elements-Async-Callback-Url': 'webhooks.joshuawyse.com'\n  },\n  targetMetadata: {\n    identifierFieldName: 'Id'\n  }\n});"
             }
         },
         {
