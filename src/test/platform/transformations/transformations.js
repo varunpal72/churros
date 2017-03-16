@@ -5,6 +5,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const provisioner = require('core/provisioner');
+const defaults = require('core/defaults');
 const schema = require('./assets/transformation.schema');
 const objDefSchema = require('./assets/objectDefinition.schema');
 
@@ -167,29 +168,37 @@ suite.forPlatform('transformations', { schema: schema }, (test) => {
   });
 
   /** account-level */
+  const getPlatformAccounts = () => {
+     const secrets = defaults.secrets();
+     const headers = {
+       Authorization: `User ${secrets.userSecret}, Organization ${secrets.orgSecret}`
+     };
+     return cloud.withOptions({ headers }).get("accounts");
+  };
+
   it('should support default account-level object definition CRUD by name', () => crudObjectDefsByName('accounts', genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
   it('should support account-level object definition CRUD by name', () => {
     let accountId;
-    return cloud.get('accounts')
+    return getPlatformAccounts()
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => crudObjectDefsByName('accounts/' + accountId, genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
   });
   it('should support account-level transformation CRUD by name and element key', () => {
     let accountId;
-    return cloud.get('accounts')
+    return getPlatformAccounts()
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => crudTransformsByName('accounts/' + accountId, elementKey, genDefaultTrans({}), genDefaultTrans({}), schema));
   });
   it('should support account-level transformation CRUD by name and element ID', () => {
     let accountId;
-    return cloud.get('accounts')
+    return getPlatformAccounts()
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => crudTransformsByName('accounts/' + accountId, elementId, genDefaultTrans({}), genDefaultTrans({}), schema));
   });
   it('should support account-level transformations', () => {
     let objectName = 'churros-object-' + tools.random();
     let accountId, level;
-    return cloud.get('accounts')
+    return getPlatformAccounts()
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => level = 'accounts/' + accountId)
       .then(r => testTransformation(sfdcId, objectName, getObjectDefUrl(level, objectName), getTransformUrl(level, objectName, elementKey)));
@@ -222,7 +231,7 @@ suite.forPlatform('transformations', { schema: schema }, (test) => {
         });
       }))
       // create account-level obj def and trans for name field
-      .then(r => cloud.get('accounts'))
+      .then(r => getPlatformAccounts())
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => {
         let objDef = genBaseObjectDef({ fields: [getObjDefField('churrosName', 'string')] });

@@ -16,7 +16,7 @@ Interact with the `churros` CLI to go about initializing `churros`, stubbing out
 ## Installation
 If you don't have `node` and `npm` installed, do [that](https://docs.npmjs.com/getting-started/installing-node) first.
 
-> __PROTIP:__ `node` version must  be >= `v4.0.0`
+> __PROTIP:__ `node` version must  be >= `v6.3.0`
 
 Install the node dependencies and initialize churros.
 

@@ -85,15 +85,33 @@ const itCs = (name, api, payload, validationCb, options) => {
 
 const itPagination = (name, api, options, validationCb) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
-  const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 1 : 1 : 1;
+  const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 2 : 2 : 2;
   const page = options ? options.qs ? options.qs.page ? options.qs.page : 1 : 1 : 1;
-  const newOptions = Object.assign({}, options, { qs: { page: page, pageSize: pageSize } });
-  boomGoesTheDynamite(n, () => {
-    return cloud.withOptions(newOptions).get(api)
+  const options1 = Object.assign({}, options, { qs: { page: page, pageSize: pageSize } });
+  const options2 = Object.assign({}, options, { qs: { page: page + 1, pageSize: pageSize } });
+  const options3 = Object.assign({}, options, { qs: { page: page, pageSize: (pageSize * 2) } });
+  let result1 = {body:[]}, result2 = {body:[]}, result3 = {body:[]};
+  const getWithOptions = (option, result) => {
+    return cloud.withOptions(option).get(api)
     .then((r) => {
-      if(r.body && r.body.length > 0){
-        expect(r.body).to.have.length(pageSize);
+      if(r.body && r.body.length > 0) {
+        result.body = r.body;
+        expect(result.body.length).to.be.below(option.qs.pageSize + 1);
+        return r.response.headers['elements-next-page-token'];
       }
+    });
+  };
+  return boomGoesTheDynamite(n, () => {
+    return getWithOptions(options1, result1)
+    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage, page: page+1 }} : options2, result2))
+    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
+    .then(() => {
+      if (result3.body.length === pageSize*2 && result1.body.length === pageSize && result2.body.length === pageSize) {
+        expect(result3.body[0]).to.deep.equal(result1.body[0]);
+        expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
+        expect(result3.body[pageSize]).to.deep.equal(result2.body[0]);
+      }
+      return expect(result3.body).to.deep.equal(result1.body.concat(result2.body));
     });
   }, options ? options.skip : false);
 };

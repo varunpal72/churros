@@ -12,8 +12,7 @@ suite.forElement('marketing', 'files', null, (test) => {
     });
     let path = __dirname + `/assets/test.txt`;
     let id;
-    return cloud.withOptions({ qs: { path: `/${tools.random()}` } })
-      .postFile(test.api, path)
+    return cloud.withOptions({ qs: { path: `/${tools.random()}` } }).postFile(test.api, path)
       .then(r => id = r.body.id)
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => cloud.patch(`${test.api}/${id}`, fieldsUpdate()))

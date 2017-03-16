@@ -19,7 +19,7 @@ const options = {
 };
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
-  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
   it('should allow CRUD for hubs/marketing/contacts/properties', () => {
     let id;
     const fieldsUpdate = {
