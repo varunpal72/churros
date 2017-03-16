@@ -36,9 +36,7 @@ before(() => {
       .then(r => {
         expect(r).to.have.statusCode(200);
         instanceId = r.body.id;
-        if (element.includes('--')) {
-          element = element.substring(0, element.indexOf('--'));
-        }
+        element = tools.getBaseElement(element);
         // object definitions file exists? create the object definitions on the instance
         const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
         if (fs.existsSync(objectDefinitionsFile + '.json')) {
