@@ -12,7 +12,7 @@ const customer = (custom) => ({
 
 suite.forElement('ecommerce', 'customers', { payload: customer({}) }, (test) => {
   test.should.supportCruds();
-it(`should allow GET for /hubs/ecommerce/customers/{id}/order and /hubs/ecommerce/customers/{id}/abandoned-checkouts`, () => {
+  it(`should allow GET for /hubs/ecommerce/customers/{id}/order and /hubs/ecommerce/customers/{id}/abandoned-checkouts`, () => {
     let customertId;
     return cloud.post(test.api,customer({}))
     .then(r => customertId = r.body.id)

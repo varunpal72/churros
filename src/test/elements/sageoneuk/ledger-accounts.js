@@ -12,6 +12,6 @@ const accountPayload = (randomName) => ({
 });
 
 suite.forElement('sageaccounting', 'ledger-accounts', { payload: accountPayload(tools.randomStr('abcdefghijklmnopqrstuvwxyz0123456789', 10)) }, (test) => {
-  test.withOptions({ churros: { skip: true } }).should.supportCrs();
+  test.withOptions({ skip: true }).should.supportCrs();
   test.should.supportPagination();
 });

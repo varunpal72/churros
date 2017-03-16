@@ -1,9 +1,13 @@
 require('core/assertions');
 const defaults = require('core/defaults');
+const expect = require('chai').expect;
 
 describe('chakram defaults', () => {
   it('should support initializing our chakram defaults', () => {
     defaults('url', 'user', 'org', 'unitTester');
+    const {userSecret, orgSecret} = defaults.secrets();
+    expect(userSecret).to.equal('user');
+    expect(orgSecret).to.equal('org');
   });
 
   it('should support resetting our chakram defaults after they have been initialized', () => {

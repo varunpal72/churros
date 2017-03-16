@@ -65,3 +65,5 @@ exports.token = (token) => {
     }
   });
 };
+
+exports.secrets = () => ({userSecret, orgSecret});
