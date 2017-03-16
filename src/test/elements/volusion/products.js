@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/products');
-const cloud = require('core/cloud');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const productsPayload = build({ ProductName: tools.random(), ProductCode: tools.random() });
