@@ -7,11 +7,6 @@ const provisioner = require('core/provisioner');
 const noendpointElement = require('./assets/noendpoint_element.json');
 const noendpointInstanceSchema = require('./assets/noendpoint_instance_schema.json');
 
-const getElementId = (key) => {
-  return cloud.get(`elements/${key}`)
-    .then(r => r.body.id);
-};
-
 suite.forPlatform('elementbuilder', {}, (test) => {
   let createdNoendpoint;
   let noendpointInstanceId;
@@ -39,7 +34,7 @@ suite.forPlatform('elementbuilder', {}, (test) => {
   });
 
   it('should fail if chain is more than 3', () => {
-      return cloud.get(`/hubs/general/one`, (r) => expect(r).to.have.statusCode(400))
+      return cloud.get(`/hubs/general/one`, (r) => expect(r).to.have.statusCode(400));
   });
 
   after(() => {
