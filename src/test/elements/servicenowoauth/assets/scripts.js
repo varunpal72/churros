@@ -13,6 +13,7 @@ module.exports = (element, method) => {
     .build();
   switch (method) {
     case 'before':
+      // Stay woke
       browser.get("https://developer.servicenow.com/app.do#!/instance");
       browser.wait(webdriver.until.elementLocated(webdriver.By.id('username')), 10000);
       browser.findElement(webdriver.By.id('username')).clear();
