@@ -10,6 +10,7 @@ const expect = chakram.expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const logger = require('winston');
+const fs = require('fs');
 
 var exports = module.exports = {};
 
@@ -220,45 +221,46 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
   }, options ? options.skip : false);
 };
 
-const itBulkDownload = (name, hub, opts, options) => {
+const itBulkDownload = (name, hub, opts, options, apiOverride) => {
   const n = name || `should support bulk download with options`;
   let bulkId;
   boomGoesTheDynamite(n, () => {
     // start bulk download
-    return cloud.withOptions(opts).post(`/hubs/${hub}/bulk/query`)
+    return cloud.withOptions(opts).post(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/query`)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
       // get bulk download status
-      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
         expect(r.body.recordsCount).to.be.above(0);
         expect(r.body.recordsFailedCount).to.equal(0);
       })))
       // get bulk download errors
-      .then(r => cloud.get(`/hubs/${hub}/bulk/${bulkId}/errors`));
+      .then(r => cloud.get(apiOverride ? `${apiOverride}/errors`:`/hubs/${hub}/bulk/${bulkId}/errors`));
   }, options ? options.skip : false);
 };
 
-const itBulkUpload = (name, hub, endpoint, opts, filePath, options) => {
+const itBulkUpload = (name, hub, endpoint, opts, filePath, options, apiOverride) => {
   const n = name || `should support bulk upload with options`;
   let bulkId;
   boomGoesTheDynamite(n, () => {
+    expect(fs.existsSync(filePath)).to.be.true;
   // start bulk upload
-    return cloud.withOptions(opts).postFile(`/hubs/${hub}/bulk/${endpoint}`, filePath)
+    return cloud.withOptions(opts).postFile(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/${endpoint}`, filePath)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
       // get bulk upload status
-      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
         expect(r.body.recordsCount).to.be.above(0);
         expect(r.body.recordsFailedCount).to.equal(0);
       })))
       // get bulk upload errors
-      .then(r => cloud.get(`/hubs/${hub}/bulk/${bulkId}/errors`));
+      .then(r => cloud.get(apiOverride ? `${apiOverride}/errors`:`/hubs/${hub}/bulk/${bulkId}/errors`));
     }, options ? options.skip : false);
 };
 
@@ -312,12 +314,12 @@ const runTests = (api, payload, validationCb, tests) => {
      * Downloads bulk with options and verifies it completes and that none fail
      * @memberof module:core/suite.test.should
      */
-    supportBulkDownload: (hub, opts) => itBulkDownload(name, hub, opts, options),
+    supportBulkDownload: (hub, opts, apiOverride) => itBulkDownload(name, hub, opts, options, apiOverride),
     /**
      * HTTP GET that validates that the response is a 200
      * @memberof module:core/suite.test.should
      */
-    supportBulkUpload: (hub, endpoint, opts, filePath) => itBulkUpload(name, hub, endpoint, opts, filePath, options),
+    supportBulkUpload: (hub, endpoint, opts, filePath, apiOverride) => itBulkUpload(name, hub, endpoint, opts, filePath, options, apiOverride),
     /**
      * Uploads bulk with options to specific object and verifies it completes and that none fail
      * @memberof module:core/suite.test.should

@@ -45,6 +45,12 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .post('/foo/bad/file')
     .reply(404, (uri, requestBody) => {
       return { message: 'No resource found at /foo/bad/file' };
+    })
+    .post('/bulk')
+    .reply(200, (uri, requestBody) => {
+      var out = {};
+      out.status = 'CREATED';
+      return out;
     });
 
   nock(baseUrl, eventHeaders())
@@ -73,7 +79,17 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(200, () => [genPayload({ id: 123 })])
     .get('/foo/search')
     .query({ foo: 'bar' })
-    .reply(200, () => [genPayload({ id: 123 })]);
+    .reply(200, () => [genPayload({ id: 123 })])
+    .get('/bulk/status')
+    .reply(200, (uri, requestBody) => {
+      var out = {};
+      out.status = 'COMPLETED';
+      out.recordsCount = 3;
+      out.recordsFailedCount = 0;
+      return out;
+    })
+    .get('/bulk/errors')
+    .reply(200, () => {});
 
   /** PATCH && PUT **/
   nock(baseUrl, headers())
