@@ -8,12 +8,13 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const cloud = require('core/cloud');
+const tools = require('core/tools');
 const logger = require('winston');
 
 var exports = module.exports = {};
 
 const boomGoesTheDynamite = (name, testCb, skip) => {
-  skip ?
+  return skip ?
     it.skip(name, testCb) :
     it(name, testCb);
 };
@@ -219,6 +220,24 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
   }, options ? options.skip : false);
 };
 
+const itBulkDownload = (name, hub, opts, options) => {
+  const n = name || `should support bulk downloading with options`;
+  let bulkId;
+  return boomGoesTheDynamite(n, () => {
+    return cloud.withOptions(opts).post(`/hubs/${hub}/bulk/query`)
+      .then(r => {
+        expect(r.body.status).to.equal('CREATED');
+        bulkId = r.body.id;
+      })
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED');
+        expect(r.body.recordsCount > 0).to.be.true;
+        expect(r.body.recordsFailedCount).to.equal(0);
+      })))
+      .then(r => bulkId);
+  }, options ? options.skip : false);
+}
+
 const runTests = (api, payload, validationCb, tests) => {
   const should = (api, validationCb, payload, options, name) => ({
     /**
@@ -265,6 +284,7 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test.should
      */
     return200OnGet: () => itGet(name, api, options, validationCb),
+    supportBulkDownload: (hub, opts) => itBulkDownload(name, hub, opts, options),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.
