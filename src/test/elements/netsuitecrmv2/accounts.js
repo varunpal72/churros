@@ -14,6 +14,6 @@ suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
   test.withOptions({ qs: { page: 1,
                            pageSize: 5,
                            where : "`custom.multi.scriptId` = 'custentity1' and `custom.multi.value.internalId` = 1"
-                         } }).should.supportPagination();
+                         } }).should.return200OnGet();
   test.should.supportCeqlSearch('id');
 });
