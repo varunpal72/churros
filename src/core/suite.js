@@ -15,7 +15,7 @@ const fs = require('fs');
 var exports = module.exports = {};
 
 const boomGoesTheDynamite = (name, testCb, skip) => {
-  return skip ?
+  skip ?
     it.skip(name, testCb) :
     it(name, testCb);
 };
@@ -316,12 +316,12 @@ const runTests = (api, payload, validationCb, tests) => {
      */
     supportBulkDownload: (hub, opts, apiOverride) => itBulkDownload(name, hub, opts, options, apiOverride),
     /**
-     * HTTP GET that validates that the response is a 200
+     * Uploads bulk with options to specific object and verifies it completes and that none fail
      * @memberof module:core/suite.test.should
      */
     supportBulkUpload: (hub, endpoint, opts, filePath, apiOverride) => itBulkUpload(name, hub, endpoint, opts, filePath, options, apiOverride),
     /**
-     * Uploads bulk with options to specific object and verifies it completes and that none fail
+     * Validates pagination works and that pages are in correct order
      * @memberof module:core/suite.test.should
      */
     supportPagination: () => itPagination(name, api, options, validationCb),

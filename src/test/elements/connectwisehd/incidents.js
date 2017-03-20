@@ -6,7 +6,7 @@ const commentsPayload = require('./assets/comments');
 const cloud = require('core/cloud');
 
 
-suite.forElement('helpdesk', 'incidents', { payload: payload, skip:true }, (test) => {
+suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.withOptions({ qs: { where: 'summary=\'Sample API Posted Issue From Churros\'' } }).should.return200OnGet();
   test.should.supportPagination();
