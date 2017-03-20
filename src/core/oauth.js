@@ -184,12 +184,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'googledrive':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('Email')).sendKeys(username);
-      browser.findElement(webdriver.By.id('next')).click();
+      browser.findElement(webdriver.By.id('Email')).submit();
+      // browser.findElement(webdriver.By.id('next')).click();
       browser.sleep(2000);
       browser.findElement(webdriver.By.id('Passwd')).sendKeys(password);
-      browser.findElement(webdriver.By.id('signIn')).click();
+      browser.findElement(webdriver.By.id('Passwd')).submit();
+      // browser.findElement(webdriver.By.id('signIn')).click();
       browser.sleep(2000);
-      browser.findElement(webdriver.By.id('submit_approve_access')).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="submit_approve_access"]'))
+      .then((element) => element.click(), (err) => {});
+      // browser.findElement(webdriver.By.id('submit_approve_access'))
+      // .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000);
       return browser.getCurrentUrl();
     case 'gotowebinar':
