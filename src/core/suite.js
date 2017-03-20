@@ -264,8 +264,8 @@ const itBulkUpload = (name, hub, endpoint, opts, filePath, options, apiOverride)
     }, options ? options.skip : false);
 };
 
-const runTests = (api, hub, payload, validationCb, tests) => {
-  const should = (api, hub, validationCb, payload, options, name) => ({
+const runTests = (api, payload, validationCb, tests, hub) => {
+  const should = (api, validationCb, payload, options, name, hub) => ({
     /**
      * HTTP POST that validates that the response is a 400
      * @memberof module:core/suite.test.should
@@ -409,7 +409,7 @@ const runTests = (api, hub, payload, validationCb, tests) => {
   });
 
   const using = (myApi, myValidationCb, myPayload, myOptions, myName) => ({
-    should: should(myApi, myValidationCb, myPayload, myOptions, myName),
+    should: should(myApi, myValidationCb, myPayload, myOptions, myName, hub),
     withName: (myName) => using(myApi, myValidationCb, myPayload, myOptions, myName),
     withApi: (myApi) => using(myApi, myValidationCb, myPayload, myOptions, myName),
     withValidation: (myValidationCb) => using(myApi, myValidationCb, myPayload, myOptions, myName),
@@ -444,7 +444,7 @@ const runTests = (api, hub, payload, validationCb, tests) => {
      * @memberof module:core/suite.test
      * @namespace should
      */
-    should: should(api, hub, validationCb, payload),
+    should: should(api, validationCb, payload, null, null, hub),
     /**
      * Overrides the default name for any tests
      * @param {string} myName The name of the test
@@ -493,7 +493,7 @@ const runTests = (api, hub, payload, validationCb, tests) => {
   tests ? tests(test) : it('add some tests to me!!!', () => true);
 };
 
-const run = (api, hub, resource, options, defaultValidation, tests) => {
+const run = (api, resource, options, defaultValidation, tests, hub) => {
   // if options is a function, we're assuming those are the tests
   if (typeof options === 'function') {
     tests = options;
@@ -503,9 +503,9 @@ const run = (api, hub, resource, options, defaultValidation, tests) => {
   options = options || {};
   const name = options.name || resource;
   if (options.skip) {
-    describe.skip(name, () => runTests(api, hub, options.payload, defaultValidation, tests));
+    describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   } else {
-    describe(name, () => runTests(api, hub, options.payload, defaultValidation, tests));
+    describe(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   }
 };
 
@@ -523,7 +523,7 @@ const run = (api, hub, resource, options, defaultValidation, tests) => {
  * }
  * @param  {Function} tests   A function, containing all test
  */
-exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, hub, resource, options, (r) => expect(r).to.have.statusCode(200), tests);
+exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, resource, options, (r) => expect(r).to.have.statusCode(200), tests, hub);
 
 /**
  * Starts up a new test suite for a platform resource.  This wraps all of the given tests in a mocha describe block, and
