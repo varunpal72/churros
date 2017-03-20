@@ -223,6 +223,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.className('accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
+      case 'hubspot--oauth2New':
+        browser.get(r.body.oauthUrl);
+        browser.findElement(webdriver.By.id('username')).sendKeys(username);
+        browser.findElement(webdriver.By.id('password')).sendKeys(password);
+        browser.findElement(webdriver.By.id('loginBtn')).click();
+        browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]')), 5000)
+          .thenCatch(r => true); // ignore
+        browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]'))
+          .then((element) => element.click(), (err) => {}); // ignore this
+        return browser.getCurrentUrl();
     case 'instagram':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('id_username')).clear();
@@ -325,6 +335,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
       return browser.getCurrentUrl();
+
     case 'paypalv2':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).sendKeys(username);

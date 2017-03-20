@@ -99,9 +99,12 @@ const run = (suite, options, cliArgs) => {
   let cmd = "";
   resources.forEach((resource, index) => {
     const allMochaPaths = baseMochaPaths.slice();
-
+    let baseResource = resource;
+    if (resource.includes('--')) {
+      baseResource = resource.substring(0, resource.indexOf('--'));
+    }
     // validate the root suite path before continuing
-    let testPath = `${rootTestDir}/${resourceType}/${resource}`;
+    let testPath = `${rootTestDir}/${resourceType}/${baseResource}`;
     if (!fs.existsSync(testPath)) {
       console.log('Invalid suite: %s', suite);
       process.exit(1);
