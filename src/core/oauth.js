@@ -198,7 +198,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('submit_approve_access'))
       .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000);
-    return browser.getCurrentUrl();
+      return browser.getCurrentUrl();
     case 'gotowebinar':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('emailAddress')).sendKeys(username);
