@@ -264,8 +264,8 @@ const itBulkUpload = (name, hub, endpoint, opts, filePath, options, apiOverride)
     }, options ? options.skip : false);
 };
 
-const runTests = (api, payload, validationCb, tests) => {
-  const should = (api, validationCb, payload, options, name) => ({
+const runTests = (api, hub, payload, validationCb, tests) => {
+  const should = (api, hub, validationCb, payload, options, name) => ({
     /**
      * HTTP POST that validates that the response is a 400
      * @memberof module:core/suite.test.should
@@ -314,12 +314,12 @@ const runTests = (api, payload, validationCb, tests) => {
      * Downloads bulk with options and verifies it completes and that none fail
      * @memberof module:core/suite.test.should
      */
-    supportBulkDownload: (hub, opts, apiOverride) => itBulkDownload(name, hub, opts, options, apiOverride),
+    supportBulkDownload: (opts, apiOverride) => itBulkDownload(name, hub, opts, options, apiOverride),
     /**
      * Uploads bulk with options to specific object and verifies it completes and that none fail
      * @memberof module:core/suite.test.should
      */
-    supportBulkUpload: (hub, endpoint, opts, filePath, apiOverride) => itBulkUpload(name, hub, endpoint, opts, filePath, options, apiOverride),
+    supportBulkUpload: (endpoint, opts, filePath, apiOverride) => itBulkUpload(name, hub, endpoint, opts, filePath, options, apiOverride),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.
@@ -444,7 +444,7 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test
      * @namespace should
      */
-    should: should(api, validationCb, payload),
+    should: should(api, hub, validationCb, payload),
     /**
      * Overrides the default name for any tests
      * @param {string} myName The name of the test
@@ -493,7 +493,7 @@ const runTests = (api, payload, validationCb, tests) => {
   tests ? tests(test) : it('add some tests to me!!!', () => true);
 };
 
-const run = (api, resource, options, defaultValidation, tests) => {
+const run = (api, hub, resource, options, defaultValidation, tests) => {
   // if options is a function, we're assuming those are the tests
   if (typeof options === 'function') {
     tests = options;
@@ -503,9 +503,9 @@ const run = (api, resource, options, defaultValidation, tests) => {
   options = options || {};
   const name = options.name || resource;
   if (options.skip) {
-    describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests));
+    describe.skip(name, () => runTests(api, hub, options.payload, defaultValidation, tests));
   } else {
-    describe(name, () => runTests(api, options.payload, defaultValidation, tests));
+    describe(name, () => runTests(api, hub, options.payload, defaultValidation, tests));
   }
 };
 
@@ -523,7 +523,7 @@ const run = (api, resource, options, defaultValidation, tests) => {
  * }
  * @param  {Function} tests   A function, containing all test
  */
-exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, resource, options, (r) => expect(r).to.have.statusCode(200), tests);
+exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, hub, resource, options, (r) => expect(r).to.have.statusCode(200), tests);
 
 /**
  * Starts up a new test suite for a platform resource.  This wraps all of the given tests in a mocha describe block, and
