@@ -981,11 +981,16 @@
       "type": "string"
     }]
   },
+  "custom-records": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "stacks": {
    "fields": [{
      "path": "id",
      "type": "string"
    }]
- }  
+ }
 }
-
