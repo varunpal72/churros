@@ -321,7 +321,8 @@ const runTests = (api, payload, validationCb, tests) => {
      */
     supportBulkUpload: (hub, endpoint, opts, filePath, apiOverride) => itBulkUpload(name, hub, endpoint, opts, filePath, options, apiOverride),
     /**
-     * Validates pagination works and that pages are in correct order
+     * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
+     * through the results before cleaning up any resources that were created.
      * @memberof module:core/suite.test.should
      */
     supportPagination: () => itPagination(name, api, options, validationCb),
