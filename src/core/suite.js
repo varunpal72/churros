@@ -237,9 +237,6 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
   }
   metadata = tools.updateMetadata(metadata);
   boomGoesTheDynamite(n, () => {
-    if (!apiOverride) {
-      expect(endpoint).to.exist;
-    }
     // start bulk download
     return cloud.withOptions(metadata).post(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/query`)
       .then(r => {

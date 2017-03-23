@@ -112,4 +112,9 @@ describe('tools', () => {
     const baseElement = 'hubspot';
     return expect(tools.getBaseElement(element)).to.equal(baseElement);
   });
+  it('should update metadata', () => {
+    const OGmetadata = { qs: { q: 'select * from contacts where city = \'Tampa\'' } };
+    const updatedMetadata = { qs: { q: 'select * from contacts where city = \'Tampa\'', where: 'city = \'Tampa\'' } };
+    return expect(tools.updateMetadata(OGmetadata)).to.deep.equal(updatedMetadata);
+  });
 });
