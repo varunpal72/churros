@@ -224,6 +224,7 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
 const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
   const n = name || `should support bulk download with options`;
   let bulkId, bulkAmmount, jsonMeta, csvMeta;
+  // gets metadata ready for testing csv and json responses
   const getJson = opts ? opts.json : false;
   if (getJson) {
     jsonMeta = JSON.parse(JSON.stringify(metadata));
@@ -245,6 +246,7 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
+      // gets regular call to later check the validity of the bulk job
       .then(r => cloud.withOptions(metadata)
       .get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`, r => {
         bulkAmmount = r.body.length;
@@ -258,6 +260,7 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
         expect(r.body.recordsFailedCount).to.equal(0);
         expect(r.body.recordsCount).to.equal(bulkAmmount);
       })
+      // get bulk query results in JSON
       .then(r => getJson ? cloud.withOptions(jsonMeta)
       .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
         expect(r.body, 'json').to.not.be.empty;
