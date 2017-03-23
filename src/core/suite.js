@@ -221,34 +221,62 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
   }, options ? options.skip : false);
 };
 
-const itBulkDownload = (name, hub, opts, options, apiOverride) => {
+const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
   const n = name || `should support bulk download with options`;
-  let bulkId;
+  let bulkId, bulkAmmount, jsonMeta, csvMeta;
+  const getJson = opts ? opts.json : false;
+  if (getJson) {
+    jsonMeta = JSON.parse(JSON.stringify(metadata));
+    metadata ? metadata.headers ? jsonMeta.headers.accept = "application/json" : jsonMeta.headers = {accept: "application/json"} : jsonMeta = {headers : {accept: "application/json"}};
+  }
+  const getCsv = opts ? opts.csv : false;
+  if (getCsv) {
+    csvMeta = JSON.parse(JSON.stringify(metadata));
+    metadata ? metadata.headers ? csvMeta.headers.accept = "text/csv" : csvMeta.headers = {accept: "text/csv"} : csvMeta = {headers : {accept: "text/csv"}};
+  }
+  metadata = tools.updateMetadata(metadata);
   boomGoesTheDynamite(n, () => {
+    if (!apiOverride) {
+      expect(endpoint).to.exist;
+    }
     // start bulk download
-    return cloud.withOptions(opts).post(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/query`)
+    return cloud.withOptions(metadata).post(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/query`)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
+      .then(r => cloud.withOptions(metadata)
+      .get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`, r => {
+        bulkAmmount = r.body.length;
+      }))
       // get bulk download status
-      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
-        expect(r.body.recordsCount).to.be.above(0);
-        expect(r.body.recordsFailedCount).to.equal(0);
+        return r;
       })))
-      // get bulk download errors
-      .then(r => cloud.get(apiOverride ? `${apiOverride}/errors`:`/hubs/${hub}/bulk/${bulkId}/errors`));
+      .then(r => {
+        expect(r.body.recordsFailedCount).to.equal(0);
+        expect(r.body.recordsCount).to.equal(bulkAmmount);
+      })
+      .then(r => getJson ? cloud.withOptions(jsonMeta)
+      .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+        expect(r.body, 'json').to.not.be.empty;
+      }) : Promise.resolve(null))
+     // get bulk query results in CSV
+     .then(r => getCsv ? cloud.withOptions(csvMeta)
+     .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+       expect(r.body, 'csv').to.not.be.empty;
+     }) : Promise.resolve(null));
   }, options ? options.skip : false);
 };
 
-const itBulkUpload = (name, hub, endpoint, opts, filePath, options, apiOverride) => {
+const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverride) => {
   const n = name || `should support bulk upload with options`;
   let bulkId;
   boomGoesTheDynamite(n, () => {
     expect(fs.existsSync(filePath)).to.be.true;
   // start bulk upload
-    return cloud.withOptions(opts).postFile(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/${endpoint}`, filePath)
+    return cloud.withOptions(metadata).postFile(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/${endpoint}`, filePath)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
@@ -314,12 +342,12 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      * Downloads bulk with options and verifies it completes and that none fail
      * @memberof module:core/suite.test.should
      */
-    supportBulkDownload: (opts, apiOverride) => itBulkDownload(name, hub, opts, options, apiOverride),
+    supportBulkDownload: (metadata, opts, endpoint, apiOverride) => itBulkDownload(name, hub, metadata, options, apiOverride, opts, endpoint),
     /**
      * Uploads bulk with options to specific object and verifies it completes and that none fail
      * @memberof module:core/suite.test.should
      */
-    supportBulkUpload: (endpoint, opts, filePath, apiOverride) => itBulkUpload(name, hub, endpoint, opts, filePath, options, apiOverride),
+    supportBulkUpload: (metadata, endpoint, filePath, apiOverride) => itBulkUpload(name, hub, endpoint, metadata, filePath, options, apiOverride),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.

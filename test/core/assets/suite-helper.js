@@ -50,6 +50,7 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(200, (uri, requestBody) => {
       var out = {};
       out.status = 'CREATED';
+      out.id = 123;
       return out;
     });
 
@@ -80,16 +81,26 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .get('/foo/search')
     .query({ foo: 'bar' })
     .reply(200, () => [genPayload({ id: 123 })])
+    .get('/bulk/endpoint')
+    .reply(200, () => new Array(10).fill({id:123}))
     .get('/bulk/status')
     .reply(200, (uri, requestBody) => {
       var out = {};
       out.status = 'COMPLETED';
-      out.recordsCount = 3;
+      out.recordsCount = 10;
       out.recordsFailedCount = 0;
       return out;
     })
     .get('/bulk/errors')
     .reply(200, () => {});
+
+    nock(baseUrl, { reqheaders: { accept: "application/json" } })
+    .get('/bulk/123/endpoint')
+    .reply(200, () => JSON.stringify(new Array(10).fill({id:123})));
+    nock(baseUrl, { reqheaders: { accept: "text/csv" } })
+    .get('/bulk/123/endpoint')
+    .reply(200, () => JSON.stringify(new Array(10).fill({id:123})));
+
 
   /** PATCH && PUT **/
   nock(baseUrl, headers())

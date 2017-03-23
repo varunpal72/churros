@@ -3,7 +3,8 @@
 const suite = require('core/suite');
 
 suite.forElement('helpdesk', 'bulk/query', (test) => {
-  test.should.supportBulkDownload({ qs: { q: 'select * from contacts' } });
-  test.should.supportBulkDownload({ qs: { q: 'select * from incidents' } });
-  test.should.supportBulkDownload({ qs: { q: 'select * from organizations' } });
+  const opts = {json: true};
+  test.should.supportBulkDownload({ qs: { q: 'select * from contacts where city = \'Tampa\'' } }, opts, 'contacts');
+  test.should.supportBulkDownload({ qs: { q: 'select * from incidents' } }, opts, 'incidents');
+  test.should.supportBulkDownload({ qs: { q: 'select * from organizations' } }, opts, 'organizations');
 });

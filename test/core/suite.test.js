@@ -124,7 +124,7 @@ describe('suite', () => {
     test.should.supportCeqlSearch('id');
     test.should.supportCeqlSearchForMultipleRecords('id');
     test.should.supportBulkUpload(null, null, `${__dirname}/assets/test.json`, '/bulk');
-    test.should.supportBulkDownload(null, '/bulk');
+    test.should.supportBulkDownload(null, {json: true, csv: true}, 'endpoint', '/bulk');
 
     /* overriding the default API that was passed in as the default in the `suite.forPlatform` */
     test

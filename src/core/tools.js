@@ -84,7 +84,7 @@ const waitFor = max => pred => new Promise((res, rej) => {
       .then(r => res(r))
       .catch(e => {
         if (ms - 3000 < 0) {
-          rej(e || `Predicate was not true within the maximum time allowed of ${max} ms.`);
+          return rej(e || `Predicate was not true within the maximum time allowed of ${max} ms.`);
         }
         setTimeout(doit, 3000, ms - 3000); });
   };
@@ -153,4 +153,12 @@ exports.runFile = (element, filePath, method) => {
 
 exports.getBaseElement = (str) => {
   return str.includes('--') ? str.substring(0, str.indexOf('--')) : str;
+};
+
+exports.updateMetadata = (obj) => {
+  const whereExp = obj ? obj.qs ? obj.qs.q ? obj.qs.q.includes('where') ? obj.qs.q.substring(obj.qs.q.indexOf('where') + 6) : '' : '' : '' : '';
+  if (obj) {
+    if (obj.qs) obj.qs.where = whereExp;
+  }
+  return obj;
 };
