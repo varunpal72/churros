@@ -16,7 +16,7 @@ const orgCommonResource = {
 
 suite.forPlatform('common-resources', {}, () => {
   const orgUrl = `/organizations/objects/${orgCommonResource.name}/definitions`;
-  
+
   before(() => cloud.post(orgUrl, orgCommonResource));
 
   it('should support returning all common resources that exist', () => {
@@ -25,9 +25,9 @@ suite.forPlatform('common-resources', {}, () => {
       expect(r.body).to.be.an('array');
 
       // find newly created common resource and validate the fields
-      const newCr = R.find(R.propEq('objectName', orgCommonResource.name))(r.body);
+      const newCr = R.find(R.propEq('name', orgCommonResource.name))(r.body);
       expect(newCr.fields).to.be.an('array').and.have.length(2);
-      expect(newCr.fields.filter(field => field.level === 'organization')).to.have.length(2);
+      expect(newCr.fields.filter(field => field.associatedLevel === 'organization')).to.have.length(2);
     };
 
     return cloud.get('/common-resources', v);
