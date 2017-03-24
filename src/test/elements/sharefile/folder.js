@@ -56,7 +56,7 @@ suite.forElement('documents', 'folders', (test) => {
 
       promises.push(response);
 
-      for (var i = 0; i < 1; i++) {
+      for (var i = 0; i < 5; i++) {
         folderPaths.push(`${parentFolder}/${i}`);
         folderPayload = { path: folderPaths[i + 1], directory: true };
         response = cloud.post('/hubs/documents/folders', folderPayload);
