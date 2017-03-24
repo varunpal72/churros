@@ -257,7 +257,7 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
       // Checks results match the where statement
       .then(r => cloud
       .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-        let bulkDownloadResults = r.body.split('\n').slice(0, -1).map(el => JSON.parse(unescape(el)));
+        let bulkDownloadResults = r.body.split('\n').slice(0, -1).map(el => JSON.parse(el));
         expect(bulkDownloadResults).to.deep.equal(bulkResults);
       }))
       // get bulk query results in JSON
