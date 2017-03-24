@@ -223,18 +223,15 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
 
 const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
   const n = name || `should support bulk download with options`;
-  let bulkId, bulkAmmount, jsonMeta, csvMeta;
+  let bulkId, bulkResults, jsonMeta, csvMeta;
   // gets metadata ready for testing csv and json responses
   const getJson = opts ? opts.json : false;
-  if (getJson) {
-    jsonMeta = JSON.parse(JSON.stringify(metadata));
-    metadata ? metadata.headers ? jsonMeta.headers.accept = "application/json" : jsonMeta.headers = {accept: "application/json"} : jsonMeta = {headers : {accept: "application/json"}};
-  }
+  jsonMeta = JSON.parse(JSON.stringify(metadata));
+  metadata ? metadata.headers ? jsonMeta.headers.accept = "application/json" : jsonMeta.headers = {accept: "application/json"} : jsonMeta = {headers : {accept: "application/json"}};
   const getCsv = opts ? opts.csv : false;
-  if (getCsv) {
-    csvMeta = JSON.parse(JSON.stringify(metadata));
-    metadata ? metadata.headers ? csvMeta.headers.accept = "text/csv" : csvMeta.headers = {accept: "text/csv"} : csvMeta = {headers : {accept: "text/csv"}};
-  }
+  csvMeta = JSON.parse(JSON.stringify(metadata));
+  metadata ? metadata.headers ? csvMeta.headers.accept = "text/csv" : csvMeta.headers = {accept: "text/csv"} : csvMeta = {headers : {accept: "text/csv"}};
+
   metadata = tools.updateMetadata(metadata);
   boomGoesTheDynamite(n, () => {
     // start bulk download
@@ -246,7 +243,7 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
       // gets regular call to later check the validity of the bulk job
       .then(r => cloud.withOptions(metadata)
       .get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`, r => {
-        bulkAmmount = r.body.length;
+        bulkResults = r.body;
       }))
       // get bulk download status
       .then(r => tools.wait.for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
@@ -255,8 +252,14 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
       })))
       .then(r => {
         expect(r.body.recordsFailedCount).to.equal(0);
-        expect(r.body.recordsCount).to.equal(bulkAmmount);
+        expect(r.body.recordsCount).to.equal(bulkResults.length);
       })
+      // Checks results match the where statement
+      .then(r => cloud
+      .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+        let bulkDownloadResults = r.body.split('\n').slice(0, -1).map(el => JSON.parse(unescape(el)));
+        expect(bulkDownloadResults).to.deep.equal(bulkResults);
+      }))
       // get bulk query results in JSON
       .then(r => getJson ? cloud.withOptions(jsonMeta)
       .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
