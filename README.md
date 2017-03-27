@@ -54,7 +54,7 @@ them...
 npm WARN ENOENT ENOENT: no such file or directory, open '/blah/blah/blah/churros/src/core/package.json'
 ```
 
-> __PROTIP:__ Certain Firefox version are incompatible. You can find a compatible version [here](https://ftp.mozilla.org/pub/firefox/releases/45.0b7/mac/en-US/). Once you install, you will need to __immediately turn off automatic updates__.
+> __PROTIP:__ Certain Firefox version are incompatible. You can find a compatible version [here](https://ftp.mozilla.org/pub/firefox/releases/45.0b7/mac/en-US/). Once you install, you will need to __immediately turn off automatic updates__ *(Firefox -> Preferences -> Advanced -> Update)*.
 
 Lastly, if you don't have a personal ngrok account, you'll need to signup for a free account [here](https://dashboard.ngrok.com/user/signup).  After you have signed up, you should have a personal ngrok auth token that you'll need to setup on your computer per their instructions.
 
