@@ -9,5 +9,5 @@ const customersPayload = build({ last_name: tools.random(), first_name: tools.ra
 suite.forElement('ecommerce', 'customers', { payload: customersPayload }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'billing.country = \'US\'' } }).should.return200OnGet();
+  test.withOptions({ qs: { where: 'email = \'john.doe@gmail.com\'' } }).should.return200OnGet();
 });
