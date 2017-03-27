@@ -1,0 +1,14 @@
+{
+  "properties": {
+    "description": {
+      "type": "string"
+    },
+    "id": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "description",
+    "id"
+  ]
+}
