@@ -5,6 +5,6 @@ const payload = require('./assets/productsCategories');
 
 suite.forElement('ecommerce', 'products-categories', { payload: payload }, (test) => {
   test.should.supportCruds();
-  test.should.supportPagination();
+  test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
   test.withOptions({ qs: { where: 'name = \'Clothing\'' } }).should.return200OnGet();
 });

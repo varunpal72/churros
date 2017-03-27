@@ -8,6 +8,6 @@ const customersPayload = build({ code: tools.random() });
 
 suite.forElement('ecommerce', 'discounts', { payload: customersPayload }, (test) => {
   test.should.supportCruds();
-  test.should.supportPagination();
+  test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
   test.withOptions({ qs: { where: 'individual_use = \'true\'' } }).should.return200OnGet();
 });

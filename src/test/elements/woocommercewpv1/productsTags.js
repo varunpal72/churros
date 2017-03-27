@@ -5,6 +5,6 @@ const payload = require('./assets/productsTags');
 
 suite.forElement('ecommerce', 'products-tags', { payload: payload }, (test) => {
   test.should.supportCruds();
-  test.should.supportPagination();
+  test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
   test.withOptions({ qs: { where: 'name = \'Leather Shoes\'' } }).should.return200OnGet();
 });
