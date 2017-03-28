@@ -279,11 +279,7 @@ const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverr
   boomGoesTheDynamite(n, () => {
     expect(fs.existsSync(filePath)).to.be.true;
     let file = fs.readFileSync(filePath,'utf8');
-    try {
-      file = JSON.parse(file);
-    } catch (e) {
-      file = tools.csvParse(file);
-    }
+    try { file = JSON.parse(file); } catch (e) { file = tools.csvParse(file); }
     expect(file).to.exist;
     logger.info('Running bulk process, may take upto 2 minutes');
     // start bulk upload
