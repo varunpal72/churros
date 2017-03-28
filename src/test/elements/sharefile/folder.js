@@ -1,6 +1,7 @@
 'use strict';
 
 const chakram = require('chakram');
+const expect = require('chakram').expect;
 const suite = require('core/suite');
 const payload = require('./assets/folder');
 const cloud = require('core/cloud');
@@ -41,6 +42,15 @@ suite.forElement('documents', 'folders', (test) => {
       .then(r => cloud.withOptions({ qs: { path: r.body.path } }).post('/hubs/documents/folders/copy', { path: rootFolder + `/churros-${tools.random()}` }))
       .then(r => cloud.withOptions({ qs: { path: r.body.path } }).post('hubs/documents/folders/favorites'))
       .then(r => cloud.delete('/hubs/documents/folders/' + r.body.id));
+  });
+
+  it('should disallow downloading a folder', () => {
+    let folderId;
+    return cloud.post('/hubs/documents/folders', payload).then(r => folderId = r.body.id).then(
+      r => cloud.withOptions({qs: {path: payload.path}}).get('/hubs/documents/files', (r) => {
+        expect(r).to.have.statusCode(400);
+        cloud.delete('/hubs/documents/folders/' + folderId);
+      }));
   });
 
   it('should concurrently create folders', () => {
