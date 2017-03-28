@@ -3,8 +3,7 @@
 const suite = require('core/suite');
 const payload = require('./assets/workflows');
 
-// Can't create workflows as of right now? Investigating (@tyltot)
-suite.forElement('marketing', 'workflows', { payload: payload, skip: true }, (test) => {
+suite.forElement('marketing', 'workflows', { payload: payload }, (test) => {
   test.should.supportCrds();
-  test.should.supportNextPagePagination(1);
+  test.should.supportNextPagePagination(2);
 });
