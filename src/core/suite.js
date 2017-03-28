@@ -246,7 +246,7 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
         bulkResults = r.body;
       }))
       // get bulk download status
-      .then(r => tools.wait.for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
         return r;
       })))
@@ -273,25 +273,47 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
   }, options ? options.skip : false);
 };
 
-const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverride) => {
+const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverride, where) => {
   const n = name || `should support bulk upload with options`;
   let bulkId;
   boomGoesTheDynamite(n, () => {
     expect(fs.existsSync(filePath)).to.be.true;
-  // start bulk upload
+    let file = fs.readFileSync(filePath,'utf8');
+    try {
+      file = JSON.parse(file);
+    } catch (e) {
+      file = tools.csvParse(file);
+    }
+    expect(file).to.exist;
+    logger.info('Running bulk process, may take upto 2 minutes');
+    // start bulk upload
     return cloud.withOptions(metadata).postFile(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/${endpoint}`, filePath)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
       // get bulk upload status
-      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(120000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
-        expect(r.body.recordsCount).to.be.above(0);
-        expect(r.body.recordsFailedCount).to.equal(0);
+        return r;
       })))
-      // get bulk upload errors
-      .then(r => cloud.get(apiOverride ? `${apiOverride}/errors`:`/hubs/${hub}/bulk/${bulkId}/errors`));
+      .then(r => {
+        expect(r.body.recordsFailedCount).to.equal(0);
+        expect(r.body.recordsCount).to.equal(file.length);
+      })
+      .then((r) => {
+        const deleteIds = (where) => {
+          return cloud.withOptions({qs: {where: where}}).get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`)
+          .then(r => {
+            return r.body.filter(obj => obj.id).map(obj => obj.id);
+          })
+          .then(ids => ids.map(id => cloud.delete(apiOverride ? `${apiOverride}/${id}` : `/hubs/${hub}/${endpoint}/${id}`)));
+        };
+        return where ? deleteIds(where) : Promise.all(file.map(obj => {
+          where = tools.createExpression(obj);
+          return deleteIds(where);
+        }));
+      });
     }, options ? options.skip : false);
 };
 
@@ -342,15 +364,24 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      */
     return200OnGet: () => itGet(name, api, options, validationCb),
     /**
-     * Downloads bulk with options and verifies it completes and that none fail
+     * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
+     * @param {object} metadata -> headers, query string etc...
+     * @param {object} opts -> To test json and csv. If null it will test endpoints default. EXAMPLE "{json: true, csv: true}"
+     * @param {string} object -> object we are calling: contacts, accounts, etc..
      * @memberof module:core/suite.test.should
      */
-    supportBulkDownload: (metadata, opts, endpoint, apiOverride) => itBulkDownload(name, hub, metadata, options, apiOverride, opts, endpoint),
+    supportBulkDownload: (metadata, opts, object, apiOverride) => itBulkDownload(name, hub, metadata, options, apiOverride, opts, object),
     /**
-     * Uploads bulk with options to specific object and verifies it completes and that none fail
+     * Uploads bulk with options to specific object and verifies it completes and that none fail. Deletes records after completion
+     * @param {object} metadata -> headers, query string etc...
+     * @param {string} object -> object we are calling: contacts, accounts, etc..
+     * @param {string} filePath -> path to file we are uploading
+     * @param {string} where -> (optional) where query that will grab the records in the file to delete them
+     * If the `where` param is missing it will create a where query
+     *     EXAMPLE: Json-> "{"firstName": "Austin", "lastName": "Mahan"}" | Where -> firstName = 'Austin' AND lastName = 'Mahan'
      * @memberof module:core/suite.test.should
      */
-    supportBulkUpload: (metadata, endpoint, filePath, apiOverride) => itBulkUpload(name, hub, endpoint, metadata, filePath, options, apiOverride),
+    supportBulkUpload: (metadata, filePath, object, where, apiOverride) => itBulkUpload(name, hub, object, metadata, filePath, options, apiOverride, where),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.

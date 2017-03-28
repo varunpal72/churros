@@ -68,6 +68,6 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   });
   const metaData = { useBatchUpload: true };
   const opts = { formData: { metaData: JSON.stringify(metaData) } };
-  test.should.supportBulkUpload(opts, 'contacts', `${__dirname}/assets/contacts.csv`);
+  test.should.supportBulkUpload(opts, `${__dirname}/assets/contacts.csv`, 'contacts', `email='test123@churros.com'`);
 
 });

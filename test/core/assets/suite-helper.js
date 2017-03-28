@@ -82,6 +82,9 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .query({ foo: 'bar' })
     .reply(200, () => [genPayload({ id: 123 })])
     .get('/bulk/endpoint')
+    .query({where: 'id = 123'})
+    .reply(200, () => new Array(10).fill({id:123}))
+    .get('/bulk/endpoint')
     .reply(200, () => new Array(10).fill({id:123}))
     .get('/bulk/status')
     .reply(200, (uri, requestBody) => {
@@ -92,7 +95,9 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
       return out;
     })
     .get('/bulk/errors')
-    .reply(200, () => {});
+    .reply(200, () => {})
+    .get('/bulk/123/endpoint')
+    .reply(200, () => new Array(10).fill(JSON.stringify({id:123})).join('\n') + '\n');
 
     nock(baseUrl, { reqheaders: { accept: "application/json" } })
     .get('/bulk/123/endpoint')
@@ -201,6 +206,9 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(200, (uri, requestBody) => ({}))
     .delete('/foo/456')
     .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }))
+    .delete('/bulk/123')
+    .reply(200, (uri, requestBody) => ({}))
     .delete('/foo/pagination/123')
     .reply(200, (uri, requestBody) => ({}));
+
 };
