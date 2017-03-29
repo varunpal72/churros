@@ -225,7 +225,7 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
                 numberConsecutiveErrors: 100
             })
                 .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, {foo: 'bar'}));
-        }
+        };
 
         return testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb);
     });
@@ -246,7 +246,7 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
                 numberConsecutiveErrors: 50
             })
                 .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, {foo: 'bar'}));
-        }
+        };
 
         return testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb);
     });
