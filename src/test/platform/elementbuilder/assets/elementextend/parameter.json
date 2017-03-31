@@ -1,0 +1,11 @@
+{
+  "name": "myquery",
+  "vendorName": "vendorquery",
+  "description": "Sample myquery",
+  "type": "query",
+  "vendorType": "query",
+  "dataType": "string",
+  "vendorDataType": "string",
+  "source": "request",
+  "required": false
+}
