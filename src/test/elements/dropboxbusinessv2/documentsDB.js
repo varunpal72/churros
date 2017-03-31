@@ -43,7 +43,7 @@ exports.files = () => {
         .then(r => cloud.withOptions({ qs: { path: file.path }, headers: { "Elements-As-Team-Member": memberId } }).delete('/hubs/documents/files'));
     });
 
-    it('should allow GET /files/links and /files/:id/links', () => {
+    it('should allow GET /files/links and /files/:id/links with correct download and view URLs', () => {
       const cb = (file) => {
         return cloud.withOptions({ headers: { "Elements-As-Team-Member": memberId } })
           .get(`/hubs/documents/files/${file.id}/links`)
@@ -53,7 +53,11 @@ exports.files = () => {
               headers: { "Elements-As-Team-Member": memberId }
             })
             .get('/hubs/documents/files/links')
-            .then(r => expect(r.body).to.not.contain.key('raw'))
+            .then(r => {
+              expect(r.body).to.not.contain.key('raw');
+              expect(r.body.providerLink).to.contain('dl=1');
+              expect(r.body.providerViewLink).to.contain('dl=0');
+          })
           );
       };
 
