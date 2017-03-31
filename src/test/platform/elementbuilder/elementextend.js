@@ -156,12 +156,6 @@ suite.forPlatform('element-extend', {}, (test) => {
           .then(() => cloud.delete(`elements/closeio/resources/${resourceId}/parameters/${parameterId}`, (r) => expect(r).to.have.statusCode(404)));
     });
 
-    // it('should return error while updating parameters for system catalog resource', () => {
-    //     let resourceId = baseElement.resources[0].id;
-    //     let parameterId = baseElement.resources[0].parameters[0].id;
-    //     return cloud.put(`elements/closeio/resources/${resourceId}/parameters/${parameterId}`, newParameter, (r) => expect(r).to.have.statusCode(404));
-    // });
-
     // try adding/update parameter to new resource and it should work
     // delete new resource parameter
     it('should CUD a parameter for newly created resource', () => {
@@ -205,17 +199,6 @@ suite.forPlatform('element-extend', {}, (test) => {
           .then(r => cloud.delete(`instances/${instance.id}/transformations/newtransformedcontacts`))
           .then(r => cloud.delete(`instances/${instance.id}/objects/newtransformedcontacts/definitions`))
           .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'));
-    });
-
-    // Get the element with out any authentication details to check if the newly created resource is not present
-    //TODO Pass the authentication value
-    it('should get system catalog element with resources and no account resources', () => {
-      return cloud.get(`elements/closeio/`)
-        .then(r => {
-          expect(r.body).to.not.be.empty;
-          expect(r.body.id).to.not.be.empty;
-          expect(r.body.resources.length == (baseElement.resources.length+1)).to.be.true;
-        })
     });
 
 });
