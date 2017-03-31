@@ -3,8 +3,6 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const props = require('core/props');
-const logger = require('winston');
 const defaults = require('core/defaults');
 const provisioner = require('core/provisioner');
 const newResource = require('./assets/elementextend/newresource.json');
@@ -17,13 +15,6 @@ const swaggerSchema = require('./assets/elementextend/swagger.schema.json');
 const elementSwaggerSchema = require('./assets/elementextend/elementswagger.schema.json');
 const accountPayload = require('./assets/elementextend/account.json');
 const userPayload = require('./assets/elementextend/user.json');
-
-const createNewResource = (original, update) => {
-  return scriptTest(original, { isCleanup: false })
-    .then(r => cloud.put(`/instances/${closeioId}/transformations/contacts`, update, (r) => expect(r).to.have.statusCode(400)))
-    .then(r => cloud.delete(`/instances/${closeioId}/transformations/contacts`))
-    .then(r => cloud.delete(`/instances/${closeioId}/objects/contacts/definitions`));
-};
 
 suite.forPlatform('element-extend', {}, (test) => {
   let baseElement, newResourceId, overrideResourceId;
@@ -51,7 +42,7 @@ suite.forPlatform('element-extend', {}, (test) => {
         .then(r => {
           expect(r.body).to.not.be.empty;
           expect(r.body.id).to.not.be.empty;
-          expect(r.body.resources.length == (baseElement.resources.length+1)).to.be.true;
+          expect(r.body.resources.length === (baseElement.resources.length+1)).to.be.true;
         });
     });
 
@@ -60,7 +51,7 @@ suite.forPlatform('element-extend', {}, (test) => {
       return cloud.get(`elements/closeio/resources`)
         .then(r => {
           expect(r.body).to.not.be.empty;
-          expect(r.body.length == (baseElement.resources.length+1)).to.be.true;
+          expect(r.body.length === (baseElement.resources.length+1)).to.be.true;
         });
     });
 
@@ -69,7 +60,7 @@ suite.forPlatform('element-extend', {}, (test) => {
       return cloud.get(`elements/closeio/resources?accountOnly=true`)
         .then(r => {
           expect(r.body).to.not.be.empty;
-          expect(r.body.length == 1).to.be.true;
+          expect(r.body.length === 1).to.be.true;
         });
     });
 
@@ -78,7 +69,7 @@ suite.forPlatform('element-extend', {}, (test) => {
       return cloud.get(`elements/closeio/resources/${newResourceId}`)
         .then(r => {
           expect(r.body).to.not.be.empty;
-          expect(r.body.path == `/hubs/crm/mynewcontacts`).to.be.true;
+          expect(r.body.path === `/hubs/crm/mynewcontacts`).to.be.true;
         });
     });
 
@@ -100,7 +91,7 @@ suite.forPlatform('element-extend', {}, (test) => {
           return cloud.withOptions({ headers }).get(`elements/closeio/resources`)
             .then(r => {
               expect(r.body).to.not.be.empty;
-              expect(r.body.length == (baseElement.resources.length)).to.be.true;
+              expect(r.body.length === (baseElement.resources.length)).to.be.true;
             });
         })
         .then(() => cloud.delete(`users/${newUser.id}`))
@@ -132,8 +123,8 @@ suite.forPlatform('element-extend', {}, (test) => {
       return cloud.get(`elements/closeio/resources?accountOnly=true`)
         .then(r => {
           expect(r.body).to.not.be.empty;
-          expect(r.body.length == 2).to.be.true;
-        })
+          expect(r.body.length === 2).to.be.true;
+        });
     });
 
     // Execute the overriden created resource
