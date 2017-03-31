@@ -9,6 +9,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const cloud = require('core/cloud');
 const logger = require('winston');
+const tools = require('core/tools');
 
 var exports = module.exports = {};
 
@@ -218,6 +219,27 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
 };
+let polls = [];
+const itSupportEvents = (name, api, options, validationCb, payload, objectName, element, path) => {
+  name = 'polling test'
+  boomGoesTheDynamite(name, () => {
+    var response;
+    let job = tools.runFile(element, path, 'clearNgrok')
+      .then(() => {
+        return cloud.withOptions(options).post(api, payload, validationCb)
+        .then(res => response = res)
+        .then(r => tools.wait.upTo(120000).for(() => tools.runFile(element, path, 'checkNgrok')))
+      })
+    polls.push(job);
+    console.log(polls);
+    return Promise.all(polls)
+    .then(() => {
+      return job.then(data => {
+        console.log(data);
+      })
+    })
+  })
+}
 
 const runTests = (api, payload, validationCb, tests) => {
   const should = (api, validationCb, payload, options, name) => ({
@@ -265,6 +287,7 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test.should
      */
     return200OnGet: () => itGet(name, api, options, validationCb),
+    supportEvents: (pay, objectName, element, path) => itSupportEvents(name, api, options, validationCb, pay, objectName, element, path),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.
