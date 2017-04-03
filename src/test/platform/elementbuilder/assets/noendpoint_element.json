@@ -172,16 +172,128 @@
   "description": "This Element has no endpoint, handling all the magic in pre/post hooks",
   "resources": [
     {
+      "method": "POST",
+      "nextResource": "POST:/secondpost",
+      "description": "First Post call",
+      "type": "api",
+      "vendorPath": "",
+      "nextPageKey": "",
+      "path": "/hubs/general/firstpost",
+      "paginationType": "VENDOR_SUPPORTED",
+      "vendorMethod": "POST",
+      "response": {
+        "sampleData": "{\"address\":\"Stark Tower\",\"secondcall\":\"true\",\"last_name\":\"Stark\",\"id\":\"IRONMAN\",\"first_name\":\"Tony\",\"friends\":\"Thor, Capitan America\"}",
+        "contentType": "application/json"
+      },
+      "model": {
+        "requestName": "object",
+        "transform": false,
+        "name": "firstpost",
+        "rawSwagger": {
+          "firstpost": {
+            "id": "firstpost",
+            "properties": {
+              "address": {
+                "type": "string"
+              },
+              "secondcall": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "first_name": {
+                "type": "string"
+              },
+              "friends": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "requestSwagger": {
+          "object_": {
+            "id": "object_",
+            "properties": {
+              "id": {
+                "format": "int32",
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "swagger": {
+          "firstpost": {
+            "id": "firstpost",
+            "properties": {
+              "address": {
+                "type": "string"
+              },
+              "secondcall": {
+                "type": "string"
+              },
+              "last_name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "first_name": {
+                "type": "string"
+              },
+              "friends": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "hooks": [
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "var res = {\n\t\"first_name\" : \"Tony\",\n\t\"last_name\" : \"Stark\",\n\t\"id\": \"IRONMAN\"\n}\n\ndone({\n\t\"response_body\": res\n})",
+          "type": "postRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\t\"continue\": false\n})",
+          "type": "preRequest"
+        }
+      ],
+      "parameters": [
+        {
+          "vendorType": "body",
+          "sampleData": "{\n\"id\" : 2\n}",
+          "dataType": "object",
+          "name": "body",
+          "description": "The whatever object body",
+          "vendorDataType": "object",
+          "source": "request",
+          "type": "body",
+          "vendorName": "body",
+          "required": false
+        }
+      ]
+    },
+    {
+      "method": "GET",
+      "nextResource": "GET:/secondrequest",
+      "description": "First API Request ",
+      "type": "api",
+      "vendorPath": "",
       "nextPageKey": "",
       "path": "/hubs/general/firstrequest",
       "paginationType": "VENDOR_SUPPORTED",
       "vendorMethod": "GET",
-      "method": "GET",
-      "nextResource": "GET:/secondrequest",
       "response": {
         "contentType": "application/json"
       },
-      "description": "First API Request",
+      "operationId": "",
       "model": {
         "transform": false,
         "name": "firstrequest",
@@ -214,52 +326,77 @@
           }
         }
       },
-      "type": "api",
       "hooks": [
-        {
-          "isLegacy": false,
-          "mimeType": "application/javascript",
-          "body": "done ({\n\"continue\": false\n})",
-          "type": "preRequest"
-        },
         {
           "isLegacy": false,
           "mimeType": "application/javascript",
           "body": "var response = {\n\t\"id\": 123\n};\n\ndone ({\n\t\"response_body\": response\n})",
           "type": "postRequest"
-        }
-      ],
-      "vendorPath": ""
-    },
-    {
-      "method": "GET",
-      "nextResource": "",
-      "description": "Second API Request which adds description",
-      "type": "apiNoDocumentation",
-      "vendorPath": "",
-      "nextPageKey": "",
-      "path": "/hubs/general/four",
-      "paginationType": "VENDOR_SUPPORTED",
-      "vendorMethod": "GET",
-      "response": {
-        "contentType": "application/json"
-      },
-      "operationId": "",
-      "hooks": [
+        },
         {
           "isLegacy": false,
           "mimeType": "application/javascript",
           "body": "done ({\n\"continue\": false\n})",
           "type": "preRequest"
-        },
+        }
+      ],
+      "rootKey": ""
+    },
+    {
+      "nextPageKey": "",
+      "path": "/hubs/general/five",
+      "paginationType": "VENDOR_SUPPORTED",
+      "vendorMethod": "GET",
+      "method": "GET",
+      "nextResource": "GET:/six",
+      "response": {
+        "contentType": "application/json"
+      },
+      "description": "Second API Request which adds description",
+      "type": "apiNoDocumentation",
+      "hooks": [
         {
           "isLegacy": false,
           "mimeType": "application/javascript",
           "body": "var response = {\n\t\"id\": \"request_previous_response.id\",\n\t\"description\": \"From second request\"\n};\n\ndone ({\n\t\"response_body\": response\n})",
           "type": "postRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\"continue\": false\n})",
+          "type": "preRequest"
         }
       ],
-      "rootKey": ""
+      "vendorPath": ""
+    },
+    {
+      "nextPageKey": "",
+      "path": "/hubs/general/four",
+      "paginationType": "VENDOR_SUPPORTED",
+      "vendorMethod": "GET",
+      "method": "GET",
+      "nextResource": "GET:/five",
+      "response": {
+        "contentType": "application/json"
+      },
+      "description": "Second API Request which adds description",
+      "type": "apiNoDocumentation",
+      "hooks": [
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "var response = {\n\t\"id\": \"request_previous_response.id\",\n\t\"description\": \"From second request\"\n};\n\ndone ({\n\t\"response_body\": response\n})",
+          "type": "postRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\"continue\": false\n})",
+          "type": "preRequest"
+        }
+      ],
+      "vendorPath": ""
     },
     {
       "method": "GET",
@@ -290,7 +427,7 @@
                 "format": "int32",
                 "type": "integer"
               },
-              "99": {
+              "565656566": {
                 "format": "int32",
                 "type": "integer"
               },
@@ -302,143 +439,7 @@
                 "format": "int32",
                 "type": "integer"
               },
-              "ullamco ut": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "unavailable": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "stud": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "pending": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "available": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "dangerous": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "fulfilled": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "asdasd": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "dead": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "adasdsad": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "confused": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "my pet status": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "scscsc": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "not available": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "cuty": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "no more": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "Available": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "loco": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "ww": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "sold": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "consequat non in": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "nostrud velit laborum pariatur sunt": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "test": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "sint": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "Alive": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "gone": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "undesirable": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "Active": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "tests": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "u": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "unavaiable": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "string_": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "Good": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "dog": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "fgghfgh": {
+              "placed": {
                 "format": "int32",
                 "type": "integer"
               }
@@ -457,7 +458,7 @@
                 "format": "int32",
                 "type": "integer"
               },
-              "99": {
+              "565656566": {
                 "format": "int32",
                 "type": "integer"
               },
@@ -469,143 +470,7 @@
                 "format": "int32",
                 "type": "integer"
               },
-              "ullamco ut": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "unavailable": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "stud": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "pending": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "available": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "dangerous": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "fulfilled": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "asdasd": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "dead": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "adasdsad": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "confused": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "my pet status": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "scscsc": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "not available": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "cuty": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "no more": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "Available": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "loco": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "ww": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "sold": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "consequat non in": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "nostrud velit laborum pariatur sunt": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "test": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "sint": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "Alive": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "gone": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "undesirable": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "Active": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "tests": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "u": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "unavaiable": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "string_": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "Good": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "dog": {
-                "format": "int32",
-                "type": "integer"
-              },
-              "fgghfgh": {
+              "placed": {
                 "format": "int32",
                 "type": "integer"
               }
@@ -1158,16 +1023,19 @@
       "rootKey": ""
     },
     {
+      "method": "GET",
+      "nextResource": "GET:/two",
+      "description": "First API Request",
+      "type": "api",
+      "vendorPath": "",
       "nextPageKey": "",
       "path": "/hubs/general/one",
       "paginationType": "VENDOR_SUPPORTED",
       "vendorMethod": "GET",
-      "method": "GET",
-      "nextResource": "GET:/two",
       "response": {
         "contentType": "application/json"
       },
-      "description": "First API Request",
+      "operationId": "",
       "model": {
         "transform": false,
         "name": "one",
@@ -1198,106 +1066,195 @@
           }
         }
       },
-      "type": "api",
       "hooks": [
-        {
-          "isLegacy": false,
-          "mimeType": "application/javascript",
-          "body": "done ({\n\"continue\": false\n})",
-          "type": "preRequest"
-        },
         {
           "isLegacy": false,
           "mimeType": "application/javascript",
           "body": "var response = {\n\t\"id\": 123\n};\n\ndone ({\n\t\"response_body\": response\n})",
           "type": "postRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\"continue\": false\n})",
+          "type": "preRequest"
         }
       ],
-      "vendorPath": ""
+      "rootKey": ""
     },
     {
+      "method": "POST",
+      "nextResource": "",
+      "description": "First Post call",
+      "type": "api",
+      "vendorPath": "",
+      "nextPageKey": "",
+      "path": "/hubs/general/secondpost",
+      "paginationType": "VENDOR_SUPPORTED",
+      "vendorMethod": "POST",
+      "response": {
+        "contentType": "application/json"
+      },
+      "operationId": "",
+      "hooks": [
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "var res = {\n\t\"first_name\" : \"Tony\",\n\t\"last_name\" : \"Stark\",\n\t\"id\": \"IRONMAN\",\n\t\"address\":\"Stark Tower\",\n\t\"friends\":\"Thor, Capitan America\",\n\t\"secondcall\": \"true\"\n}\n\ndone({\n\t\"response_body\": res\n})",
+          "type": "postRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\t\"request_vendor_body\": request_body,\n\t\"continue\": false\n})",
+          "type": "preRequest"
+        }
+      ],
+      "parameters": [
+        {
+          "vendorType": "path",
+          "dataType": "string",
+          "name": "id",
+          "description": "The whatever ID",
+          "vendorDataType": "string",
+          "source": "request",
+          "type": "prevBodyField",
+          "vendorName": "id",
+          "required": true
+        },
+        {
+          "vendorType": "body",
+          "dataType": "object",
+          "name": "body",
+          "description": "The whatever object body",
+          "vendorDataType": "object",
+          "source": "request",
+          "type": "prevBody",
+          "vendorName": "body",
+          "required": false
+        }
+      ],
+      "rootKey": ""
+    },
+    {
+      "method": "GET",
+      "nextResource": "",
+      "description": "Second API Request which adds description",
+      "type": "apiNoDocumentation",
+      "vendorPath": "",
       "nextPageKey": "",
       "path": "/hubs/general/secondrequest",
       "paginationType": "VENDOR_SUPPORTED",
       "vendorMethod": "GET",
-      "method": "GET",
-      "nextResource": "",
       "response": {
         "contentType": "application/json"
       },
-      "description": "Second API Request which adds description",
-      "type": "apiNoDocumentation",
+      "operationId": "",
       "hooks": [
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "var response = {\n\t\"id\" : request_previous_response.id,\n\t\"description\": \"From second request\"\n};\n\ndone ({\n\t\"response_body\": response\n})",
+          "type": "postRequest"
+        },
         {
           "isLegacy": false,
           "mimeType": "application/javascript",
           "body": "done ({\n\"continue\": false\n})",
           "type": "preRequest"
+        }
+      ],
+      "rootKey": ""
+    },
+    {
+      "method": "GET",
+      "nextResource": "",
+      "description": "Second API Request which adds description",
+      "type": "apiNoDocumentation",
+      "vendorPath": "",
+      "nextPageKey": "",
+      "path": "/hubs/general/six",
+      "paginationType": "VENDOR_SUPPORTED",
+      "vendorMethod": "GET",
+      "response": {
+        "contentType": "application/json"
+      },
+      "operationId": "",
+      "hooks": [
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "var response = {\n\t\"id\": \"request_previous_response.id\",\n\t\"description\": \"From second request\"\n};\n\ndone ({\n\t\"response_body\": response\n})",
+          "type": "postRequest"
         },
         {
           "isLegacy": false,
           "mimeType": "application/javascript",
-          "body": "var response = {\n\t\"id\": request_previous_response.id,\n\t\"description\": \"From second request\"\n};\n\ndone ({\n\t\"response_body\": response\n})",
-          "type": "postRequest"
+          "body": "done ({\n\"continue\": false\n})",
+          "type": "preRequest"
         }
       ],
-      "vendorPath": ""
+      "rootKey": ""
     },
     {
+      "method": "GET",
+      "nextResource": "GET:/four",
+      "description": "Second API Request which adds description",
+      "type": "apiNoDocumentation",
+      "vendorPath": "",
       "nextPageKey": "",
       "path": "/hubs/general/three",
       "paginationType": "VENDOR_SUPPORTED",
       "vendorMethod": "GET",
-      "method": "GET",
-      "nextResource": "GET:/four",
       "response": {
         "contentType": "application/json"
       },
-      "description": "Second API Request which adds description",
-      "type": "apiNoDocumentation",
+      "operationId": "",
       "hooks": [
-        {
-          "isLegacy": false,
-          "mimeType": "application/javascript",
-          "body": "done ({\n\"continue\": false\n})",
-          "type": "preRequest"
-        },
         {
           "isLegacy": false,
           "mimeType": "application/javascript",
           "body": "var response = {\n\t\"id\": \"request_previous_response.id\",\n\t\"description\": \"From second request\"\n};\n\ndone ({\n\t\"response_body\": response\n})",
           "type": "postRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\"continue\": false\n})",
+          "type": "preRequest"
         }
       ],
-      "vendorPath": ""
+      "rootKey": ""
     },
     {
+      "method": "GET",
+      "nextResource": "GET:/three",
+      "description": "Second API Request which adds description",
+      "type": "apiNoDocumentation",
+      "vendorPath": "",
       "nextPageKey": "",
       "path": "/hubs/general/two",
       "paginationType": "VENDOR_SUPPORTED",
       "vendorMethod": "GET",
-      "method": "GET",
-      "nextResource": "GET:/three",
       "response": {
         "contentType": "application/json"
       },
-      "description": "Second API Request which adds description",
-      "type": "apiNoDocumentation",
+      "operationId": "",
       "hooks": [
-        {
-          "isLegacy": false,
-          "mimeType": "application/javascript",
-          "body": "done ({\n\"continue\": false\n})",
-          "type": "preRequest"
-        },
         {
           "isLegacy": false,
           "mimeType": "application/javascript",
           "body": "var response = {\n\t\"id\": \"request_previous_response.id\",\n\t\"description\": \"From second request\"\n};\n\ndone ({\n\t\"response_body\": response\n})",
           "type": "postRequest"
+        },
+        {
+          "isLegacy": false,
+          "mimeType": "application/javascript",
+          "body": "done ({\n\"continue\": false\n})",
+          "type": "preRequest"
         }
       ],
-      "vendorPath": ""
+      "rootKey": ""
     }
   ],
   "protocolType": "http",
