@@ -60,7 +60,7 @@ const createInstance = (element, config, providerData, baseApi) => {
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
-
+  console.log(instance);
   return cloud.post(baseApi, instance)
     .then(r => {
       expect(r).to.have.statusCode(200);

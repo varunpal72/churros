@@ -84,7 +84,7 @@ const waitFor = max => pred => new Promise((res, rej) => {
       .then(r => res(r))
       .catch(e => {
         if (ms - 3000 < 0) {
-          rej(e || `Predicate was not true within the maximum time allowed of ${max} ms.`);
+          return rej(e || `Predicate was not true within the maximum time allowed of ${max} ms.`);
         }
         setTimeout(doit, 3000, ms - 3000); });
   };

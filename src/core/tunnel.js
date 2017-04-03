@@ -15,6 +15,8 @@ exports.start = (port) => {
   logger.debug('Attempting to start up ngrok on port %s', port);
   return new Promise((res, rej) => {
     const opts = (typeof port === 'object') ? port : { port: port };
+    opts.authtoken = '9jhfbZdnDEypqMwe1rhm_7DbEiLoK9Peam7eHQWoF6';
+    opts.subdomain = 'churros';
     ngrok.connect(opts, (err, url) => {
       if (err) {
         logger.error('Failed to startup ngrok on port %s.  Do you already have an ngrok tunnel running?  If so, please close that tunnel to run tests, or fork over some $ to ngrok, your choice.', port);
