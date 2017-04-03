@@ -5,6 +5,7 @@ const expect = require('chakram').expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
 const tools = require('core/tools');
+const defaults = require('core/defaults');
 const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
@@ -31,12 +32,28 @@ before(() => {
   }
   return tools.runFile(element, `${__dirname}/${element}/assets/scripts.js`, 'before')
   .then(() => {
-    return provisioner
-      .create(element)
+    let getInstance;
+    if (argv.instance) {
+      getInstance = cloud.get(`/instances/${argv.instance}`)
+      .then(r => {
+        defaults.token(r.body.token);
+        return r;
+      })
+    } else {
+      getInstance = provisioner
+        .create(element)
+    }
+
+    return getInstance
       .then(r => {
         expect(r).to.have.statusCode(200);
+        expect(r.body.element.key).to.equal(tools.getBaseElement(element));
+        // console.log(r.body);
         instanceId = r.body.id;
         element = tools.getBaseElement(element);
+        return r;
+      })
+      .then(r => {
         // object definitions file exists? create the object definitions on the instance
         const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
         if (fs.existsSync(objectDefinitionsFile + '.json')) {
@@ -61,7 +78,8 @@ before(() => {
               return accum;
             }, {});
 
-          return createAll(url, objectDefinitions);
+          return createAll(url, objectDefinitions)
+          .catch(() => {});
         }
       })
       .then(r => {
@@ -70,11 +88,12 @@ before(() => {
         if (fs.existsSync(transformationsFile + '.json')) {
           logger.debug('Setting up transformations');
           const url = `/instances/${instanceId}/transformations/%s`;
-          return createAll(url, require(transformationsFile));
+          return createAll(url, require(transformationsFile))
+          .catch(() => {});
         }
       })
       .catch(r => {
-        return instanceId ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
+        return instanceId && !argv.instance ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
       });
     });
 });
@@ -115,7 +134,7 @@ it.skip('should not allow provisioning with bad credentials', () => {
      });
 });
 after(done => {
-  instanceId ? provisioner
+  instanceId && !argv.instance ? provisioner
         .delete(instanceId)
         .then(() => done())
         .catch(r => logger.error('Failed to delete element instance: %s', r))

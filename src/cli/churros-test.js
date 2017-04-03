@@ -26,7 +26,8 @@ const fromOptions = (url, options) => {
       browser: options.browser,
       verbose: options.verbose === undefined ? false : options.verbose, // hack...i can't figure out why it's not default to false
       externalAuth: options.externalAuth,
-      exclude: options.exclude
+      exclude: options.exclude,
+      instance: options.instance
     });
   });
 };
@@ -94,6 +95,7 @@ const run = (suite, options, cliArgs) => {
   if (cliArgs.verbose) args += ` --verbose ${cliArgs.verbose}`;
   if (cliArgs.browser) args += ` --browser ${cliArgs.browser}`;
   if (cliArgs.externalAuth) args += ` --externalAuth`;
+  if (cliArgs.instance) args += ` --instance ${cliArgs.instance}`;
 
   // loop over each element, constructing the proper paths to pass to mocha
   let cmd = "";
@@ -109,7 +111,6 @@ const run = (suite, options, cliArgs) => {
       console.log('Invalid suite: %s', suite);
       process.exit(1);
     }
-
     // add the suite next, unless a specific file was passed
     if (file.length < 1) allMochaPaths.push(testPath);
     else {
@@ -156,6 +157,7 @@ commander
   .option('-s, --exclude <resource>', 'element(s) or platform resource(s) to exclude if running all tests', collect, [])
   .option('-S, --start <suite>', 'specific suite to start with, everything before this will be skipped')
   .option('-V, --verbose', 'logging verbose mode')
+  .option('-I, --instance <instance>', 'instance to run tests on')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
