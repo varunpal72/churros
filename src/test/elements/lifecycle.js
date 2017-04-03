@@ -38,17 +38,16 @@ before(() => {
       .then(r => {
         defaults.token(r.body.token);
         return r;
-      })
+      });
     } else {
       getInstance = provisioner
-        .create(element)
+        .create(element);
     }
 
     return getInstance
       .then(r => {
         expect(r).to.have.statusCode(200);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
-        // console.log(r.body);
         instanceId = r.body.id;
         element = tools.getBaseElement(element);
         return r;
