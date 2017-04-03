@@ -102,4 +102,12 @@ suite.forElement('documents', 'files', (test) => {
       .then(r => expect(r).to.be.true)
       .then(r => cloud.delete('/hubs/documents/files/' + fileId));
   });
+
+  it('should return 404 for files/metadata when file does not exist', () => {
+    let path = __dirname + '/assets/file.txt';
+    return cloud.postFile('/hubs/documents/files', path, { qs: query })
+      .then(r => { fileId = r.body.id, filePath = r.body.path; })
+      .then(r => cloud.delete('/hubs/documents/files/' + fileId))
+      .then(r => cloud.withOptions({ qs: { path: filePath }}).get('/hubs/documents/files/metadata', (r) => expect(r).to.have.statusCode(404)));
+  });
 });
