@@ -37,6 +37,7 @@ before(() => {
       getInstance = cloud.get(`/instances/${argv.instance}`)
       .then(r => {
         defaults.token(r.body.token);
+        expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         return r;
       });
     } else {
@@ -47,12 +48,9 @@ before(() => {
     return getInstance
       .then(r => {
         expect(r).to.have.statusCode(200);
-        expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         instanceId = r.body.id;
         element = tools.getBaseElement(element);
-        return r;
-      })
-      .then(r => {
+
         // object definitions file exists? create the object definitions on the instance
         const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
         if (fs.existsSync(objectDefinitionsFile + '.json')) {
