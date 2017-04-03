@@ -7,5 +7,14 @@
         "vendorPath": "id"
       }
     ]
-  }
+  },
+    "organizations": {
+      "vendorName": "organizations",
+      "fields": [
+        {
+          "path": "id",
+          "vendorPath": "id"
+        }
+      ]
+    }
 }
