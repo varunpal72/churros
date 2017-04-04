@@ -14,7 +14,7 @@ const options = {
 
 suite.forElement('payment', 'reports', { payload: payload }, (test) => {
 
-  it('should allow retrieval of reports and change status to reiumbursed', () => {
+  it(`should allow CS for /reports and PATCH for /{test.api}/:reportId/status-reimbursed`, () => {
     return cloud.withOptions(options).get('/hubs/payment/reports')
       .then(r => cloud.post(test.api, payload))
       .then(r => {
