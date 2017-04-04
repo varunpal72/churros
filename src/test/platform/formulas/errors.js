@@ -211,12 +211,15 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
   });
 
     it('should disable the formula instance if it exceeds the thresholds', () => {
+        var startingNotifications;
         const execValidator = (executions, fId, fiId) => {
             return cloud.get(`/formulas/${fId}/instances/${fiId}`)
                 .then(r => {
                     expect(r.body.active).to.be.false;
                     expect(r.body.numberConsecutiveErrors).to.equal(101);
-                });
+                })
+                .then(r => cloud.get('/notifications?topics[]=threat-level-midnight'))
+                .then(r => expect(r.body.length - startingNotifications).to.equal(2));
         };
 
         const triggerCb = (fId, fiId) => {
@@ -227,17 +230,23 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
                 .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, {foo: 'bar'}));
         };
 
-        return testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb);
+        return cloud.get('/notifications?topics[]=threat-level-midnight')
+            .then(r => startingNotifications = r.body.length)
+            .then(r => testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb));
     });
 
     it('should alert the owner of the formula instance if it exceeds 50% of the threshold', () => {
+        var startingNotifications;
         const execValidator = (executions, fId, fiId) => {
             return cloud.get(`/formulas/${fId}/instances/${fiId}`)
                 .then(r => {
+                    console.log("this is the start: " + startingNotifications);
                     expect(r.body.active).to.be.true;
                     expect(r.body.numberConsecutiveErrors).to.equal(51);
                     expect(r.body.numberConsecutiveErrorWarningNotifications).to.equal(1);
-                });
+                })
+                .then(r => cloud.get('/notifications?topics[]=threat-level-midnight'))
+                .then(r => expect(r.body.length - startingNotifications).to.equal(2));
         };
 
         const triggerCb = (fId, fiId) => {
@@ -248,6 +257,8 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
                 .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, {foo: 'bar'}));
         };
 
-        return testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb);
+        return cloud.get('/notifications?topics[]=threat-level-midnight')
+            .then(r => startingNotifications = r.body.length)
+            .then(r => testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb));
     });
 });
