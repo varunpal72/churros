@@ -14,10 +14,25 @@ const cloud = require('core/cloud');
 
 var exports = module.exports = {};
 
+const genInstance = (config) =>
+  ({
+    name: config.name,
+    element: { key: config.element },
+    configuration: config.ec
+  });
+
 const genConfig = (props, args) => {
-  const config = props;
-  if (args) Object.keys(args).forEach(k => config[k] = args[k]);
-  return config;
+  const config = Object.assign({}, props, args);
+
+  const name = (args && args.name) ? args.name : 'churros-instance';
+  const tags = (args && args.tags) ? args.tags : undefined;
+  delete config.name;
+
+  return {
+    ec: config,
+    name: name,
+    tags: tags
+  };
 };
 
 const parseProps = (element) => {
@@ -39,11 +54,9 @@ const parseProps = (element) => {
 };
 
 const createInstance = (element, config, providerData, baseApi) => {
-  const instance = {
-    name: 'churros-instance',
-    element: { key: element },
-    configuration: config
-  };
+  config.element = tools.getBaseElement(element);
+  const instance = genInstance(config);
+
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
@@ -69,6 +82,7 @@ const createExternalInstance = (element, config, providerData) => {
   if (!tokenUrl) {
     throw Error("Token URL must be present in the element props as 'tokenUrl'");
   }
+  let instanceElement = tools.getBaseElement(element);
 
   return new Promise((res, rej) => {
     r.post({
@@ -85,7 +99,7 @@ const createExternalInstance = (element, config, providerData) => {
       let refreshToken = body.refresh_token;
       instanceBody = {
         "element": {
-          "key": element
+          "key": instanceElement
         },
         "configuration": {
           "oauth.user.refresh_token": refreshToken,
@@ -104,7 +118,8 @@ const createExternalInstance = (element, config, providerData) => {
 };
 
 const oauth = (element, args, config) => {
-  const url = `/elements/${element}/oauth/url`;
+  let urlElement = tools.getBaseElement(element);
+  const url = `/elements/${urlElement}/oauth/url`;
   logger.debug('GET %s with options %s', url, args.options);
   return cloud.withOptions(args.options).get(url)
     .then(r => {
@@ -157,19 +172,20 @@ const oauth1 = (element, args) => {
 const orchestrateCreate = (element, args, baseApi, cb) => {
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
+  config.element = element;
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
 
   switch (type) {
     case 'oauth1':
     case 'oauth2':
-      config['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
+      config.ec['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
         props.get('oauth.callback.url') :
         props.getForKey(element, 'oauth.callback.url');
-      logger.debug('Using callback URL: ' + config['oauth.callback.url']);
+      logger.debug('Using callback URL: ' + config.ec['oauth.callback.url']);
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
-        .then(r => oauth(element, r, config))
+        .then(r => oauth(element, r, config.ec))
         .then(r => cb(type, config, r));
     case 'custom':
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
@@ -181,7 +197,7 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
 
 /**
  * Provision an element using just the partial OAuth flow.
- * @param {tring} element The element key
+ * @param {string} element The element key
  * @param {Object} args Any other args to pass when provisioning the element
  * @param {string} baseApi The base API
  * @return {Promise}  A promise that will resolve to the response after the partial OAuth flow is complete
@@ -199,7 +215,7 @@ exports.create = (element, args, baseApi) => {
   const cb = (type, config, r) => {
     const external = props.getOptionalForKey(element, 'external');
 
-    if (external && type === 'oauth2') return createExternalInstance(element, config, r);
+    if (external && type === 'oauth2') return createExternalInstance(element, config.ec, r);
     if (external && type === 'oauth1') throw Error('External Authentication via churros is not yet implemented for OAuth1');
 
     return createInstance(element, config, r, baseApi);
@@ -218,7 +234,10 @@ exports.delete = (id, baseApi) => {
   if (!id) return;
 
   baseApi = (baseApi) ? baseApi : '/instances';
-  return cloud.delete(`${baseApi}/${id}`)
+  // when running the delete API, don't include the element token in the auth header
+  const {userSecret, orgSecret} = defaults.secrets();
+  const headers = {Authorization: `User ${userSecret}, Organization ${orgSecret}`};
+  return cloud.withOptions({headers}).delete(`${baseApi}/${id}`)
     .then(r => {
       logger.debug(`Deleted element instance with ID: ${id}`);
       defaults.reset();

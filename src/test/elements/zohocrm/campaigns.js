@@ -17,4 +17,5 @@ suite.forElement('crm', 'campaigns', { payload: contactsPayload }, (test) => {
   };
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
+  test.should.supportCeqlSearchForMultipleRecords('Description');
 });

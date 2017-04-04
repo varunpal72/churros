@@ -164,6 +164,12 @@
       "type": "string"
     }]
   },
+  "credit-terms": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "dimensions": {
     "fields": [{
       "path": "id",
@@ -200,6 +206,18 @@
       "type": "string"
     }]
   },
+  "eloquaCustomObject": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "name",
+      "type": "string"
+    }, {
+      "path": "email",
+      "type": "string"
+    }]
+  },
   "employees": {
     "fields": [{
       "path": "id",
@@ -222,6 +240,12 @@
     }]
   },
   "incidents": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "incident-types": {
     "fields": [{
       "path": "id",
       "type": "string"
@@ -278,7 +302,7 @@
       "type": "string"
     }, {
       "path": "name",
-      "type": "Name"
+      "type": "string"
     }, {
       "path": "accountId",
       "type": "string"
@@ -667,6 +691,12 @@
       "type": "string"
     }]
   },
+  "tax-codes": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "time-activities": {
     "fields": [{
       "path": "id",
@@ -722,6 +752,12 @@
     }]
   },
   "serialized-assembly-items": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "friendships": {
     "fields": [{
       "path": "id",
       "type": "string"
@@ -852,15 +888,109 @@
       }
     ]
   },
+  "payroll-items": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "activity-events": {
     "fields": [{
-        "path": "id",
-        "type": "string"
-      },
-      {
-        "path": "subject",
-        "type": "string"
-      }
-    ]
-  }
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "subject",
+      "type": "string"
+    }]
+  },
+  "contactS": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "Fairsail": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "bulky": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "company": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "invoiceitem": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "planview": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "channels": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "pages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "messages": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "installedProducts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "orderParts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "workOrders": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "serviceContracts": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "custom-records": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "stacks": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ }
 }

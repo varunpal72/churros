@@ -14,13 +14,13 @@ suite.forElement('helpdesk', 'contacts', { payload: contactsPayload }, (test) =>
     return cloud.get(`/hubs/helpdesk/ping`);
   });
 
+  test.should.supportPagination();
   it('should allow CRUDS /hubs/helpdesk/contacts ', () => {
     let contactId;
     return cloud.post(test.api, payload)
       .then(r => contactId = r.body.Id)
       .then(r => cloud.get(`${test.api}/${contactId}`))
       .then(r => cloud.get(test.api))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
       .then(r => cloud.withOptions({ qs: { where: `id='${contactId}'` } }).get(test.api))
       .then(r => cloud.patch(`${test.api}/${contactId}`, contactsPayload))
       .then(r => cloud.delete(`${test.api}/${contactId}`));

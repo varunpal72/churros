@@ -38,10 +38,10 @@ suite.forElement('finance', 'contacts', { payload: payload() }, (test) => {
   it(`should allow PATCH for ${test.api}/{id}`, () => {
     let customerId;
     return cloud.post(test.api, payload())
-    .then(r => customerId = r.body.id)
-    .then(r => cloud.patch(`${test.api}/${customerId}`, contactsPatch))
-    .then(r => cloud.delete(`${test.api}/${customerId}`));
+      .then(r => customerId = r.body.id)
+      .then(r => cloud.patch(`${test.api}/${customerId}`, contactsPatch))
+      .then(r => cloud.delete(`${test.api}/${customerId}`));
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'status = \'active\'' }}).should.return200OnGet();
+  test.withName('should support status Ceql search').withOptions({ qs: { where: 'status = \'active\'' } }).should.return200OnGet();
 });

@@ -1,0 +1,18 @@
+{
+  "line": [{
+    "detailType": "SALES_ITEM_LINE_DETAIL",
+    "amount": 80,
+    "salesItemLineDetail": {
+
+      "itemRef": {
+        "name": "Deferred Revenue",
+        "value": "448"
+      }
+
+    }
+  }],
+  "customerRef": {
+    "name": "lg sam",
+    "value": "1924"
+  }
+}

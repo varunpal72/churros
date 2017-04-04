@@ -1,29 +1,30 @@
 {
   "accounts": {
-    "vendorName": "companies",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "vendorName": "accounts",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "customer.id"
+    }]
   },
   "incidents": {
-    "vendorName": "tickets",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "vendorName": "incidents",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "contacts": {
     "vendorName": "contacts",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "agents": {
+    "vendorName": "agents",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   }
 }

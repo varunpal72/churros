@@ -454,6 +454,22 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
   });
 
+  it('should return any console.log statements on a script step that fails', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        const ses = e.stepExecutions;
+        expect(ses).to.have.length(3);
+        ses.filter(se => se.stepName === 'bad-script-step').map(validateErrorStepExecution);
+
+        const consolidated = consolidateStepExecutionValues(ses);
+        expect(consolidated['bad-script-step.error']).to.contains('This is an invalid script step');
+        expect(consolidated['bad-script-step.console']).to.contains('print');
+      });
+    };
+
+    return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
+  });
+
   it('should show a successful execution, even if the last step is a filter step that returns false', () => eventTriggerTest('filter-returns-false', 1, 2));
 
   it('should support a manual trigger type on a formula', () => {
@@ -539,6 +555,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
   it('should successfully execute a elementRequestStream step in a formula', () => {
     const configuration = { source: sfdcId, target: sfdcId, 'object.name': 'contacts' };
+    let bulkUploadId;
     const validator = (executions) => {
       const bulkTransferStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'bulkTransfer');
       const bulkTransferStepExecutionValues = bulkTransferStepExecutions[0].stepExecutionValues;
@@ -559,6 +576,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.upload.response.body').map(sev => {
         const sevJSON = JSON.parse(sev.value);
         expect(sevJSON.status).to.equal('CREATED');
+        bulkUploadId = sevJSON.id;
       });
     };
 
@@ -566,15 +584,22 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     return cloud.post('/hubs/crm/contacts', { LastName: 'Churros' })
       .then(r => contactId = r.body.Id)
-      .then(r => cloud.withOptions({ qs: { q: `select FirstName, LastName from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
+      .then(r => cloud.withOptions({ qs: { q: `select FirstName, LastName, Id from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
-      .then(r => tools.wait.upTo(10000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(20000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
       })))
       .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator))
+      .then(r => tools.wait.upTo(20000).for(() => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED');
+      })))
+      .then(r => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/errors`))
+      .then(r => {
+        expect(r.body.length).to.equal(0);
+      })
       .then(r => cloud.delete(`/hubs/crm/contacts/${contactId}`));
   });
 });

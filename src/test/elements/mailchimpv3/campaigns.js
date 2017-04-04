@@ -11,7 +11,7 @@ const updatePayload = () => ({
   "type": "regular",
   "settings": {
     "subject_line": "Churros Update",
-    "reply_to": "churros@example.com",
+    "reply_to": "churros@cloud-elements.com",
     "from_name": "Senor Churro"
   }
 });
