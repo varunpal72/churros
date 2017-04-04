@@ -1,0 +1,30 @@
+{
+  "accounts": {
+    "vendorName": "accounts",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "ObjectID"
+    }]
+  },
+  "contacts": {
+    "vendorName": "contacts",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "ObjectID"
+    }]
+  },
+  "comments": {
+    "vendorName": "comments",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "ObjectID"
+    }]
+  },
+  "incidents": {
+    "vendorName": "incidents",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "ObjectID"
+    }]
+  }
+}
