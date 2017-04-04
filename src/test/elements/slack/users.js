@@ -1,10 +1,57 @@
 'use strict';
 
+const tools=require('core/tools');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/users');
 
-suite.forElement('collaboration', 'channels', payload, (test) => {
-  test.should.supportCruds();
-  
+suite.forElement('collaboration', 'users', payload, (test) => {
+it(`should allow PATCH /{test.api}-active`,()=>{
+  return cloud.get(test.api)
+  .then (r => cloud.patch(`${test.api}-active`));
+});
+test.withApi(test.api).withOptions({qs:{'where' : 'presence ="1"'}}).should.return200OnGet();
+test.withApi(test.api).should.supportPagination();
+
+/*  This test fails due to requirement of 'identity.basic' scope, that does not go with other scopes. */
+it(`should allow GET /{test.api}-identity`,()=>{
+  return cloud.get(`${test.api}-identity`);
+});
+
+// test for patch /users-presence
+let userPresencePayload={
+  'presence':'auto'
+};
+
+// test for patch /users-presence
+it(`should allow PATCH /{test.api}-presence`,()=>{
+  return cloud.patch(`${test.api}-presence`,userPresencePayload);
+});
+
+// test for patch /users-profile
+let userProfilePayload={
+  'name':'first_name',
+  'value':tools.randomStr()
+};
+// test for patch /users-profile
+it(`should allow PATCH /{test.api}-profile`,()=>{
+  return cloud.patch(`${test.api}-profile`,userProfilePayload);
+});
+
+// test for get /users/messages
+it(`should allow GET /{test.api}/messages`,()=>{
+  return cloud.get(`${test.api}/messages`);
+});
+test.withApi(`${test.api}/messages`).withOptions({qs:{'group' : true}}).should.return200OnGet();
+test.withApi(`${test.api}/messages`).should.supportPagination();
+
+// test for get /users/{userId} related apis
+let userId='';
+it(`should allow GET /{test.api}/:userId/`,()=>{
+  return cloud.get(test.api)
+  .then(r=> userId=r.body[0].id)
+  .then(r=> cloud.get(`${test.api}/${userId}`))
+  .then(r=> cloud.get(`${test.api}/${userId}`)+'presence')
+  .then(r=> cloud.get(`${test.api}/${userId}`)+'profile');
+});
 });

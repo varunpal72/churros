@@ -77,7 +77,7 @@ before(() => {
 });
 
 // skipped for now because so many fail - remove the skip when fixed
-it.skip('should not allow provisioning with bad credentials', () => {
+it('should not allow provisioning with bad credentials', () => {
   const config = props.all(element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const passThrough = (r) => r;

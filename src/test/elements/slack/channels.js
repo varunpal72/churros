@@ -2,76 +2,67 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const createPayload = { name: 'churros-test-channel'};
 
-suite.forElement('collaboration', 'channels', { payload: createPayload }, (test) => {
-  // check create and retrieve for public channels
-  test.withOptions({skip:true}).should.return200OnPost();
-  test.should.supportSr();
-  // check create and retrieve for private channels
-  test.withOptions({skip:true, qs: {private: true}}).should.return200OnPost();
-  test.withOptions({ qs: {private: true}}).should.supportSr();
+suite.forElement('collaboration', 'channels', (test) => {
+  //test for GET channels
+ test.should.return200OnGet();
+  test.should.supportPagination();
+
+//tests for /messages apis
+let channelId, timestamp;
+let channelMessage= {'text' : 'How are you' };
+let createPayload = { 'name': 'Dave McKay'+ Date.parse(new Date())/10000};  // to get a unique channel name
+ it.skip(`should allow CUD /{test.api}/messages`, () => {
+    return cloud.withOptions({qs: {private: true}}).post(test.api,createPayload)
+    .then(r=> channelId = r.body.channel.id)
+    .then(r => cloud.post(`${test.api}/${channelId}/messages`,channelMessage))  // test for POST channels/{channelId}/messages
+    .then(r=> timestamp = r.body.ts)
+    .then(r => cloud.patch(`${test.api}/${channelId}/messages`,{'ts' : timestamp, 'text' : 'Hey Guys'})) // test for PATCH channels/{channelId}/messages
+    .then(r => cloud.delete(`${test.api}/${channelId}/messages/${timestamp}`)); //test for delete channels/{channelId}/messages/{timestamp}
+  });
+
+  // test for invite, kick, my-messages and history
+    let inviteUser= {'users': ''};
+    it(`should allow GET /{test.api}`,() => {
+        return cloud.get(`users`)
+      .then(r => inviteUser.user = r.body[1].id );  //get a user
+    });
+      it(`should allow CD {test.api}/:channelId/user`, () => {
+      return  cloud.withOptions({qs: {private: true}}).post(`${test.api}/${channelId}/user`,inviteUser) // test for POST channels/{channelId}/user
+      .then(r => cloud.withOptions({qs: {private: true}}).delete(`${test.api}/${channelId}/user/${inviteUser.user}`)); // test for delete channels/{channelId}/user/{userId}
+      });
+
+it.skip(`should allow POST /{test.api}/:channelId/my-messages api`, () => {
+   cloud.withOptions({qs: {private: true}}).post(`${test.api}/${channelId}/my-messages`,{'text' : 'Hello'}); // test for POST channels/{channelId}/my-messages
+ });
+
+ it(`should allow GET /{test.api}/:channelId/history api`, () => {
+   cloud.withOptions({qs: {private: true}}).get(`${test.api}/${channelId}/history`);
+  });
+  test.withApi(`${test.api}/${channelId}/history`).should.supportPagination();
+  test.withApi(`${test.api}/${channelId}/history`).withOptions({qs : { 'where' : 'count = 1 '}}).should.return200OnGet();
+
   // define all supported actions and payloads
   const actions = [
-    {action: 'rename', name: 'churros-check'},
-    {action: 'purpose', purpose: 'eat yummy churros'},
-    {action: 'topic', name: 'tasty desserts'},
-    {action: 'archive'},
-    {action: 'unarchive'},
-    {action: 'leave'},
-    {action: 'join', name: 'churros-check'},
-    {action: 'read', ts: 1412341512.123410},
-    {action: 'rename', name: 'churros-test-channel'}
+ {'action': 'join', 'name': ''},
+  {'action': 'read', 'ts': Date.parse(new Date())},
+   {'action': 'leave'},
+    {'action': 'archive'}
   ];
-
-  // define test template for each action
-  let actionTest = function (testName, channelId, payload, privateChannel){
-    it(testName, () => {
-      return cloud.withOptions({qs: {private: privateChannel}}).update(`${test.api}/` + channelId + '/actions', payload);
-    });
-  };
-  // save channelId outside other calls
-  let churrosChannelId = '';
-  // retrieve
-  it('should retrieve or create churros-test-channel', () => {
-    return cloud.get(test.api)
-    .then(response => response.body.filter(channel => channel.name === 'churros-test-channel'))
-    .then(channels => {
-      // console.log(channels);
-      if (channels.length > 0) {return channels[0];}
-      else {return cloud.post(test.api, createPayload);}
-    })
-    .then(channel => {
-      churrosChannelId = channel.id;
-    });
-  });
-  // call test function for each public channel action
-  actions.forEach(action => actionTest(action.testName, churrosChannelId, action.payload, false));
-
-  // define additional private channel actions
-  const privateActions = [
-    {action: "close"},
-    {action: "open"}
+  const actions2=[
+    {'action': 'unarchive'},
+    {'action': 'rename', 'name': 'churros-check'+Date.parse(new Date())/10000},
+    {'action': 'purpose','purpose': 'eat yummy churros'},
+ {'action': 'topic','topic': 'tasty desserts'},
+ {'action': 'leave'}
   ];
-  // call test function for each private channel action
-  actions.forEach(action => actionTest(action.testName, churrosChannelId, action.payload, true));
-  privateActions.forEach(action => actionTest(action.testName, churrosChannelId, action.payload, true));
-
-  // Check to return history
-  it('should retrieve history for public channels', () => {
-    return cloud.get(`${test.api}/` + churrosChannelId + `/history`);
+  it(`should allow GET /{test.api}`, () => {
+     return cloud.withOptions({qs: {private: true}}).get(test.api)
+     .then(r => actions[0].name = r.body[0].id );  //get a user for 'actions' apis
   });
-  it('should retrieve history for private channels', () => {
-    return cloud.withOptions({qs: {private: true}}).get(`${test.api}/` + churrosChannelId + `/history`);
-  });
-
-  // check to invite and kick a user
-  it('should invite a user to a channel', () => {
-    return cloud.get(`/users`);
-    //get all channels
-    // save user number from channel (that is NOT creator)
-    // kick out of channel
-    // invite back to channel
-  });
+    it(`should allow PATCH /{test.api}/:channelId/actions`, () => {
+  actions.forEach( ac => (cloud.withOptions({qs: {private: true}}).patch(`${test.api}/${channelId}/actions`, ac)));
+  actions2.forEach( ac => (cloud.withOptions({qs: {private: true}}).patch(`${test.api}/${channelId}/actions`, ac)));
+      });
 
 });
