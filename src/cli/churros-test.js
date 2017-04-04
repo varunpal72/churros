@@ -157,7 +157,7 @@ commander
   .option('-s, --exclude <resource>', 'element(s) or platform resource(s) to exclude if running all tests', collect, [])
   .option('-S, --start <suite>', 'specific suite to start with, everything before this will be skipped')
   .option('-V, --verbose', 'logging verbose mode')
-  .option('-I, --instance <instance>', 'instance to run tests on')
+  .option('-i, --instance <instance>', 'instance to run tests on')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');

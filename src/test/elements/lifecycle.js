@@ -32,18 +32,13 @@ before(() => {
   }
   return tools.runFile(element, `${__dirname}/${element}/assets/scripts.js`, 'before')
   .then(() => {
-    let getInstance;
-    if (argv.instance) {
-      getInstance = cloud.get(`/instances/${argv.instance}`)
+    const getInstance = argv.instance ? cloud.get(`/instances/${argv.instance}`)
       .then(r => {
         defaults.token(r.body.token);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         return r;
-      });
-    } else {
-      getInstance = provisioner
+      }) : provisioner
         .create(element);
-    }
 
     return getInstance
       .then(r => {
