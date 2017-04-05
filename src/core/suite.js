@@ -10,6 +10,7 @@ const expect = chakram.expect;
 const cloud = require('core/cloud');
 const logger = require('winston');
 const tools = require('core/tools');
+const defaults = require('core/defaults');
 const request = require('request-promise');
 
 var exports = module.exports = {};
@@ -220,30 +221,30 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
 };
-const itSupportEvents = (name, api, options, validationCb, payload, object, element, path) => {
-  name = 'polling ' + object
+const itSupportPolling = (name, api, options, validationCb, payload, validateCb) => {
+  name = 'polling ' + api;
   boomGoesTheDynamite(name, () => {
-    var response;
-    // return tools.runFile(element, path, 'clearNgrok')
-    //   .then(() => cloud.withOptions(options).post(api, payload, validationCb))
-    //   .then(res => response = res.body)
-    //   .then(r => tools.wait.upTo(120000).for(() => tools.runFile(element, path, 'checkNgrok').then(validate)))
-    //   .then(() => {cloud.delete(`${api}/${response.id}`)})
-    // cloud.delete(`${api}/146156`)
-    // .catch(() => {})
-    // .then(() => {
-    //   console.log('test');
+    const baseUrl = defaults.getUrl();
+    //logs error then fails test
+    if (!defaults.getPolling()) logger.error('This element doesn\'t support polling')
+    expect(defaults.getPolling()).to.be.true;
 
-    // CLEAR ALL BEFORE TRYING TO TEST
-    return cloud.withOptions(options).post(api, payload, validationCb)
-      .then(res => response = res.body)
-      .then(r => tools.wait.upTo(120000).for(() => request('https://knappkeith.pythonanywhere.com/request/churros/?returnQueue').then(validate)))
-      .then(() => {cloud.delete(`${api}/${response.id}`)})
-    // })
-    function validate(res) {
-      expect(JSON.parse(res).count).to.be.above(0);
-      console.log('res', res);
-    }
+    if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?')
+    expect(baseUrl).to.exist;
+
+    const url = baseUrl + '?returnQueue';
+    logger.info('Testing polling may take up to 2 minutes');
+    const validate = validateCb && typeof validateCb === 'function' ? validateCb : (res) => expect(res.count).to.be.above(0);
+    let response;
+    const pay = typeof payload === 'function' ? payload() : payload
+    //clears the bin before creating and checking bin again
+    return request(url)
+    .then(() => pay)
+    .then(r => cloud.withOptions(options).post(api, r, validationCb))
+    .then(r => response = r.body)
+    .then(() => tools.wait.upTo(120000).for(() => request(url)
+      .then(r => validate(JSON.parse(r)))))
+    .then(() => cloud.delete(`${api}/${response.id}`))
   })
 }
 
@@ -293,7 +294,12 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test.should
      */
     return200OnGet: () => itGet(name, api, options, validationCb),
-    supportEvents: (pay, objects, element, path) => itSupportEvents(name, api, options, validationCb, pay, objects, element, path),
+    /**
+    * @param {object || Function} pay: The payload used to create a new object
+    * @param {Function} validate A validate funtion with `expects` to test response
+    * @memberof module:core/suite.test.should
+    */
+    supportPolling: (pay, validate) => itSupportPolling(name, api, options, validationCb, pay, validate),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.

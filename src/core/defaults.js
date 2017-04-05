@@ -67,3 +67,14 @@ exports.token = (token) => {
 };
 
 exports.secrets = () => ({userSecret, orgSecret});
+
+let url = null;
+exports.setUrl = (u) => url = u;
+exports.getUrl = () => url;
+
+let polling = false;
+let webhooks = false;
+exports.setPolling = (p) => polling = p;
+exports.getPolling = () => polling;
+exports.setWebhooks = (w) => webhooks = w;
+exports.getWebhooks = () => webhooks;
