@@ -1,38 +1,23 @@
 {
   "customers": {
-    "level": "instance",
     "vendorName": "customers",
-    "startDate": "2017-02-16 12:05:12.836478",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "CustomerID"
-      }
-    ],
-    "isLegacy": false
-  },
-  "products": {
-    "level": "instance",
-    "vendorName": "products",
-    "startDate": "2017-02-16 12:08:14.389293",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "ProductID"
-      }
-    ],
-    "isLegacy": false
+    "fields": [{
+      "path": "id",
+      "vendorPath": "CustomerID"
+    }]
   },
   "orders": {
-    "level": "instance",
     "vendorName": "orders",
-    "startDate": "2017-02-16 12:09:47.906778",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "OrderID"
-      }
-    ],
-    "isLegacy": false
+    "fields": [{
+      "path": "id",
+      "vendorPath": "OrderID"
+    }]
+  },
+  "products": {
+    "vendorName": "products",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "ProductID"
+    }]
   }
 }
