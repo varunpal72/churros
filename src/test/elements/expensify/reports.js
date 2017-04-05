@@ -14,12 +14,12 @@ const options = {
 
 suite.forElement('payment', 'reports', { payload: payload }, (test) => {
 
-   it(`should allow CS for /reports and PATCH for hub/payment/reports/reportId/status-reimbursed`, () => {
+   it(`should support CS for reports and PATCH /{test.api}/:reportID/status-reimbursed`, () => {
     return cloud.withOptions(options).get('/hubs/payment/reports')
       .then(r => cloud.post(test.api, payload))
       .then(r => {
         expect(r.body).to.not.be.empty;
-        return cloud.patch('/hubs/payment/reports/' + r.body.id + '/status-reimbursed');
+        return cloud.patch(`/hubs/payment/reports/${r.body.id}/status-reimbursed`);
       });
   });
 });
