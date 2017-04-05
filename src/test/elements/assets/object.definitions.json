@@ -992,5 +992,11 @@
      "path": "id",
      "type": "string"
    }]
+ },
+ "policies": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
  }
 }

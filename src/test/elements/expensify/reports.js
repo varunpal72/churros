@@ -2,6 +2,7 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const payload = require('./assets/reports');
 const expect = require('chakram').expect;
 
 const options = {
@@ -11,13 +12,14 @@ const options = {
   }
 };
 
-suite.forElement('payment', 'reports', {}, (test) => {
+suite.forElement('payment', 'reports', { payload: payload }, (test) => {
 
-  it('should allow retrieval of reports and change status to reiumbursed', () => {
+   it(`should support CS for reports and PATCH /{test.api}/:reportID/status-reimbursed`, () => {
     return cloud.withOptions(options).get('/hubs/payment/reports')
+      .then(r => cloud.post(test.api, payload))
       .then(r => {
         expect(r.body).to.not.be.empty;
-        return cloud.patch('/hubs/payment/reports/'+r.body[0].id+'/status-reimbursed');
+        return cloud.patch(`/hubs/payment/reports/${r.body.id}/status-reimbursed`);
       });
   });
 });
