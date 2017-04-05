@@ -43,5 +43,14 @@
         "vendorPath": "id"
       }
     ]
+  },
+  "customers": {
+    "vendorName": "ClientPortalUser",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
   }
 }
