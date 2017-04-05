@@ -2,24 +2,20 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/contacts');
-const cloud = require('core/cloud');
-const contactUpdate = () => ({
-  "firstName": "test_1"
-});
+const chakram = require('chakram');
 
 const options = {
   churros: {
-    updatePayload: contactUpdate()
+    updatePayload: {
+      "firstName": "test_1"
+    }
   }
 };
+
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
-  test.withOptions(options).should.supportCruds();
+  test.should.supportCruds(chakram.put);            //test put
+  test.withOptions(options).should.supportCruds();  //test patch
   test.should.supportPagination();
-  it(`should support PUT for contacts`, () => {
-    let contactId;
-    return cloud.post(test.api, payload)
-      .then(r => contactId = r.body.id)
-      .then(r => cloud.put(`${test.api}/${contactId}`, contactUpdate()))
-      .then(r => cloud.delete(`${test.api}/${contactId}`));
-  });
+  test.should.supportCeqlSearch('id');
+  test.withName('should allow email search').withOptions({ qs: { where: `email = 'Help@Connectwise.com'` } }).return200OnGet();
 });
