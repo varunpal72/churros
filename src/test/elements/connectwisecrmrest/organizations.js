@@ -5,11 +5,13 @@ const chakram = require('chakram');
 const payload = require('./assets/organizations');
 
 const options = {
-  churros: updatePayload: {
-    "identifier": "xyz10",
-    "name": "abc",
-    "billToCompany": {
-      "id": "644"
+  churros: {
+    updatePayload: {
+      "identifier": "xyz10",
+      "name": "abc",
+      "billToCompany": {
+        "id": "644"
+      }
     }
   }
 };
