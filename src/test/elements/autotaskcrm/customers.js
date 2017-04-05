@@ -15,9 +15,9 @@ suite.forElement('crm', 'customers', { payload: payload }, (test) => {
       .then(r => cloud.post(test.api, customerPayload))
       .then(r => customerId = r.body.id)
       .then(r => cloud.get(`${test.api}/${customerId}`))
-      .then(r => cloud.patch(`${test.api}/${customerId}`, customerPayload))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
-      .then(r => cloud.withOptions({ qs: { where: 'userName=\'churros@cloud-elements.com\'' } }).get(test.api));
+      .then(r => cloud.patch(`${test.api}/${customerId}`, customerPayload));
   });
+  test.withOptions({ qs: { where: 'userName=\'churros@cloud-elements.com\'' } }).should.return200OnGet();
+  test.should.supportPagination();
   test.should.supportNextPagePagination(1);
 });
