@@ -57,7 +57,7 @@ suite.forPlatform('element-extend', {}, (test) => {
 
     // Get accountOnly resources to see if the required resource is present
     it('should get accountOnly resources', () => {
-      return cloud.get(`elements/closeio/resources?accountOnly=true`)
+      return cloud.withOptions({ qs: { accountOnly: true } }).get(`elements/closeio/resources`)
         .then(r => {
           expect(r.body).to.not.be.empty;
           expect(r.body.length === 1).to.be.true;
@@ -103,8 +103,8 @@ suite.forPlatform('element-extend', {}, (test) => {
         let instance;
         return provisioner.create('closeio')
           .then(r => instance = r.body)
-          .then(() => cloud.get('hubs/crm/mynewcontacts?pageSize=1', (r) => expect(r).to.have.statusCode(200)))
-          .then(() => cloud.get('hubs/crm/contacts?pageSize=1', (r) => expect(r).to.have.statusCode(200)))
+          .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/mynewcontacts', (r) => expect(r).to.have.statusCode(200)))
+          .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/contacts', (r) => expect(r).to.have.statusCode(200)))
           .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'));
     });
 
@@ -120,7 +120,7 @@ suite.forPlatform('element-extend', {}, (test) => {
 
     // Get accountOnly resources to see if the 2 resource is present
     it('should get accountOnly resources', () => {
-      return cloud.get(`elements/closeio/resources?accountOnly=true`)
+      return cloud.withOptions({ qs: { accountOnly: true } }).get(`elements/closeio/resources`)
         .then(r => {
           expect(r.body).to.not.be.empty;
           expect(r.body.length === 2).to.be.true;
@@ -132,7 +132,7 @@ suite.forPlatform('element-extend', {}, (test) => {
         let instance;
         return provisioner.create('closeio')
           .then(r => instance = r.body)
-          .then(() => cloud.get('hubs/crm/contacts?pageSize=1', (r) => expect(r).to.have.statusCode(200)))
+          .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/contacts', (r) => expect(r).to.have.statusCode(200)))
           .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'));
     });
 
@@ -180,13 +180,13 @@ suite.forPlatform('element-extend', {}, (test) => {
         return cloud.post(`elements/closeio/resources/${newResourceId}/models`, newmodel)
           .then(() => provisioner.create('closeio'))
           .then(r => instance = r.body)
-          .then(() => cloud.get('hubs/crm/mynewcontacts?pageSize=1', (r) => expect(r).to.have.statusCode(200)))
+          .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/mynewcontacts', (r) => expect(r).to.have.statusCode(200)))
           .then(() => cloud.get('hubs/crm/objects/mynewcontacts/metadata'))
           .then(r => cloud.post(`instances/${instance.id}/objects/newtransformedcontacts/definitions`, objDefPayload))
           .then(r => cloud.post(`instances/${instance.id}/transformations/newtransformedcontacts`, transformationPayload))
           .then(r => cloud.get(`instances/${instance.id}/docs`, swaggerSchema))
           .then(r => cloud.get(`elements/${baseElement.id}/docs`, elementSwaggerSchema))
-          .then(() => cloud.get('hubs/crm/newtransformedcontacts?pageSize=1', (r) => expect(r).to.have.statusCode(200)))
+          .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/newtransformedcontacts', (r) => expect(r).to.have.statusCode(200)))
           .then(r => cloud.delete(`instances/${instance.id}/transformations/newtransformedcontacts`))
           .then(r => cloud.delete(`instances/${instance.id}/objects/newtransformedcontacts/definitions`))
           .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'));
