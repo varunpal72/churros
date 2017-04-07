@@ -987,6 +987,12 @@
       "type": "string"
     }]
   },
+  "prospects": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "stacks": {
    "fields": [{
      "path": "id",
