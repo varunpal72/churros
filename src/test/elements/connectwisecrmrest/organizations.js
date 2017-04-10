@@ -1,10 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const chakram = require('chakram');
 const payload = require('./assets/organizations');
-const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
 const cloud = require('core/cloud');
 const organizationUpdate = () => ({
   "identifier": "test_uChurros",
