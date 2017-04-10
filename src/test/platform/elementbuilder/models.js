@@ -5,6 +5,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const provisioner = require('core/provisioner');
 const oneModelElementJson = require('./assets/models/onemodel_element.json');
+const contactsMetadata = require('./assets/models/contacts_metadata.json');
 
 suite.forPlatform('element-model', {}, (test) => {
   let oneModelElement;
@@ -17,6 +18,9 @@ suite.forPlatform('element-model', {}, (test) => {
   it('should support calling combined/merged metadata for instance', () => {
       return cloud.get(`/hubs/general/objects/contacts/metadata`, (r) => {
           expect(r.body).to.not.be.empty;
+          expect(r.body.fields).to.be.array;
+          expect(r.body.fields).to.have.length(38);
+          expect(r.body).to.deep.equal(contactsMetadata);
       });
   });
 
