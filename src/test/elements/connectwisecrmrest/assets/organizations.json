@@ -1,5 +1,5 @@
 {
-  "identifier": "xyz10",
+  "identifier": "test_uChurros",
   "name": "xyz9",
   "status": {
     "name": "Active",
@@ -16,5 +16,12 @@
   "zip": "98765",
   "billToCompany": {
     "id": "644"
-  }
+  },
+  "customFields": [{
+    "numberOfDecimals": 0,
+    "id": 4,
+    "type": "Text",
+    "entryMethod": "EntryField",
+    "value": "test_Value"
+  }]
 }

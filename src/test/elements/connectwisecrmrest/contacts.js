@@ -17,5 +17,5 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();  //test patch
   test.should.supportPagination();
   test.should.supportCeqlSearch('id');
-  test.withName('should allow email search').withOptions({ qs: { where: `email = 'Help@Connectwise.com'` } }).return200OnGet();
+  test.withName('should allow email search').withOptions({ qs: { where: `email='Test'` } }).should.return200OnGet();
 });
