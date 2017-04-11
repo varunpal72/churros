@@ -188,7 +188,6 @@ exports.createExpression = (obj) => {
 
 exports.keysOnLevel = (obj) => {
   let out = Object.keys(obj)
-    .filter(key => typeof obj[key] !== 'object')
     .map(key => {
         let copy = JSON.parse(JSON.stringify(obj));
         delete copy[key];
