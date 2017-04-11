@@ -141,6 +141,7 @@ Josh,Wyse,2
     expect(modified).to.not.deep.equal(regular);
   });
   it('should throw error with bad path', () => {
-    expect(tools.requirePayload(`${__dirname}/assets/BadPath.json`)).to.throw(Error);
+    const fn = () => tools.requirePayload(`${__dirname}/assets/BadPath.json`);
+    expect(fn).to.throw(Error);
   });
 });

@@ -190,10 +190,6 @@ exports.createExpression = (obj) => {
 const fake = (str, startDelim, endDelim) => {
   startDelim = startDelim ? startDelim : '<<';
   endDelim = endDelim ? endDelim : '>>';
-  // if incoming str parameter is not provided, return error message
-  if (typeof str !== 'string' || str.length === 0) {
-    return 'string parameter is required!';
-  }
 
   // find first matching << and >>
   var start = str.search(startDelim);
@@ -220,8 +216,8 @@ const fake = (str, startDelim, endDelim) => {
 */
 exports.requirePayload = (path) => {
   if (fs.existsSync(path)) {
-    var str = JSON.stringify(require(path));
-    var payload = fake(str);
+    const str = JSON.stringify(require(path));
+    const payload = fake(str);
     return JSON.parse(payload);
   } else {
     throw new Error('Path is not valid');
