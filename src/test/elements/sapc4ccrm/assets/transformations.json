@@ -6,6 +6,13 @@
       "vendorPath": "ObjectID"
     }]
   },
+  "attachments": {
+    "vendorName": "attachments",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "ObjectID"
+    }]
+  },
   "contacts": {
     "vendorName": "contacts",
     "fields": [{
