@@ -1,6 +1,5 @@
 'use strict';
 
-const cloud = require('core/cloud');
 const suite = require('core/suite');
 
 suite.forElement('documents', 'folders/contents', (test) => {
