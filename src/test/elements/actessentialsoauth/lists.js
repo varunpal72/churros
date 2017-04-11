@@ -7,6 +7,7 @@ const payload = require('./assets/lists');
 payload.name += tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10);
 
 suite.forElement('crm', 'lists', { payload: payload }, (test) => {
+  test.should.getRequiredFields();
   test.should.supportCrds();
   test.should.supportPagination();
   test.withOptions({ qs: { where: 'name=\'Churros Test\'' } }).should.return200OnGet();

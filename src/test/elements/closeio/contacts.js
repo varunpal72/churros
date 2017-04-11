@@ -11,6 +11,7 @@ const gen = (opts) => {
     lead_id: (opts.lead_id),
     name: (opts.name || 'mr. churros ' + random),
     officeEmail: (opts.officeEmail || 'churros@churros.com')
+
   });
 };
 
@@ -22,7 +23,7 @@ suite.forElement('crm', 'contacts', { payload: gen() }, (test) => {
       .then(r => cloud.cruds(test.api, gen({ lead_id: accountId })))
       .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
-
+  test.should.getRequiredFields(() => cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' }).then(r => gen({ lead_id: r.body.id })));
   test.should.supportPagination();
   test.should.return404OnGet(-1);
   test.should.return404OnPatch(-1);

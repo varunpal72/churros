@@ -5,6 +5,7 @@ const cloud = require('core/cloud');
 const payload = require('./assets/opportunities');
 
 suite.forElement('crm', 'opportunities', { payload: payload }, (test) => {
+  test.should.getRequiredFields();
   test.should.supportCruds();
   test.should.supportPagination();
   test.should.supportCeqlSearchForMultipleRecords('title');
