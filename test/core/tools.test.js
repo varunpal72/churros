@@ -130,4 +130,17 @@ Josh,Wyse,2
     const where = `firstName = 'Austin' AND lastName = 'Mahan' AND id = '12'`;
     expect(tools.createExpression(obj)).to.equal(where);
   });
+  it('should require a JSON payload with no changes', () => {
+    const regular = require(`${__dirname}/assets/test.json`);
+    const modified = tools.requirePayload(`${__dirname}/assets/test.json`);
+    expect(modified).to.deep.equal(regular);
+  });
+  it('should require a JSON payload with changes', () => {
+    const regular = require(`${__dirname}/assets/testPayload.json`);
+    const modified = tools.requirePayload(`${__dirname}/assets/testPayload.json`);
+    expect(modified).to.not.deep.equal(regular);
+  });
+  it('should throw error with bad path', () => {
+    expect(tools.requirePayload(`${__dirname}/assets/BadPath.json`)).to.throw(Error);
+  });
 });

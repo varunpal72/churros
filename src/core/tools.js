@@ -7,6 +7,7 @@
 const logger = require('winston');
 const sleep = require('sleep');
 const fs = require('fs');
+const faker = require('faker');
 
 var exports = module.exports = {};
 
@@ -184,4 +185,45 @@ exports.createExpression = (obj) => {
     where += typeof obj[key] === 'string' ? `${key} = '${obj[key]}'` : `${key} = ${obj[key]}`;
   });
   return where;
+};
+
+const fake = (str, startDelim, endDelim) => {
+  startDelim = startDelim ? startDelim : '<<';
+  endDelim = endDelim ? endDelim : '>>';
+  // if incoming str parameter is not provided, return error message
+  if (typeof str !== 'string' || str.length === 0) {
+    return 'string parameter is required!';
+  }
+
+  // find first matching << and >>
+  var start = str.search(startDelim);
+  var end = str.search(endDelim);
+
+  // if no << and >> is found, we are done
+  if (start === -1 && end === -1) {
+    return str;
+  }
+
+  var token = str.substr(start + 2,  end - start - 2);
+  var method = token.replace(endDelim, '').replace(startDelim, '');
+  var result = faker.fake(`{{${method}}}`);
+
+  str = str.replace(startDelim + token + endDelim, result);
+
+  // return the response recursively until we are done finding all tags
+  return fake(str, startDelim, endDelim);
+};
+
+/**
+* interpolates with random data use random data like '<<name.firstName>>'
+* look at https://github.com/marak/Faker.js/ for complete list
+*/
+exports.requirePayload = (path) => {
+  if (fs.existsSync(path)) {
+    var str = JSON.stringify(require(path));
+    var payload = fake(str);
+    return JSON.parse(payload);
+  } else {
+    throw new Error('Path is not valid');
+  }
 };
