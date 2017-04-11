@@ -192,17 +192,17 @@ const fake = (str, startDelim, endDelim) => {
   endDelim = endDelim ? endDelim : '>>';
 
   // find first matching << and >>
-  var start = str.search(startDelim);
-  var end = str.search(endDelim);
+  const start = str.search(startDelim);
+  const end = str.search(endDelim);
 
   // if no << and >> is found, we are done
   if (start === -1 && end === -1) {
     return str;
   }
 
-  var token = str.substr(start + 2,  end - start - 2);
-  var method = token.replace(endDelim, '').replace(startDelim, '');
-  var result = faker.fake(`{{${method}}}`);
+  const token = str.substr(start + 2,  end - start - 2);
+  const method = token.replace(endDelim, '').replace(startDelim, '');
+  const result = faker.fake(`{{${method}}}`);
 
   str = str.replace(startDelim + token + endDelim, result);
 
