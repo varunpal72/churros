@@ -9,6 +9,7 @@ const payload = require('./assets/accounts');
 //`custom.boolean.scriptId` = 'custentity_2663_direct_debit' and `custom.boolean.value` = 'false'
 
 suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
+  test.should.getRequiredFields();
   test.should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.supportPagination();
   test.withOptions({ qs: { page: 1,

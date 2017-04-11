@@ -313,8 +313,24 @@ const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverr
     }, options ? options.skip : false);
 };
 
+const requiredFields = (api, pay, options) => {
+  let fields = [];
+  boomGoesTheDynamite('Required Fields:', () => {
+    let payloads = tools.keysOnLevel(pay)
+    // console.log(payloads);
+    return payloads.reduce((acc, obj, i) => {
+      return acc.then(r => r ? cloud.remove(`${api}/${r.body.id}`) : null)
+      .catch((err) => fields.push({field: payloads[i-1].field, type: payloads[i-1].type}))
+      .then(() => cloud.post(api, obj.payload))
+    }, Promise.resolve(null))
+    .catch(() => {})
+    .then(() => console.log(fields))
+  }, options ? options.skip : false)
+};
+
 const runTests = (api, payload, validationCb, tests, hub) => {
   const should = (api, validationCb, payload, options, name, hub) => ({
+    getRequiredFields: () => requiredFields(api, payload, options),
     /**
      * HTTP POST that validates that the response is a 400
      * @memberof module:core/suite.test.should
