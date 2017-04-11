@@ -7,9 +7,9 @@ const contactPayload = require('./assets/contacts');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
 
-suite.forElement('crm', 'users', { payload: payload, skip: true}, (test) => {
-    it(`should support CRUS, pagination and where for /hubs/crm/users`, () => {
-    let userId,userPayload;
+suite.forElement('crm', 'users', { payload: payload }, (test) => {
+  it(`should support CRUS, pagination and where for /hubs/crm/users`, () => {
+    let userId, userPayload;
     return cloud.post('/hubs/crm/contacts', contactPayload)
       .then(r => userPayload = build({ userName: tools.randomEmail(), contactID: r.body.id }))
       .then(r => cloud.post(test.api, userPayload))
@@ -18,5 +18,6 @@ suite.forElement('crm', 'users', { payload: payload, skip: true}, (test) => {
       .then(r => cloud.patch(`${test.api}/${userId}`, userPayload))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
       .then(r => cloud.withOptions({ qs: { where: 'userName=\'mrchurros@cloud-elements.com\'' } }).get(test.api));
-    });
+  });
+  test.should.supportNextPagePagination(1);
 });

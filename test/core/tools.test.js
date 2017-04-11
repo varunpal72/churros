@@ -112,4 +112,22 @@ describe('tools', () => {
     const baseElement = 'hubspot';
     return expect(tools.getBaseElement(element)).to.equal(baseElement);
   });
+  it('should update metadata', () => {
+    const OGmetadata = { qs: { q: 'select * from contacts where city = \'Tampa\'' } };
+    const updatedMetadata = { qs: { q: 'select * from contacts where city = \'Tampa\'', where: 'city = \'Tampa\'' } };
+    return expect(tools.updateMetadata(OGmetadata)).to.deep.equal(updatedMetadata);
+  });
+  it('should parse csv', () => {
+    const before = `firstName,lastName,id
+Austin,Mahan,12
+Josh,Wyse,2
+`;
+    const after = [{firstName:'Austin', lastName:'Mahan', id: '12'},{firstName:'Josh', lastName:'Wyse', id: '2'}];
+    expect(tools.csvParse(before)).to.deep.equal(after);
+  });
+  it('should create where expression from object', () => {
+    const obj = {firstName:'Austin', lastName:'Mahan', id: '12'};
+    const where = `firstName = 'Austin' AND lastName = 'Mahan' AND id = '12'`;
+    expect(tools.createExpression(obj)).to.equal(where);
+  });
 });
