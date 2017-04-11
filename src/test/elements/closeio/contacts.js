@@ -11,7 +11,6 @@ const gen = (opts) => {
     lead_id: (opts.lead_id),
     name: (opts.name || 'mr. churros ' + random),
     officeEmail: (opts.officeEmail || 'churros@churros.com')
-
   });
 };
 
