@@ -119,7 +119,15 @@ describe('provisioner', () => {
       .reply(200, () => new Object({
         token: 'token',
         secret: 'secret'
-      }));
+      }))
+      .get('/elements')
+      .reply(200, () => {
+        return [{key: 'myelement', id: 123, configuration: [{key: 'event.poller.configuration'}, {key: 'event.metadata'}]}];
+      })
+      .get('/elements/123/metadata')
+      .reply(200, () => {
+        return {events : {supported: true, methods: ['polling', 'webhook']}};
+      });
 
     nock(baseUrl, headers())
       .get('/elements/myoauth1element/oauth/url')

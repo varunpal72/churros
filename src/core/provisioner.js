@@ -86,6 +86,7 @@ const getPollerConfig = (element, instance) => {
 const createInstance = (element, config, providerData, baseApi) => {
   config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
+  console.log(element);
 
   baseApi = (baseApi) ? baseApi : '/instances';
 
