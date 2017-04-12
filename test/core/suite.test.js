@@ -107,7 +107,6 @@ describe('suite', () => {
       .withApi('/foo/pagination')
       .should.supportPagination();
     defaults.setPolling(true);
-    defaults.setUrl('https://knappkeith.pythonanywhere.com/request/churros/');
     test
       .withApi('/foo/polling')
       .should.supportPolling();

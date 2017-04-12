@@ -2,6 +2,7 @@
 
 const nock = require('nock');
 const request = require('request-promise');
+const defaults = require('core/defaults');
 
 var exports = module.exports = {};
 const genPayload = (opts) => {
@@ -124,7 +125,9 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
     .post('/foo/polling')
     .reply(200, (uri, requestBody) => {
-      request('https://knappkeith.pythonanywhere.com/request/churros/');
+      setInterval(() => {
+        request(defaults.getUrl());
+      }, 1000);
       return genPayload({ id: 123 });
     });
 
