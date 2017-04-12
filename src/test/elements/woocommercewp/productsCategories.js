@@ -1,14 +1,15 @@
 'use strict';
 
 const suite = require('core/suite');
-const expect = require('chakram').expect;
+const tools = require('core/tools');
 const payload = require('./assets/productsCategories');
+const productsCategoriesPayload = () => ({
+  "name":tools.random()
+});
 
-suite.forElement('ecommerce', 'products-categories', { payload: payload }, (test) => {
+suite.forElement('ecommerce', 'products-categories', { payload: productsCategoriesPayload() }, (test) => {
   test.should.supportCruds();
-  test.withOptions({ qs: { pageSize: 1, page: 1 } }).withValidation((r) => {
-    expect(r).to.have.statusCode(200);
-    expect(r.body).to.have.lengthOf(1);
-  }).should.return200OnGet();
+  // unique is "id"
+  test.should.supportPagination();
   test.withOptions({ qs: { where: 'name = \'Clothing\'' } }).should.return200OnGet();
 });
