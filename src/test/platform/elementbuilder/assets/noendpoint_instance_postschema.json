@@ -1,0 +1,23 @@
+{
+  "properties": {
+    "address": {
+      "type": "string"
+    },
+    "first_name": {
+      "type": "string"
+    },
+    "friends": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "last_name": {
+      "type": "string"
+    },
+    "secondcall": {
+      "type": "string"
+    }
+  },
+  "type": "object"
+}

@@ -6,6 +6,7 @@ const cloud = require('core/cloud');
 const provisioner = require('core/provisioner');
 const noendpointElement = require('./assets/noendpoint_element.json');
 const noendpointInstanceSchema = require('./assets/noendpoint_instance_schema.json');
+const noendpointInstancePostSchema = require('./assets/noendpoint_instance_postschema.json');
 
 suite.forPlatform('elementbuilder', {}, (test) => {
   let createdNoendpoint;
@@ -21,6 +22,10 @@ suite.forPlatform('elementbuilder', {}, (test) => {
       });
   });
 
+  it('should support calling multiple endpoint chain requests for POST and body', () => {
+      return cloud.post(`/hubs/general/firstpost`,{"id": 1}, noendpointInstancePostSchema);
+  });
+
   it('should support calling http in hook requests', () => {
       return cloud.get(`/hubs/general/httprequest`, (r) => {
           expect(r.body).to.not.be.empty;
@@ -33,7 +38,7 @@ suite.forPlatform('elementbuilder', {}, (test) => {
       });
   });
 
-  it('should fail if chain is more than 3', () => {
+  it('should fail if chain is more than 5', () => {
       return cloud.get(`/hubs/general/one`, (r) => expect(r).to.have.statusCode(400));
   });
 
