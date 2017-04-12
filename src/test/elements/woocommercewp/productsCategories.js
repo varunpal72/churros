@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = require('./assets/productsCategories');
 const productsCategoriesPayload = () => ({
   "name":tools.random()
 });
