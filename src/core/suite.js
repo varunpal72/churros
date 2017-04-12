@@ -10,7 +10,6 @@ const expect = chakram.expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const logger = require('winston');
-const tools = require('core/tools');
 const defaults = require('core/defaults');
 const request = require('request-promise');
 const fs = require('fs');
@@ -396,6 +395,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     * @memberof module:core/suite.test.should
     */
     supportPolling: (pay, validate) => itSupportPolling(name, payload, api, options, validationCb, pay, validate),
+    /**
      * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
      * @param {object} metadata -> headers, query string etc...
      * @param {object} opts -> To test json and csv. If null it will test endpoints default. EXAMPLE "{json: true, csv: true}"
