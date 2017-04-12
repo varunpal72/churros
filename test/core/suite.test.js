@@ -2,6 +2,7 @@
 
 require('core/assertions');
 const suite = require('core/suite');
+const defaults = require('core/defaults');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const helper = require('./assets/suite-helper');
@@ -105,6 +106,11 @@ describe('suite', () => {
     test
       .withApi('/foo/pagination')
       .should.supportPagination();
+    defaults.setPolling(true);
+    defaults.setUrl('https://knappkeith.pythonanywhere.com/request/churros/');
+    test
+      .withApi('/foo/polling')
+      .should.supportPolling();
 
     /* no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above */
     test.should.return200OnPost();

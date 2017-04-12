@@ -59,16 +59,16 @@ const getPollerConfig = (element, instance) => {
   .then(r => elementObj = r.body.reduce((acc, el) => acc = el.key === element ? el : acc, null))
   .then(r => cloud.get(`elements/${elementObj.id}/metadata`))
   .then(r => {
-    defaults.setPolling(r.body.events.supported && r.body.events.methods.includes('polling'))
-    defaults.setWebhooks(r.body.events.supported && r.body.events.methods.includes('webhook'))
-    return defaults.getPolling()
+    defaults.setPolling(r.body.events.supported && r.body.events.methods.includes('polling'));
+    defaults.setWebhooks(r.body.events.supported && r.body.events.methods.includes('webhook'));
+    return defaults.getPolling();
   })
   .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
   .then(r => {
     if (r === null) return instance;
     if (r === 'NoConfig') {
       instance.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling)
-      .filter(str => str != '{objectName}').join(',')
+      .filter(str => str !== '{objectName}').join(',');
     } else {
       instance.configuration['event.poller.configuration'] = r;
     }
@@ -80,8 +80,8 @@ const getPollerConfig = (element, instance) => {
     instance.configuration['event.poller.refresh_interval'] = '1';
     return instance;
   })
-  .catch(() => instance)
-}
+  .catch(() => instance);
+};
 
 const createInstance = (element, config, providerData, baseApi) => {
   config.element = tools.getBaseElement(element);

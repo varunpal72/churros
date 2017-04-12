@@ -35,7 +35,7 @@ before(() => {
     const getInstance = argv.instance ? cloud.get(`/instances/${argv.instance}`)
       .then(r => {
         defaults.token(r.body.token);
-        defaults.setUrl(r.body.configuration['event.notification.callback.url'])
+        defaults.setUrl(r.body.configuration['event.notification.callback.url']);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         return r;
       }) : provisioner

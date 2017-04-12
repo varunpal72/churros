@@ -1,6 +1,7 @@
 'use strict';
 
 const nock = require('nock');
+const request = require('request-promise');
 
 var exports = module.exports = {};
 const genPayload = (opts) => {
@@ -120,7 +121,12 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .post('/events/myelement')
     .reply(200, (uri, requestBody) => requestBody)
     .post('/foo/pagination')
-    .reply(200, (uri, requestBody) => genPayload({ id: 123 }));
+    .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
+    .post('/foo/polling')
+    .reply(200, (uri, requestBody) => {
+      request('https://knappkeith.pythonanywhere.com/request/churros/');
+      return genPayload({ id: 123 });
+    });
 
   /** GET **/
   nock(baseUrl, headers())
@@ -175,5 +181,7 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .delete('/foo/456')
     .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }))
     .delete('/foo/pagination/123')
+    .reply(200, (uri, requestBody) => ({}))
+    .delete('/foo/polling/123')
     .reply(200, (uri, requestBody) => ({}));
 };

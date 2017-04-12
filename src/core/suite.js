@@ -221,22 +221,23 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
 };
-const itSupportPolling = (name, api, options, validationCb, payload, validateCb) => {
+const itSupportPolling = (name, pay, api, options, validationCb, payload, validateCb) => {
   name = 'polling ' + api;
+  payload = payload ? payload : pay;
   boomGoesTheDynamite(name, () => {
     const baseUrl = defaults.getUrl();
     //logs error then fails test
-    if (!defaults.getPolling()) logger.error('This element doesn\'t support polling')
+    if (!defaults.getPolling()) logger.error('This element doesn\'t support polling');
     expect(defaults.getPolling()).to.be.true;
 
-    if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?')
+    if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
     expect(baseUrl).to.exist;
 
     const url = baseUrl + '?returnQueue';
     logger.info('Testing polling may take up to 2 minutes');
     const validate = validateCb && typeof validateCb === 'function' ? validateCb : (res) => expect(res.count).to.be.above(0);
     let response;
-    const pay = typeof payload === 'function' ? payload() : payload
+    const pay = typeof payload === 'function' ? payload() : payload;
     //clears the bin before creating and checking bin again
     return request(url)
     .then(() => pay)
@@ -244,9 +245,9 @@ const itSupportPolling = (name, api, options, validationCb, payload, validateCb)
     .then(r => response = r.body)
     .then(() => tools.wait.upTo(120000).for(() => request(url)
       .then(r => validate(JSON.parse(r)))))
-    .then(() => cloud.delete(`${api}/${response.id}`))
-  })
-}
+    .then(() => cloud.delete(`${api}/${response.id}`));
+  });
+};
 
 const runTests = (api, payload, validationCb, tests) => {
   const should = (api, validationCb, payload, options, name) => ({
@@ -299,7 +300,7 @@ const runTests = (api, payload, validationCb, tests) => {
     * @param {Function} validate A validate funtion with `expects` to test response
     * @memberof module:core/suite.test.should
     */
-    supportPolling: (pay, validate) => itSupportPolling(name, api, options, validationCb, pay, validate),
+    supportPolling: (pay, validate) => itSupportPolling(name, payload, api, options, validationCb, pay, validate),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.

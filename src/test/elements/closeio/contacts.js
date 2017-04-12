@@ -3,7 +3,6 @@
 const tools = require('core/tools');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const expect = require('chakram').expect;
 
 const gen = (opts) => {
   opts = opts ? opts : {};
@@ -24,9 +23,9 @@ suite.forElement('crm', 'contacts', { payload: gen() }, (test) => {
       .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
 
-  const payload = () => cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' }).then(r =>  gen({ lead_id: r.body.id}))
-  test.should.supportPolling(payload)
-  
+  const payload = () => cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' }).then(r =>  gen({ lead_id: r.body.id}));
+  test.should.supportPolling(payload);
+
   test.should.supportPagination();
   test.should.return404OnGet(-1);
   test.should.return404OnPatch(-1);

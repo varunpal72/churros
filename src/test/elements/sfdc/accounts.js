@@ -11,7 +11,7 @@ suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
   test.should.supportPagination();
   test.should.supportCeqlSearch('id');
   test.should.supportCruds();
-  test.should.supportPolling(payload)
+  test.should.supportPolling();
   it('should allow CRUDS for /hubs/crm/accounts/:id/activites', () => {
     let accountId;
     return cloud.post(test.api, payload)
