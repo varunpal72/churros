@@ -138,4 +138,7 @@ Josh,Wyse,2
     const obj = [[{user: {ids: {id: "someId"}}},[{id:"nextId"}]],{allPeeps: [[{user1: {anotherfield: {stuff: [{id: "lastId"}]}}}]]}];
     expect(tools.getKey(obj, 'id')).to.deep.equal(['someId', 'nextId', 'lastId']);
   });
+  it('should return empty array if object is not a Object', () => {
+    expect(tools.getKey('', 'id')).to.deep.equal([]);
+  });
 });
