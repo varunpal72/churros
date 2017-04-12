@@ -66,12 +66,8 @@ const getPollerConfig = (element, instance) => {
   .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
   .then(r => {
     if (r === null) return instance;
-    if (r === 'NoConfig') {
-      instance.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling)
-      .filter(str => str !== '{objectName}').join(',');
-    } else {
-      instance.configuration['event.poller.configuration'] = r;
-    }
+    r === 'NoConfig' ? instance.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling)
+    .filter(str => str !== '{objectName}').join(',') : instance.configuration['event.poller.configuration'] = r;
     const url = `https://knappkeith.pythonanywhere.com/request/${tools.random()}/`;
     defaults.setUrl(url);
     instance.configuration['event.vendor.type'] = 'polling';
