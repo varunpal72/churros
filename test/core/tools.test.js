@@ -130,4 +130,12 @@ Josh,Wyse,2
     const where = `firstName = 'Austin' AND lastName = 'Mahan' AND id = '12'`;
     expect(tools.createExpression(obj)).to.equal(where);
   });
+  it('should get the key value on top layer', () => {
+    const obj = {id: 'randoId', name: 'Austin'};
+    expect(tools.getKey(obj, 'id')).to.deep.equal(['randoId']);
+  });
+  it('should get the key value from complex structures', () => {
+    const obj = [[{user: {ids: {id: "someId"}}},[{id:"nextId"}]],{allPeeps: [[{user1: {anotherfield: {stuff: [{id: "lastId"}]}}}]]}];
+    expect(tools.getKey(obj, 'id')).to.deep.equal(['someId', 'nextId', 'lastId']);
+  });
 });

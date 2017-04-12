@@ -105,6 +105,9 @@ describe('suite', () => {
     test
       .withApi('/foo/pagination')
       .should.supportPagination();
+    test
+    .withApi('/foo/pagination')
+    .should.supportPagination('id');
 
     /* no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above */
     test.should.return200OnPost();
