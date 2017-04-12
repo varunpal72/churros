@@ -187,7 +187,7 @@ exports.createExpression = (obj) => {
 };
 const getKey = (obj, key, acc) => {
   acc = acc ? acc : [];
-  if (typeof obj == 'object') {
+  if (typeof obj === 'object') {
     let objKeys = Object.keys(obj);
     if (objKeys.includes(key)) {
       acc.push(obj[key]);
@@ -197,5 +197,5 @@ const getKey = (obj, key, acc) => {
     return acc;
   }
   return acc;
-}
-exports.getKey = (obj, key) => getKey(obj, key)
+};
+exports.getKey = (obj, key) => getKey(obj, key);
