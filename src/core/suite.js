@@ -85,7 +85,7 @@ const itCs = (name, api, payload, validationCb, options) => {
   boomGoesTheDynamite(n, () => cloud.withOptions(options).cs(api, payload, validationCb), options ? options.skip : false);
 };
 
-const itPagination = (name, api, options, validationCb) => {
+const itPagination = (name, api, options, validationCb, unique) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
   const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 2 : 2 : 2;
   const page = options ? options.qs ? options.qs.page ? options.qs.page : 1 : 1 : 1;
@@ -109,11 +109,19 @@ const itPagination = (name, api, options, validationCb) => {
     .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
     .then(() => {
       if (result3.body.length === pageSize*2 && result1.body.length === pageSize && result2.body.length === pageSize) {
-        expect(result3.body[0]).to.deep.equal(result1.body[0]);
-        expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
-        expect(result3.body[pageSize]).to.deep.equal(result2.body[0]);
+        if (unique) {
+          const value = tools.getKey(unique);
+          expect(tools.getKey(result3.body[0], unique)).to.deep.equal(tools.getKey(result1.body[0], unique));
+          expect(tools.getKey(result3.body[result3.body.length - 1], unique)).to.deep.equal(tools.getKey(result2.body[result2.body.length - 1], unique));
+          expect(tools.getKey(result3.body[pageSize], unique)).to.deep.equal(tools.getKey(result2.body[0], unique));
+        } else {
+          expect(result3.body[0]).to.deep.equal(result1.body[0]);
+          expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
+          expect(result3.body[pageSize]).to.deep.equal(result2.body[0]);
+        }
       }
-      return expect(result3.body).to.deep.equal(result1.body.concat(result2.body));
+      return unique ? expect(tools.getKey(result3.body, unique)).to.deep.equal(tools.getKey(result1.body.concat(result2.body), unique)) :
+        expect(result3.body).to.deep.equal(result1.body.concat(result2.body));
     });
   }, options ? options.skip : false);
 };
@@ -383,7 +391,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      * through the results before cleaning up any resources that were created.
      * @memberof module:core/suite.test.should
      */
-    supportPagination: () => itPagination(name, api, options, validationCb),
+    supportPagination: (unique) => itPagination(name, api, options, validationCb, unique),
     /**
      * Validates that the given API supports `nextPageToken` type pagination.
      * @param {number} amount The number of objects to paginate through
