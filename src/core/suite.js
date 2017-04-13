@@ -223,7 +223,7 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
 };
-const itSupportPolling = (name, pay, api, options, validationCb, payload, validateCb) => {
+const itSupportPolling = (name, pay, api, options, validationCb, payload) => {
   name = 'polling ' + api;
   payload = payload ? payload : pay;
   boomGoesTheDynamite(name, () => {
@@ -237,13 +237,13 @@ const itSupportPolling = (name, pay, api, options, validationCb, payload, valida
 
     const url = baseUrl + '?returnQueue';
     logger.info('Testing polling may take up to 2 minutes');
-    const validate = validateCb && typeof validateCb === 'function' ? validateCb : (res) => expect(res.count).to.be.above(0);
+    const validate = validationCb && typeof validationCb === 'function' ? validationCb : (res) => expect(res.count).to.be.above(0);
     let response;
     const pay = typeof payload === 'function' ? payload() : payload;
     //clears the bin before creating and checking bin again
     return request(url)
     .then(() => pay)
-    .then(r => cloud.withOptions(options).post(api, r, validationCb))
+    .then(r => cloud.withOptions(options).post(api, r))
     .then(r => response = r.body)
     .then(() => tools.wait.upTo(120000).for(() => request(url)
       .then(r => validate(JSON.parse(r)))))
@@ -394,7 +394,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     * @param {Function} validate A validate funtion with `expects` to test response
     * @memberof module:core/suite.test.should
     */
-    supportPolling: (pay, validate) => itSupportPolling(name, payload, api, options, validationCb, pay, validate),
+    supportPolling: (pay) => itSupportPolling(name, payload, api, options, validationCb, pay),
     /**
      * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
      * @param {object} metadata -> headers, query string etc...
