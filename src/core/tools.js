@@ -189,7 +189,7 @@ exports.createExpression = (obj) => {
 exports.keysOnLevel = (obj) => {
   let out = Object.keys(obj)
     .map(key => {
-        let copy = JSON.parse(JSON.stringify(obj));
+        let copy = Object.assign({}, {}, obj)
         delete copy[key];
         return {field: key, payload: copy, type: typeof obj[key]};
     });

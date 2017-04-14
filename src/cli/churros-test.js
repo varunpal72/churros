@@ -27,7 +27,8 @@ const fromOptions = (url, options) => {
       verbose: options.verbose === undefined ? false : options.verbose, // hack...i can't figure out why it's not default to false
       externalAuth: options.externalAuth,
       exclude: options.exclude,
-      instance: options.instance
+      instance: options.instance,
+      requiredFields: options.requiredFields
     });
   });
 };
@@ -83,7 +84,7 @@ const run = (suite, options, cliArgs) => {
     .filter(e => isAfterStart(options.start, e))
     .map(e => resources.push(e)) :
     resources.push(suite.split('/')[1]);
-
+  // console.log(cliArgs);
   let args = `--timeout 600000 --reporter spec --ui bdd`;
   if (test) args += ` --grep '${test}'`;
   if (cliArgs.url) args += ` --url ${cliArgs.url}`;
@@ -96,6 +97,7 @@ const run = (suite, options, cliArgs) => {
   if (cliArgs.browser) args += ` --browser ${cliArgs.browser}`;
   if (cliArgs.externalAuth) args += ` --externalAuth`;
   if (cliArgs.instance) args += ` --instance ${cliArgs.instance}`;
+  if (cliArgs.requiredFields) args += ` --requiredFields ${cliArgs.requiredFields}`;
 
   // loop over each element, constructing the proper paths to pass to mocha
   let cmd = "";
@@ -158,6 +160,7 @@ commander
   .option('-S, --start <suite>', 'specific suite to start with, everything before this will be skipped')
   .option('-V, --verbose', 'logging verbose mode')
   .option('-i, --instance <instance>', 'element instance ID to run tests against (for development only)')
+  .option('-R, --requiredFields', 'only runs and prints out required fields for each object')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
