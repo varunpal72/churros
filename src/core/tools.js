@@ -145,16 +145,24 @@ exports.times = times;
 
 /**
 * Run a selenium file
+* @param {string} element The element we are running selenium on
+* @param {string} filePath The path to the selenium file
+* @param {string} method Method in the selnium file
 **/
-
 exports.runFile = (element, filePath, method) => {
   return fs.existsSync(filePath) ? require(filePath)(element, method) : Promise.resolve(null);
 };
 
+/**
+* @param {string} str The element we are running tests(use '--' in the element to provision with different creds)
+**/
 exports.getBaseElement = (str) => {
   return str.includes('--') ? str.substring(0, str.indexOf('--')) : str;
 };
 
+/**
+* @param {object} obj Updates an object to to add a `{qs: where:'whereStatement'}` takes where statement from a `{qs: q:'select * from contacts where id = 12'}`
+**/
 exports.updateMetadata = (obj) => {
   const whereExp = obj ? obj.qs ? obj.qs.q ? obj.qs.q.includes('where') ? obj.qs.q.substring(obj.qs.q.indexOf('where') + 6) : '' : '' : '' : '';
   if (obj) {
