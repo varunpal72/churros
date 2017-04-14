@@ -1,7 +1,15 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/fairsail');
+const tools = require('core/tools');
+const payload = () => ({
+  "emailFS": "test@gmail.com",
+  "nameFS": "test1",
+  "percentIncFS": 4.28,
+  "id": tools.randomInt(),
+  "salaryFS": 12345
+});
+
 const options = {
   churros: {
     updatePayload: {
@@ -10,7 +18,7 @@ const options = {
     }
   }
 };
-suite.forElement('db', 'Fairsail', { payload: payload }, (test) => {
+suite.forElement('db', 'Fairsail', { payload: payload() }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();
