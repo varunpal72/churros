@@ -3,23 +3,12 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const faker = require('faker');
 
 const payload = () => ({
-  "employeeid": tools.randomStr("AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz", 15),
+  "employeeid": faker.internet.userName(),
   "title": tools.random(),
-  "locationid": "100",
-  "departmentid": "10",
-  "supervisorid": "1",
-  "birthdate": {
-    "year": 1999,
-    "month": "10",
-    "day": 20
-  },
-  "startdate": {
-    "year": 2000,
-    "month": "12",
-    "day": "3"
-  },
+  "bsfield": "word",
   "employeetype": "Full Time",
   "gender": "male",
   "status": "active",
@@ -34,29 +23,20 @@ const payload = () => ({
       "firstname": tools.random(),
       "lastname": tools.random(),
       "initial": tools.random(),
-      "phone1": "(781) 756 3725",
-      "phone2": "(781) 756-3724",
-      "cellphone": "(978) 902-0815",
-      "pager": "(781) 756 3725",
-      "fax": "(781) 756 3725",
-      "email1": "changeme1@intacct.com",
-      "email2": "changeme1@intacct.com",
-      "url1": "www.ce1.com",
-      "url2": "www.ce2.com",
+      "phone1": faker.phone.phoneNumber(),
+      "cellphone": faker.phone.phoneNumber(),
+      "pager": faker.phone.phoneNumber(),
+      "fax": faker.phone.phoneNumber(),
+      "email1": tools.random()+ "changeme1@intacct.com",
+      "url1": faker.internet.url(),
+      "url2": faker.internet.url(),
       "mailaddress": {
-        "address1": "addison treehouse",
-        "address2": "122223",
-        "city": "Andover",
-        "state": "MA",
-        "zip": "18100",
+        "address1": faker.address.streetAddress(),
+        "city": faker.address.city(),
+        "state": faker.address.state(),
+        "zip": faker.address.zipCode(),
         "country": "USA"
       }
-    }
-  },
-  "contactlist": {
-    "contactitem": {
-      "category": "PRIMARY ADDRESS",
-      "contactname": "John Pearce"
     }
   }
 });

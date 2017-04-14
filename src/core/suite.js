@@ -315,23 +315,36 @@ const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverr
 
 const requiredFields = (api, pay, options, cb) => {
   let fields = [];
+  let createdIds = [];
   cb = cb ? cb : () => Promise.resolve(pay);
   boomGoesTheDynamite('Required Fields:', () => {
     return cb().then(pay => {
-      let payloads = tools.keysOnLevel(pay);
-      return payloads.reduce((acc, obj, i) => {
-        return acc.then(r => r ? cloud.delete(`${api}/${r.body.id}`) : null)
-        .catch((err) => {
-          // console.log(err);
-          fields.push({field: payloads[i-1].field, type: payloads[i-1].type});
-        })
-        .then(() => cloud.post(api, obj.payload));
-      }, Promise.resolve(null))
-      .then(r => r ? cloud.delete(`${api}/${r.body.id}`) : null)
-      .catch((err) => fields.push({field: payloads[payloads.length -1].field, type: payloads[payloads.length -1].type}))
-      .then(() => console.log(fields));
+      //creates 2 of the same payload so if there are unique keys it will fail the tests
+      //if test doesn't fail from unique values then all fields will come back as required
+      return cloud.post(api, pay)
+      .then(r => createdIds.push(r.id))
+      .then(r => cloud.post(api, pay))
+      .then(r => createdIds.push(r.id))
+      .then(() => {
+        //makes array of payloads, each missing one key from original payload
+        let payloads = tools.keysOnLevel(pay);
+        return payloads.reduce((acc, obj, i) => {
+          //if creates the object then the missing key is not required
+          return acc.then(r => r ? cloud.delete(`${api}/${r.body.id}`) : null)
+          //if object is not created then missing key is required
+          .catch((err) => fields.push({field: payloads[i-1].field, type: payloads[i-1].type}))
+          //tries to create next object
+          .then(() => cloud.post(api, obj.payload));
+        }, Promise.resolve(null))
+        //same logic as above for the last object
+        .then(r => r ? cloud.delete(`${api}/${r.body.id}`) : null)
+        .catch((err) => fields.push({field: payloads[payloads.length -1].field, type: payloads[payloads.length -1].type}))
+        .then(() => console.log(fields));
+      })
     });
   }, options ? options.skip : false);
+  //cleaning up
+  after(() => createdIds.forEach(id => cloud.delete(`${api}/${id}`)))
 };
 
 const runTests = (api, payload, validationCb, tests, hub) => {
@@ -590,6 +603,7 @@ const run = (api, resource, options, defaultValidation, tests, hub) => {
   if (options.skip) {
     describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   } else {
+    true ? describe(name, () => runTests(api, options.payload, defaultValidation, test => test.should.getRequiredFields(), hub)) :
     describe(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   }
 };
