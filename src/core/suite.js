@@ -316,7 +316,6 @@ const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverr
 
 const requiredFields = (api, pay, options, resource) => {
   let fields = [];
-  let createdIds = [];
   boomGoesTheDynamite('Required Fields:', () => {
     return cloud.post(api, pay)
     .then(r => cloud.delete(`${api}/${r.body.id}`))
@@ -328,28 +327,24 @@ const requiredFields = (api, pay, options, resource) => {
       return payloads.reduce((acc, obj, i) => {
         obj = tools.fake(obj);
         try {
-          obj = JSON.parse(obj)
+          obj = JSON.parse(obj);
         } catch (e) {}
         //if creates the object then the missing key is not required
         return acc.then(r => r ? cloud.delete(`${api}/${r.body.id}`) : null)
         //if object is not created then missing key is required
         .catch((err) => {
-          // console.log(err);
-          fields.push({field: payloads[i-1].field, type: payloads[i-1].type})
+          fields.push({field: payloads[i-1].field, type: payloads[i-1].type});
         })
         //tries to create next object
         .then(() => cloud.post(api, obj.payload));
       }, Promise.resolve(null))
       .then(r => r ? cloud.delete(`${api}/${r.body.id}`) : null)
       .catch((err) => {
-        // console.log(err);
-        fields.push({field: payloads[payloads.length -1].field, type: payloads[payloads.length -1].type})
+        fields.push({field: payloads[payloads.length -1].field, type: payloads[payloads.length -1].type});
       })
       .then(() => console.log(fields));
-    })
+    });
   }, options ? options.skip : false);
-  //cleaning up
-  after(() => createdIds.forEach(id => cloud.delete(`${api}/${id}`)))
 };
 
 const runTests = (api, payload, validationCb, tests, hub) => {

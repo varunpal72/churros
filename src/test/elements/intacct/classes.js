@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const payload = tools.requirePayload(`${__dirname}/assets/classes.json`)
+const payload = tools.requirePayload(`${__dirname}/assets/classes.json`);
 
 
 suite.forElement('finance', 'classes', { payload: payload }, (test) => {
