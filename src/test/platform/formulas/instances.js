@@ -68,20 +68,20 @@ suite.forPlatform('formulas', opts, (test) => {
 
       let fiId;
 
-      formulaInstance.name = `<a href="#" onClick="javascript:alert(\'xss\');return false;">${name}</a>`;
+      formulaInstance.name = `<a href="#" onClick="javascript:alert(\'xss\');return false;">@${name}</a>`;
       formulaInstance.configuration['trigger-instance'] = elementInstanceId;
 
       return common.createFormulaInstance(formulaId, formulaInstance)
         .then(fi => {
           fiId = fi.id;
-          expect(fi.name).to.equal(name);
+          expect(fi.name).to.equal(`@${name}`);
           return fi;
         })
         .then(fi => {
-          fi.name = `<a href="#" onClick="javascript:alert(\'xss\');return false;">${updatedName}</a>`;
+          fi.name = `<a href="#" onClick="javascript:alert(\'xss\');return false;">@${updatedName}</a>`;
           return cloud.put(`${test.api}/${formulaId}/instances/${fiId}`, fi);
         })
-        .then(r => expect(r.body.name).to.equal(updatedName))
+        .then(r => expect(r.body.name).to.equal(`@${updatedName}`))
         .then(r => common.deleteFormulaInstance(formulaId, fiId));
     });
 

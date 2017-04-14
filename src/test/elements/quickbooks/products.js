@@ -16,6 +16,6 @@ suite.forElement('finance', 'products', { payload: products }, (test) => {
     }
   };
   test.withOptions(options).should.supportCruds();
-  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
+  test.withOptions({ qs: { page: 1, pageSize: 5 ,orderBy : 'name desc'} }).should.return200OnGet();
   test.withOptions({ qs: { where: 'type = \'SERVICE\'', page: 1, pageSize: 1 } }).should.return200OnGet();
 });

@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('payment', 'transactions', (test) => {
-  test.should.return200OnGet();
+  test.withOptions({ qs: { where: 'direction=\'desc\''}}).should.return200OnGet();
   it(`should allow GET for ${test.api}/{transactionId}`, () => {
     let subscriptionId = 12697293;
     let transactionId;

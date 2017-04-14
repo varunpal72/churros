@@ -184,12 +184,19 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'googledrive':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('Email')).sendKeys(username);
-      browser.findElement(webdriver.By.id('next')).click();
+      browser.findElement(webdriver.By.id('Email')).submit();
       browser.sleep(2000);
       browser.findElement(webdriver.By.id('Passwd')).sendKeys(password);
-      browser.findElement(webdriver.By.id('signIn')).click();
+      browser.findElement(webdriver.By.id('Passwd')).submit();
       browser.sleep(2000);
-      browser.findElement(webdriver.By.id('submit_approve_access')).click();
+      browser.findElement(webdriver.By.name('email'))
+      .then((element) => {
+        element.sendKeys("developer@cloud-elements.com");
+        element.submit();
+      }, (err) => {}); // ignore this
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('submit_approve_access'))
+      .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000);
       return browser.getCurrentUrl();
     case 'gotowebinar':
@@ -203,6 +210,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
     case 'hubspot':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('username')).sendKeys(username);
+      browser.findElement(webdriver.By.id('password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('loginBtn')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      browser.sleep(5000);
+      return browser.getCurrentUrl();
     case 'hubspotcrm':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
@@ -213,6 +230,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.className('accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
+      case 'hubspot--oauth2New':
+        browser.get(r.body.oauthUrl);
+        browser.findElement(webdriver.By.id('username')).sendKeys(username);
+        browser.findElement(webdriver.By.id('password')).sendKeys(password);
+        browser.findElement(webdriver.By.id('loginBtn')).click();
+        browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]')), 5000)
+          .thenCatch(r => true); // ignore
+        browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]'))
+          .then((element) => element.click(), (err) => {}); // ignore this
+        return browser.getCurrentUrl();
     case 'instagram':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('id_username')).clear();
@@ -314,6 +341,18 @@ const manipulateDom = (element, browser, r, username, password, config) => {
             });
         return browser.getTitle().then((title) => !title);
       }, 10000);
+      return browser.getCurrentUrl();
+
+    case 'paypalv2':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('password')).sendKeys(password);
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('btnLogin')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('agreeConsent')), 8000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.id('agreeConsent'))
+        .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);

@@ -8,7 +8,9 @@
 const chakram = require('chakram');
 const expect = chakram.expect;
 const cloud = require('core/cloud');
+const tools = require('core/tools');
 const logger = require('winston');
+const fs = require('fs');
 
 var exports = module.exports = {};
 
@@ -78,17 +80,40 @@ const itCr = (name, api, payload, validationCb, options) => {
   boomGoesTheDynamite(n, () => cloud.withOptions(options).cr(api, payload, validationCb), options ? options.skip : false);
 };
 
+const itCs = (name, api, payload, validationCb, options) => {
+  const n = name || `should allow CS for ${api}`;
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).cs(api, payload, validationCb), options ? options.skip : false);
+};
+
 const itPagination = (name, api, options, validationCb) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
-  const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 1 : 1 : 1;
+  const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 2 : 2 : 2;
   const page = options ? options.qs ? options.qs.page ? options.qs.page : 1 : 1 : 1;
-  const newOptions = Object.assign({}, options, { qs: { page: page, pageSize: pageSize } });
-  boomGoesTheDynamite(n, () => {
-    return cloud.withOptions(newOptions).get(api)
+  const options1 = Object.assign({}, options, { qs: { page: page, pageSize: pageSize } });
+  const options2 = Object.assign({}, options, { qs: { page: page + 1, pageSize: pageSize } });
+  const options3 = Object.assign({}, options, { qs: { page: page, pageSize: (pageSize * 2) } });
+  let result1 = {body:[]}, result2 = {body:[]}, result3 = {body:[]};
+  const getWithOptions = (option, result) => {
+    return cloud.withOptions(option).get(api)
     .then((r) => {
-      if(r.body && r.body.length > 0){
-        expect(r.body).to.have.length(pageSize);
+      if(r.body && r.body.length > 0) {
+        result.body = r.body;
+        expect(result.body.length).to.be.below(option.qs.pageSize + 1);
+        return r.response.headers['elements-next-page-token'];
       }
+    });
+  };
+  return boomGoesTheDynamite(n, () => {
+    return getWithOptions(options1, result1)
+    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage, page: page+1 }} : options2, result2))
+    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
+    .then(() => {
+      if (result3.body.length === pageSize*2 && result1.body.length === pageSize && result2.body.length === pageSize) {
+        expect(result3.body[0]).to.deep.equal(result1.body[0]);
+        expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
+        expect(result3.body[pageSize]).to.deep.equal(result2.body[0]);
+      }
+      return expect(result3.body).to.deep.equal(result1.body.concat(result2.body));
     });
   }, options ? options.skip : false);
 };
@@ -196,8 +221,100 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
   }, options ? options.skip : false);
 };
 
-const runTests = (api, payload, validationCb, tests) => {
-  const should = (api, validationCb, payload, options, name) => ({
+const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
+  const n = name || `should support bulk download with options`;
+  let bulkId, bulkResults, jsonMeta, csvMeta;
+  // gets metadata ready for testing csv and json responses
+  const getJson = opts ? opts.json : false;
+  jsonMeta = JSON.parse(JSON.stringify(metadata));
+  metadata ? metadata.headers ? jsonMeta.headers.accept = "application/json" : jsonMeta.headers = {accept: "application/json"} : jsonMeta = {headers : {accept: "application/json"}};
+  const getCsv = opts ? opts.csv : false;
+  csvMeta = JSON.parse(JSON.stringify(metadata));
+  metadata ? metadata.headers ? csvMeta.headers.accept = "text/csv" : csvMeta.headers = {accept: "text/csv"} : csvMeta = {headers : {accept: "text/csv"}};
+
+  metadata = tools.updateMetadata(metadata);
+  boomGoesTheDynamite(n, () => {
+    // start bulk download
+    return cloud.withOptions(metadata).post(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/query`)
+      .then(r => {
+        expect(r.body.status).to.equal('CREATED');
+        bulkId = r.body.id;
+      })
+      // gets regular call to later check the validity of the bulk job
+      .then(r => cloud.withOptions(metadata)
+      .get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`, r => {
+        bulkResults = r.body;
+      }))
+      // get bulk download status
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED');
+        return r;
+      })))
+      .then(r => {
+        expect(r.body.recordsFailedCount).to.equal(0);
+        expect(r.body.recordsCount).to.equal(bulkResults.length);
+      })
+      // Checks results match the where statement
+      .then(r => cloud
+      .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+        let bulkDownloadResults = r.body.split('\n').slice(0, -1).map(el => JSON.parse(el));
+        expect(bulkDownloadResults).to.deep.equal(bulkResults);
+      }))
+      // get bulk query results in JSON
+      .then(r => getJson ? cloud.withOptions(jsonMeta)
+      .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+        expect(r.body, 'json').to.not.be.empty;
+      }) : Promise.resolve(null))
+     // get bulk query results in CSV
+     .then(r => getCsv ? cloud.withOptions(csvMeta)
+     .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+       expect(r.body, 'csv').to.not.be.empty;
+     }) : Promise.resolve(null));
+  }, options ? options.skip : false);
+};
+
+const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverride, where) => {
+  const n = name || `should support bulk upload with options`;
+  let bulkId;
+  boomGoesTheDynamite(n, () => {
+    expect(fs.existsSync(filePath)).to.be.true;
+    let file = fs.readFileSync(filePath,'utf8');
+    try { file = JSON.parse(file); } catch (e) { file = tools.csvParse(file); }
+    expect(file).to.exist;
+    logger.info('Running bulk process, may take upto 2 minutes');
+    // start bulk upload
+    return cloud.withOptions(metadata).postFile(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/${endpoint}`, filePath)
+      .then(r => {
+        expect(r.body.status).to.equal('CREATED');
+        bulkId = r.body.id;
+      })
+      // get bulk upload status
+      .then(r => tools.wait.upTo(120000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED');
+        return r;
+      })))
+      .then(r => {
+        expect(r.body.recordsFailedCount).to.equal(0);
+        expect(r.body.recordsCount).to.equal(file.length);
+      })
+      .then((r) => {
+        const deleteIds = (where) => {
+          return cloud.withOptions({qs: {where: where}}).get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`)
+          .then(r => {
+            return r.body.filter(obj => obj.id).map(obj => obj.id);
+          })
+          .then(ids => ids.map(id => cloud.delete(apiOverride ? `${apiOverride}/${id}` : `/hubs/${hub}/${endpoint}/${id}`)));
+        };
+        return where ? deleteIds(where) : Promise.all(file.map(obj => {
+          where = tools.createExpression(obj);
+          return deleteIds(where);
+        }));
+      });
+    }, options ? options.skip : false);
+};
+
+const runTests = (api, payload, validationCb, tests, hub) => {
+  const should = (api, validationCb, payload, options, name, hub) => ({
     /**
      * HTTP POST that validates that the response is a 400
      * @memberof module:core/suite.test.should
@@ -242,6 +359,25 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test.should
      */
     return200OnGet: () => itGet(name, api, options, validationCb),
+    /**
+     * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
+     * @param {object} metadata -> headers, query string etc...
+     * @param {object} opts -> To test json and csv. If null it will test endpoints default. EXAMPLE "{json: true, csv: true}"
+     * @param {string} object -> object we are calling: contacts, accounts, etc..
+     * @memberof module:core/suite.test.should
+     */
+    supportBulkDownload: (metadata, opts, object, apiOverride) => itBulkDownload(name, hub, metadata, options, apiOverride, opts, object),
+    /**
+     * Uploads bulk with options to specific object and verifies it completes and that none fail. Deletes records after completion
+     * @param {object} metadata -> headers, query string etc...
+     * @param {string} object -> object we are calling: contacts, accounts, etc..
+     * @param {string} filePath -> path to file we are uploading
+     * @param {string} where -> (optional) where query that will grab the records in the file to delete them
+     * If the `where` param is missing it will create a where query
+     *     EXAMPLE: Json-> "{"firstName": "Austin", "lastName": "Mahan"}" | Where -> firstName = 'Austin' AND lastName = 'Mahan'
+     * @memberof module:core/suite.test.should
+     */
+    supportBulkUpload: (metadata, filePath, object, where, apiOverride) => itBulkUpload(name, hub, object, metadata, filePath, options, apiOverride, where),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.
@@ -323,10 +459,15 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test.should
      */
     supportCr: () => itCr(name, api, payload, validationCb, options),
+    /**
+     * Validates that the given API resource supports CS
+     * @memberof module:core/suite.test.should
+     */
+    supportCs: () => itCs(name, api, payload, validationCb, options),
   });
 
   const using = (myApi, myValidationCb, myPayload, myOptions, myName) => ({
-    should: should(myApi, myValidationCb, myPayload, myOptions, myName),
+    should: should(myApi, myValidationCb, myPayload, myOptions, myName, hub),
     withName: (myName) => using(myApi, myValidationCb, myPayload, myOptions, myName),
     withApi: (myApi) => using(myApi, myValidationCb, myPayload, myOptions, myName),
     withValidation: (myValidationCb) => using(myApi, myValidationCb, myPayload, myOptions, myName),
@@ -361,7 +502,7 @@ const runTests = (api, payload, validationCb, tests) => {
      * @memberof module:core/suite.test
      * @namespace should
      */
-    should: should(api, validationCb, payload),
+    should: should(api, validationCb, payload, null, null, hub),
     /**
      * Overrides the default name for any tests
      * @param {string} myName The name of the test
@@ -410,7 +551,7 @@ const runTests = (api, payload, validationCb, tests) => {
   tests ? tests(test) : it('add some tests to me!!!', () => true);
 };
 
-const run = (api, resource, options, defaultValidation, tests) => {
+const run = (api, resource, options, defaultValidation, tests, hub) => {
   // if options is a function, we're assuming those are the tests
   if (typeof options === 'function') {
     tests = options;
@@ -420,9 +561,9 @@ const run = (api, resource, options, defaultValidation, tests) => {
   options = options || {};
   const name = options.name || resource;
   if (options.skip) {
-    describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests));
+    describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   } else {
-    describe(name, () => runTests(api, options.payload, defaultValidation, tests));
+    describe(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   }
 };
 
@@ -440,7 +581,7 @@ const run = (api, resource, options, defaultValidation, tests) => {
  * }
  * @param  {Function} tests   A function, containing all test
  */
-exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, resource, options, (r) => expect(r).to.have.statusCode(200), tests);
+exports.forElement = (hub, resource, options, tests) => run(`/hubs/${hub}/${resource}`, resource, options, (r) => expect(r).to.have.statusCode(200), tests, hub);
 
 /**
  * Starts up a new test suite for a platform resource.  This wraps all of the given tests in a mocha describe block, and

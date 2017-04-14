@@ -254,6 +254,11 @@ const cr = (api, payload, validationCb, options) => {
 };
 exports.cr = cr;
 
+const cs = (api, payload, validationCb, options) => {
+  return post(api, payload, validationCb, options)
+    .then(r => get(api, validationCb, options));
+};
+exports.cs = cs;
 
 /*
  * Gives you access to adding HTTP request options to any of the HTTP-related APIs
@@ -277,7 +282,8 @@ exports.withOptions = (options) => {
     crus: (api, payload, validationCb, updateCb) => crus(api, payload, validationCb, updateCb, options),
     sr: (api, validationCb) => sr(api, validationCb, options),
     crs: (api, payload, validationCb) => crs(api, payload, validationCb, options),
-    cr: (api, payload, validationCb) => cr(api, payload, validationCb, options)
+    cr: (api, payload, validationCb) => cr(api, payload, validationCb, options),
+    cs: (api, payload, validationCb) => cs(api, payload, validationCb, options)
   };
 };
 

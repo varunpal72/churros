@@ -5,13 +5,14 @@ const expect = require('chakram').expect;
 const util = require('util');
 const provisioner = require('core/provisioner');
 const tools = require('core/tools');
+const defaults = require('core/defaults');
 const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
 const props = require('core/props');
 
 const createAll = (urlTemplate, list) => {
-  return Object.keys(list)
+  return Object.keys(list).sort()
     .reduce((p, key) => p.then(() => cloud.post(util.format(urlTemplate, key), list[key])), Promise.resolve(true)); // initial
 };
 
@@ -20,7 +21,7 @@ const terminate = error => {
   process.exit(1);
 };
 
-const element = argv.element;
+let element = argv.element;
 let instanceId;
 
 before(() => {
@@ -29,50 +30,63 @@ before(() => {
     logger.info('Skip provisioning and all tests for %s', element);
     return {};
   }
+  return tools.runFile(element, `${__dirname}/${element}/assets/scripts.js`, 'before')
+  .then(() => {
+    const getInstance = argv.instance ? cloud.get(`/instances/${argv.instance}`)
+      .then(r => {
+        defaults.token(r.body.token);
+        expect(r.body.element.key).to.equal(tools.getBaseElement(element));
+        return r;
+      }) : provisioner
+        .create(element);
 
-  return provisioner
-    .create(element)
-    .then(r => {
-      expect(r).to.have.statusCode(200);
-      instanceId = r.body.id;
-      // object definitions file exists? create the object definitions on the instance
-      const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
-      if (fs.existsSync(objectDefinitionsFile + '.json')) {
-        logger.debug('Setting up object definitions');
-        const url = `/instances/${instanceId}/objects/%s/definitions`;
+    return getInstance
+      .then(r => {
+        expect(r).to.have.statusCode(200);
+        instanceId = r.body.id;
+        element = tools.getBaseElement(element);
 
-        // only create object definitions for the resources that are being transformed for this element.  If there
-        // aren't any transformations, no need to create any object definitions.
-        const transformationsFile = `${__dirname}/${element}/assets/transformations`;
-        if (!fs.existsSync(transformationsFile + '.json')) {
-          logger.debug(`No transformations found for ${element} so not going to create object definitions`);
-          return null;
+        // object definitions file exists? create the object definitions on the instance
+        const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
+        if (fs.existsSync(objectDefinitionsFile + '.json')) {
+          logger.debug('Setting up object definitions');
+          const url = `/instances/${instanceId}/objects/%s/definitions`;
+
+          // only create object definitions for the resources that are being transformed for this element.  If there
+          // aren't any transformations, no need to create any object definitions.
+          const transformationsFile = `${__dirname}/${element}/assets/transformations`;
+          if (!fs.existsSync(transformationsFile + '.json')) {
+            logger.debug(`No transformations found for ${element} so not going to create object definitions`);
+            return null;
+          }
+
+          const transformations = require(transformationsFile);
+          const allObjectDefinitions = require(objectDefinitionsFile);
+          const objectDefinitions = Object.keys(allObjectDefinitions)
+            .reduce((accum, objectDefinitionName) => {
+              if (transformations[objectDefinitionName]) {
+                accum[objectDefinitionName] = allObjectDefinitions[objectDefinitionName];
+              }
+              return accum;
+            }, {});
+
+          return createAll(url, objectDefinitions)
+          .catch(() => {});
         }
-
-        const transformations = require(transformationsFile);
-        const allObjectDefinitions = require(objectDefinitionsFile);
-        const objectDefinitions = Object.keys(allObjectDefinitions)
-          .reduce((accum, objectDefinitionName) => {
-            if (transformations[objectDefinitionName]) {
-              accum[objectDefinitionName] = allObjectDefinitions[objectDefinitionName];
-            }
-            return accum;
-          }, {});
-
-        return createAll(url, objectDefinitions);
-      }
-    })
-    .then(r => {
-      // transformations file exists? create the transformations on the instance
-      const transformationsFile = `${__dirname}/${element}/assets/transformations`;
-      if (fs.existsSync(transformationsFile + '.json')) {
-        logger.debug('Setting up transformations');
-        const url = `/instances/${instanceId}/transformations/%s`;
-        return createAll(url, require(transformationsFile));
-      }
-    })
-    .catch(r => {
-      return instanceId ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
+      })
+      .then(r => {
+        // transformations file exists? create the transformations on the instance
+        const transformationsFile = `${__dirname}/${element}/assets/transformations`;
+        if (fs.existsSync(transformationsFile + '.json')) {
+          logger.debug('Setting up transformations');
+          const url = `/instances/${instanceId}/transformations/%s`;
+          return createAll(url, require(transformationsFile))
+          .catch(() => {});
+        }
+      })
+      .catch(r => {
+        return instanceId && !argv.instance ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
+      });
     });
 });
 
@@ -112,7 +126,7 @@ it('should not allow provisioning with bad credentials', () => {
      });
 });
 after(done => {
-  instanceId ? provisioner
+  instanceId && !argv.instance ? provisioner
         .delete(instanceId)
         .then(() => done())
         .catch(r => logger.error('Failed to delete element instance: %s', r))

@@ -41,5 +41,12 @@
         "vendorPath": "properties.description"
       }
     ]
+  },
+  "activities": {
+    "vendorName": "events",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   }
 }

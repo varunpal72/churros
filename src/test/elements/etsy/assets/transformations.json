@@ -1,10 +1,16 @@
 {
   "orders": {
     "vendorName": "orders",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
-  };
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  },
+  "products": {
+    "vendorName": "products",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "listing_id"
+    }]
+  }
+}

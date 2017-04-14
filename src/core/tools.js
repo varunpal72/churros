@@ -6,6 +6,7 @@
 
 const logger = require('winston');
 const sleep = require('sleep');
+const fs = require('fs');
 
 var exports = module.exports = {};
 
@@ -83,7 +84,7 @@ const waitFor = max => pred => new Promise((res, rej) => {
       .then(r => res(r))
       .catch(e => {
         if (ms - 3000 < 0) {
-          rej(e || `Predicate was not true within the maximum time allowed of ${max} ms.`);
+          return rej(e || `Predicate was not true within the maximum time allowed of ${max} ms.`);
         }
         setTimeout(doit, 3000, ms - 3000); });
   };
@@ -141,3 +142,46 @@ const times = x => f =>
   }, []);
 
 exports.times = times;
+
+/**
+* Run a selenium file
+**/
+
+exports.runFile = (element, filePath, method) => {
+  return fs.existsSync(filePath) ? require(filePath)(element, method) : Promise.resolve(null);
+};
+
+exports.getBaseElement = (str) => {
+  return str.includes('--') ? str.substring(0, str.indexOf('--')) : str;
+};
+
+exports.updateMetadata = (obj) => {
+  const whereExp = obj ? obj.qs ? obj.qs.q ? obj.qs.q.includes('where') ? obj.qs.q.substring(obj.qs.q.indexOf('where') + 6) : '' : '' : '' : '';
+  if (obj) {
+    if (obj.qs) obj.qs.where = whereExp;
+  }
+  return obj;
+};
+
+exports.csvParse = (str) => {
+  let uploadArr = str.split('\n').map(line => line.split(','));
+  let firstLine = uploadArr.splice(0, 1)[0];
+  return uploadArr.slice(0, -1).map(line => {
+    var obj = {};
+    firstLine.forEach((key, j) => {
+      obj[key] = line[j];
+    });
+    return obj;
+  });
+};
+
+exports.createExpression = (obj) => {
+  let where = '';
+  Object.keys(obj).forEach(key => {
+    if (where.length > 0) {
+      where += ' AND ';
+    }
+    where += typeof obj[key] === 'string' ? `${key} = '${obj[key]}'` : `${key} = ${obj[key]}`;
+  });
+  return where;
+};
