@@ -214,7 +214,7 @@ const fake = (str, startDelim, endDelim) => {
 * look at https://github.com/marak/Faker.js/ for complete list
 * @param {Object} obj Object to randomize like '<<name.firstName>>'
 **/
-exports.fake = (obj) => fake(JSON.stringify(obj))
+exports.fake = (obj) => fake(JSON.stringify(obj));
 
 /**
 * interpolates with random data use random data like '<<name.firstName>>'
