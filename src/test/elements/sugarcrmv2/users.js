@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/users');
+const payload = require('core/tools').requirePayload(`${__dirname}/assets/users.json`);
 
 
 suite.forElement('crm', 'users', { payload: payload }, (test) => {
