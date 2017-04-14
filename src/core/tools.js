@@ -213,6 +213,8 @@ const fake = (str, startDelim, endDelim) => {
 /**
 * interpolates with random data use random data like '<<name.firstName>>'
 * look at https://github.com/marak/Faker.js/ for complete list
+* You need to have the .json on the end and use __dirname to make sure there is no problems finding the file
+* @param {string} path Path to file. Use `${__dirname}/assets/fileName.json`
 */
 exports.requirePayload = (path) => {
   if (fs.existsSync(path)) {
