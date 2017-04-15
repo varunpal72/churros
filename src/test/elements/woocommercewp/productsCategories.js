@@ -12,11 +12,11 @@ suite.forElement('ecommerce', 'products-categories', { payload: productsCategori
   // unique is "id"
   test.should.supportPagination();
   test
-  .withName(`should support searching ${test.api} by created_date`)
-  .withOptions({ qs: { where: 'after = \'2016-04-28T21:58:25\'' } })
+  .withName(`should support searching ${test.api} by slug`)
+  .withOptions({ qs: { where: 'slug = \'albums\'' } })
   .withValidation((r) => {
   expect(r).to.have.statusCode(200);
-  const validValues = r.body.filter(obj => obj.date_created >='2016-04-28T21:58:25');
+  const validValues = r.body.filter(obj => obj.slug ==='albums');
   expect(validValues.length).to.equal(r.body.length);
-  });
+  }).should.return200OnGet();
 });

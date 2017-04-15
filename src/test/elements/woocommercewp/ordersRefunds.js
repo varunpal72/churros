@@ -24,5 +24,5 @@ suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
   expect(r).to.have.statusCode(200);
   const validValues = r.body.filter(obj => obj.date_created >='2016-04-28T21:58:25');
   expect(validValues.length).to.equal(r.body.length);
-  });
+  }).should.return200OnGet();
 });
