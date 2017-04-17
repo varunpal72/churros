@@ -4,7 +4,6 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('crm', 'emailThreads', { skip: true }, (test) => {
-
   it('should support RS for emailsThreads', () => {
     let emailThreadId;
     return cloud.get(`${test.api}`)
@@ -14,7 +13,6 @@ suite.forElement('crm', 'emailThreads', { skip: true }, (test) => {
   });
 
   it('should support RUD for mailThread', () => {
-
     let id;
     return cloud.withOptions({ qs: { folder: "inbox" } }).get(`/hubs/crm/mailThreads`)
       .then(r => {
