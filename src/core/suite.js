@@ -386,6 +386,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.
+     * @param {string} unique -> A unique identifier for each page to validate correct pagination
      * @memberof module:core/suite.test.should
      */
     supportPagination: (unique) => itPagination(name, api, options, validationCb, unique),
