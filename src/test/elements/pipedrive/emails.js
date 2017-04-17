@@ -23,7 +23,7 @@ suite.forElement('crm', 'emailThreads', { skip: true }, (test) => {
         }
         id = r.body[0].id;
         return cloud.get(`/hubs/crm/mailThreads/${id}`)
-          .then(r => cloud.delete(`/hubs/crm/mailThreads/${id}`))
+          .then(r => cloud.delete(`/hubs/crm/mailThreads/${id}`));
       });
   });
 
