@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('crm', 'emailThreads',{ skip: true }, (test) => {
+suite.forElement('crm', 'emailThreads', { skip: true }, (test) => {
 
   it('should support RS for emailsThreads', () => {
     let emailThreadId;
