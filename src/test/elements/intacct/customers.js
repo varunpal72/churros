@@ -1,9 +1,9 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools')
+const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
-payload.customerid = tools.randomInt()
+payload.customerid = tools.randomInt();
 suite.forElement('finance', 'customers', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
