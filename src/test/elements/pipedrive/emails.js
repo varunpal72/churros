@@ -11,8 +11,6 @@ suite.forElement('crm', 'emailThreads', { skip: true }, (test) => {
       .then(r => emailThreadId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${emailThreadId}/emails`))
       .then(r => cloud.get(`/hubs/crm/mailMessages/${emailThreadId}`));
-
-
   });
 
   it('should support RUD for mailThread', () => {
@@ -28,6 +26,5 @@ suite.forElement('crm', 'emailThreads', { skip: true }, (test) => {
           .then(r => cloud.delete(`/hubs/crm/mailThreads/${id}`))
       });
   });
-
 
 });
