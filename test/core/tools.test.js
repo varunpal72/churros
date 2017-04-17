@@ -141,4 +141,18 @@ Josh,Wyse,2
   it('should return empty array if object is not a Object', () => {
     expect(tools.getKey('', 'id')).to.deep.equal([]);
   });
+  it('should require a JSON payload with no changes', () => {
+    const regular = require(`${__dirname}/assets/test.json`);
+    const modified = tools.requirePayload(`${__dirname}/assets/test.json`);
+    expect(modified).to.deep.equal(regular);
+  });
+  it('should require a JSON payload with changes', () => {
+    const regular = require(`${__dirname}/assets/testPayload.json`);
+    const modified = tools.requirePayload(`${__dirname}/assets/testPayload.json`);
+    expect(modified).to.not.deep.equal(regular);
+  });
+  it('should throw error with bad path', () => {
+    const fn = () => tools.requirePayload(`${__dirname}/assets/BadPath.json`);
+    expect(fn).to.throw(Error);
+  });
 });
