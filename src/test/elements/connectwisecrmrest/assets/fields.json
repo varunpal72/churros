@@ -1,0 +1,10 @@
+{
+  "sequenceNumber": 14,
+  "fieldTypeIdentifier": "Text",
+  "readOnlyFlag": false,
+  "caption": "test_churros1",
+  "requiredFlag": false,
+  "displayOnScreenFlag": false,
+  "podId": 11,
+  "entryTypeIdentifier": "EntryField"
+}
