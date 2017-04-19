@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 
-suite.forElement('ecommerce', 'invoices', (test) => {
+suite.forElement('ecommerce', 'ping', null, (test) => {
   test.should.return200OnGet();
-  test.should.supportPagination();
 });

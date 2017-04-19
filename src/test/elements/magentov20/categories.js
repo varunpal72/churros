@@ -81,7 +81,5 @@ suite.forElement('ecommerce', 'categories', { payload: payload(), skip: true }, 
       .then(r => cloud.delete(`/hubs/ecommerce/categories/${categoryId}/products/${sku}`))
       .then(r => cloud.delete(`/hubs/ecommerce/categories/${categoryId}`));
   });
-  test.withOptions({ qs: {orderBy : 'id'} }).should.return200OnGet();
-  test.withOptions({ qs: {orderBy : 'id desc'} }).should.return200OnGet();
   test.should.supportPagination();
 });

@@ -22,7 +22,5 @@ suite.forElement('ecommerce', 'customer-groups', { payload: payload() }, (test) 
     return cloud.get(`${test.api}`)
       .then(r => cloud.get(`${test.api}/${r.body[0].id}/permissions`));
   });
-  test.withOptions({ qs: {orderBy : 'id'} }).should.return200OnGet();
-  test.withOptions({ qs: {orderBy : 'id desc'} }).should.return200OnGet();
   test.should.supportPagination();
 });

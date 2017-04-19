@@ -29,6 +29,4 @@ suite.forElement('ecommerce', 'orders', (test) => {
       .then(r => cloud.delete(`/hubs/ecommerce/products/${sku}`))
       .then(r => cloud.delete(`${test.api}/${orderId}`));
   });
-  test.withOptions({ qs: {orderBy : 'id'} }).should.return200OnGet();
-  test.withOptions({ qs: {orderBy : 'id desc'} }).should.return200OnGet();
 });
