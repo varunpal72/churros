@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 
 const payload = () => ({
-  "name": tools.random() + " tax",
+  "name": tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 5)+ " tax",
   "rate": "3",
   "number": "1222222",
   "compound": 0
