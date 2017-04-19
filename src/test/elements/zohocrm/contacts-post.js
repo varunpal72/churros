@@ -3,7 +3,7 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const newResource = require('./assets/newresourcePost.json');
+const newResource = require('./assets/newResourcePost.json');
 const payload = require('./assets/contacts');
 const tools = require('core/tools');
 
