@@ -219,7 +219,7 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
                     expect(r.body.numberConsecutiveErrors).to.equal(101);
                 })
                 .then(r => cloud.get('/notifications?topics[]=threat-level-midnight'))
-                .then(r => expect(r.body.length - startingNotifications).to.equal(2));
+                .then(r => expect(parseInt(r.response.headers['elements-total-count']) - startingNotifications).to.equal(2));
         };
 
         const triggerCb = (fId, fiId) => {
@@ -231,7 +231,7 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
         };
 
         return cloud.get('/notifications?topics[]=threat-level-midnight')
-            .then(r => startingNotifications = r.body.length)
+            .then(r => startingNotifications = parseInt(r.response.headers['elements-total-count']))
             .then(r => testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb));
     });
 
@@ -246,7 +246,7 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
                     expect(r.body.numberConsecutiveErrorWarningNotifications).to.equal(1);
                 })
                 .then(r => cloud.get('/notifications?topics[]=threat-level-midnight'))
-                .then(r => expect(r.body.length - startingNotifications).to.equal(2));
+                .then(r => expect(parseInt(r.response.headers['elements-total-count']) - startingNotifications).to.equal(2));
         };
 
         const triggerCb = (fId, fiId) => {
@@ -258,7 +258,7 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
         };
 
         return cloud.get('/notifications?topics[]=threat-level-midnight')
-            .then(r => startingNotifications = r.body.length)
+            .then(r => startingNotifications = parseInt(r.response.headers['elements-total-count']))
             .then(r => testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb));
     });
 });
