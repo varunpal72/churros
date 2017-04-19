@@ -8,14 +8,8 @@ const uri = '/hubs/crm/objects/contact/metadata';
 
 suite.forElement('crm', 'metadata', (test) => {
   it('should test objects api', () => {
-    const validateObjects = (objects) => {
-      let hasAccount = false;
-      objects.forEach(object => hasAccount = (object === 'Account'));
-
-      return hasAccount;
-    };
     return cloud.get('/hubs/crm/objects')
-      .then(r => validateObjects(r.body));
+      .then(r => expect(r.body).to.include('Account'));
   });
 
   it('should include filterable, createable, and updateable for metadata', () => {
