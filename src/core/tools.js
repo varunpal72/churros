@@ -194,6 +194,20 @@ exports.createExpression = (obj) => {
   });
   return where;
 };
+const getKey = (obj, key, acc) => {
+  acc = acc ? acc : [];
+  if (typeof obj === 'object') {
+    let objKeys = Object.keys(obj);
+    if (objKeys.includes(key)) {
+      acc.push(obj[key]);
+      return acc;
+    }
+    objKeys.forEach(k => getKey(obj[k], key, acc));
+    return acc;
+  }
+  return acc;
+};
+exports.getKey = (obj, key) => getKey(obj, key);
 
 const fake = (str, startDelim, endDelim) => {
   startDelim = startDelim ? startDelim : '<<';
