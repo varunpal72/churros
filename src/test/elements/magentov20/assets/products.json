@@ -1,19 +1,20 @@
-{
-  "product": {
-    "name": "Churro",
-    "price": 100,
-    "status": 1,
-    "visibility": 4,
-    "type_id": "simple",
-    "weight": 150,
+{"product":{
+  "attribute_set_id": 4,
+  "name": "Myproduct",
+  "price": 300,
+  "sku": "Myproduct",
+  "status": 1,
+  "type_id": "simple",
+  "visibility": 4,
     "extension_attributes": {
       "stock_item": {
         "is_in_stock": 1,
         "qty": 200
-      }
-    },
-    "attribute_set_id": 4,
-    "sku": "churrosItem"
-  },
-  "saveOptions": true
+      }},
+"custom_attributes": [
+    {
+      "attribute_code": "description",
+      "value": "mystrore"
+    }]
+}
 }

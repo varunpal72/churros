@@ -6,17 +6,20 @@ const tools = require('core/tools');
 
 const product = (attributeSetId) => ({
   "product": {
-    "name": tools.random(),
-    "price": 100,
-    "status": 1,
-    "visibility": 4,
-    "type_id": "simple",
-    "weight": 150,
-    "attribute_set_id": attributeSetId,
-    "sku": tools.random()
-  },
-  "saveOptions": true
-});
+      "attribute_set_id": attributeSetId,
+      "name": tools.random(),
+      "price": 300,
+      "sku": "ce"+tools.randomInt(),
+      "status": 1,
+      "type_id": "simple",
+      "visibility": 4,
+    "custom_attributes": [
+        {
+          "attribute_code": "description",
+          "value": tools.random()
+        }]
+    }});
+
 const productsWebsites = (sku) => ({
   "productWebsiteLink": {
     "sku": sku,
@@ -61,13 +64,14 @@ const productsGroupPrices = () => ({
 });
 
 suite.forElement('ecommerce', 'products', { payload: product() }, (test) => {
-  test.should.return200OnGet();
+ test.should.return200OnGet();
   it(`should allow CRUDS for ${test.api}`, () => {
-    let attributeSetId, sku;
+    let attributeSetId,createdAt, sku;
     return cloud.get(`/hubs/ecommerce/products-attribute-sets`)
       .then(r => attributeSetId = r.body[0].id)
       .then(r => cloud.post(`${test.api}`, product(attributeSetId)))
-      .then(r => sku = r.body.sku)
+      .then(r => {sku = r.body.sku; createdAt = r.body.created_at;})
+      .then(r => cloud.withOptions({ qs: { where: `created_at= '${createdAt}'` } }).get(`${test.api}`))
       .then(r => cloud.get(`${test.api}/${sku}`))
       .then(r => cloud.patch(`${test.api}/${sku}`, product(attributeSetId)))
       .then(r => cloud.delete(`${test.api}/${sku}`));
@@ -82,11 +86,12 @@ suite.forElement('ecommerce', 'products', { payload: product() }, (test) => {
       .then(r => cloud.post(`/hubs/ecommerce/products-options`, productsOptionsPost(sku)))
       .then(r => optionId = r.body.option_id)
       .then(r => cloud.get(`${test.api}/${sku}/options/${optionId}`))
+        //  .then(r => cloud.delete(`${test.api}/${sku}/options/${optionId}`))            //No post so delete commented
       .then(r => cloud.patch(`/hubs/ecommerce/products-options/${optionId}`, productsOptionsPatch(sku)))
       .then(r => cloud.delete(`${test.api}/${sku}`));
   });
-  test.withApi(`/hubs/ecommerce/products-options-types`).should.return200OnGet();
-  test.withApi(`/hubs/ecommerce/products-types`).should.return200OnGet();
+ test.withApi(`/hubs/ecommerce/products-options-types`).should.return200OnGet();
+ test.withApi(`/hubs/ecommerce/products-types`).should.return200OnGet();
 
   it(`should allow GET for /hubs/ecommerce/products-links-types`, () => {
     return cloud.get(`/hubs/ecommerce/products-links-types`)
@@ -105,12 +110,13 @@ suite.forElement('ecommerce', 'products', { payload: product() }, (test) => {
       .then(r => cloud.delete(`${test.api}/${sku}`));
   });
   it(`should allow GET for /hubs/ecommerce/products/{sku}/media`, () => {
-    let attributeSetId, sku;
-    return cloud.get(`/hubs/ecommerce/products-attribute-sets`)
-      .then(r => attributeSetId = r.body[0].id)
-      .then(r => cloud.post(`${test.api}`, product(attributeSetId)))
-      .then(r => sku = r.body.sku)
-      .then(r => cloud.get(`/hubs/ecommerce/products/${sku}/media`))
+    let entryId,sku;
+    return cloud.get(`/hubs/ecommerce/products`)
+      .then(r => sku = r.body[0].sku)
+      .then(r => cloud.get(`${test.api}/${sku}/media`))
+      .then(r => entryId = r.body[0].id)
+      .then(r => cloud.get(`${test.api}/${sku}/media/${entryId}`))
+    //  .then(r => cloud.delete(`${test.api}/${sku}/media/${entryId}`))    no post so no delete
       .then(r => cloud.delete(`${test.api}/${sku}`));
   });
   it(`should allow CRD for /hubs/ecommerce/products/{sku}/group-prices/{customerGroupId}/tiers`, () => {
@@ -126,6 +132,12 @@ suite.forElement('ecommerce', 'products', { payload: product() }, (test) => {
       .then(r => cloud.delete(`/hubs/ecommerce/products/${sku}/group-prices/${customerGroupId}/tiers/${qty}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`))
       .then(r => cloud.delete(`${test.api}/${sku}`));
+  });
+  it(`should allow GET for /hubs/ecommerce/products-media-types`, () => {
+    let attributeSetName;
+    return cloud.get(`/hubs/ecommerce/products-attribute-sets`)
+        .then(r => attributeSetName = r.body[0].attribute_set_name)
+        .then(r => cloud.get(`/hubs/ecommerce/products-media-types/${attributeSetName}`));
   });
   test.should.supportPagination();
 });

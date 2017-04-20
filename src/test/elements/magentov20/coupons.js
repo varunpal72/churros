@@ -95,7 +95,7 @@ suite.forElement('ecommerce', 'coupons', (test) => {
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r => ruleId = r.body.id)
+      .then(r => ruleId = r.body.rule_id)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-generate`, couponGenerate(ruleId)))
       .then(r => couponCodes = r.body)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-delete-by-codes`, deleteByCodes(couponCodes)))
@@ -109,8 +109,9 @@ suite.forElement('ecommerce', 'coupons', (test) => {
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r => ruleId = r.body.id)
+      .then(r =>  ruleId = r.body.rule_id)
       .then(r => cloud.cruds(test.api, couponPost(ruleId)))
+      .then(r => cloud.withOptions({ qs: { where: `rule_id=${ruleId}` } }).get(`${test.api}`))
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
@@ -121,11 +122,12 @@ suite.forElement('ecommerce', 'coupons', (test) => {
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r => ruleId = r.body.id)
+      .then(r => ruleId = r.body.rule_id)
       .then(r => cloud.post(`${test.api}`, couponPost(ruleId)))
       .then(r => couponId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-delete-by-ids`, deleteByIds(couponId)))
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
+    test.should.supportPagination();
 });

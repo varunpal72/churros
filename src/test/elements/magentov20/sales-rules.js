@@ -58,11 +58,16 @@ const customerGroups = () => ({
 
 suite.forElement('ecommerce', 'sales-rules', (test) => {
   it(`should allow CRUDS for ${test.api}`, () => {
-    let customerGroupId;
+    let customerGroupId,ruleId,name;
     let autoGen = false;
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
-      .then(r => cloud.cruds(test.api, salesRulePost(customerGroupId, autoGen)))
+      .then(r => cloud.post(test.api, salesRulePost(customerGroupId, autoGen)))
+      .then(r =>{ name = r.body.name; ruleId = r.body.rule_id;})
+      .then(r => cloud.withOptions({ qs: { where: `name='${name}'` } }).get(test.api))
+      .then(r => cloud.get(`${test.api}/${ruleId}`))
+      .then(r => cloud.patch(`${test.api}/${ruleId}`,salesRulePost(customerGroupId, autoGen)))
+      .then(r => cloud.delete(`${test.api}/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
   test.should.supportPagination();

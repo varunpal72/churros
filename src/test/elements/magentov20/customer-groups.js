@@ -14,6 +14,7 @@ const payload = () => ({
 
 suite.forElement('ecommerce', 'customer-groups', { payload: payload() }, (test) => {
   test.should.supportCruds();
+  test.should.supportCeqlSearch('code');
   it(`should allow SR for /hubs/ecommerce/customer-groups-default`, () => {
     return cloud.get(`/hubs/ecommerce/customer-groups-default`)
       .then(r => cloud.get(`/hubs/ecommerce/customer-groups-default/${r.body.id}`));

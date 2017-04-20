@@ -35,26 +35,30 @@ const categoryMove = (parentId) => ({
 });
 const product = (attributeSetId) => ({
   "product": {
-    "name": tools.random(),
-    "price": 100,
-    "status": 1,
-    "visibility": 4,
-    "type_id": "simple",
-    "weight": 150,
-    "attribute_set_id": attributeSetId,
-    "sku": tools.random()
-  },
-  "saveOptions": true
-});
-
-suite.forElement('ecommerce', 'categories', { payload: payload(), skip: true }, (test) => {
+      "attribute_set_id": attributeSetId,
+      "name": tools.random(),
+      "price": 300,
+      "sku": "ce"+tools.randomInt(),
+      "status": 1,
+      "type_id": "simple",
+      "visibility": 4,
+    "custom_attributes": [
+        {
+          "attribute_code": "description",
+          "value": tools.random()
+        }]
+    }});
+suite.forElement('ecommerce', 'categories', { payload: payload() }, (test) => {
   test.should.supportCruds();
+  test.withOptions({ qs: { where: `depth = 1` }}).should.return200OnGet();
   it(`should allow SR for /hubs/ecommerce/categories-attributes`, () => {
     return cloud.get(`/hubs/ecommerce/categories-attributes`)
       .then(r => cloud.get(`/hubs/ecommerce/categories-attributes/${r.body[0].attribute_code}`));
   });
   it(`should allow GET for /hubs/ecommerce/categories/attributes/{attributeCode}/options`, () => {
+    let frontendInput='text';
     return cloud.get(`/hubs/ecommerce/categories-attributes`)
+      .then(r => cloud.withOptions({ qs: { where: `frontend_input=${frontendInput}` } }).get(`/hubs/ecommerce/categories-attributes`))
       .then(r => cloud.get(`/hubs/ecommerce/categories-attributes/${r.body[0].attribute_code}/options`));
   });
   it(`should allow PATCH for /hubs/ecommerce/categories/{id}/move`, () => {

@@ -17,6 +17,25 @@
       }
     ]
   },
+  "credit-memos": {
+    "vendorName": "credit-memos",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "entity_id"
+      }
+    ]
+  },
+  "invoices": {
+    "vendorName": "invoices",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "entity_id"
+      }
+    ]
+  },
+
   "coupons": {
     "vendorName": "coupons",
     "fields": [
@@ -40,7 +59,7 @@
     "fields": [
       {
         "path": "id",
-        "vendorPath": "attribute_code"
+        "vendorPath": "entity_id"
       }
     ]
   },
@@ -50,6 +69,15 @@
       {
         "path": "id",
         "vendorPath": "attribute_set_id"
+      }
+    ]
+  },
+  "products-attribute-sets-groups": {
+    "vendorName": "products-attribute-sets-groups",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "attribute_group_id"
       }
     ]
   }

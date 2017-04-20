@@ -2,9 +2,10 @@
 
 const suite = require('core/suite');
 
-suite.forElement('ecommerce', 'stores', (test) => {
-  test.should.return200OnGet();
-  test.withApi('/hubs/ecommerce/stores-configs').should.return200OnGet();
+suite.forElement('ecommerce', 'stores-configs', (test) => {
+  test.withOptions({ qs: { where: `storeCodes = 'default'` }}).should.return200OnGet();
+  test.withApi('/hubs/ecommerce/stores').should.return200OnGet();
   test.withApi('/hubs/ecommerce/stores-groups').should.return200OnGet();
   test.withApi('/hubs/ecommerce/stores-websites').should.return200OnGet();
+    test.should.supportPagination();
 });
