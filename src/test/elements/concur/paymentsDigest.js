@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const expect = require('chakram').expect;
-const cloud = require('core/cloud')
+const cloud = require('core/cloud');
 
 suite.forElement('expense', 'payments-digest', null, (test) => {
     it('should support Sr for /hubs/expense/payments', () => {

@@ -22,7 +22,7 @@ suite.forElement('expense', 'expenses', { payload: expensesPayload }, (test) => 
     .withOptions({ qs: { where: 'isBillable = \'false\'' } })
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.IsBillable == false);
+      const validValues = r.body.filter(obj => obj.IsBillable === false);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
 });

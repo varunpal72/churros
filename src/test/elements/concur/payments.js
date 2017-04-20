@@ -13,6 +13,6 @@ suite.forElement('expense', 'payments', { payload: paymentsPayload }, (test) => 
         return cloud.post(test.api, payload)
             .then(r => id = r.body.ID)
             .then(r => cloud.get(`${test.api}/${id}`))
-            .then(r => cloud.patch(`${test.api}/${id}`, paymentsPayload))
+            .then(r => cloud.patch(`${test.api}/${id}`, paymentsPayload));
     });
 });
