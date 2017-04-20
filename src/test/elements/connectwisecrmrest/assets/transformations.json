@@ -19,5 +19,12 @@
       "path": "id",
       "vendorPath": "id"
     }]
+  },
+  "fields": {
+    "vendorName": "fields",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   }
 }
