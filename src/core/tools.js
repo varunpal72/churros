@@ -222,7 +222,7 @@ const fake = (str, startDelim, endDelim) => {
 * look at https://github.com/marak/Faker.js/ for complete list
 * @param {Object} obj Object to randomize like '<<name.firstName>>'
 **/
-exports.fake = (obj) => fake(JSON.stringify(obj));
+exports.fake = (obj, startDelim, endDelim) => fake(JSON.stringify(obj), startDelim, endDelim);
 
 /**
 * interpolates with random data use random data like '<<name.firstName>>'
@@ -230,10 +230,10 @@ exports.fake = (obj) => fake(JSON.stringify(obj));
 * You need to have the .json on the end and use __dirname to make sure there is no problems finding the file
 * @param {string} path Path to file. Use `${__dirname}/assets/fileName.json`
 */
-exports.requirePayload = (path) => {
+exports.requirePayload = (path, startDelim, endDelim) => {
   if (fs.existsSync(path)) {
     const str = JSON.stringify(require(path));
-    const payload = fake(str);
+    const payload = fake(str, startDelim, endDelim);
     return JSON.parse(payload);
   } else {
     throw new Error('Path is not valid');
