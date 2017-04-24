@@ -1004,5 +1004,11 @@
      "path": "id",
      "type": "string"
    }]
- }
+ },
+ "products-attribute-sets-groups": {
+ "fields": [{
+   "path": "id",
+   "type": "string"
+ }]
+}
 }
