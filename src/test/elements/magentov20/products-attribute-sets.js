@@ -34,7 +34,7 @@ const ProductsAttributesSetsAttribute = () => ({
 });
 
 suite.forElement('ecommerce', 'products-attribute-sets', (test) => {
- let attributeSetId,attributeSetName,groupId;
+ let attributeSetId,attributeSetName,groupId, attributeCode;
 
   it(`should allow CRDS for ${test.api}`, () => {
     return cloud.crds(`${test.api}`, productsAttributesSets());
@@ -51,11 +51,11 @@ suite.forElement('ecommerce', 'products-attribute-sets', (test) => {
     return cloud.get(`${test.api}`)
       .then(r =>{ attributeSetId = r.body[0].id;
                     attributeSetName = r.body[0].attribute_set_name;})
-      .then(r => {cloud.withOptions({ qs: { where: `attribute_set_name='${attributeSetName}'`} }).get(test.api)
+      .then(r => {cloud.withOptions({ qs: { where: `attribute_set_name='${attributeSetName}'`} }).get(test.api);
                   expect(r).to.have.statusCode(200);
                   const validValues = r.body.filter(obj => obj.attribute_set_name === `'${attributeSetName}'`);
                   expect(validValues.length).to.equal(r.body.length);
-      })
+      });
   });
 
   it.skip(`should allow DELETE for  ${test.api}/{attributeSetId}/attributes/{attributeCode}`, () => { //System attributes can not be deleted
@@ -64,7 +64,7 @@ suite.forElement('ecommerce', 'products-attribute-sets', (test) => {
       .then(r => cloud.get(`/hubs/ecommerce/products-attributes`))
       .then(r => attributeCode = r.body[0].id)
       .then(r => cloud.delete(`${test.api}/${attributeSetId}/attributes/${attributeCode}`));
-      })
+    });
 
   it(`should allow CRD for /hubs/ecommerce/products-attribute-sets-groups`, () => {
     return cloud.get(`${test.api}`)
@@ -84,7 +84,6 @@ suite.forElement('ecommerce', 'products-attribute-sets', (test) => {
      }).should.return200OnGet();
 
     it(`should allow POST for /hubs/ecommerce/products-attribute-sets-attributes`, () => {
-      let attributeCode;
       return cloud.get(`${test.api}`)
       .then(r => attributeSetId = r.body[0].id)
       .then(r => cloud.get(`/hubs/ecommerce/products-attributes`))
@@ -95,8 +94,8 @@ suite.forElement('ecommerce', 'products-attribute-sets', (test) => {
            ProductsAttributesSetsAttribute.attribute_set_id = attributeSetId;
            ProductsAttributesSetsAttribute.attribute_group_id = groupId;
            ProductsAttributesSetsAttribute.attribute_code = attributeCode;
-          })
-        .then(r => cloud.post(`/hubs/ecommerce/products-attribute-sets-attributes`,ProductsAttributesSetsAttribute()))
+         })
+        .then(r => cloud.post(`/hubs/ecommerce/products-attribute-sets-attributes`,ProductsAttributesSetsAttribute()));
       });
 
       it.skip(`should allow PATCH for  ${test.api}/{attributeSetId}/group/{groupId}`, () => { //Error in plateform API

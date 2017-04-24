@@ -88,7 +88,7 @@ suite.forElement('ecommerce', 'products-attributes', { payload: productsAttribut
     }
     else {
        optionId = r.body.id;
-      return cloud.get(`${test.api}/${attributeCode}/options`)
+      return cloud.get(`${test.api}/${attributeCode}/options`);
     }
   });
   });
