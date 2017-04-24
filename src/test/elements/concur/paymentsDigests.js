@@ -4,8 +4,8 @@ const suite = require('core/suite');
 const expect = require('chakram').expect;
 const cloud = require('core/cloud');
 
-suite.forElement('expense', 'payments-digest', null, (test) => {
-    it('should support Sr for /hubs/expense/payments', () => {
+suite.forElement('expense', 'payments-digests', null, (test) => {
+    it('should support Sr for /hubs/expense/payments-digests', () => {
         let id;
         return cloud.withOptions({ qs: { where: `approvalStatus='R_NOTF'` } }).get(test.api)
             .then(r => id = r.body[0].ID)

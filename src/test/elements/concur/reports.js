@@ -16,7 +16,7 @@ suite.forElement('expense', 'reports', { payload: reportsPayload }, (test) => {
     }
   };
   test.withOptions(options).should.supportCrus();
-  test.should.supportNextPagePagination(1);
+  test.should.supportNextPagePagination(2);
   test
     .withName(`should support searching ${test.api} by modifiedDateAfter`)
     .withOptions({ qs: { where: `modifiedDateAfter='2017-04-19T05:01:31.463'` } })

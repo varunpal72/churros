@@ -16,7 +16,7 @@ suite.forElement('expense', 'expenses', { payload: expensesPayload }, (test) => 
     }
   };
   test.withOptions(options).should.supportCruds();
-  test.should.supportNextPagePagination(1);
+  test.should.supportNextPagePagination(2);
   test
     .withName(`should support searching ${test.api} by isBillable`)
     .withOptions({ qs: { where: 'isBillable = \'false\'' } })

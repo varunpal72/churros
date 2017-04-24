@@ -2,6 +2,6 @@
 
 const suite = require('core/suite');
 
-suite.forElement('expense', 'expense-group-configurations', null, (test) => {
+suite.forElement('expense', 'expense-group-configurations', (test) => {
   test.should.supportSr();
 });

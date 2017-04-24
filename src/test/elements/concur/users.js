@@ -3,9 +3,9 @@
 const suite = require('core/suite');
 const expect = require('chakram').expect;
 
-suite.forElement('expense', 'users', null, (test) => {
+suite.forElement('expense', 'users', (test) => {
   test.should.return200OnGet();
-  test.should.supportNextPagePagination(1);
+  test.should.supportNextPagePagination(2);
   test
     .withName(`should support searching ${test.api} by Active`)
     .withOptions({ qs: { where: 'active = \'true\'' } })

@@ -15,5 +15,5 @@ suite.forElement('expense', 'lists', { payload: listsPayload }, (test) => {
     }
   };
   test.withOptions(options).should.supportCrus();
-  test.should.supportNextPagePagination(1);
+  test.should.supportNextPagePagination(2);
 });

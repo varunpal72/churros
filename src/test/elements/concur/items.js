@@ -9,7 +9,7 @@ const build = (overrides) => Object.assign({}, payload, overrides);
 const itemsPayload = build({ Name: tools.randomEmail(), Level1Code: tools.random() });
 
 suite.forElement('expense', 'items', { payload: itemsPayload }, (test) => {
-  it('should support cruds for /hubs/expense/items', () => {
+  it('should support CRUDS for /hubs/expense/items', () => {
     let id, listId;
     return cloud.post(test.api, itemsPayload)
       .then(r => id = r.body.ID)
@@ -19,7 +19,7 @@ suite.forElement('expense', 'items', { payload: itemsPayload }, (test) => {
       .then(r => cloud.patch(`${test.api}/${id}`, itemsPayload))
       .then(r => cloud.withOptions({ qs: { listId: `${listId}` } }).delete(`${test.api}/${id}`));
   });
-  test.should.supportNextPagePagination(1);
+  test.should.supportNextPagePagination(2);
   test
     .withName(`should support searching ${test.api} by name`)
     .withOptions({ qs: { where: `name='American Express Travel1'` } })
