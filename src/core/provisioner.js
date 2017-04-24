@@ -55,8 +55,8 @@ const parseProps = (element) => {
 
 const getPollerConfig = (element, instance) => {
   let elementObj;
-  return cloud.get('/elements')
-  .then(r => elementObj = r.body.reduce((acc, el) => acc = el.key === element ? el : acc, null))
+  return cloud.get('/elements/' + element)
+  .then(r => elementObj = r.body)
   .then(r => cloud.get(`elements/${elementObj.id}/metadata`))
   .then(r => {
     defaults.setPolling(r.body.events.supported && r.body.events.methods.includes('polling'));
@@ -66,19 +66,20 @@ const getPollerConfig = (element, instance) => {
   .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
   .then(r => {
     if (r === null) return instance;
+    let instanceCopy = Object.assign({}, instance)
     try {
-      instance.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
+      instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
     } catch (e) {
-      instance.configuration['event.poller.configuration'] = r;
+      instanceCopy.configuration['event.poller.configuration'] = r;
     }
     const url = `https://knappkeith.pythonanywhere.com/request/${tools.random()}/`;
     defaults.setUrl(url);
-    instance.configuration['event.vendor.type'] = 'polling';
-    instance.configuration['event.notification.callback.url'] = url;
-    instance.configuration['event.notification.enabled'] = 'true';
-    instance.configuration['event.poller.refresh_interval'] = '1';
-    return instance;
+    instanceCopy.configuration['event.vendor.type'] = 'polling';
+    instanceCopy.configuration['event.notification.callback.url'] = url;
+    instanceCopy.configuration['event.notification.enabled'] = 'true';
+    instanceCopy.configuration['event.poller.refresh_interval'] = '1';
+    return instanceCopy;
   })
   .catch(() => instance);
 };
