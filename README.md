@@ -66,7 +66,7 @@ For full API docs, see the API docs [here](http://cloud-elements.github.io/churr
 
 ## Examples
 
-#### Element Tests
+### Element Tests
 To run the tests for any element, you must have the necessary properties setup for that element.  *ALL* properties for the elements below must be populated.  To see what properties are required, you can call `churros props {element}`.  You can also run `churros help props` for more info.
 
 ```bash
@@ -101,7 +101,7 @@ $ churros test elements/pipedrive --instance 1234
 
 > __PROTIP:__ The `--browser` value defaults to `firefox`, however if you want to use a headless browser, you can pass `--browser phantomjs` as seen above
 
-#### Platform Tests
+### Platform Tests
 
 #### All Platform
 ```bash
