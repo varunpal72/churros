@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = tools.requirePayload(`${__dirname}/assets/lists.json`)
+const payload = tools.requirePayload(`${__dirname}/assets/lists.json`);
 const options = {
   churros: {
     updatePayload: {
