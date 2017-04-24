@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 
 const payload = () => ({
   "category": {
@@ -49,16 +50,34 @@ const product = (attributeSetId) => ({
         }]
     }});
 suite.forElement('ecommerce', 'categories', { payload: payload() }, (test) => {
+  let frontendInput='text';
   test.should.supportCruds();
-  test.withOptions({ qs: { where: `depth = 1` }}).should.return200OnGet();
+  test
+   .withName(`should support searching ${test.api} by depth`)
+   .withOptions({ qs: { where: 'depth = 1' } })
+   .withValidation((r) => {
+   expect(r).to.have.statusCode(200);
+   const validValues = r.body.filter(obj => obj.level === 1);
+   expect(validValues.length).to.equal(r.body.length);
+   }).should.return200OnGet();
+
   it(`should allow SR for /hubs/ecommerce/categories-attributes`, () => {
     return cloud.get(`/hubs/ecommerce/categories-attributes`)
       .then(r => cloud.get(`/hubs/ecommerce/categories-attributes/${r.body[0].attribute_code}`));
   });
+
+  test
+   .withName(`should support searching /hubs/ecommerce/categories-attributes by frontend_input`)
+   .withOptions({ qs: { where: `frontend_input = '${frontendInput}'` } })
+   .withApi(`/hubs/ecommerce/categories-attributes`)
+   .withValidation((r) => {
+   expect(r).to.have.statusCode(200);
+   const validValues = r.body.filter(obj => obj.frontend_input === 'text');
+   expect(validValues.length).to.equal(r.body.length);
+   }).should.return200OnGet();
+
   it(`should allow GET for /hubs/ecommerce/categories/attributes/{attributeCode}/options`, () => {
-    let frontendInput='text';
     return cloud.get(`/hubs/ecommerce/categories-attributes`)
-      .then(r => cloud.withOptions({ qs: { where: `frontend_input=${frontendInput}` } }).get(`/hubs/ecommerce/categories-attributes`))
       .then(r => cloud.get(`/hubs/ecommerce/categories-attributes/${r.body[0].attribute_code}/options`));
   });
   it(`should allow PATCH for /hubs/ecommerce/categories/{id}/move`, () => {

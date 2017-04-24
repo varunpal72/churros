@@ -3,20 +3,24 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 
 const product = (attributeSetId) => ({
   "product": {
-    "name": tools.random(),
-    "price": 100,
-    "status": 1,
-    "visibility": 4,
-    "type_id": "simple",
-    "weight": 150,
-    "attribute_set_id": attributeSetId,
-    "sku": tools.random()
-  },
-  "saveOptions": true
-});
+      "attribute_set_id": attributeSetId,
+      "name": tools.random(),
+      "price": 300,
+      "sku": "ce"+tools.randomInt(),
+      "status": 1,
+      "type_id": "simple",
+      "visibility": 4,
+    "custom_attributes": [
+        {
+          "attribute_code": "description",
+          "value": tools.random()
+        }]
+    }});
+
 
 const productsStockItems = () => ({
   "stockItem": {
@@ -48,7 +52,7 @@ const productsStockItems = () => ({
   }
 });
 
-suite.forElement('ecommerce', 'stock-items', { skip: true }, (test) => {
+suite.forElement('ecommerce', 'stock-items', (test) => {
   it(`should allow GET for ${test.api}/{sku}`, () => {
     let sku, attributeSetId;
     return cloud.get(`/hubs/ecommerce/products-attribute-sets`)
@@ -79,7 +83,18 @@ suite.forElement('ecommerce', 'stock-items', { skip: true }, (test) => {
       .then(r => cloud.put(`/hubs/ecommerce/products/${sku}/stockItems/${itemId}`, productsStockItems()))
       .then(r => cloud.delete(`/hubs/ecommerce/products/${sku}`));
   });
-  it(`should allow GET for ${test.api}/low-stock`, () => {
-    return cloud.withOptions({ qs: { where: `scopeId = 1 and qty = 1` }}).get(`/hubs/ecommerce/stock-items/low-stock`);
+  it(`should allow Pagination for ${test.api}/low-stock`, () => {
+    return cloud.withOptions({ qs: { where: `scopeId = 1 and qty = 1` }}).get(`${test.api}/low-stock`)
+    .then(r => test.should.supportPagination());
   });
+  test
+   .withName(`should support searching  ${test.api}/low-stock`)
+   .withOptions({ qs: { where: `scopeId = 1 and qty = 0`} })
+   .withApi(`${test.api}/low-stock`)
+   .withValidation((r) => {
+   expect(r).to.have.statusCode(200);
+   const validValues = (r.body.filter(obj => obj.qty === 0));
+   expect(validValues.length).to.equal(r.body.length);
+   }).should.return200OnGet();
+
 });

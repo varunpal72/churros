@@ -6,6 +6,7 @@ const tools = require('core/tools');
 const productPayload = require('./assets/products');
 const orderPayload = require('./assets/orders');
 const payload = require('./assets/shipments');
+const expect = require('chakram').expect;
 const shipmentTrack = (parentId,orderId) => ({
   "entity": {
     "carrier_code":"flatrate",
@@ -16,9 +17,9 @@ const shipmentTrack = (parentId,orderId) => ({
 });
 
 suite.forElement('ecommerce', 'shipments',{ payload: payload }, (test) => {
+       let attributeSetId,orderId, sku,parentId,comment;
 
    it(`should allow CRS for ${test.api}`, () => {
-     let attributeSetId,orderId, sku,parentId,comment;
       return cloud.get(`/hubs/ecommerce/products-attribute-sets`)
         .then(r => {
          attributeSetId = r.body[0].id;
@@ -63,6 +64,13 @@ suite.forElement('ecommerce', 'shipments',{ payload: payload }, (test) => {
           .then(r => cloud.delete(`/hubs/ecommerce/products/${sku}`))
           .then(r => cloud.delete(`/hubs/ecommerce/orders/${orderId}`));
         });
+        test
+         .withName(`should support searching ${test.api} by entity_id`)
+         .withOptions({ qs: { where: `entity_id='${parentId}'`} })
+         .withValidation((r) => {
+         expect(r).to.have.statusCode(200);
+         const validValues = r.body.filter(obj => obj.entity_id === '${parentId}');
+         expect(validValues.length).to.equal(r.body.length);
+         }).should.return200OnGet();
         test.should.supportPagination();
-
 });

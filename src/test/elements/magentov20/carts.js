@@ -65,5 +65,4 @@ suite.forElement('ecommerce', 'carts',  (test) => {
     .then(r =>cartOrder={"paymentMethod" : {"method": "checkmo"}} )
     .then(r => cloud.post(`${test.api}/${cartId}/orders`,cartOrder));
   });
-
 });

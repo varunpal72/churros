@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 
 const salesRulePost = (customerGroupId, autoGen) => ({
   "rule": {
@@ -89,9 +90,9 @@ const customerGroups = () => ({
 });
 
 suite.forElement('ecommerce', 'coupons', (test) => {
+  let ruleId,customerGroupId;
   it(`should allow CD for /hubs/ecommerce/coupons-generate`, () => {
-    let ruleId, couponCodes, customerGroupId;
-    let autoGen = true;
+    let  couponCodes, autoGen = true;
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
@@ -104,21 +105,26 @@ suite.forElement('ecommerce', 'coupons', (test) => {
   });
 
   it(`should allow CRUDS for ${test.api}`, () => {
-    let ruleId, customerGroupId;
     let autoGen = false;
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
       .then(r =>  ruleId = r.body.rule_id)
       .then(r => cloud.cruds(test.api, couponPost(ruleId)))
-      .then(r => cloud.withOptions({ qs: { where: `rule_id=${ruleId}` } }).get(`${test.api}`))
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
+  test
+   .withName(`should support searching ${test.api} by ruleId`)
+   .withOptions({ qs: { where: `rule_id='${ruleId}'`} })
+   .withValidation((r) => {
+   expect(r).to.have.statusCode(200);
+   const validValues = r.body.filter(obj => obj.rule_id === '${ruleId}');
+   expect(validValues.length).to.equal(r.body.length);
+   }).should.return200OnGet();
 
   it(`should allow POST for /hubs/ecommerce/coupons/deleteByIds`, () => {
-    let ruleId, couponId, customerGroupId;
-    let autoGen = false;
+    let couponId,autoGen = false;
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))

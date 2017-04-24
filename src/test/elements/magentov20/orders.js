@@ -5,12 +5,13 @@ const cloud = require('core/cloud');
 const tools = require('core/tools');
 const productPayload = require('./assets/products');
 const payload = require('./assets/orders');
+const expect = require('chakram').expect;
 
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
+  // unique is "id"
 //test.should.supportPagination();
-
+ let attributeSetId,comments, sku, orderId,orderPutPayload,addressPayload,protectCode;
  it(`should allow CRUDS for ${test.api}`, () => {
-   let attributeSetId,comments, sku, orderId,orderPutPayload,addressPayload,protectCode,baseTotalDue;
     return cloud.get(`/hubs/ecommerce/products-attribute-sets`)
       .then(r => {
        attributeSetId = r.body[0].id;
@@ -24,8 +25,7 @@ suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
         payload.cartItem.sku = sku;
      })
       .then(r => cloud.post(test.api, payload))
-      .then(r => { orderId = r.body.id; protectCode = r.body.protect_code;baseTotalDue= r.body.base_total_due;  })
-      .then(r => cloud.withOptions({ qs: { where: `protect_code='${protectCode}' AND base_total_due=${baseTotalDue}` } }).get(`/hubs/ecommerce/categories-attributes`))
+      .then(r => { orderId = r.body.id; protectCode = r.body.protect_code; })
       .then(r => cloud.get(`${test.api}/${orderId}`))
       .then(r =>{
          addressPayload = r.body.billing_address;
@@ -49,4 +49,12 @@ suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
       .then(r => cloud.delete(`/hubs/ecommerce/products/${sku}`))
       .then(r => cloud.delete(`${test.api}/${orderId}`));                        //internally mapped with POST/order{id}/cancel
   });
+  test
+   .withName(`should support searching ${test.api} by protect_code AND base_total_due`)
+   .withOptions({ qs: { where:`protect_code='${protectCode}'`} })
+   .withValidation((r) => {
+   expect(r).to.have.statusCode(200);
+   const validValues = r.body.filter(obj => obj.protect_code === '${protectCode}');
+   expect(validValues.length).to.equal(r.body.length);
+   }).should.return200OnGet();
 });

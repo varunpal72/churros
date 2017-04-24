@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-
+const expect = require('chakram').expect;
 const productsAttributes = (attributeCode) => ({
   "attribute": {
     "is_wysiwyg_enabled": false,
@@ -53,7 +53,7 @@ const optionsPayload = () => ({
   });
 
 suite.forElement('ecommerce', 'products-attributes', { payload: productsAttributes() },  (test) => {
-  let attributeCode= "code" + tools.randomInt();
+  let frontendInput,attributeCode= "code" + tools.randomInt();
   it(`should allow CRDS for ${test.api}`, () => {
     let frontendInput;
     return cloud.post(`${test.api}`, productsAttributes(attributeCode))
@@ -62,17 +62,35 @@ suite.forElement('ecommerce', 'products-attributes', { payload: productsAttribut
     .then(r => cloud.get(`${test.api}/${attributeCode}`))
     .then(r => cloud.delete(`${test.api}/${attributeCode}`));
   });
+
+  test
+   .withName(`should support searching ${test.api} by frontend_input`)
+   .withOptions({ qs: { where: `frontend_input='${frontendInput}'`} })
+   .withValidation((r) => {
+   expect(r).to.have.statusCode(200);
+   const validValues = r.body.filter(obj => obj.frontend_input === '${frontendInput}');
+   expect(validValues.length).to.equal(r.body.length);
+   }).should.return200OnGet();
+
   it(`should allow PUT for ${test.api}`, () => {
     return cloud.put(`${test.api}/${attributeCode}`,productsAttributes(attributeCode))
     .then(r => cloud.delete(`${test.api}/${attributeCode}`));
   });
+
   test.withApi(`/hubs/ecommerce/products-attributes-types`).should.return200OnGet();
   it(`should allow CR for ${test.api}/attributeCode/options`, () => {
-    let attributeCode = "color";
+    let attributeCode = "color",optionId;
     return cloud.post(`${test.api}/${attributeCode}/options`,optionsPayload())
-    .then(r => cloud.get(`${test.api}/${attributeCode}/options`));
-  //  .then(r => optionId = r.body.id)                                    no id generated after POST, so code is commented
-  //  .then(r => cloud.get(`${test.api}/${attributeCode}/options`))
+    .then(r => cloud.get(`${test.api}/${attributeCode}/options`))
+    .then(r => {
+    if (r.body.id) {
+      return;
+    }
+    else {
+       optionId = r.body.id;
+      return cloud.get(`${test.api}/${attributeCode}/options`)
+    }
+  });
   });
   test.should.supportPagination();
 });

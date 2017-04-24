@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 
 const payload = () => ({
       "billing_address_id": 4,
@@ -48,7 +49,14 @@ const creditComment = (entity_id) => (
 suite.forElement('ecommerce', 'credit-memos', { payload: payload() }, (test) => {
   test.should.supportCrs();
   test.should.supportPagination();
-  test.withOptions({ qs: { where: `store_currency_code='USD'` }}).should.return200OnGet();
+  test
+   .withName(`should support searching ${test.api} by store_currency_code`)
+   .withOptions({ qs: { where: `store_currency_code='USD'` } })
+   .withValidation((r) => {
+   expect(r).to.have.statusCode(200);
+   const validValues = r.body.filter(obj => obj.store_currency_code === 'USD');
+   expect(validValues.length).to.equal(r.body.length);
+   }).should.return200OnGet();
 
   it(`should allow CR for /hubs/ecommerce/credit-memos/{entity_id}/comments`, () => {
     let entity_id;
@@ -58,7 +66,7 @@ suite.forElement('ecommerce', 'credit-memos', { payload: payload() }, (test) => 
       .then(r => cloud.get(`/hubs/ecommerce/credit-memos/${entity_id}/comments`));
 });
 
-it(`should allow CR for /hubs/ecommerce/credit-memos/{entity_id}/emails`, () => {
+it(`should allow C for /hubs/ecommerce/credit-memos/{entity_id}/emails`, () => {
   let entity_id;
   return cloud.post(`/hubs/ecommerce/credit-memos`, payload())
     .then(r => entity_id = r.body.id)

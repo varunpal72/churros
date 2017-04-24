@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 
 const salesRulePost = (customerGroupId, autoGen) => ({
   "rule": {
@@ -57,18 +58,25 @@ const customerGroups = () => ({
 });
 
 suite.forElement('ecommerce', 'sales-rules', (test) => {
+  let customerGroupId,ruleId,name;
   it(`should allow CRUDS for ${test.api}`, () => {
-    let customerGroupId,ruleId,name;
     let autoGen = false;
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(test.api, salesRulePost(customerGroupId, autoGen)))
       .then(r =>{ name = r.body.name; ruleId = r.body.rule_id;})
-      .then(r => cloud.withOptions({ qs: { where: `name='${name}'` } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${ruleId}`))
       .then(r => cloud.patch(`${test.api}/${ruleId}`,salesRulePost(customerGroupId, autoGen)))
       .then(r => cloud.delete(`${test.api}/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
+  test
+   .withName(`should support searching ${test.api} by name`)
+   .withOptions({ qs: { where: `name='${name}'`} })
+   .withValidation((r) => {
+   expect(r).to.have.statusCode(200);
+   const validValues = r.body.filter(obj => obj.name === '${name}');
+   expect(validValues.length).to.equal(r.body.length);
+   }).should.return200OnGet();
   test.should.supportPagination();
 });
