@@ -68,6 +68,7 @@ const getPollerConfig = (element, instance) => {
     if (r === null) return instance;
     let instanceCopy = Object.assign({}, instance)
     try {
+      console.log(JSON.parse(elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})));
       instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
     } catch (e) {

@@ -237,7 +237,11 @@ const itSupportPolling = (name, pay, api, options, validationCb, payload) => {
 
     const url = baseUrl + '?returnQueue';
     logger.info('Testing polling may take up to 2 minutes');
-    const validate = validationCb && typeof validationCb === 'function' ? validationCb : (res) => expect(res.count).to.be.above(0);
+    const defaultValidation = (r) => expect(r).to.have.statusCode(200);
+    const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => {
+      console.log(res);
+      expect(res.count).to.be.above(0);
+    }
     let response;
     const pay = typeof payload === 'function' ? payload() : payload;
     //clears the bin before creating and checking bin again
