@@ -19,6 +19,7 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();
+  test.should.return404OnGet('0');
   it('should allow CRUDS for /hubs/crm/contacts/:id/activites', () => {
     let contactId;
     return cloud.post(test.api, payload)

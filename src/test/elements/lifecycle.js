@@ -13,7 +13,10 @@ const props = require('core/props');
 
 const createAll = (urlTemplate, list) => {
   return Object.keys(list).sort()
-    .reduce((p, key) => p.then(() => cloud.post(util.format(urlTemplate, key), list[key])), Promise.resolve(true)); // initial
+    .reduce((p, key) => p.then(() => {
+      return cloud.post(util.format(urlTemplate, key), list[key])
+      .catch(err => cloud.post(util.format(urlTemplate, key), list[key]));
+    }), Promise.resolve(true)); // initial
 };
 
 const terminate = error => {

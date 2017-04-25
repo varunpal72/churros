@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/accounts');
+const payload = require('core/tools').requirePayload(`${__dirname}/assets/accounts.json`);
 
 // Sample Custom Where Clause for Reference
 //`custom.long.scriptId` = 'custentity_cust_priority' and `custom.long.value` = 50

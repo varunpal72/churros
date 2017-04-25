@@ -2,7 +2,7 @@
 
 const cloud = require('core/cloud');
 const suite = require('core/suite');
-const groupsPayload = require('./assets/groups');
+const groupsPayload = require('core/tools').requirePayload(`${__dirname}/assets/groups.json`);
 
 const updatePayload = {
   "description": "All box Users Updated"
