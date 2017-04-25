@@ -15,7 +15,13 @@
     },
     "updatedDate": {
       "type": "string"
+    },
+    "elementInstances": {
+      "type": "array"
+    },
+    "formulaInstances": {
+      "type": "array"
     }
   },
-  "required": ["id", "name", "stage", "createdDate"]
+  "required": ["id", "name", "stage", "createdDate", "elementInstances", "formulaInstances"]
 }
