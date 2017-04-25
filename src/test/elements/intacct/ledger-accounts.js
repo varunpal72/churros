@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const payload = () => ({
-  "glaccountno": "TEST",
+  "glaccountno": tools.randomStr('abcdefghijklmnopqrstuvwxyz', 4),
   "title": tools.random(),
   "normalbalance": "debit",
   "accounttype": "balancesheet",

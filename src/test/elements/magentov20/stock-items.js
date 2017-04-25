@@ -82,4 +82,6 @@ suite.forElement('ecommerce', 'stock-items', { skip: true }, (test) => {
   it(`should allow GET for ${test.api}/low-stock`, () => {
     return cloud.withOptions({ qs: { where: `scopeId = 1 and qty = 1` }}).get(`/hubs/ecommerce/stock-items/low-stock`);
   });
+  test.withOptions({ qs: {orderBy : 'id'} }).should.return200OnGet();
+  test.withOptions({ qs: {orderBy : 'id desc'} }).should.return200OnGet();
 });

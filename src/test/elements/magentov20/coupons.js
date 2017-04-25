@@ -128,4 +128,6 @@ suite.forElement('ecommerce', 'coupons', (test) => {
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
+  test.withOptions({ qs: {orderBy : 'rule_id'} }).should.return200OnGet();
+  test.withOptions({ qs: {orderBy : 'rule_id desc'} }).should.return200OnGet();
 });

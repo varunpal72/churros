@@ -2,8 +2,8 @@
     "name": "simple-error",
     "steps": [
         {
-            "onSuccess": [],
-            "onFailure": [],
+            "onSuccess": ["filter"],
+            "onFailure": ["filter"],
             "name": "simple-script",
             "type": "script",
             "properties": {
@@ -12,7 +12,7 @@
         },
         {
             "onSuccess": [],
-            "onFailure": ["simple-script"],
+            "onFailure": [],
             "name": "filter",
             "type": "filter",
             "properties": {
@@ -25,7 +25,7 @@
         {
             "type": "manual",
             "async": true,
-            "onSuccess": ["filter"],
+            "onSuccess": ["simple-script"],
             "onFailure": []
         }
     ],

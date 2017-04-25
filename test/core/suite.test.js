@@ -105,6 +105,9 @@ describe('suite', () => {
     test
       .withApi('/foo/pagination')
       .should.supportPagination();
+    test
+    .withApi('/foo/pagination')
+    .should.supportPagination('id');
 
     /* no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above */
     test.should.return200OnPost();
@@ -123,6 +126,8 @@ describe('suite', () => {
     test.should.supportCs();
     test.should.supportCeqlSearch('id');
     test.should.supportCeqlSearchForMultipleRecords('id');
+    test.should.supportBulkUpload(null, `${__dirname}/assets/testBulk.json`, 'endpoint', null, '/bulk');
+    test.should.supportBulkDownload(null, {json: true, csv: true}, 'endpoint', '/bulk');
 
     /* overriding the default API that was passed in as the default in the `suite.forPlatform` */
     test

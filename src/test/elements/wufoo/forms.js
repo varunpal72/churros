@@ -45,5 +45,5 @@ suite.forElement('general', 'forms', { payload: payload }, (test) => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.post(`${test.api}/${r.body[0].Hash}/entries`, payload));
   });
-  test.should.supportPagination();
+  test.should.supportPagination('Hash');
 });
