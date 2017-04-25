@@ -15,4 +15,5 @@ suite.forElement('crm', 'users', { payload: payload }, (test) => {
   };
   test.withOptions(options).should.supportCrus();
   test.should.supportPagination();
+  test.should.return404OnGet('0');
 });
