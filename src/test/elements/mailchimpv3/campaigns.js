@@ -31,7 +31,7 @@ const options = {
 };
 
 suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
-  test.should.supportPagination();
+  test.should.supportPagination('id');
   test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { where: 'since_create_time=\'2016-01-23T17:55:00+00:00\'' } }).should.return200OnGet();
 

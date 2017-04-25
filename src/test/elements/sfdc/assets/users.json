@@ -1,6 +1,6 @@
 {
     "email": "churrrros@example.com",
-    "Username": "Churrrros@example.com",
+    "Username": "<<internet.email>>",
     "LastName": "Sauce",
     "Alias": "rb",
     "TimeZoneSidKey": "America/Denver",

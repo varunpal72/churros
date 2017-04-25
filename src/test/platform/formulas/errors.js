@@ -28,7 +28,7 @@ const defaultTriggerCb = numEs => (fId, fiId) =>
     return cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, { foo: `${(index + 1) % numEs === 0 ? 'baz' : 'bar'}` });
   }));
 
-suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
+suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
 
   /**
    * Handles the basic formula execution test for a formula that has a manual trigger type
@@ -209,4 +209,56 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     return testIt('simple-error-formula-manual-v2', {}, 3, 3, null, instanceValidator, 'failed', 3, triggerCb);
   });
+
+    it('should disable the formula instance if it exceeds the thresholds', () => {
+        var startingNotifications;
+        const execValidator = (executions, fId, fiId) => {
+            return cloud.get(`/formulas/${fId}/instances/${fiId}`)
+                .then(r => {
+                    expect(r.body.active).to.be.false;
+                    expect(r.body.numberConsecutiveErrors).to.equal(101);
+                })
+                .then(r => cloud.get('/notifications?topics[]=threat-level-midnight'))
+                .then(r => expect(parseInt(r.response.headers['elements-total-count']) - startingNotifications).to.equal(2));
+        };
+
+        const triggerCb = (fId, fiId) => {
+            return cloud.put(`/formulas/${fId}/instances/${fiId}`, {
+                firstConsecutiveErrorDate: '2017-01-01T01:00:00-00:00',
+                numberConsecutiveErrors: 100
+            })
+                .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, {foo: 'bar'}));
+        };
+
+        return cloud.get('/notifications?topics[]=threat-level-midnight')
+            .then(r => startingNotifications = parseInt(r.response.headers['elements-total-count']))
+            .then(r => testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb));
+    });
+
+    it('should alert the owner of the formula instance if it exceeds 50% of the threshold', () => {
+        var startingNotifications;
+        const execValidator = (executions, fId, fiId) => {
+            return cloud.get(`/formulas/${fId}/instances/${fiId}`)
+                .then(r => {
+                    console.log("this is the start: " + startingNotifications);
+                    expect(r.body.active).to.be.true;
+                    expect(r.body.numberConsecutiveErrors).to.equal(51);
+                    expect(r.body.numberConsecutiveErrorWarningNotifications).to.equal(1);
+                })
+                .then(r => cloud.get('/notifications?topics[]=threat-level-midnight'))
+                .then(r => expect(parseInt(r.response.headers['elements-total-count']) - startingNotifications).to.equal(2));
+        };
+
+        const triggerCb = (fId, fiId) => {
+            return cloud.put(`/formulas/${fId}/instances/${fiId}`, {
+                firstConsecutiveErrorDate: '2017-01-01T01:00:00-00:00',
+                numberConsecutiveErrors: 50
+            })
+                .then(r => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, {foo: 'bar'}));
+        };
+
+        return cloud.get('/notifications?topics[]=threat-level-midnight')
+            .then(r => startingNotifications = parseInt(r.response.headers['elements-total-count']))
+            .then(r => testIt('simple-error-formula-manual-v2', {}, 1, 3, execValidator, null, 'failed', 1, triggerCb));
+    });
 });

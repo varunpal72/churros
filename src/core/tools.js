@@ -7,6 +7,7 @@
 const logger = require('winston');
 const sleep = require('sleep');
 const fs = require('fs');
+const faker = require('faker');
 
 var exports = module.exports = {};
 
@@ -145,16 +146,24 @@ exports.times = times;
 
 /**
 * Run a selenium file
+* @param {string} element The element we are running selenium on
+* @param {string} filePath The path to the selenium file
+* @param {string} method Method in the selenium file
 **/
-
 exports.runFile = (element, filePath, method) => {
   return fs.existsSync(filePath) ? require(filePath)(element, method) : Promise.resolve(null);
 };
 
+/**
+* @param {string} str The element we are running tests(use '--' in the element to provision with different creds)
+**/
 exports.getBaseElement = (str) => {
   return str.includes('--') ? str.substring(0, str.indexOf('--')) : str;
 };
 
+/**
+* @param {object} obj Converts an object like `{qs: q:'select * from contacts where id = 12'}` to `{qs: where:'id = 12'}`
+**/
 exports.updateMetadata = (obj) => {
   const whereExp = obj ? obj.qs ? obj.qs.q ? obj.qs.q.includes('where') ? obj.qs.q.substring(obj.qs.q.indexOf('where') + 6) : '' : '' : '' : '';
   if (obj) {
@@ -184,4 +193,63 @@ exports.createExpression = (obj) => {
     where += typeof obj[key] === 'string' ? `${key} = '${obj[key]}'` : `${key} = ${obj[key]}`;
   });
   return where;
+};
+const getKey = (obj, key, acc) => {
+  acc = acc ? acc : [];
+  if (typeof obj === 'object') {
+    let objKeys = Object.keys(obj);
+    if (objKeys.includes(key)) {
+      acc.push(obj[key]);
+      return acc;
+    }
+    objKeys.forEach(k => getKey(obj[k], key, acc));
+    return acc;
+  }
+  return acc;
+};
+exports.getKey = (obj, key) => getKey(obj, key);
+
+const fake = (str, startDelim, endDelim) => {
+  startDelim = startDelim ? startDelim : '<<';
+  endDelim = endDelim ? endDelim : '>>';
+
+  // find first matching << and >>
+  const start = str.search(startDelim);
+  const end = str.search(endDelim);
+
+  // if no << and >> is found, we are done
+  if (start === -1 && end === -1) {
+    return str;
+  }
+
+  const token = str.substr(start + 2,  end - start - 2);
+  const method = token.replace(endDelim, '').replace(startDelim, '');
+  const result = faker.fake(`{{${method}}}`);
+
+  str = str.replace(startDelim + token + endDelim, result);
+
+  // return the response recursively until we are done finding all tags
+  return fake(str, startDelim, endDelim);
+};
+
+/**
+* look at https://github.com/marak/Faker.js/ for complete list
+* @param {Object} obj Object to randomize like '<<name.firstName>>'
+**/
+exports.fake = (obj) => fake(JSON.stringify(obj));
+
+/**
+* interpolates with random data use random data like '<<name.firstName>>'
+* look at https://github.com/marak/Faker.js/ for complete list
+* You need to have the .json on the end and use __dirname to make sure there is no problems finding the file
+* @param {string} path Path to file. Use `${__dirname}/assets/fileName.json`
+*/
+exports.requirePayload = (path) => {
+  if (fs.existsSync(path)) {
+    const str = JSON.stringify(require(path));
+    const payload = fake(str);
+    return JSON.parse(payload);
+  } else {
+    throw new Error('Path is not valid');
+  }
 };

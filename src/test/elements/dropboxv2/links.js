@@ -8,7 +8,7 @@ const tools = require('core/tools');
 suite.forElement('documents', 'links', null, (test) => {
 
     let path = __dirname + '/assets/brady.jpg';
-    let query = { path: `/brady-${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}.jpg` };
+    let query = { path: `/brady-${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}.jpg`, overwrite: true };
 
     const fileWrap = (cb) => {
         let file;
