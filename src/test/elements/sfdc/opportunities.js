@@ -10,6 +10,7 @@ suite.forElement('crm', 'opportunities', { payload: payload }, (test) => {
   test.should.supportPagination();
   test.should.supportCeqlSearch('id');
   test.should.supportCruds();
+  test.should.return404OnGet('0');
   it('should allow CRUDS for /hubs/crm/opportunities/:id/activities', () => {
     let opportunityId;
     return cloud.post(test.api, payload)
