@@ -156,9 +156,9 @@ Josh,Wyse,2
     expect(fn).to.throw(Error);
   });
   it('should set and get url', () => {
-    tools.setUrl(`https://knappkeith.pythonanywhere.com/request/${tools.random()}/`);
-    const url = tools.getUrl();
-    expect(url).to.equal(`https://knappkeith.pythonanywhere.com/request/${tools.random()}/`);
+    const url = `https://knappkeith.pythonanywhere.com/request/${tools.random()}/`;
+    tools.setUrl(url);
+    expect(tools.getUrl()).to.equal(url);
   });
   it('should set and get polling', () => {
     tools.setPolling(true);
