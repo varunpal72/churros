@@ -1,7 +1,8 @@
 {
     "reporter": 350087189,
-    "description": "RobotDescription",
+    "description": "<<name.jobDescriptor>>",
     "assignee": 350087189,
     "status": "open",
-    "summary": "RobotTestSummary"
+    "summary": "RobotTestSummary",
+    "title": "<<random.uuid>>"
 }
