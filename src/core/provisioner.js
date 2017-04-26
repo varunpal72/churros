@@ -59,23 +59,22 @@ const getPollerConfig = (element, instance) => {
   .then(r => elementObj = r.body)
   .then(r => cloud.get(`elements/${elementObj.id}/metadata`))
   .then(r => {
-    defaults.setPolling(r.body.events.supported && r.body.events.methods.includes('polling'));
-    defaults.setWebhooks(r.body.events.supported && r.body.events.methods.includes('webhook'));
-    return defaults.getPolling();
+    tools.setPolling(r.body.events.supported && r.body.events.methods.includes('polling'));
+    tools.setWebhooks(r.body.events.supported && r.body.events.methods.includes('webhook'));
+    return tools.getPolling();
   })
   .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
   .then(r => {
     if (r === null) return instance;
-    let instanceCopy = Object.assign({}, instance)
-    try {
-      console.log(JSON.parse(elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})));
+    let instanceCopy = Object.assign({}, instance);
+    if (elementObj.configuration.map(conf => conf.key).includes('event.metadata')) {
       instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
-    } catch (e) {
+    } else {
       instanceCopy.configuration['event.poller.configuration'] = r;
     }
     const url = `https://knappkeith.pythonanywhere.com/request/${tools.random()}/`;
-    defaults.setUrl(url);
+    tools.setUrl(url);
     instanceCopy.configuration['event.vendor.type'] = 'polling';
     instanceCopy.configuration['event.notification.callback.url'] = url;
     instanceCopy.configuration['event.notification.enabled'] = 'true';

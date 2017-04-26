@@ -2,7 +2,7 @@
 
 require('core/assertions');
 const suite = require('core/suite');
-const defaults = require('core/defaults');
+const tools = require('core/tools');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const helper = require('./assets/suite-helper');
@@ -106,7 +106,8 @@ describe('suite', () => {
     test
       .withApi('/foo/pagination')
       .should.supportPagination();
-    defaults.setPolling(true);
+    tools.setPolling(true);
+    tools.setUrl(`https://knappkeith.pythonanywhere.com/request/${tools.random()}/`);
     test
       .withApi('/foo/polling')
       .should.supportPolling();

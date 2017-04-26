@@ -2,7 +2,7 @@
 
 const nock = require('nock');
 const request = require('request-promise');
-const defaults = require('core/defaults');
+const tools = require('core/tools');
 
 var exports = module.exports = {};
 const genPayload = (opts) => {
@@ -158,7 +158,7 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .post('/foo/polling')
     .reply(200, (uri, requestBody) => {
       setInterval(() => {
-        request(defaults.getUrl());
+        request(tools.getUrl());
       }, 1000);
       return genPayload({ id: 123 });
     });

@@ -10,7 +10,6 @@ const expect = chakram.expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const logger = require('winston');
-const defaults = require('core/defaults');
 const request = require('request-promise');
 const fs = require('fs');
 
@@ -232,10 +231,10 @@ const itSupportPolling = (name, pay, api, options, validationCb, payload) => {
   name = 'polling ' + api;
   payload = payload ? payload : pay;
   boomGoesTheDynamite(name, () => {
-    const baseUrl = defaults.getUrl();
+    const baseUrl = tools.getUrl();
     //logs error then fails test
-    if (!defaults.getPolling()) logger.error('This element doesn\'t support polling');
-    expect(defaults.getPolling()).to.be.true;
+    if (!tools.getPolling()) logger.error('This element doesn\'t support polling');
+    expect(tools.getPolling()).to.be.true;
 
     if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
     expect(baseUrl).to.exist;
@@ -243,10 +242,7 @@ const itSupportPolling = (name, pay, api, options, validationCb, payload) => {
     const url = baseUrl + '?returnQueue';
     logger.info('Testing polling may take up to 2 minutes');
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
-    const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => {
-      console.log(res);
-      expect(res.count).to.be.above(0);
-    }
+    const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => expect(res.count).to.be.above(0);
     let response;
     const pay = typeof payload === 'function' ? payload() : payload;
     //clears the bin before creating and checking bin again

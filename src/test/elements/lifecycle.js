@@ -38,7 +38,6 @@ before(() => {
     const getInstance = argv.instance ? cloud.get(`/instances/${argv.instance}`)
       .then(r => {
         defaults.token(r.body.token);
-        defaults.setUrl(r.body.configuration['event.notification.callback.url']);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         return r;
       }) : provisioner
@@ -47,6 +46,7 @@ before(() => {
     return getInstance
       .then(r => {
         expect(r).to.have.statusCode(200);
+        logger.info('Provisioned with instance id of ' + r.body.id);
         instanceId = r.body.id;
         element = tools.getBaseElement(element);
 

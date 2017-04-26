@@ -155,4 +155,19 @@ Josh,Wyse,2
     const fn = () => tools.requirePayload(`${__dirname}/assets/BadPath.json`);
     expect(fn).to.throw(Error);
   });
+  it('should set and get url', () => {
+    tools.setUrl('randomUrl');
+    const url = tools.getUrl();
+    expect(url).to.equal('randomUrl');
+  });
+  it('should set and get polling', () => {
+    tools.setPolling(true);
+    const polling = tools.getPolling();
+    expect(polling).to.equal(true);
+  });
+  it('should set and get webhook', () => {
+    tools.setWebhooks(true);
+    const webhook = tools.getWebhooks();
+    expect(webhook).to.equal(true);
+  });
 });
