@@ -197,8 +197,9 @@ const itCeqlSearch = (name, api, payload, field, options) => {
         const clause = `${field}='${value}'`; // have to escape where values with single quotes
         const myOptions = Object.assign({}, options, { qs: { where: clause } });
         return cloud.withOptions(myOptions).get(api, (r) => {
+          console.log(r.body);
           expect(r).to.have.statusCode(200);
-          expect(r.body.length).to.equal(1);
+          expect(r.body.filter(obj => obj[field] === value).length).to.equal(r.body.length);
         });
       })
       .then(r => cloud.delete(api + '/' + id));
