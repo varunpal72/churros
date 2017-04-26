@@ -120,9 +120,13 @@ describe('provisioner', () => {
         token: 'token',
         secret: 'secret'
       }))
-      .get('/elements')
+      .get('/elements/myelement')
       .reply(200, () => {
-        return [{key: 'myelement', id: 123, configuration: [{key: 'event.poller.configuration'}, {key: 'event.metadata'}]}];
+        return {key: 'myelement', id: 123, configuration: [{key: 'event.poller.configuration'}, {key: 'event.metadata', defaultValue: '{"webhook": {"Account": {"eventTypes": ["created", "updated", "deleted"]}, "Lead": {"eventTypes":\n        ["created", "updated", "deleted"]}, "Contact": {"eventTypes": ["created", "updated", "deleted"]},\n        "Opportunity": {"eventTypes": ["created", "updated", "deleted"]}, "{objectName}": {"eventTypes": ["created",\n        "updated", "deleted"]}}, "polling": {"Account": {"eventTypes":\n        ["created", "updated"]}, "Lead": {"eventTypes": ["created", "updated"]}, "Contact": {"eventTypes":\n        ["created", "updated"]}, "Opportunity": {"eventTypes": ["created", "updated"]}, "{objectName}": {"eventTypes":\n        ["created", "updated", "deleted"]}}}'}]};
+      })
+      .get('/elements/myoauth2element')
+      .reply(200, () => {
+        return {key: 'myoauth2element', id: 123, configuration: [{key: 'event.poller.configuration'}]};
       })
       .get('/elements/123/metadata')
       .reply(200, () => {
