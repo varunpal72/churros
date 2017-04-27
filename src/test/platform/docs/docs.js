@@ -25,15 +25,15 @@ suite.forPlatform('docs', {}, () => {
     }));
 
   // Skipping this test as the hubs swagger is not validated { skip: true }
-  // it('should return proper swagger json for hubs', () => {
-  //   return Promise.all(Array.from(hubs).map(h => {
-  //     return cloud.get(`/docs/${h}`)
-  //     .then(r => r.body)
-  //     .then(s => swaggerParser.validate(s, (err, api) => {
-  //         if(err) { throw new Error(`Docs for '${h}' hub are invalid Swagger: ${err}`); }
-  //       }));
-  //   }));
-  // });
+  it.skip('should return proper swagger json for hubs', () => {
+    return Promise.all(Array.from(hubs).map(h => {
+      return cloud.get(`/docs/${h}`)
+      .then(r => r.body)
+      .then(s => swaggerParser.validate(s, (err, api) => {
+          if(err) { throw new Error(`Docs for '${h}' hub are invalid Swagger: ${err}`); }
+        }));
+    }));
+  });
 
   it('should return proper swagger json for elements', () => {
       return Promise.all(Array.from(elementIds).map(elementId => {
