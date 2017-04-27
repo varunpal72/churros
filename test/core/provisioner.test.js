@@ -25,14 +25,17 @@ const setupProps = () => {
     'user': 'franky',
     'oauth.callback.url': 'http://myfakecallbackurl',
     'myelement': {
+      'elementId': '123',
       'username': 'frank',
       'password': 'ricard'
     },
     'badelement': {
+      'elementId': '123',
       'username': 'frank',
       'password': 'ricard'
     },
     'myoauth1element': {
+      'elementId': '123',
       'provisioning': 'oauth1',
       'username': 'frank',
       'password': 'ricard',
@@ -40,6 +43,7 @@ const setupProps = () => {
       'oauth.api.secret': 'fill it up again'
     },
     'myoauth2element': {
+      'elementId': '123',
       'provisioning': 'oauth2',
       'username': 'frank',
       'password': 'ricard',
@@ -47,6 +51,7 @@ const setupProps = () => {
       'oauth.api.secret': 'fill it up again'
     },
     'myoauth2external': {
+      'elementId': '123',
       'provisioning': 'oauth2',
       'external': true,
       'username': 'frank',
@@ -56,6 +61,7 @@ const setupProps = () => {
       'tokenUrl': 'http://pvenkman.ghostbuster.com/token'
     },
     'myoauth1external': {
+      'elementId': '123',
       'provisioning': 'oauth1',
       'external': true,
       'username': 'frank',
@@ -65,6 +71,7 @@ const setupProps = () => {
       'tokenUrl': 'http://pvenkman.ghostbuster.com/token'
     },
     'noTokenUrl': {
+      'elementId': '123',
       'provisioning': 'oauth2',
       'external': true,
       'username': 'frank',
@@ -73,10 +80,12 @@ const setupProps = () => {
       'oauth.api.secret': 'fill it up again'
     },
     'customProvisioning': {
+      'elementId': '123',
       'provisioning': 'custom',
       'username': 'frank'
     },
     'myboguselement': {
+      'elementId': '123',
       'provisioning': 'oauth2',
       'external': true,
       'username': 'frank',

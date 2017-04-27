@@ -2,7 +2,7 @@
 
 require('core/assertions');
 const suite = require('core/suite');
-const tools = require('core/tools');
+// const props = require('core/props');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const helper = require('./assets/suite-helper');
@@ -106,8 +106,7 @@ describe('suite', () => {
     test
       .withApi('/foo/pagination')
       .should.supportPagination();
-    tools.setPolling(true);
-    tools.setUrl(`https://knappkeith.pythonanywhere.com/request/${tools.random()}/`);
+    // props.setForKey('myelement', 'elementId', '123');
     test
       .withApi('/foo/polling')
       .should.supportPolling();

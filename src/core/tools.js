@@ -253,15 +253,3 @@ exports.requirePayload = (path) => {
     throw new Error('Path is not valid');
   }
 };
-
-(function() {
-  let url = null;
-  let polling = false;
-  let webhooks = false;
-  exports.setUrl = (u) => url = u;
-  exports.getUrl = () => url;
-  exports.setPolling = (p) => polling = p;
-  exports.getPolling = () => polling;
-  exports.setWebhooks = (w) => webhooks = w;
-  exports.getWebhooks = () => webhooks;
-}());

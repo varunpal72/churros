@@ -155,19 +155,4 @@ Josh,Wyse,2
     const fn = () => tools.requirePayload(`${__dirname}/assets/BadPath.json`);
     expect(fn).to.throw(Error);
   });
-  it('should set and get url', () => {
-    const url = `https://knappkeith.pythonanywhere.com/request/${tools.random()}/`;
-    tools.setUrl(url);
-    expect(tools.getUrl()).to.equal(url);
-  });
-  it('should set and get polling', () => {
-    tools.setPolling(true);
-    const polling = tools.getPolling();
-    expect(polling).to.equal(true);
-  });
-  it('should set and get webhook', () => {
-    tools.setWebhooks(true);
-    const webhook = tools.getWebhooks();
-    expect(webhook).to.equal(true);
-  });
 });

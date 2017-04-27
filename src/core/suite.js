@@ -9,6 +9,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const props = require('core/props');
 const logger = require('winston');
 const request = require('request-promise');
 const fs = require('fs');
@@ -227,26 +228,30 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
 };
-const itSupportPolling = (name, pay, api, options, validationCb, payload) => {
+const itPolling = (name, pay, api, options, validationCb, payload) => {
   name = 'polling ' + api;
   payload = payload ? payload : pay;
+  let response;
   boomGoesTheDynamite(name, () => {
-    const baseUrl = tools.getUrl();
-    //logs error then fails test
-    if (!tools.getPolling()) logger.error('This element doesn\'t support polling');
-    expect(tools.getPolling()).to.be.true;
-
-    if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
-    expect(baseUrl).to.exist;
-
+    const baseUrl = props.get('eventCallbackUrl');
     const url = baseUrl + '?returnQueue';
-    logger.info('Testing polling may take up to 2 minutes');
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
     const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => expect(res.count).to.be.above(0);
-    let response;
-    const pay = typeof payload === 'function' ? payload() : payload;
-    //clears the bin before creating and checking bin again
-    return request(url)
+    if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
+    expect(baseUrl).to.exist;
+    return cloud.get(`elements/${props.getForKey(props.get('element'), 'elementId')}/metadata`)
+    .then(r => {
+      const supportsPolling = r.body.events.supported && r.body.events.methods.includes('polling');
+      //logs error then fails test
+      if (!supportsPolling) logger.error('This element doesn\'t support polling');
+      expect(supportsPolling).to.be.true;
+    })
+    .then(r => {
+      logger.info('Testing polling may take up to 2 minutes');
+      pay = typeof payload === 'function' ? payload() : payload;
+      //clears the bin before creating and checking bin again
+      return request(url);
+    })
     .then(() => pay)
     .then(r => cloud.withOptions(options).post(api, r))
     .then(r => response = r.body)
@@ -399,7 +404,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     * @param {Function} validate A validate funtion with `expects` to test response
     * @memberof module:core/suite.test.should
     */
-    supportPolling: (pay) => itSupportPolling(name, payload, api, options, validationCb, pay),
+    supportPolling: (pay) => itPolling(name, payload, api, options, validationCb, pay),
     /**
      * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
      * @param {object} metadata -> headers, query string etc...
