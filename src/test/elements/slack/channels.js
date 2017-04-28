@@ -5,6 +5,20 @@ const cloud = require('core/cloud');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 const payload = require('./assets/channels');
+// define all public supported actions and payloads
+const publicActions = [
+  { 'action': 'join', 'name': 'random' },
+  { 'action': 'read', 'ts': Date.parse(new Date()).toString() },
+  { 'action': 'leave' },
+  { 'action': 'archive' }
+];
+const publicActions2 = [
+  { 'action': 'unarchive' },
+  { 'action': 'rename', 'name': tools.random() },
+  { 'action': 'purpose', 'purpose': 'eat yummy churros' },
+  { 'action': 'topic', 'topic': 'tasty desserts' },
+  { 'action': 'leave' }
+];
 
 suite.forElement('collaboration', 'channels', (test) => {
   let privateChannelId, publicChannelId;
@@ -57,7 +71,7 @@ suite.forElement('collaboration', 'channels', (test) => {
   });
 
   it(`should allow paginating with page and pageSize for ${test.api}`, () => {
-    return cloud.withOptions({ qs: { page: 1, pageSize: 1 }}).get(`${test.api}/${publicChannelId}/history`)
+    return cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${publicChannelId}/history`)
       .then(r => expect(r.body.length).to.be.below(2));
   });
   //TODO get these working - begin doesn't populate a variable for a suite test :(
@@ -88,20 +102,6 @@ suite.forElement('collaboration', 'channels', (test) => {
     privateActions2.forEach(ac => (cloud.withOptions({ qs: { private: true } }).patch(`${test.api}/${privateChannelId}/actions`, ac)));
   });
 
-  // define all public supported actions and payloads
-  const publicActions = [
-    { 'action': 'join', 'name': 'random' },
-    { 'action': 'read', 'ts': Date.parse(new Date()).toString() },
-    { 'action': 'leave' },
-    { 'action': 'archive' }
-  ];
-  const publicActions2 = [
-    { 'action': 'unarchive' },
-    { 'action': 'rename', 'name': tools.random() },
-    { 'action': 'purpose', 'purpose': 'eat yummy churros' },
-    { 'action': 'topic', 'topic': 'tasty desserts' },
-    { 'action': 'leave' }
-  ];
   it(`should allow PATCH ${test.api}/:channelId/actions for public channels`, () => {
     publicActions.forEach(ac => (cloud.withOptions({ qs: { private: false } }).patch(`${test.api}/${publicChannelId}/actions`, ac)));
     publicActions2.forEach(ac => (cloud.withOptions({ qs: { private: false } }).patch(`${test.api}/${publicChannelId}/actions`, ac)));
