@@ -45,7 +45,6 @@
     "ramda": "^0.23.0",
     "replacestream": "^4.0.0",
     "request": "^2.72.0",
-    "request-promise": "^4.2.0",
     "selenium-webdriver": "^2.53.2",
     "shelljs": "^0.5.3",
     "sleep": "^3.0.1",

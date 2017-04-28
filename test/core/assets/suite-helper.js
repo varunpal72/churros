@@ -1,7 +1,7 @@
 'use strict';
 
 const nock = require('nock');
-const request = require('request-promise');
+const request = require('request');
 const props = require('core/props');
 
 var exports = module.exports = {};
@@ -170,7 +170,7 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .post('/foo/polling')
     .reply(200, (uri, requestBody) => {
       setInterval(() => {
-        request(props.get('eventCallbackUrl'));
+        request(props.get('eventCallbackUrl'), (err, res, body) => {});
       }, 1000);
       return genPayload({ id: 123 });
     });

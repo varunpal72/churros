@@ -11,7 +11,7 @@ const cloud = require('core/cloud');
 const tools = require('core/tools');
 const props = require('core/props');
 const logger = require('winston');
-const request = require('request-promise');
+const request = require('request');
 const fs = require('fs');
 
 
@@ -250,13 +250,23 @@ const itPolling = (name, pay, api, options, validationCb, payload) => {
       logger.info('Testing polling may take up to 2 minutes');
       pay = typeof payload === 'function' ? payload() : payload;
       //clears the bin before creating and checking bin again
-      return request(url);
+      return new Promise((resolve, reject) => {
+        request(url, (err, res, body) => {
+          if(err) reject(err);
+          resolve(body);
+        });
+      });
     })
     .then(() => pay)
     .then(r => cloud.withOptions(options).post(api, r))
     .then(r => response = r.body)
-    .then(() => tools.wait.upTo(120000).for(() => request(url)
-      .then(r => validate(JSON.parse(r)))))
+    .then(() => tools.wait.upTo(120000).for(() => new Promise((resolve, reject) => {
+      request(url, (err, res, body) => {
+        if(err) reject(err);
+        resolve(body);
+      });
+    })
+    .then(r => validate(JSON.parse(r)))))
     .then(() => cloud.delete(`${api}/${response.id}`));
   });
 };
