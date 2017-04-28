@@ -34,13 +34,6 @@
       "vendorPath": "ObjectID"
     }]
   },
-  "opportunities": {
-    "vendorName": "opportunities",
-    "fields": [{
-      "path": "id",
-      "vendorPath": "ObjectID"
-    }]
-  },
   "ServiceRequestAttachmentFolderCollection": {
     "vendorName": "ServiceRequestAttachmentFolderCollection",
     "fields": [{

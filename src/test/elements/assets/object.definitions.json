@@ -994,15 +994,33 @@
     }]
   },
   "stacks": {
-   "fields": [{
-     "path": "id",
-     "type": "string"
-   }]
- },
- "policies": {
-   "fields": [{
-     "path": "id",
-     "type": "string"
-   }]
- }
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "policies": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "ServiceRequestAttachmentFolderCollection": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "ServiceRequestDescription": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "ServiceRequestCollection": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  }
 }
