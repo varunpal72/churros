@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const expect = require('chakram').expect;
 const payload = require('./assets/channels');
 
 suite.forElement('collaboration', 'channels', (test) => {
@@ -16,11 +17,7 @@ suite.forElement('collaboration', 'channels', (test) => {
     .then(r => cloud.post(test.api, payload))
     .then(r => publicChannelId = r.body.id)
     .then(r => done()));
-
-  //delete my generic channels
-  let archive = { 'action': 'archive' };
-  after(() => cloud.withOptions({ qs: { private: true } }).patch(`${test.api}/${privateChannelId}/actions`, archive)
-    .then(() => cloud.withOptions({ qs: { private: false } }).patch(`${test.api}/${publicChannelId}/actions`, archive)));
+  // we are archiving the channels in the /actions tests
 
   //test for GET channels
   test.should.return200OnGet();
@@ -59,31 +56,55 @@ suite.forElement('collaboration', 'channels', (test) => {
     return cloud.withOptions({ qs: { private: false, where: 'count = 1' } }).get(`${test.api}/${publicChannelId}/history`);
   });
 
+  it(`should allow paginating with page and pageSize for ${test.api}`, () => {
+    return cloud.withOptions({ qs: { page: 1, pageSize: 1 }}).get(`${test.api}/${publicChannelId}/history`)
+      .then(r => expect(r.body.length).to.be.below(2));
+  });
   //TODO get these working - begin doesn't populate a variable for a suite test :(
-  test.withApi(`${test.api}/${publicChannelId}/history`).should.supportPagination();
+  // test.withApi(`${test.api}/${publicChannelId}/history`).should.supportPagination();
   // test.withApi(`${test.api}/${publicChannelId}/history`).withOptions({ qs: { 'where': 'count = 1 ' } }).should.return200OnGet();
 
-  // define all supported actions and payloads
-  const actions = [
-    { 'action': 'join', 'name': '' },
-    { 'action': 'read', 'ts': Date.parse(new Date()) },
+  it(`should allow GET ${test.api}`, () => {
+    return cloud.withOptions({ qs: { private: true } }).get(test.api)
+      .then(r => publicActions[0].name = r.body[0].id); //get a user for 'actions' apis
+  });
+
+  //TODO (@tylertoth) a few of these fail due various issues. Need to reorganize these...
+  // define all private supported actions and payloads
+  const privateActions = [
+    { 'action': 'read', 'ts': Date.parse(new Date()).toString() },
     { 'action': 'leave' },
     { 'action': 'archive' }
   ];
-  const actions2 = [
+  const privateActions2 = [
     { 'action': 'unarchive' },
     { 'action': 'rename', 'name': tools.random() },
     { 'action': 'purpose', 'purpose': 'eat yummy churros' },
     { 'action': 'topic', 'topic': 'tasty desserts' },
     { 'action': 'leave' }
   ];
-  it(`should allow GET ${test.api}`, () => {
-    return cloud.withOptions({ qs: { private: true } }).get(test.api)
-      .then(r => actions[0].name = r.body[0].id); //get a user for 'actions' apis
+  it(`should allow PATCH ${test.api}/:channelId/actions for private channels (groups)`, () => {
+    privateActions.forEach(ac => (cloud.withOptions({ qs: { private: true } }).patch(`${test.api}/${privateChannelId}/actions`, ac)));
+    privateActions2.forEach(ac => (cloud.withOptions({ qs: { private: true } }).patch(`${test.api}/${privateChannelId}/actions`, ac)));
   });
-  it(`should allow PATCH ${test.api}/:channelId/actions`, () => {
-    actions.forEach(ac => (cloud.withOptions({ qs: { private: true } }).patch(`${test.api}/${privateChannelId}/actions`, ac)));
-    actions2.forEach(ac => (cloud.withOptions({ qs: { private: true } }).patch(`${test.api}/${privateChannelId}/actions`, ac)));
+
+  // define all public supported actions and payloads
+  const publicActions = [
+    { 'action': 'join', 'name': 'random' },
+    { 'action': 'read', 'ts': Date.parse(new Date()).toString() },
+    { 'action': 'leave' },
+    { 'action': 'archive' }
+  ];
+  const publicActions2 = [
+    { 'action': 'unarchive' },
+    { 'action': 'rename', 'name': tools.random() },
+    { 'action': 'purpose', 'purpose': 'eat yummy churros' },
+    { 'action': 'topic', 'topic': 'tasty desserts' },
+    { 'action': 'leave' }
+  ];
+  it(`should allow PATCH ${test.api}/:channelId/actions for public channels`, () => {
+    publicActions.forEach(ac => (cloud.withOptions({ qs: { private: false } }).patch(`${test.api}/${publicChannelId}/actions`, ac)));
+    publicActions2.forEach(ac => (cloud.withOptions({ qs: { private: false } }).patch(`${test.api}/${publicChannelId}/actions`, ac)));
   });
 
 });

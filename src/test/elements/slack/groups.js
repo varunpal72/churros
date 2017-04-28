@@ -8,12 +8,11 @@ const payload = {
   'description': 'Group description'
 };
 
-suite.forElement('collaboration', 'groups', (test) => {
+suite.forElement('collaboration', 'groups', { skip: true }, (test) => {
   ///For this test, error is coming as 'paid teams only', even on vendor's api doc
   let userGroupId;
-  before(() =>
-    return cloud.post(test.api, payload)
-      .then(r => userGroupId = r.body.id));
+  before(() => cloud.post(test.api, payload)
+    .then(r => userGroupId = r.body.id));
 
   let disableAction = { 'action': 'disable' };
   after(() => cloud.patch(`${test.api}/${userGroupId}`, disableAction));
@@ -25,7 +24,7 @@ suite.forElement('collaboration', 'groups', (test) => {
     };
     return cloud.get(test.api)
       // .then(r => userGroupId = encodeURIComponent(r.body.usergroups[0].id)) //Need to check if this Id needs to be encoded and passed as path variable
-      .then(r => cloud.patch(`${test.api}/${userGroupId}`, updatedPayload));  //TODO test - should be using the before
+      .then(r => cloud.patch(`${test.api}/${userGroupId}`, updatedPayload)); //TODO test - should be using the before
   });
 
   // test for 'actions' on group

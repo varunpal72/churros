@@ -6,7 +6,12 @@ const commentPayload = require('./assets/comment');
 
 suite.forElement('collaboration', 'files', (test) => {
   let fileId;
-  before(() => cloud.withOptions({ qs: { 'fileName': 'zfile.png' } }).postFile(test.api, `${__dirname}/assets/zfile.png`)
+  let fileNameOptions = {
+    formData: {
+      channels: 'random'
+    }
+  };
+  before(() => cloud.withOptions(fileNameOptions).postFile(test.api, `${__dirname}/assets/zfile.png`)
     .then(r => fileId = r.body.id));
 
   after(() => cloud.delete(`${test.api}/${fileId}`));
