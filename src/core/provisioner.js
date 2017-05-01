@@ -53,6 +53,34 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
+const getPollerConfig = (element, instance) => {
+  let elementObj;
+  return cloud.get('/elements/' + element)
+  .then(r => elementObj = r.body)
+  .then(r => props.setForKey(element, 'elementId', elementObj.id))
+  .then(r => cloud.get(`elements/${elementObj.id}/metadata`))
+  .then(r => {
+    return r.body.events.supported && r.body.events.methods.includes('polling');
+  })
+  .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
+  .then(r => {
+    if (r === null) return instance;
+    let instanceCopy = JSON.parse(JSON.stringify(instance));
+    if (elementObj.configuration.map(conf => conf.key).includes('event.metadata')) {
+      instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
+      .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
+    } else {
+      instanceCopy.configuration['event.poller.configuration'] = r;
+    }
+    instanceCopy.configuration['event.vendor.type'] = 'polling';
+    instanceCopy.configuration['event.notification.callback.url'] = props.get('eventCallbackUrl');
+    instanceCopy.configuration['event.notification.enabled'] = 'true';
+    instanceCopy.configuration['event.poller.refresh_interval'] = '1';
+    return instanceCopy;
+  })
+  .catch(() => instance);
+};
+
 const createInstance = (element, config, providerData, baseApi) => {
   config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
@@ -60,8 +88,8 @@ const createInstance = (element, config, providerData, baseApi) => {
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
-
-  return cloud.post(baseApi, instance)
+  return getPollerConfig(tools.getBaseElement(element), instance)
+    .then(r => cloud.post(baseApi, r))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
@@ -170,6 +198,8 @@ const oauth1 = (element, args) => {
  * @return {Promise}         JS promise that resolves to the instance created
  */
 const orchestrateCreate = (element, args, baseApi, cb) => {
+  // Setting which element we are currently running on
+  props.set('element', element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
   config.element = element;
