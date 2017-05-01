@@ -2,9 +2,9 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
 const propertiesPayload = require('./assets/contactsProperties');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 payload.email = tools.randomEmail();
 
@@ -68,6 +68,5 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   });
   const metaData = { useBatchUpload: true };
   const opts = { formData: { metaData: JSON.stringify(metaData) } };
-  test.should.supportBulkUpload(opts, `${__dirname}/assets/contacts.csv`, 'contacts', `email='test123@churros.com'`);
 
 });
