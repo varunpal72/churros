@@ -169,6 +169,7 @@ commander
     console.log('    $ churros test elements/closeio');
     console.log('    $ churros test elements/closeio --test \'contacts\'');
     console.log('    $ churros test elements/closeio --file \'contacts\'');
+    console.log('    $ churros test elements/zuorav2 --params \'{"zuorav2.sandbox": true}\'');
     console.log('    $ churros test elements');
     console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
     console.log('    $ churros test elements --start freshbooks');
