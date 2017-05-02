@@ -85,6 +85,30 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('login_submit')).click();
       browser.findElement(webdriver.By.name('consent_accept')).click();
       return browser.getCurrentUrl();
+    case 'campaignmonitor':
+      browser.manage().window().setSize(1920, 1080)
+      
+      browser.get(r.body.oauthUrl);
+
+      browser.findElement(webdriver.By.id('username')).sendKeys(username);
+      
+      browser.findElement(webdriver.By.id('password')).sendKeys(password);
+     
+      browser.findElement(webdriver.By.xpath("/html/body/div[@id='outer']/div[@id='inner']/div[@id='content']/div[@id='authBox']/div[@id='auth']/div[@id='login-form']/form/button[@class='primary']")).click();
+
+
+     return browser.wait(() => {
+
+        console.log('there');
+        return browser.isElementPresent(webdriver.By.xpath("/html/body/div[@id='outer']/div[@id='inner']/div[@id='content']/div[@id='authBox']/div[@id='auth']/div[@id='approve-access']/form/button")); //slow load time for accept screen
+      }, 5000).then(r=> {
+
+        browser.sleep(3000);
+        browser.findElement(webdriver.By.xpath("/html/body/div[@id='outer']/div[@id='inner']/div[@id='content']/div[@id='authBox']/div[@id='auth']/div[@id='approve-access']/form/button")).click();
+        
+        return browser.getCurrentUrl();
+          
+      });
     case 'sharefile':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.id('credentials-email')), 3000);
