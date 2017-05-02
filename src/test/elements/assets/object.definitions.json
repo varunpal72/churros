@@ -440,6 +440,14 @@
       "type": "string"
     }]
   },
+  "segments": {
+    "fields": [
+      {
+        "path": "id",
+        "type":"string"
+      }
+    ]
+  },
   "transient-documents": {
     "fields": [{
       "path": "id",
