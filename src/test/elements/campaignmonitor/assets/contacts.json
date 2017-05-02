@@ -1,0 +1,6 @@
+{
+    "EmailAddress": "subscriber@example.com",
+    "Name": "New Subscriber",
+    "Resubscribe": true,
+    "RestartSubscriptionBasedAutoresponders": true
+}

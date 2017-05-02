@@ -1,0 +1,9 @@
+{
+    "Name": "This is a Testing Campaing name",
+    "Subject": "My Subject",
+    "FromName": "My Name",
+    "FromEmail": "myemail@mydomain.com",
+    "ReplyTo": "myemail@mydomain.com",
+    "HtmlUrl": "http://www.example.com",
+    "ListIDs": []
+}
