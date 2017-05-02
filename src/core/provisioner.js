@@ -11,6 +11,7 @@ const o = require('core/oauth');
 const r = require('request');
 const defaults = require('core/defaults');
 const cloud = require('core/cloud');
+const argv = require('optimist').argv;
 
 var exports = module.exports = {};
 
@@ -53,6 +54,12 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
+const addParams = (instance) => {
+  let instanceCopy = JSON.parse(JSON.stringify(instance));
+  if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+  return instanceCopy;
+};
+
 const getPollerConfig = (element, instance) => {
   let elementObj;
   return cloud.get('/elements/' + element)
@@ -89,6 +96,7 @@ const createInstance = (element, config, providerData, baseApi) => {
 
   if (providerData) instance.providerData = providerData;
   return getPollerConfig(tools.getBaseElement(element), instance)
+  .then(addParams)
     .then(r => cloud.post(baseApi, r))
     .then(r => {
       expect(r).to.have.statusCode(200);
