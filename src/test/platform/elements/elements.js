@@ -63,6 +63,7 @@ suite.forPlatform('elements', opts, (test) => {
 
   it('should support CRUD by key', () => crudElement('key', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
   it('should support CRUD by ID', () => crudElement('id', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
+  it('should support CRUD by ID with objects', () => crudElement('id', common.genElementWithObjects({}), common.genElementWithObjects({ description: "An updated Churros element" }), schema));
 
   it('should support JDBC element CRUD by key', () => crudElement('key', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
   it('should support JDBC element CRUD by ID', () => crudElement('id', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
@@ -124,7 +125,7 @@ suite.forPlatform('elements', opts, (test) => {
       .then(r => {
         expect(r.body).to.not.be.empty;
         expect(r.body.name).to.equal('http://autotask.net/ATWS/v1_5/');
-        atElement = r.body;   
+        atElement = r.body;
       })
       // Create the element
       .then(r => crudElement('key', atElement, atElement, schema));
