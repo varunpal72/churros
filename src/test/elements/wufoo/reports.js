@@ -31,5 +31,5 @@ suite.forElement('general', 'reports', (test) => {
     return cloud.get(`${test.api}`)
       .then(r => cloud.get(`${test.api}/${r.body[0].Hash}/widgets`));
   });
-  test.should.supportPagination();
+  test.should.supportPagination('Hash');
 });

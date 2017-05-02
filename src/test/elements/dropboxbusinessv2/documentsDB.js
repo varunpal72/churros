@@ -5,6 +5,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const suite = require('core/suite');
 const folderPayload = require('./assets/folders');
+const faker = require('faker');
 const memberId = "dbmid:AAAFACcOADjRo0pt6cE_w3RmDSTmtSq5mqY";
 exports.all = () => {
   exports.files();
@@ -98,8 +99,8 @@ exports.files = () => {
     });
 
     it('should allow POST /files/copy and POST /files/:id/copy', () => {
-      const copy1 = { path: '/churrosCopy1' };
-      const copy2 = { path: '/churrosCopy2' };
+      const copy1 = { path: `/${faker.system.fileName()}` };
+      const copy2 = { path: `/${faker.system.fileName()}` };
 
       const cb = (file) => {
         let fileCopy1, fileCopy2;
@@ -189,8 +190,8 @@ exports.folders = (test) => {
 
     it('should allow POST /folders/copy and POST /folders/:id/copy', () => {
 
-      const copy1 = { path: '/churrosCopy1' };
-      const copy2 = { path: '/churrosCopy2' };
+      const copy1 = { path: `/${faker.system.fileName()}` };
+      const copy2 = { path: `/${faker.system.fileName()}` };
 
       const cb = (folder) => {
         let folderCopy1, folderCopy2;
