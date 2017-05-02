@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools')
+const tools = require('core/tools');
 const accountPayload = require('./assets/accounts');
 const contactPayload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 

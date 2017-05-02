@@ -66,7 +66,5 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/propertygroups/${id}`, updatePropertygroups))
       .then(r => cloud.delete(`${test.api}/propertygroups/${id}`));
   });
-  const metaData = { useBatchUpload: true };
-  const opts = { formData: { metaData: JSON.stringify(metaData) } };
 
 });
