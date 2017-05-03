@@ -143,7 +143,7 @@ suite.forPlatform('bulk', (test) => {
 
   });
 
-  it('should bulk queries for Voldemort elements', () => {
+  it('should support bulk queries for Voldemort elements', () => {
     let bulkId;
     // sfdc does this
     return provisioner.create('concur')
