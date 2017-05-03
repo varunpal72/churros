@@ -10,5 +10,16 @@
   "entityStatus":{
     "internalId":"13",
     "name":"CUSTOMER-Closed Won"
+  },
+  "customFieldList": {
+    "customField": [
+      {
+        "scriptId": "custentity7",
+        "ce_type": "SelectCustomFieldRef",
+        "value": {
+          "internalId": "1"
+        }
+      }
+    ]
   }
 }

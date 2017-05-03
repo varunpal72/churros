@@ -1,0 +1,27 @@
+{
+  "isPerson": false,
+  "billPay": false,
+  "accessRole": {
+    "internalId": "14",
+    "name": "Customer Center"
+  },
+  "currency": {
+    "internalId": "1",
+    "name": "USA"
+  },
+  "email": "<<internet.email>>",
+  "companyName": "<<company.companyName>>",
+  "leadSource": {
+    "internalId": "100010",
+    "name": "Summer End Promotions"
+  },
+  "subsidiary": {
+    "internalId": "1",
+    "name": "Honeycomb Mfg."
+  },
+  "shipComplete": false,
+  "phone": "<<phone.phoneNumber>>",
+  "entityStatus": {
+    "internalId": "8"
+  }
+}

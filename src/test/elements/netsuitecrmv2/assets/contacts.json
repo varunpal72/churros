@@ -1,10 +1,10 @@
 {
-  "lastName": "ChurrosDoNotUse",
+  "lastName": "<<name.firstName>>",
   "subsidiary": {
     "internalId": "1",
     "name": "Honeycomb Mfg."
   },
-  "firstName": "El Chappo2",
+  "firstName": "<<name.lastName>>",
   "phone": "650-555-9788",
   "altEmail": "chudonotuse@cloud-elements.com",
   "email": "chudonotuse@cloud-elements.com",

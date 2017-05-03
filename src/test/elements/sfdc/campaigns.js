@@ -7,4 +7,5 @@ suite.forElement('crm', 'campaigns', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();
+  test.should.return404OnGet('0');
 });

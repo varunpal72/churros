@@ -118,5 +118,26 @@ suite.forPlatform('bulk', (test) => {
               expect(r.body.length).to.equal(7);
           });
   });
+  it('should support cancellation of jobs', () => {
+    let instanceId, jobId;
+    // sfdc does this
+    return provisioner.create('pipedrive')
+      .then(r => {
+        instanceId = r.body.id;
+      })
+      .then(r => cloud.withOptions({ qs: { q: 'select * from accounts' } }).post('/hubs/crm/bulk/query'))
+      .then(r => {
+                  expect(r.body.status).to.equal('CREATED');
+                  jobId = r.body.id;
+                })
+      .then(r => cloud.put('hubs/crm/bulk/' + jobId + '/cancel'))
+
+      .then(r => expect(r.response.statusCode).to.equal(200))
+      .then(r => tools.wait.upTo(3000).for(() => cloud.get(`/hubs/crm/bulk/${jobId}/status`, r => {
+        expect(r.body.status).to.equal('CANCELLED');
+      })))
+      .then(r => provisioner.delete(instanceId));
+
+  });
 
 });

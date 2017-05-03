@@ -34,6 +34,13 @@
       "vendorPath": "internalId"
     }]
   },
+  "prospects": {
+    "vendorName": "Prospect",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
   "vendor-payments": {
     "vendorName": "Vendor-Payment",
     "fields": [{
