@@ -39,7 +39,6 @@ suite.forElement('documents', 'folders', (test) => {
     return cloud.withOptions({ qs: { path: '/My Files & Folders' } }).get('/hubs/documents/folders/contents')
       .then(r => cloud.withOptions({ qs: { path: r.body[0].path } }).patch('/hubs/documents/folders/metadata', r.body[0]))
       .then(r => cloud.patch('/hubs/documents/folders/' + r.body.id + '/metadata', Object.assign({}, r.body, {name: faker.random.words()})))
-      .then(r => cloud.delete('/hubs/documents/folders/' + r.body.id));
   });
 
   it('should disallow downloading a folder', () => {
