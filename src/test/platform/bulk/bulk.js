@@ -144,7 +144,7 @@ suite.forPlatform('bulk', (test) => {
   });
 
   it('should bulk queries for Voldemort elements', () => {
-    let instanceId, bulkId;
+    let bulkId;
     // sfdc does this
     return provisioner.create('concur')
       .then(r => {
@@ -187,7 +187,7 @@ it('should support voldemort bulk upsert', () => {
       expect(r.body.status).to.equal('COMPLETED');
       expect(r.body.recordsCount).not.to.equal(0);
       expect(r.body.recordsFailedCount).not.to.equal(r.body.recordsCount);
-    })))
+    })));
     // get bulk upload errors
     //.then(r => cloud.get(`/hubs/expenses/bulk/${bulkId}/status`))
     //  expect(r.body[0].status).to.contain('Message - Another List already exists with the same name.');
@@ -212,8 +212,9 @@ it('should support voldemort bulk upload', () => {
       expect(r.body.status).to.equal('COMPLETED');
     })))
     // get bulk upload errors
-    .then(r => cloud.get(`/hubs/expenses/bulk/${bulkId}/errors`))
+    .then(r => cloud.get(`/hubs/expenses/bulk/${bulkId}/errors`), r => {
       expect(r.body[0].status).to.contain('Message - Another List already exists with the same name.');
+    });
 });
 
 
