@@ -5,9 +5,9 @@ const payload = require('./assets/opportunities');
 const tools = require('core/tools');
 const chakram = require('chakram');
 const build = (overrides) => Object.assign({}, payload, overrides);
-const leadPayload = build({ Oppo_Description: tools.random(),Oppo_Note:tools.random()});
+const oppPayload = build({ Oppo_Description: tools.random(),Oppo_Note:tools.random()});
 
-suite.forElement('crm', 'opportunities', { payload: payload }, (test) => {
+suite.forElement('crm', 'opportunities', { payload: oppPayload }, (test) => {
  const options = {
     churros: {
       updatePayload: {
