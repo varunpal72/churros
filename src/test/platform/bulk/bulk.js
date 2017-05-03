@@ -6,11 +6,14 @@ const cloud = require('core/cloud');
 const provisioner = require('core/provisioner');
 const props = require('core/props');
 const tools = require('core/tools');
+const fs = require('fs');
+
 
 let workflow = require('./assets/hubspotcrm.workflow.json');
+let downloadId;
 
 suite.forPlatform('bulk', (test) => {
-  let instanceId;
+  let instanceId, concurId;
   const element = props.getForKey('bulk', 'element');
   before(done => provisioner.create(element)
     .then(r => {
@@ -139,5 +142,79 @@ suite.forPlatform('bulk', (test) => {
       .then(r => provisioner.delete(instanceId));
 
   });
+
+  it('should bulk queries for Voldemort elements', () => {
+    let instanceId, bulkId;
+    // sfdc does this
+    return provisioner.create('concur')
+      .then(r => {
+        concurId = r.body.id;
+      })
+      .then(r => cloud.withOptions({ qs: { q: 'select * from expenses' } }).post('/hubs/expenses/bulk/query')
+        .then(r => {
+          expect(r.body.status).to.equal('CREATED');
+          bulkId = r.body.id;
+          downloadId = bulkId;
+        })
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/expenses/bulk/${bulkId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED');
+      })))
+      // get bulk query results in JSON
+      .then(r => cloud.withOptions({ headers: { accept: "application/json" }, qs: {json: '{ "convertToNativeType": "false" }' }}).get(`/hubs/expenses/bulk/${bulkId}/expenses`, r => {
+        expect(r.body).to.not.be.empty;
+      }))
+      // get bulk query results in CSV
+      .then(r => cloud.withOptions({ headers: { accept: "text/csv" } }).get(`/hubs/expenses/bulk/${bulkId}/expenses`, r => {
+        fs.writeFileSync(__dirname + `/assets/concur.downloaded.csv` , new Buffer(r.body, 'utf8').toString('ascii'));
+        expect(r.body).to.not.be.empty;
+      })));
+
+});
+
+it('should support voldemort bulk upsert', () => {
+
+  let bulkId;
+  const metadata = {primaryKeyName:'ID',action:'upsert'};
+  const opts = { formData: { metaData: JSON.stringify(metadata) } };
+  // sfdc does this
+  return cloud.withOptions(opts).postFile('/hubs/expenses/bulk/expenses' ,__dirname + `/assets/concur.downloaded.csv`)
+    .then(r => {
+      expect(r.body.status).to.equal('CREATED');
+      bulkId = r.body.id;
+    })
+    // get bulk upload status
+    .then(r => tools.wait.upTo(60000).for(() => cloud.get(`/hubs/expenses/bulk/${bulkId}/status`, r => {
+      expect(r.body.status).to.equal('COMPLETED');
+      expect(r.body.recordsCount).not.to.equal(0);
+      expect(r.body.recordsFailedCount).not.to.equal(r.body.recordsCount);
+    })))
+    // get bulk upload errors
+    //.then(r => cloud.get(`/hubs/expenses/bulk/${bulkId}/status`))
+    //  expect(r.body[0].status).to.contain('Message - Another List already exists with the same name.');
+});
+
+
+it('should support voldemort bulk upload', () => {
+  let bulkId;
+  // start bulk upload
+  before(done => cloud.post(`/hubs/expenses/lists`, {Name:'testList12345',DisplayCodeFirst:true,SearchCriteriaCode:'TEXT',isVendorList:false})
+    .then(r => done()));
+  after(done => provisioner.delete(concurId)
+    .then(r => done()));
+
+  return cloud.postFile('/hubs/expenses/bulk/lists', __dirname + `/assets/concur.lists.csv`)
+    .then(r => {
+      expect(r.body.status).to.equal('CREATED');
+      bulkId = r.body.id;
+    })
+    // get bulk upload status
+    .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/expenses/bulk/${bulkId}/status`, r => {
+      expect(r.body.status).to.equal('COMPLETED');
+    })))
+    // get bulk upload errors
+    .then(r => cloud.get(`/hubs/expenses/bulk/${bulkId}/errors`))
+      expect(r.body[0].status).to.contain('Message - Another List already exists with the same name.');
+});
+
 
 });
