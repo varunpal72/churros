@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const common = require('./assets/common.js');
 const schema = require('./assets/element.object.schema.json');
 const payload = require('./assets/element.object.payload.json');
 
