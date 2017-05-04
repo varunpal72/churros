@@ -7,7 +7,7 @@ const payload = require('./assets/customers');
 suite.forElement('erp', 'customers', { payload: payload }, (test) => {
   payload.firstName = tools.random();
   test.should.supportCruds();
-  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
+  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.supportPagination();
   test.should.supportCeqlSearch('id');
   test.withOptions({ qs: { page: 1,
                            pageSize: 5,
