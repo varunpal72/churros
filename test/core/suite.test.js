@@ -2,7 +2,6 @@
 
 require('core/assertions');
 const suite = require('core/suite');
-// const props = require('core/props');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const helper = require('./assets/suite-helper');
@@ -106,13 +105,10 @@ describe('suite', () => {
     test
       .withApi('/foo/pagination')
       .should.supportPagination();
-    // props.setForKey('myelement', 'elementId', '123');
-    test
-      .withApi('/foo/polling')
-      .should.supportPolling();
     test
     .withApi('/foo/pagination')
     .should.supportPagination('id');
+
     /* no with... functions, which will just use the defaults that were passed in to the `suite.forPlatform` above */
     test.should.return200OnPost();
     test.should.return404OnGet(456);
