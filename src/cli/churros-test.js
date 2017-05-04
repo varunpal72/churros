@@ -67,21 +67,21 @@ const run = (suite, options, cliArgs) => {
   const baseMochaPaths = [rootTestDir + '/lifecycle'];
   if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
 
-  const isAfterStart = (start, suite) => {
+  const isAfterStart = (start, suite, arr) => {
     if (!start) return true;
     let folderPath = `${rootTestDir}/${resourceType}/${start}`;
     if (!fs.existsSync(folderPath)) {
       console.log('Invalid suite: %s', start);
       process.exit(1);
     }
-    return suite >= start;
+    return arr.indexOf(suite) >= arr.indexOf(start);
   };
 
   // if we want to run multiple tests, we need to find all of the available element or platform tests and add them to our resources array
   isRunMultiple(suite) ?
     fs.readdirSync(`${rootTestDir}/${resourceType}`)
     .filter(e => e !== 'assets' && options.exclude.indexOf(e) < 0)
-    .filter(e => isAfterStart(options.start, e))
+    .filter((e, i, self) => isAfterStart(options.start, e, self))
     .map(e => resources.push(e)) :
     resources.push(suite.split('/')[1]);
   // console.log(cliArgs);
@@ -101,6 +101,7 @@ const run = (suite, options, cliArgs) => {
 
   // loop over each element, constructing the proper paths to pass to mocha
   let cmd = "";
+  if (resources.includes('.DS_Store')) resources.splice(resources.indexOf('.DS_Store'), 1);
   resources.forEach((resource, index) => {
     const allMochaPaths = baseMochaPaths.slice();
     let baseResource = resource;
@@ -167,6 +168,7 @@ commander
     console.log('    # Element Tests');
     console.log('    $ churros test elements/closeio');
     console.log('    $ churros test elements/closeio --test \'contacts\'');
+    console.log('    $ churros test elements/closeio --file \'contacts\'');
     console.log('    $ churros test elements');
     console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
     console.log('    $ churros test elements --start freshbooks');

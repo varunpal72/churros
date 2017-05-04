@@ -9,9 +9,12 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const props = require('core/props');
 const logger = require('winston');
 const argv = require('optimist').argv;
+const request = require('request');
 const fs = require('fs');
+
 
 var exports = module.exports = {};
 
@@ -86,7 +89,7 @@ const itCs = (name, api, payload, validationCb, options) => {
   boomGoesTheDynamite(n, () => cloud.withOptions(options).cs(api, payload, validationCb), options ? options.skip : false);
 };
 
-const itPagination = (name, api, options, validationCb) => {
+const itPagination = (name, api, options, validationCb, unique) => {
   const n = name || `should allow paginating with page and pageSize ${api}`;
   const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 2 : 2 : 2;
   const page = options ? options.qs ? options.qs.page ? options.qs.page : 1 : 1 : 1;
@@ -109,6 +112,11 @@ const itPagination = (name, api, options, validationCb) => {
     .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage, page: page+1 }} : options2, result2))
     .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
     .then(() => {
+      if (unique) {
+        result3.body = tools.getKey(result3.body, unique);
+        result2.body = tools.getKey(result2.body, unique);
+        result1.body = tools.getKey(result1.body, unique);
+      }
       if (result3.body.length === pageSize*2 && result1.body.length === pageSize && result2.body.length === pageSize) {
         expect(result3.body[0]).to.deep.equal(result1.body[0]);
         expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
@@ -220,6 +228,48 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       })
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
+};
+const itPolling = (name, pay, api, options, validationCb, payload) => {
+  name = 'polling ' + api;
+  payload = payload ? payload : pay;
+  let response;
+  boomGoesTheDynamite(name, () => {
+    const baseUrl = props.get('eventCallbackUrl');
+    const url = baseUrl + '?returnQueue';
+    const defaultValidation = (r) => expect(r).to.have.statusCode(200);
+    const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => expect(res.count).to.be.above(0);
+    if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
+    expect(baseUrl).to.exist;
+    return cloud.get(`elements/${props.getForKey(props.get('element'), 'elementId')}/metadata`)
+    .then(r => {
+      const supportsPolling = r.body.events.supported && r.body.events.methods.includes('polling');
+      //logs error then fails test
+      if (!supportsPolling) logger.error('This element doesn\'t support polling');
+      expect(supportsPolling).to.be.true;
+    })
+    .then(r => {
+      logger.info('Testing polling may take up to 2 minutes');
+      pay = typeof payload === 'function' ? payload() : payload;
+      //clears the bin before creating and checking bin again
+      return new Promise((resolve, reject) => {
+        request(url, (err, res, body) => {
+          if(err) reject(err);
+          resolve(body);
+        });
+      });
+    })
+    .then(() => pay)
+    .then(r => cloud.withOptions(options).post(api, r))
+    .then(r => response = r.body)
+    .then(() => tools.wait.upTo(120000).for(() => new Promise((resolve, reject) => {
+      request(url, (err, res, body) => {
+        if(err) reject(err);
+        resolve(body);
+      });
+    })
+    .then(r => validate(JSON.parse(r)))))
+    .then(() => cloud.delete(`${api}/${response.id}`));
+  });
 };
 
 const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
@@ -400,6 +450,12 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      */
     return200OnGet: () => itGet(name, api, options, validationCb),
     /**
+    * @param {object || Function} pay: The payload used to create a new object
+    * @param {Function} validate A validate funtion with `expects` to test response
+    * @memberof module:core/suite.test.should
+    */
+    supportPolling: (pay) => itPolling(name, payload, api, options, validationCb, pay),
+    /**
      * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
      * @param {object} metadata -> headers, query string etc...
      * @param {object} opts -> To test json and csv. If null it will test endpoints default. EXAMPLE "{json: true, csv: true}"
@@ -421,9 +477,10 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.
+     * @param {string} unique -> A unique identifier for each page to validate correct pagination
      * @memberof module:core/suite.test.should
      */
-    supportPagination: () => itPagination(name, api, options, validationCb),
+    supportPagination: (unique) => itPagination(name, api, options, validationCb, unique),
     /**
      * Validates that the given API supports `nextPageToken` type pagination.
      * @param {number} amount The number of objects to paginate through

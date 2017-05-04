@@ -31,6 +31,6 @@ suite.forElement('helpdesk', 'organizations', { payload: organizationsCreate() }
       .then(r => cloud.get(`${test.api}/${organiztionId}/contacts`))
       .then(r => cloud.get(`${test.api}/${organiztionId}/incidents`));
   });
-  test.should.supportPagination();
+  test.should.supportPagination('id');
   test.withApi(`${test.api}/search`).withOptions({ qs: { query: 'desk.com' } }).should.return200OnGet();
 });
