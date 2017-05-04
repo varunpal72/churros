@@ -9,11 +9,8 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const props = require('core/props');
 const logger = require('winston');
-const request = require('request');
 const fs = require('fs');
-
 
 var exports = module.exports = {};
 
@@ -228,48 +225,6 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
 };
-const itPolling = (name, pay, api, options, validationCb, payload) => {
-  name = 'polling ' + api;
-  payload = payload ? payload : pay;
-  let response;
-  boomGoesTheDynamite(name, () => {
-    const baseUrl = props.get('eventCallbackUrl');
-    const url = baseUrl + '?returnQueue';
-    const defaultValidation = (r) => expect(r).to.have.statusCode(200);
-    const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => expect(res.count).to.be.above(0);
-    if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
-    expect(baseUrl).to.exist;
-    return cloud.get(`elements/${props.getForKey(props.get('element'), 'elementId')}/metadata`)
-    .then(r => {
-      const supportsPolling = r.body.events.supported && r.body.events.methods.includes('polling');
-      //logs error then fails test
-      if (!supportsPolling) logger.error('This element doesn\'t support polling');
-      expect(supportsPolling).to.be.true;
-    })
-    .then(r => {
-      logger.info('Testing polling may take up to 2 minutes');
-      pay = typeof payload === 'function' ? payload() : payload;
-      //clears the bin before creating and checking bin again
-      return new Promise((resolve, reject) => {
-        request(url, (err, res, body) => {
-          if(err) reject(err);
-          resolve(body);
-        });
-      });
-    })
-    .then(() => pay)
-    .then(r => cloud.withOptions(options).post(api, r))
-    .then(r => response = r.body)
-    .then(() => tools.wait.upTo(120000).for(() => new Promise((resolve, reject) => {
-      request(url, (err, res, body) => {
-        if(err) reject(err);
-        resolve(body);
-      });
-    })
-    .then(r => validate(JSON.parse(r)))))
-    .then(() => cloud.delete(`${api}/${response.id}`));
-  });
-};
 
 const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
   const n = name || `should support bulk download with options`;
@@ -409,12 +364,6 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      * @memberof module:core/suite.test.should
      */
     return200OnGet: () => itGet(name, api, options, validationCb),
-    /**
-    * @param {object || Function} pay: The payload used to create a new object
-    * @param {Function} validate A validate funtion with `expects` to test response
-    * @memberof module:core/suite.test.should
-    */
-    supportPolling: (pay) => itPolling(name, payload, api, options, validationCb, pay),
     /**
      * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
      * @param {object} metadata -> headers, query string etc...

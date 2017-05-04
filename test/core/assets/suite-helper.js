@@ -1,8 +1,6 @@
 'use strict';
 
 const nock = require('nock');
-const request = require('request');
-const props = require('core/props');
 
 var exports = module.exports = {};
 const genPayload = (opts) => {
@@ -58,10 +56,7 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
 
   nock(baseUrl, eventHeaders())
     .post('/events/myelement')
-    .reply(200, (uri, requestBody) => {
-      props.setForKey('myelement', 'elementId', '123');
-      return requestBody;
-    });
+    .reply(200, (uri, requestBody) => requestBody);
 
   /** GET **/
   nock(baseUrl, headers())
@@ -102,16 +97,7 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .get('/bulk/errors')
     .reply(200, () => {})
     .get('/bulk/123/endpoint')
-    .reply(200, () => new Array(10).fill(JSON.stringify({id:123})).join('\n') + '\n')
-    .get('/elements/123/metadata')
-    .reply(200, () => {
-      return {
-        events: {
-          supported: true,
-          methods: ['polling', 'webhook']
-        }
-      };
-    });
+    .reply(200, () => new Array(10).fill(JSON.stringify({id:123})).join('\n') + '\n');
 
     nock(baseUrl, { reqheaders: { accept: "application/json" } })
     .get('/bulk/123/endpoint')
@@ -166,14 +152,7 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .post('/events/myelement')
     .reply(200, (uri, requestBody) => requestBody)
     .post('/foo/pagination')
-    .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
-    .post('/foo/polling')
-    .reply(200, (uri, requestBody) => {
-      setInterval(() => {
-        request(props.get('eventCallbackUrl'), (err, res, body) => {});
-      }, 1000);
-      return genPayload({ id: 123 });
-    });
+    .reply(200, (uri, requestBody) => genPayload({ id: 123 }));
 
   /** GET **/
   nock(baseUrl, headers())
@@ -230,8 +209,6 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .delete('/bulk/123')
     .reply(200, (uri, requestBody) => ({}))
     .delete('/foo/pagination/123')
-    .reply(200, (uri, requestBody) => ({}))
-    .delete('/foo/polling/123')
     .reply(200, (uri, requestBody) => ({}));
 
 };
