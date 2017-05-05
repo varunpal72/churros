@@ -53,7 +53,7 @@ suite.forElement('helpdesk', 'ServiceRequestCollection', { payload: payload }, (
       }
     };
     return cloud.post(test.api, payload)
-      .then(r => incidentId = r.body.id)                    //ServiceRequestCollection('{incidentId}')/ServiceRequestAttachmentFolder
+      .then(r => incidentId = r.body.id)
       .then(r => cloud.withOptions(metadataOptions).postFile(`${test.api}/${incidentId}/ServiceRequestAttachmentFolder/attachments`, __dirname + '/assets/brady.jpg'))
       .then(r => attachmentId = r.body.id)
       .then(r => cloud.get(`${test.api}/${incidentId}/ServiceRequestAttachmentFolder/${attachmentId}`))
