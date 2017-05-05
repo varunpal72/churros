@@ -15,11 +15,12 @@ const expect = chakram.expect;
 const nock = require('nock');
 const props = require('core/props');
 const defaults = require('core/defaults');
-
+const argv = require('optimist').argv;
 const auth = 'User fake, Organization fake';
 const headers = () => new Object({ reqheaders: { 'Authorization': (value) => value === auth } });
 const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
-
+// add 'polling' to command line to simulate the '--polling' flag
+argv.polling = 'true';
 const setupProps = () => {
   props({
     'user': 'franky',

@@ -13,6 +13,7 @@ const props = require('core/props');
 const logger = require('winston');
 const request = require('request');
 const fs = require('fs');
+const argv = require('optimist').argv;
 
 
 var exports = module.exports = {};
@@ -268,7 +269,7 @@ const itPolling = (name, pay, api, options, validationCb, payload) => {
     })
     .then(r => validate(JSON.parse(r)))))
     .then(() => cloud.delete(`${api}/${response.id}`));
-  });
+  }, (argv.polling ? false : true) || (options ? options.skip : false));
 };
 
 const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
