@@ -69,10 +69,12 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
-  let sfdcId;
+  let sfdcId, dropboxId;
   before(() => {
     return provisioner.create('sfdc', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 })
       .then(r => sfdcId = r.body.id)
+      .then(r => provisioner.create('dropbox'))
+      .then(r => dropboxId = r.body.id)
       .catch(e => {
         console.log(`Failed to finish before()...${e}`);
         process.exit(1);
@@ -553,7 +555,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
 
-  it('should successfully execute a elementRequestStream step in a formula', () => {
+  it('should successfully stream a bulk file using an elementRequestStream step in a formula', () => {
     const configuration = { source: sfdcId, target: sfdcId, 'object.name': 'contacts' };
     let bulkUploadId;
     const validator = (executions) => {
@@ -601,5 +603,27 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         expect(r.body.length).to.equal(0);
       })
       .then(r => cloud.delete(`/hubs/crm/contacts/${contactId}`));
+  });
+
+  it('should successfully stream a file via the documents hub APIs using an elementRequestStream step in a formula', () => {
+    const configuration = { 'dropbox.instance': dropboxId };
+
+    const validator = (executions) => {
+      logger.debug('validating...');
+      executions.map(e => {
+        expect(e.status).to.equal('success');
+      });
+
+      const streamStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'stream');
+      const streamStepExecutionValues = streamStepExecutions[0].stepExecutionValues;
+      logger.debug('ssevs: ' + JSON.stringify(streamStepExecutionValues));
+
+      streamStepExecutionValues.filter(sevs => sevs.key === 'stream.download.response.code').map(sev => {
+        logger.debug('code json: ' + JSON.stringify(sev));
+        logger.debug('code: ' + sev.value);
+        expect(sev.value).to.equal('200');
+      });
+    };
+    return manualTriggerTest('documents-stream', configuration, { foo: 'bar' }, 4, validator);
   });
 });
