@@ -11,7 +11,7 @@ let options = {
   }
 };
 
-suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
+suite.forElement('helpdesk', 'accounts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();

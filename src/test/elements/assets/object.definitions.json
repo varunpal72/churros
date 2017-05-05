@@ -1005,7 +1005,7 @@
       "type": "string"
     }]
   },
-  "ServiceRequestAttachmentFolderCollection": {
+  "ServiceRequestAttachmentFolder": {
     "fields": [{
       "path": "id",
       "type": "string"

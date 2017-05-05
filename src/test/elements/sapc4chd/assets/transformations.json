@@ -34,8 +34,8 @@
       "vendorPath": "ObjectID"
     }]
   },
-  "ServiceRequestAttachmentFolderCollection": {
-    "vendorName": "ServiceRequestAttachmentFolderCollection",
+  "ServiceRequestAttachmentFolder": {
+    "vendorName": "ServiceRequestAttachmentFolder",
     "fields": [{
       "path": "id",
       "vendorPath": "ObjectID"

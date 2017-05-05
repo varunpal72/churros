@@ -4,6 +4,7 @@ const suite = require('core/suite');
 const payload = require('./assets/incidents');
 const commentsPayload = require('./assets/comments');
 const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 
 let options = {
   churros: {
@@ -15,13 +16,11 @@ let options = {
     }
   }
 };
-//TODO probably add a before here to create an incident to use and test pagination etc.
-suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
+
+suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();
-  //TODO need pagination for these???
-  //TODO need where for these???
   it(`should allow CRUDS for ${test.api}/:id/comments`, () => {
     let id;
     return cloud.post(test.api, payload)
@@ -29,7 +28,19 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
         id = r.body.id;
         options.churros.updatePayload = { 'Text': 'Got the sauce, thanks for your patience', 'TypeCode': '10007' };
       })
-      .then(r => cloud.withOptions(options).cruds(`${test.api}/${id}/comments`, commentsPayload))
+      .then(r => cloud.withOptions(options).cruds(`${test.api}/${id}/comments`, commentsPayload));
+  });
+
+  it(`should allow paginating for ${test.api}/:id/comments`, () => {
+    let id;
+    return cloud.post(test.api, payload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.post(`${test.api}/${id}/comments`, commentsPayload))
+      .then(r => cloud.withOptions({ qs: { pageSize: 1 }}).get(`${test.api}/${id}/comments`))
+      .then(r => expect(r.body.length).to.equal(1))
+      .then(r => cloud.post(`${test.api}/${id}/comments`, commentsPayload))
+      .then(r => cloud.withOptions({ qs: { pageSize: 2 }}).get(`${test.api}/${id}/comments`))
+      .then(r => expect(r.body.length).to.equal(2))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
 
@@ -50,7 +61,9 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.withOptions(metadataOptions).postFile(`${test.api}/${incidentId}/attachments`, __dirname + '/assets/brady.jpg'))
       .then(r => attachmentId = r.body.id)
       .then(r => cloud.get(`${test.api}/${incidentId}/attachments/${attachmentId}`))
-      .then(r => cloud.get(`${test.api}/${incidentId}/attachments`))  //TODO some paging sort of shz here
+      .then(r => cloud.get(`${test.api}/${incidentId}/attachments`))
+      .then(r => cloud.withOptions({ qs: { pageSize: 1 }}).get(`${test.api}/${incidentId}/attachments`))
+      .then(r => expect(r.body.length).to.equal(1))
       .then(r => cloud.delete(`${test.api}/${incidentId}/attachments/${attachmentId}`))
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
   })

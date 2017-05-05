@@ -27,13 +27,6 @@
       "vendorPath": "ObjectID"
     }]
   },
-  "incidents": {
-    "vendorName": "incidents",
-    "fields": [{
-      "path": "id",
-      "vendorPath": "ObjectID"
-    }]
-  },
   "opportunities": {
     "vendorName": "opportunities",
     "fields": [{
@@ -41,8 +34,15 @@
       "vendorPath": "ObjectID"
     }]
   },
-  "ServiceRequestAttachmentFolderCollection": {
-    "vendorName": "ServiceRequestAttachmentFolderCollection",
+  "leads": {
+    "vendorName": "leads",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "ObjectID"
+    }]
+  },
+  "ServiceRequestAttachmentFolder": {
+    "vendorName": "ServiceRequestAttachmentFolder",
     "fields": [{
       "path": "id",
       "vendorPath": "ObjectID"

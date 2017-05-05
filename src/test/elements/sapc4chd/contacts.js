@@ -12,7 +12,7 @@ let options = {
   }
 };
 
-suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
+suite.forElement('helpdesk', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();
