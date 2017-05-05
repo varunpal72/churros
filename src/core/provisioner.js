@@ -54,6 +54,13 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
+const addParams = (instance) => {
+   let instanceCopy = JSON.parse(JSON.stringify(instance));
+   if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+   return instanceCopy;
+};
+
+
 const createInstance = (element, config, providerData, baseApi) => {
   config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
@@ -62,7 +69,7 @@ const createInstance = (element, config, providerData, baseApi) => {
 
   if (providerData) instance.providerData = providerData;
 
-  return cloud.post(baseApi, instance)
+  return cloud.post(baseApi, addParams(instance))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
