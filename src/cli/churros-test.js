@@ -161,7 +161,7 @@ commander
   .option('-S, --start <suite>', 'specific suite to start with, everything before this will be skipped')
   .option('-V, --verbose', 'logging verbose mode')
   .option('-i, --instance <instance>', 'element instance ID to run tests against (for development only)')
-  .option('-P, --params <json>', 'Additional params for provisioning')
+  .option('-P, --params <json>', 'add additional parameters for provisioning')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
