@@ -1,4 +1,5 @@
 {
-  "customer_name": "Churros",
-  "email": "test@churros.com" 
+  "name": "Churros",
+  "phone": "test@churros.com" 
 }
+
