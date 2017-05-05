@@ -91,6 +91,9 @@ $ churros test elements/closeio --file 'contacts'
 # Run the entire suite for the sfdc element and during provisioning use the phantomjs browser
 $ churros test elements/sfdc --browser phantomjs
 
+# Run the polling tests if there are any
+$ churros test elements/sfdc --polling
+
 # Run suite on a existing instance(FOR DEVELOPMENT ONLY)
 $ churros test elements/pipedrive --instance 1234
 ```

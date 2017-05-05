@@ -11,6 +11,7 @@ const o = require('core/oauth');
 const r = require('request');
 const defaults = require('core/defaults');
 const cloud = require('core/cloud');
+const argv = require('optimist').argv;
 
 var exports = module.exports = {};
 
@@ -54,6 +55,7 @@ const parseProps = (element) => {
 };
 
 const getPollerConfig = (element, instance) => {
+  if (!argv.polling) return Promise.resolve(instance);
   let elementObj;
   return cloud.get('/elements/' + element)
   .then(r => elementObj = r.body)
