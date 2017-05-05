@@ -66,5 +66,5 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => expect(r.body.length).to.equal(1))
       .then(r => cloud.delete(`${test.api}/${incidentId}/attachments/${attachmentId}`))
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
-  })
+  });
 });

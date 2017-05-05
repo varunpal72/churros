@@ -62,5 +62,5 @@ suite.forElement('helpdesk', 'ServiceRequestCollection', { payload: payload }, (
       .then(r => expect(r.body.length).to.equal(1))
       .then(r => cloud.delete(`/ServiceRequestAttachmentFolderCollection/${attachmentId}`))
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
-  })
+  });
 });
