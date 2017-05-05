@@ -10,7 +10,6 @@ const fs = require('fs');
 
 
 let workflow = require('./assets/hubspotcrm.workflow.json');
-let downloadId;
 
 suite.forPlatform('bulk', (test) => {
   let instanceId, concurId;
@@ -154,7 +153,6 @@ suite.forPlatform('bulk', (test) => {
         .then(r => {
           expect(r.body.status).to.equal('CREATED');
           bulkId = r.body.id;
-          downloadId = bulkId;
         })
       .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/expenses/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
@@ -188,9 +186,6 @@ it('should support voldemort bulk upsert', () => {
       expect(r.body.recordsCount).not.to.equal(0);
       expect(r.body.recordsFailedCount).not.to.equal(r.body.recordsCount);
     })));
-    // get bulk upload errors
-    //.then(r => cloud.get(`/hubs/expenses/bulk/${bulkId}/status`))
-    //  expect(r.body[0].status).to.contain('Message - Another List already exists with the same name.');
 });
 
 
