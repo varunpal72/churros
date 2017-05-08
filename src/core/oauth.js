@@ -47,16 +47,6 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
-   case 'concur':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('UserNameTxt')).sendKeys(username);
-      browser.findElement(webdriver.By.id('PasswordTxt')).sendKeys(password);
-      browser.findElement(webdriver.By.id('LoginBtn')).click();
-      browser.wait(() => {
-        return browser.isElementPresent(webdriver.By.id('AllowBtn')); 
-      }, 1000);
-      browser.findElement(webdriver.By.id('AllowBtn')).click();
-      return browser.getCurrentUrl();
     case 'desk':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('user_session_email')).sendKeys(username);
@@ -381,7 +371,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'servicenowoauth':
       return 'https://foo.bar.com?code=' + config.code; // they don't supply a code
     case 'servicemax':
-    case 'sagelive':
+    case 'sagelivev1':
     case 'sfdc':
     case 'sfdcservicecloud':
     case 'sfdcmarketingcloud':
@@ -395,9 +385,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).clear();
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('Login')).click();
-      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 10000)
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 50000)
         .thenCatch(r => true); // ignore
-
       browser.findElement(webdriver.By.id('oaapprove'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
@@ -407,6 +396,24 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('sso.Password')).sendKeys(password);
       browser.findElement(webdriver.By.className('submit floatRight')).click();
       return browser.getCurrentUrl();
+      case 'sageonev3':
+        browser.manage().deleteAllCookies();
+        browser.get(r.body.oauthUrl);
+        browser.wait(() => browser.isElementPresent(webdriver.By.id('ukflag')), 5000)
+          .thenCatch(r => true); // ignore
+        browser.findElement(webdriver.By.id('ukflag'))
+          .then((element) => element.click(), (err) => {}); // ignore this
+        browser.wait(() => {
+          return browser.isElementPresent(webdriver.By.id('sso_Email')); //slow load time for login screen
+        }, 10000);
+        browser.findElement(webdriver.By.id('sso_Email')).sendKeys(username);
+        browser.findElement(webdriver.By.id('sso_Password')).sendKeys(password);
+        browser.findElement(webdriver.By.className('action full-width')).click();
+        browser.wait(() => browser.isElementPresent(webdriver.By.className('primary')), 5000)
+          .thenCatch(r => true); // ignore
+          browser.findElement(webdriver.By.className('primary'))
+            .then((element) => element.click(), (err) => {});
+          return browser.getCurrentUrl();
     case 'sageoneus':
       browser.manage().deleteAllCookies();
       browser.get(r.body.oauthUrl);
@@ -421,7 +428,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('sso_Password')).sendKeys(password);
       browser.findElement(webdriver.By.className('button primary green')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.className('primary')), 5000)
-        .thenCatch(r => true); // ignore
+        .thenCatch(r => true);
+        // ignore
       browser.findElement(webdriver.By.className('primary'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
