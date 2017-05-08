@@ -5,9 +5,8 @@ const cloud = require('core/cloud');
 const payload = require('./assets/contacts');
 const propertiesPayload = require('./assets/contactsProperties');
 const tools = require('core/tools');
-
+propertiesPayload.name = "a"+tools.random().toLowerCase();
 payload.email = tools.randomEmail();
-
 const options = {
   churros: {
     updatePayload: {
@@ -16,6 +15,7 @@ const options = {
     }
   }
 };
+
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportNextPagePagination(1);
@@ -33,7 +33,7 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       "formField": false,
       "displayMode": "current_value",
       "groupName": "conversioninformation",
-      "name": "chuors_temp_1",
+      "name": "a"+tools.random().toLowerCase(),
       "options": [],
       "fieldType": "text",
       "calculated": false,
@@ -52,12 +52,12 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
     const propertygroups = {
       "displayName": "test_churros_1",
       "displayOrder": 0,
-      "name": "test12"
+      "name": tools.random()
     };
     const updatePropertygroups = {
       "displayName": "test_churros1",
       "displayOrder": 0,
-      "name": "test12"
+      "name": tools.random()
     };
     return cloud.post(`${test.api}/propertygroups`, propertygroups)
       .then(r => id = r.body.name)

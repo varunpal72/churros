@@ -1,4 +1,8 @@
 {
-  "name": "Robot Account Post",
-  "description": "Robot Test Account"
+  "name": "<<name.firstName>>",
+  "description": "Robot Test Account",
+  "properties": {
+    "description": "Hubspot account",
+    "name": "My Account"
+  }
 }
