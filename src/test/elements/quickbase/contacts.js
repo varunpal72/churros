@@ -9,11 +9,16 @@ suite.forElement('db', 'contacts', { payload: payload }, (test) => {
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();
   it('should create a contact and then an attachment for that id', () => {
-    let contactId, fieldId;
+    let contactId, fieldId,record;
     return cloud.post(test.api, payload)
       .then(r => contactId = r.body.id)
       .then(r => cloud.get(`${test.api}/fields`))
-      .then(r => fieldId = 10)
+	.then(r =>{ record = r.body.filter(function(list) {
+          return list.label === "file";
+        });
+		fieldId = record[0]["@id"];
+		}
+	)
       .then(r => cloud.withOptions({ qs: { fieldName : 'file' } }).postFile(`${test.api}/${contactId}/attachments`, __dirname + '/assets/attach.txt'))
       .then(r => cloud.get(`${test.api}/${contactId}/attachments/${fieldId}`))
       .then(r => cloud.delete(`${test.api}/${contactId}`));
