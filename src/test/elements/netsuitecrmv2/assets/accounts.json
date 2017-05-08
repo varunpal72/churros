@@ -1,5 +1,5 @@
 {
-  "phone": "<<phone.phoneNumber>>",
+  "phone": "9988776655",
   "leadSource": {
     "internalId": "99995"
   },
@@ -15,5 +15,13 @@
   "sendEmail": false,
   "subsidiary": {
     "internalId": "1"
+  },
+  "entityStatus": {
+    "internalId": "13",
+    "name": "CUSTOMER-Closed Won1"
+  },
+  "customForm": {
+    "internalId": "16",
+    "name": "Ramsey Default Customer Form"
   }
 }
