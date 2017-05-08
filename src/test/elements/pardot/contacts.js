@@ -5,6 +5,7 @@ const cloud = require('core/cloud');
 const payload = require('./assets/contacts');
 const tools = require('core/tools');
 const build = (overrides) => Object.assign({}, payload, overrides);
+const contactsPayload = build({email: tools.randomEmail()});
 
 suite.forElement('marketing', 'contacts', { payload: contactsPayload }, (test) => {
   const options = {
