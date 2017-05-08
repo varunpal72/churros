@@ -1,5 +1,5 @@
 {
-  "phone": "9988776655",
+  "phone": "<<phone.phoneNumber>>",
   "leadSource": {
     "internalId": "99995"
   },
