@@ -209,6 +209,24 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000);
       return browser.getCurrentUrl();
+    case 'googlesheets':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('Email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('Email')).submit();
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('Passwd')).sendKeys(password);
+      browser.findElement(webdriver.By.id('Passwd')).submit();
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.name('email'))
+      .then((element) => {
+        element.sendKeys("developer@cloud-elements.com");
+        element.submit();
+      }, (err) => {}); // ignore this
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('submit_approve_access'))
+      .then((element) => element.click(), (err) => {}); // ignore this
+      browser.sleep(2000);
+      return browser.getCurrentUrl();
     case 'gotowebinar':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('emailAddress')).sendKeys(username);
