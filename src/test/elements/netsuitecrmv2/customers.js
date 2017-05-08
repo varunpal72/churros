@@ -9,4 +9,8 @@ suite.forElement('crm', 'customers', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.should.supportCeqlSearch('id');
+  test.withOptions({ qs: { page: 1,
+                           pageSize: 5,
+                           where : "savedSearchId = '18'"
+                         } }).should.return200OnGet();
 });
