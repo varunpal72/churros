@@ -1,0 +1,10 @@
+{
+    "Name": "ce",
+    "FieldTripType": "ID",
+    "FieldTripObjectAnalysis": "a1o0Y0000004TJJQA2",
+    "attributes": {
+      "type": "Field_Trip__Field_Analysis__c",
+      "reference": "ce"
+    },
+    "FieldTripLabel": "Record ID"
+  }

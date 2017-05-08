@@ -1,0 +1,10 @@
+{
+    "Currency": "a180Y000000CvO7QAK",
+    "Label": "US Dollar to Pound",
+	  "Rate": 1.46854,
+    "Type": "Spot",
+    "attributes": {
+      "type": "s2cor__Sage_COR_Currency_Exchange_Rate__c",
+      "reference": "ce"
+    }
+  }

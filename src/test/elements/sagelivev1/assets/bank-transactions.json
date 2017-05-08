@@ -1,0 +1,10 @@
+{
+    "Amount": 5000,
+    "BankAccount": "a050Y000000S1z0QAC",
+    "Name": "ce12",
+    "Ownerid": "0050Y000000dB4YQAU",
+    "attributes": {
+      "type": "s2cor__Sage_ACC_Bank_Transaction__c",
+      "reference": "ce"
+    }
+  }

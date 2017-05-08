@@ -1,0 +1,11 @@
+{
+"RequestElement": "element",
+  "RequestVariable": "variable",
+  "ExpansionType" : "a0F0Y000000K90GUAS",
+ "RuleTreatment": "treat",
+  "Value": "ce",
+  "attributes": {
+    "referenceId": "ce",
+    "type": "expansion-type-rules"
+  }
+}

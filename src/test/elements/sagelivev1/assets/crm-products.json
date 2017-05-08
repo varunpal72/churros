@@ -1,0 +1,9 @@
+{
+  "IsActive": false,
+  "Name": "ce",
+  "ProductCode": "code",
+  "attributes": {
+    "referenceId": "string",
+    "type": "string"
+  }
+}

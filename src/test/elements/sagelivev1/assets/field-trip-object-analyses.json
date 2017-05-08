@@ -1,0 +1,13 @@
+{
+    "FieldTripRecords": 212,
+    "Name": "ce",
+    "FieldTripObjectLabel": "Ledger Account",
+    "Ownerid": "0050Y000000dB6oQAE",
+    "FieldTripisCustom": true,
+    "FieldTripObjectName": "s2cor__Sage_ACC_Ledger_Account__c",
+    "attributes": {
+      "type": "Field_Trip__Object_Analysis__c",
+      "reference": "ce"
+    },
+    "FieldTripLastBatchid": "7070Y0000029XznQAE"
+  }

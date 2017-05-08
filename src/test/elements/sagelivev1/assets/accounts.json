@@ -1,0 +1,32 @@
+{
+  "AccountNumber": "account1",
+  "AnnualRevenue": 139000000,
+  "BillingCity": "Goa",
+  "BillingCountry": "India",
+  "BillingState": "MH",
+  "CountryCode": "91",
+  "Description": "My new account",
+  "Emailaddress": "tani1@gmail.com",
+   "Fax": "(512) 757-9000",
+  "GiftAid": false,
+  "Industry": "Electronics",
+  "Name": "tani1",
+  "NumberOfEmployees": 2,
+  "Ownerid": "0050Y000000d9mDQAQ",
+   "Ownership": "Public",
+  "Phone": "(512) 757-6000",
+   "Rating": "Hot",
+  "Record1099": true,
+  "RecordT5018": true,
+  "ShippingCity": "Mumbai",
+  "ShippingCountry": "India",
+  "ShippingState": "MH",
+  "Site": "http://mail.com",
+  "TickerSymbol": "ABC",
+  "Type": "Customer - Direct",
+ "Website": "http://mail.com",
+  "attributes": {
+      "type": "Account",
+      "refernce" : "ce"
+    }
+}

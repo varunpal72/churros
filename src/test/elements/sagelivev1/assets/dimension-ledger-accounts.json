@@ -1,0 +1,9 @@
+{
+  "LedgerAccount": "a0W0Y000000PimrUAC",
+  "Name": "ce",
+  "Dimension" : "a0C0Y000000Po3qUAC",
+  "attributes": {
+    "referenceId": "string",
+    "type": "string"
+  }
+}

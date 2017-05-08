@@ -1,0 +1,14 @@
+{
+  "Company": "a150Y000000DaR3QAK",
+  "Currency": "a180Y000000Cvl4QAC",
+  "Dimension": "a0C0Y000000Pm6pUAC",
+  "FinancialYear": 2017,
+  "IsReady": true,
+  "LedgerAnalysis" : "a0e0Y000000PruqQAC",
+  "Period" :2,
+  "Name": "ce",
+  "attributes": {
+    "referenceId": "ce",
+    "type": "ledger-analysis-instances"
+  }
+}

@@ -1,0 +1,8 @@
+{
+    "Dimension": "a0C0Y000000Pm71UAC",
+    "LedgerAccount": "a0W0Y000000PioaUAC",
+    "attributes": {
+      "type": "s2cor__Sage_ACC_Ledger_Account_Rule__c",
+      "reference": "ce"
+    }
+  }

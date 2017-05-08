@@ -1,0 +1,9 @@
+{
+    "Company": "a150Y000000DaR3QAK",
+    "Dimension": "a0C0Y000000Po3qUAC",
+    "Ownerid": "0050Y000000dB7IQAU",
+    "attributes": {
+      "type": "s2cor__Sage_ACC_Default_Company_Tag__c",
+      "reference": "ce"
+    }
+  }

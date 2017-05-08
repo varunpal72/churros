@@ -1,0 +1,16 @@
+{
+  "AllocatedHours": 2,
+  "AllocatedUnits": 2,
+  "AvailableUnits": 2,
+  "Employee": "0050Y000000d9mDQAQ",
+  "HolidayHours": 2,
+  "LeaveHours": 2,
+  "Month": 2,
+  "OwnerId": "0050Y000000dB4YQAU",
+  "WorkHours": 2,
+   "Year": 2017,
+  "attributes": {
+    "referenceId": "ce",
+    "type": "s2cor__Sage_capacities__c"
+  }
+}

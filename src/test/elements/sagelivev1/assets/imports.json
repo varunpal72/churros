@@ -1,0 +1,12 @@
+{
+  "CanCreateDimensions": true,
+  "CanCreateTags": true,
+  "Company": "a150Y000000DaR3QAK",
+  "Description": "ce desc",
+  "OwnerId": "0050Y000000dqLTQAY",
+  "Status": "Ready",
+  "attributes": {
+    "referenceId": "ce",
+    "type": "string"
+  }
+}

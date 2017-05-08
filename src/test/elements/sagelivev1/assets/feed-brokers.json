@@ -1,0 +1,11 @@
+{
+   "Status": "Ready",
+   "Name": "ce",
+   "Type": "Report Feed",
+ "ClassName": "s2cor.Sage_ACC_Report_Feed_Addon_3_0",
+   "Ownerid": "0050Y000000d9mXQAQ",
+   "attributes": {
+     "type": "s2cor__Sage_ACC_Feed_Broker__c",
+     "reference": "feed-brokers"
+   }
+ }

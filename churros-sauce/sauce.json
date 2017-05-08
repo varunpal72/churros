@@ -1,0 +1,981 @@
+{
+  "user": "system",
+  "password": "system",
+  "url": "http://localhost:8080",
+  "oauth.callback.url": "https://httpbin.org/get",
+  "ngrok.auth.token": "",
+  "events": {
+    "load": 5,
+    "wait": 60,
+    "element": "sfdc",
+    "port": 8999,
+    "load.element": "sfdc",
+    "load.instances": 1,
+    "load.load": 50,
+    "load.wait": 120
+  },
+  "bulk": {
+    "element": "hubspotcrm"
+  },
+  "base": {
+    "skip": true
+  },
+  "weebly": {
+    "skip": true
+  },
+  "chargebee": {
+    "username": "test_cumJ7Rk0WLwPcuIz2JLkHahUkdDJKTQReg",
+    "site": "cloud-elements-test"
+  },
+  "concur": {
+    "oauth.api.key": "UPjRvqOyYz9hDdWLLLLuQV",
+    "oauth.api.secret": "GNnU6D7uvWMjOyOEsU7uL1Xc4iaEdEOa",
+    "username": "developer@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "provisioning": "oauth2",
+    "oauth.scope": "LIST,CONFIG,ATTEND,ERECPT,EXPRPT,TRVPRF,TRVREQ,USER,TWS"
+  },
+  "adobe-esign": {
+    "oauth.api.key": "CBJCHBCAABAAYYnzDTAdTTz-zwpZLoAF1Z5QUxY9RIRw",
+    "oauth.api.secret": "coMBmREpq5qOvZE_QmOtCQOcl-JpDiqs",
+    "username": "greg@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "provisioning": "oauth2",
+    "oauth.scope": "agreement_read:account agreement_send:account agreement_write:account library_read:account library_write:account user_login:account user_read:account user_write:account widget_read:account widget_write:account workflow_read:account workflow_write:account agreement_retention:account"
+  },
+  "woocommerce": {
+    "store.url": "http://198.199.86.14",
+    "oauth.api.key": "ck_2abd9dc5503ea15c1f908628f659bc79c5021b0e",
+    "oauth.api.secret": "cs_2f6f08085ea335baa534317bfaf6145bf78a0774"
+  },
+  "woocommercewp": {
+    "store.url": "http://198.199.86.14/",
+    "oauth.api.key": "ck_680aacd5a8762a8106007d85df8fe592231ecc37",
+    "oauth.api.secret": "cs_ae03b6eb4d24aff421f084d260e175d09fbed263"
+  },
+  "sharefile": {
+    "oauth.api.key": "J0mkdOYFd9RkNQMs1JkdEJ5VBDJcRCGj",
+    "oauth.api.secret": "KeRxsYQS3WY03wbgL9OTdjIiHomumOO4Au4kthhoBEUHWC0b",
+    "username": "greg@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "sharefile.subdomain": "cloudelements",
+    "provisioning": "oauth2",
+    "oauth.callback.url": "https://httpbin.org/get"
+  },
+  "box": {
+    "oauth.api.key": "0zltudvqp2mlbqbctahxhndis0p630hm",
+    "oauth.api.secret": "PHsrljX8PXddvxpbwW8JTiUXEOxpShLo",
+    "username": "developer@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2",
+    "tokenUrl": "https://login.salesforce.com/services/oauth2/token"
+  },
+  "sfdc": {
+    "oauth.api.key": "3MVG9A2kN3Bn17huqpbZ.99EPduVpzG.B63q6OLdqry1ZrUOX2OKLFwpgO22R3Q816TSOu0jZZE240LzklizV",
+    "oauth.api.secret": "895579729881228848",
+    "username": "sfdcdev@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts#",
+    "provisioning": "oauth2",
+    "tokenUrl": "https://login.salesforce.com/services/oauth2/token"
+  },
+  "sfdcservicecloud": {
+    "oauth.api.key": "3MVG9A2kN3Bn17huqpbZ.99EPduVpzG.B63q6OLdqry1ZrUOX2OKLFwpgO22R3Q816TSOu0jZZE240LzklizV",
+    "oauth.api.secret": "895579729881228848",
+    "username": "sfdcdev@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts#",
+    "provisioning": "oauth2"
+  },
+  "sfdcmarketingcloud": {
+    "oauth.api.key": "3MVG9A2kN3Bn17huqpbZ.99EPduVpzG.B63q6OLdqry1ZrUOX2OKLFwpgO22R3Q816TSOu0jZZE240LzklizV",
+    "oauth.api.secret": "895579729881228848",
+    "username": "sfdcdev@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts#",
+    "provisioning": "oauth2"
+  },
+  "sfdcdocuments": {
+    "oauth.api.key": "3MVG9A2kN3Bn17huqpbZ.99EPduVpzG.B63q6OLdqry1ZrUOX2OKLFwpgO22R3Q816TSOu0jZZE240LzklizV",
+    "oauth.api.secret": "895579729881228848",
+    "username": "sfdcdev@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts#",
+    "provisioning": "oauth2"
+  },
+  "sfdclibraries": {
+    "oauth.api.key": "3MVG9A2kN3Bn17huqpbZ.99EPduVpzG.B63q6OLdqry1ZrUOX2OKLFwpgO22R3Q816TSOu0jZZE240LzklizV",
+    "oauth.api.secret": "895579729881228848",
+    "username": "sfdcdev@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts#",
+    "provisioning": "oauth2"
+  },
+  "sagelivev1": {
+    "oauth.api.key": "3MVG9HxRZv05HarQxTI8Y7qlIeGKx5P5_2_jtF3QrUSNxAT6JAxDWMxn9dWaIjPHJbnEwF4FjqY9wSozgM4Cd",
+    "oauth.api.secret": "3672214271966504071",
+    "username": "neeta.birajdar@gslab.com",
+    "password": "Cloudelement-1",
+    "provisioning": "oauth2"
+  },
+  "sugarcrmv2": {
+    "username": "admin",
+    "password": "EyqFhZtYHcdR-9n",
+    "oauth.api.key": "sugarcrm",
+    "oauth.api.secret": "sugarcrm",
+    "site.url": "cloudelementent.sugarondemand.com",
+    "oauth.callback.url": "https://foo.bar"
+  },
+  "zohocrm": {
+    "crm.zohocrm.username": "zoho@cloud-elements.com",
+    "crm.zohocrm.password": "Cl0udEl3m3ntsZ",
+    "password": "Cl0udEl3m3ntsZ",
+    "username": "zoho@cloud-elements.com"
+  },
+  "abbyy": {
+    "username": "cloudelements",
+    "password": "lPE55lcPE/7AT6qSRwfURSL+"
+  },
+  "actessentials": {
+    "username": "RVkWRK4Ql6OsONnT4j94N9eCtAyFKW3qy8JnDMHvdj8",
+    "password": "2c0d6cdcf52ac633afe730456d2e8a9b"
+  },
+  "actessentialsoauth": {
+    "oauth.api.key": "58ff50d7",
+    "oauth.api.secret": "4595e03e3f17a80394301a63036cf985",
+    "username": "developer@cloud-elements.com",
+    "password": "cloud500",
+    "provisioning": "oauth2"
+  },
+  "allbound": {
+    "apikey": "ad1d12f3e9e3396ab9f4ac43c0dcb302b815a4ca",
+    "apiinstance": "dev"
+  },
+  "amazons3": {
+    "document.tagging": "true",
+    "filemanagement.provider.access_key": "AKIAJ6U7TLTKNDUSRD7A",
+    "filemanagement.provider.secret_key": "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",
+    "filemanagement.provider.bucket_name": "snapshot.cloud-elements",
+    "filemanagement.provider.region_name": "us-east-1"
+  },
+  "autotaskcrm": {
+    "crm.autotask.server.url": "https://ww2.autotask.net",
+    "crm.autotask.username": "PPierce@cloudelementssandbox.com",
+    "crm.autotask.password": "12345"
+  },
+  "autotaskhelpdesk": {
+    "helpdesk.autotask.server.url": "https://ww2.autotask.net",
+    "helpdesk.autotask.username": "PPierce@cloudelementssandbox.com",
+    "helpdesk.autotask.password": "12345"
+  },
+  "brighttalk": {
+    "brighttalk.api.key": "1426805",
+    "brighttalk.api.secret": "36939622b5ee44b39215ae12e0e0a176",
+    "brighttalk.isstaging": "false"
+  },
+  "cherwell": {
+    "crm.cherwell.username": "andrew",
+    "crm.cherwell.password": "pass",
+    "base.url": "http://cloudelements.demo.cherwell.com"
+  },
+  "closeio": {
+    "password": " ",
+    "username": "48261873e238303ef0d570afed1384d878be171180e73aa0380bbb93"
+  },
+  "dropbox": {
+    "oauth.api.key": "8z3csub1ezncqse",
+    "oauth.api.secret": "txi9qvw37uwbzti",
+    "password": "Cloud3l3m3nts!",
+    "username": "developer@cloud-elements.com",
+    "provisioning": "oauth2"
+  },
+  "dropboxbusiness_members": {
+    "oauth.api.key": "jqtq66lxxtm2im6",
+    "oauth.api.secret": "7u58c2y8hhs1rug",
+    "username": "developer@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2"
+  },
+  "dropboxbusiness": {
+    "oauth.api.key": "exkj54604tcessj",
+    "oauth.api.secret": "dnlgpj662fizyxn",
+    "username": "developer@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2"
+  },
+  "dropboxv2": {
+    "oauth.api.key": "8z3csub1ezncqse",
+    "oauth.api.secret": "txi9qvw37uwbzti",
+    "password": "Cloud3l3m3nts!",
+    "username": "developer@cloud-elements.com",
+    "provisioning": "oauth2"
+  },
+  "dropboxbusinessv2": {
+    "oauth.api.key": "exkj54604tcessj",
+    "oauth.api.secret": "dnlgpj662fizyxn",
+    "username": "developer@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2"
+  },
+  "connectwisecrm": {
+    "helpdesk.connectwise.server.url": "https://staging.connectwisedev.com",
+    "helpdesk.connectwise.company": "cloude_f",
+    "helpdesk.connectwise.username": "api1",
+    "helpdesk.connectwise.password": "api1",
+    "helpdesk.connectwise.wsdl.path": "/v2017_3/apis/2.0/"
+  },
+  "connectwisehd": {
+    "helpdesk.connectwise.server.url": "https://staging.connectwisedev.com",
+    "helpdesk.connectwise.company": "cloude_f",
+    "helpdesk.connectwise.username": "api1",
+    "helpdesk.connectwise.password": "api1",
+    "helpdesk.connectwise.wsdl.path": "/v2017_3/apis/2.0/"
+  },
+  "docusign": {
+    "username": "developer@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "oauth.api.key": "CELO-95e53928-8b2c-44a9-b478-53027940d2d4",
+    "docusign.environment": "demo"
+  },
+  "sftp": {
+    "hostname": "cm.cloud-elements.com",
+    "port": 22,
+    "username": "sftp",
+    "home_directory": "/home",
+    "password": "InFL00Y2vSVCApxSH6MOEz8u5SafH55"
+  },
+  "dynamicscrm": {
+    "dynamics.tenant": "atulcrmce.crm.dynamics.com",
+    "user.username": "atulcrm@atulcrmce.onmicrosoft.com",
+    "user.password": "qFW-R4R-9o6-d58"
+  },
+  "ecwid": {
+    "ecwid.order.key": "RpYarQ94wtKk",
+    "ecwid.product.key": "DQ9pHP98KhHg",
+    "ecwid.store.id": "5628038"
+  },
+  "facebookleadads": {
+    "oauth.authorization.url": "https://www.facebook.com/v2.4/dialog/oauth",
+    "oauth.api.key": "845967205524376",
+    "oauth.api.secret": "98d24784568387b3f596efdd86e3c952",
+    "username": "developer@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts",
+    "provisioning": "oauth2"
+  },
+  "facebooksocial": {
+    "oauth.api.key": "845967205524376",
+    "oauth.api.secret": "98d24784568387b3f596efdd86e3c952",
+    "username": "developer@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts",
+    "provisioning": "oauth2"
+  },
+  "dynamicscrmadfs": {
+    "user.password": "Cl0udEl3m3nts!",
+    "user.username": "cloudelements6@cloudelements6.onmicrosoft.com",
+    "dynamics.tenant": "cloudelements6.crm.dynamics.com"
+  },
+  "freshdesk": {
+    "subdomain": "cloudelements",
+    "username": "freshdesk@cloud-elements.com",
+    "password": "Cl0udEl3m3ntsFD"
+  },
+  "freshservice": {
+    "username": "developer@cloud-elements.com",
+    "password": "Cl0udEl3m3ntsFS",
+    "subdomain": "clouddeveloper"
+  },
+  "gooddata": {
+    "siteAddress": "secure.gooddata.com",
+    "username": "developer@cloud-elements.com",
+    "password": "Cloud3l3m3nts!"
+  },
+  "greatplains": {
+    "greatplains.service.url": "http://54.69.114.70:48620/DynamicsGPWebServices/DynamicsGPService.asmx",
+    "greatplains.domain": "win-7eplk2ct9bg",
+    "greatplains.user.name": "Administrator",
+    "greatplains.user.password": "Cl0udEl3m3ntsGP",
+    "greatplains.company.name": "Fabri"
+  },
+  "hireright": {
+    "hireright.endpoint.url": "https://api.hireright.com:11443/ws_gateway/HireRightAPI/v/1/2",
+    "hireright.password": "$ut9*pql31**",
+    "hireright.username": "19n@v",
+    "hireright.account.id": "WS_IQN",
+    "hireright.company.login": "TIQN001",
+    "hireright.user.ref.id": "laura@cloud-elements.com",
+    "hireright.wsdl.location": "https://connect.hireright.com/wsdl/HireRightAPI.wsdl",
+    "event.vendor.type": "webhook"
+  },
+  "jira": {
+    "username": "jiradev",
+    "password": "Cl0udEl3m3ntsJIRA",
+    "base.url": "https://cloud-elements-dev.atlassian.net"
+  },
+  "mailjet": {
+    "mailjet.api.key": "39ce187c7b1fa64ca485cc20b102ebd9",
+    "mailjet.api.secret": "7083223eb7b70ff51fb19c37e7cd8d8a"
+  },
+  "mailjetmarketing": {
+    "mailjet.api.key": "39ce187c7b1fa64ca485cc20b102ebd9",
+    "mailjet.api.secret": "7083223eb7b70ff51fb19c37e7cd8d8a"
+  },
+  "netsuitecrm": {
+    "user.username": "byron@cloud-elements.com",
+    "user.password": "Cloud3l3m3nts!",
+    "netsuite.accountId": "TSTDRV1390918"
+  },
+  "netsuiteerp": {
+    "user.username": "byron@cloud-elements.com",
+    "user.password": "Cloud3l3m3nts!",
+    "netsuite.accountId": "TSTDRV1390918"
+  },
+  "netsuitefinance": {
+    "netsuite.accountId": "TSTDRV1390918",
+    "user.password": "Cloud3l3m3nts!",
+    "user.username": "byron@cloud-elements.com"
+  },
+  "netsuitehc": {
+    "user.username": "byron@cloud-elements.com",
+    "user.password": "Cloud3l3m3nts!",
+    "netsuite.accountId": "TSTDRV1390918",
+    "netsuite.sandbox": "false"
+  },
+  "oraclesalescloud": {
+    "username": "Bala.Gupta",
+    "password": "PTSmary26",
+    "site.url": "isv26-crm-crm-ext.oracle.com"
+  },
+  "pardot": {
+    "apikey.user.key": "07e57914027f301e8eeeaba241c7bf17",
+    "apikey.user.name": "developer@cloud-elements.com",
+    "apikey.user.password": "Cl0ud3l3m3nts!!",
+    "provider.version": "3"
+  },
+  "pipedrive": {
+    "pipedrive.email": "pipedrive@cloud-elements.com",
+    "pipedrive.password": "Cl0udEl3m3ntsPD"
+  },
+  "questbackefs": {
+    "efs.token": "25595ff90b00d999a8bdfaab93c33486",
+    "base.url": "http://mm7806.customervoice360.com",
+    "efs.handler": "json"
+  },
+  "quickbase": {
+    "subdomain": "cloud-4959.quickbase.com",
+    "quickbase.user": "developer+churros@cloud-elements.com",
+    "quickbase.password": "Cloud3l3m3nts!",
+    "quickbase.appname": "Test DB",
+    "quickbase.apptoken": "m5fdwhdnimke6d6j5m4rbqkedrn"
+  },
+  "quickbooksonprem": {
+    "app.name": "CloudElements",
+    "host.ip": "https://4014.g2c-staging.cloud-elements.com"
+  },
+  "readytalk": {
+    "username": "8667401260:4829010",
+    "password": "0316"
+  },
+  "sailthru": {
+    "sailthru.api.key": "ecdaf1940199c95142a561b931a1ee58",
+    "sailthru.api.secret": "ae64200c37897b655968073d1119f776"
+  },
+  "salescloud": {
+    "crm.salescloud.username": "Matt.Hooper",
+    "crm.salescloud.password": "MrSmary26",
+    "crm.salescloud.server.url": "https://isv26-crm-crm-ext.oracle.com"
+  },
+  "servicecloud": {
+    "helpdesk.servicecloud.username": "CloudElements",
+    "helpdesk.servicecloud.password": "CloudElements1",
+    "helpdesk.servicecloud.endpointurl": "https://pts-isv158pt-001.rightnowdemo.com/cgi-bin/pts_isv158pt_001.cfg/services/soap"
+  },
+  "servicenowoauth": {
+    "username": "admin",
+    "password": "Cl0udEl3m3nts!SN",
+    "servicenow.subdomain": "dev18488",
+    "oauth.api.key": "405e0e2d48a532000f12b7f3fd876b66",
+    "oauth.api.secret": "?I8*7xLshm",
+    "code": "1000",
+    "provisioning": "oauth2"
+  },
+  "servicenow": {
+    "username": "admin",
+    "password": "Cl0udEl3m3nts!SN",
+    "servicenow.subdomain": "dev18488"
+  },
+  "stormpath": {
+    "api.key": "140V8QJ6KBZD95Z0TLZR2228R",
+    "api.secret": "gQg5wsrUzdLraHJ0+UjYp5KtKzkPMVNzz9vtAb3Q6is",
+    "stormpath.application.name": "Local"
+  },
+  "vcloud": {
+    "infrastructure.vcloud.example_value": "Value",
+    "vcloud.server.url": "https://vcloud-lab.viawest.com",
+    "vcloud.username": "api_test@System",
+    "vcloud.password": "muwqbygr",
+    "vcloud.rabbitmq.server.host": "87459-rmq01.lab.viawest.net",
+    "vcloud.rabbitmq.server.port": "5672",
+    "vcloud.rabbitmq.server.username": "ihm",
+    "vcloud.server.password": "F%k0QWm#"
+  },
+  "volusion": {
+    "volusion.store.url": "http://otnqw.rakrt.servertrust.com/",
+    "volusion.login.email": "volusion@cloud-elements.com",
+    "volusion.encrypted.password": "31540879DAA671A4463238521B198CF8DD0D461F6676B6E7B0D227D6BA67647F"
+  },
+  "instagram": {
+    "oauth.api.key": "77b8dce159194d588fd49c48e7f22c67",
+    "oauth.api.secret": "9522bc78bcd4425894c4ffe1eec9bbe6",
+    "username": "nate.doyle",
+    "password": "P@ssword4test",
+    "provisioning": "oauth2"
+  },
+  "zendesk": {
+    "oauth.api.key": "cloud_elements_churros",
+    "oauth.api.secret": "fb48a5d0b411c99b068f836cac6a93f1750c082a88663beac2e4a3ac953681ab",
+    "zendesk.subdomain": "cloudelementsdev",
+    "username": "zendesk@cloud-elements.com",
+    "password": "Cl0udEl3m3ntsZD",
+    "oauth.site.address": "cloudelementsdev",
+    "provisioning": "oauth2",
+    "site.address": "cloudelementsdev",
+    "oauth.scope": "read write"
+  },
+  "shopify": {
+    "provisioning": "oauth2",
+    "site.address": "cloudelements",
+    "siteAddress": "cloudelements",
+    "oauth.api.key": "262f7d07ceb178390f0e9be67d717b65",
+    "oauth.api.secret": "f0f716edfb650894a21564bc9fcf3ba5",
+    "oauth.scope": "write_orders,write_products,write_customers",
+    "username": "shopify@cloud-elements.com",
+    "password": "Cl0udEl3m3ntsS",
+    "oauth.callback.url": "http://www.cloud-elements.com"
+  },
+  "etsy": {
+    "password": "Cloud3l3m3nts!",
+    "oauth.api.key": "0c3tmdkwgjm3zpl1d9o6pqcc",
+    "oauth.api.secret": "3ahppu57vn",
+    "username": "etsy@cloud-elements.com",
+    "oauth.request.url": "https://openapi.etsy.com/v2/oauth/request_token",
+    "shop.id": "CEShopLocal",
+    "provisioning": "oauth1"
+  },
+  "typeform": {
+    "api.key": "52cfe125b8b246a2440ae87f89844b8c"
+  },
+  "epages": {
+    "epages.access.token": "dZGIPRvsdL2b7zAcaSCrrZNBZUerH9Pq",
+    "baseUrl": "https://devshop.epages.com/rs/shops/epagesdevD20161108T080200R179"
+  },
+  "acton": {
+    "oauth.api.key": "o50ZfCWQ2NS6P6cqrMstc4pB9Uoa",
+    "oauth.api.secret": "EilCGeHTlw1c7TGjJ_RiPmZAEQUa",
+    "oauth.callback.url": "https://h7f6bnj87gbh5gg3n0t.com/",
+    "password": "Cl0udEl3m3ntsAO",
+    "username": "acton@cloud-elements.com",
+    "provisioning": "oauth2"
+  },
+  "actoneb": {
+    "oauth.api.key": "o50ZfCWQ2NS6P6cqrMstc4pB9Uoa",
+    "oauth.api.secret": "EilCGeHTlw1c7TGjJ_RiPmZAEQUa",
+    "oauth.callback.url": "https://h7f6bnj87gbh5gg3n0t.com/",
+    "password": "Cl0udEl3m3ntsAO",
+    "username": "acton@cloud-elements.com",
+    "provisioning": "oauth2"
+  },
+  "taxify": {
+    "api.key": "2F6E27DB42D749C88FF4C0C91320A1D3"
+  },
+  "desk": {
+    "oauth.request.url": "https://cloud-elements.desk.com/oauth/request_token",
+    "oauth.token.url": "https://cloud-elements.desk.com/oauth/access_token",
+    "oauth.authorization.url": "https://cloud-elements.desk.com/oauth/authorize",
+    "base.url": "https://cloud-elements.desk.com",
+    "oauth.api.key": "hOzWwFrRtCKRtvinWir2",
+    "oauth.api.secret": "x8TrH7ynYTAs4RiTspU2PMgzfCPsjN9TVFW3m7Oa",
+    "username": "developer@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "subdomain": "cloud-elements",
+    "provisioning": "oauth1"
+  },
+  "eloqua": {
+    "provisioning": "oauth2",
+    "username": "Atul.Barve",
+    "password": "Cl0ud3l3m3nts!",
+    "oauth.api.key": "f4ae3e0d-e5eb-4d44-825d-21cccf81a6b7",
+    "oauth.api.secret": "1UqVwsfd9h0eTiZjLQhFK7umwb9uJa7JJ0B3c0wf-MW-oTBKtR3QYWkzfb28v464fEqk4hYXiaLFfFMkcAR22cdEQSTsSbPwftTL",
+    "company.name": "TechnologyPartnerCloudElements"
+  },
+  "evernote": {
+    "oauth.api.key": "evernote5109-8306",
+    "oauth.api.secret": "84239c63efa52956",
+    "username": "evernote@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "document.tagging": "true",
+    "provisioning": "oauth1",
+    "evernote.sandbox": "false"
+  },
+  "flickr": {
+    "oauth.api.key": "1d6297c69618a5293bac9f87f532076c",
+    "oauth.api.secret": "fdfdd8dd1ef0bbee",
+    "password": "Cl0udEl3m3nts!",
+    "provisioning": "oauth1",
+    "username": "cloudelemntsflickr@yahoo.com",
+    "oauth.request.url": "https://www.flickr.com/services/oauth/request_token"
+  },
+  "freshbooks": {
+    "oauth.api.secret": "37g3kCCURFMU23iSJpC3VWPSQmQCF5idar",
+    "username": "developer@cloud-elements.com",
+    "oauth.api.key": "cloudelements",
+    "password": "Cl0udEl3m3ntsFB",
+    "siteAddress": "cloudelements",
+    "provisioning": "oauth1"
+  },
+  "googledrive": {
+    "oauth.api.key": "232945639549-cj65c4aeacj68nnv0mfpvv7m0v9e0eg2.apps.googleusercontent.com",
+    "oauth.api.secret": "QY5u7c7ydhzSBquCs-1xFuu0",
+    "username": "googledrive@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2"
+  },
+  "googlesheets": {
+    "oauth.api.key": "232945639549-cj65c4aeacj68nnv0mfpvv7m0v9e0eg2.apps.googleusercontent.com",
+    "oauth.api.secret": "QY5u7c7ydhzSBquCs-1xFuu0",
+    "username": "googledrive@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2",
+    "oauth.scope": "https://www.googleapis.com/auth/spreadsheets https://spreadsheets.google.com/feeds https://www.googleapis.com/auth/script.external_request https://www.googleapis.com/auth/script.scriptapp https://www.googleapis.com/auth/script.storage"
+  },
+  "hubspot": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "35b3500f-de12-4521-a4c0-5b9b73f436f5",
+    "oauth.api.secret": "4d12e4a5-cac1-4edc-b4f0-7e2ca5d58bb8",
+    "username": "developer@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "create.bulk.properties": "true",
+    "oauth.scope": "contacts timeline files content reports social automation forms"
+  },
+  "hubspotcrm": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "bdc8def8-3912-11e4-bda8-755297b8bf20",
+    "oauth.api.secret": "437644",
+    "username": "hubspot2@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "oauth.scope": "contacts-rw+offline",
+    "create.bulk.properties": "true"
+  },
+  "infusionsoftecommerce": {
+    "oauth.api.key": "8vqrb4p27uev6cj57hv2qyuc",
+    "oauth.api.secret": "6VWh8n2DbJ",
+    "username": "developer+churros@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "infusionsoft.private.key": "34a83a6d1a9709470853794aa38fc43a",
+    "provisioning": "oauth2"
+  },
+  "infusionsoftcrm": {
+    "oauth.api.key": "8vqrb4p27uev6cj57hv2qyuc",
+    "oauth.api.secret": "6VWh8n2DbJ",
+    "username": "developer+churros@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "infusionsoft.private.key": "34a83a6d1a9709470853794aa38fc43a",
+    "provisioning": "oauth2"
+  },
+  "infusionsoftmarketing": {
+    "oauth.api.key": "8vqrb4p27uev6cj57hv2qyuc",
+    "oauth.api.secret": "6VWh8n2DbJ",
+    "username": "developer+churros@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "infusionsoft.private.key": "34a83a6d1a9709470853794aa38fc43a",
+    "infusionsoft.server": "hk339.infusionsoft.com",
+    "provisioning": "oauth2"
+  },
+  "mailchimp3": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "621086904872",
+    "oauth.api.secret": "0c85b7f1816d961573d2b46698701502",
+    "username": "mailchimp@cloud-elements.com",
+    "password": "Cloud3l3m3nts!"
+  },
+  "mailchimpv3": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "621086904872",
+    "oauth.api.secret": "0c85b7f1816d961573d2b46698701502",
+    "subdomain": "us9.api.mailchimp.com",
+    "username": "mailchimp@cloud-elements.com",
+    "password": "Cloud3l3m3nts!"
+  },
+  "marketo": {
+    "oauth.api.key": "19e7183b-53ac-4366-ad5a-205deb9bec84",
+    "oauth.api.secret": "LhM59V7JHeIx31Bp4h2uwJLSX2lwOpGi",
+    "username": "marketo@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2",
+    "marketo.identity.url": "https://901-WNZ-322.mktorest.com/identity",
+    "base.url": "https://901-WNZ-322.mktorest.com/rest",
+    "code": "7AB65CDDNC"
+  },
+  "namely": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "62277e9d41979be0962529a4c784364c",
+    "oauth.api.secret": "a360c8272e032f316066f80108ae5c221e48db0cc5111dfe945867cc8f380d08",
+    "username": "namely@cloud-elements.com",
+    "password": "Cl0udEl3m3ntsN",
+    "subdomain": "cloud-elements-sandbox"
+  },
+  "onedrivebusiness": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "99fdf4ad-57ad-416c-9b87-8d49b4ad259a",
+    "oauth.api.secret": "qTQxgj7xfmHX3Uo6zGtMP8aEQeGU89U2yeipyXetYWs=",
+    "username": "cloudelements@CloudElements1.onmicrosoft.com",
+    "password": "Cl0udEl3m3nts2!",
+    "sharepoint.document.library": "/Shared Documents",
+    "document.tagging": "false",
+    "sharepoint.site.address": "cloudelements1-my.sharepoint.com",
+    "site.address": "cloudelements1-my.sharepoint.com",
+    "oauth.scope": "Web.Read",
+    "onedrivebusiness.site.address": "cloudelements1-my.sharepoint.com"
+  },
+  "onedrivev2": {
+    "oauth.api.key": "000000004416DD64",
+    "oauth.api.secret": "x0XMWp-LOtf8ScaRCKycAscbifL2tlLk",
+    "username": "onedrive@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2",
+    "event.config.path": "%2F",
+    "document.tagging": "true",
+    "oauth.scope": "wl.offline_access wl.skydrive_update"
+  },
+  "onedrive": {
+    "oauth.api.key": "000000004416DD64",
+    "oauth.api.secret": "x0XMWp-LOtf8ScaRCKycAscbifL2tlLk",
+    "username": "onedrive@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2",
+    "event.config.path": "%2F",
+    "document.tagging": "true",
+    "oauth.scope": "wl.offline_access wl.skydrive_update"
+
+  },
+  "quickbooks": {
+    "provisioning": "oauth1",
+    "oauth.api.key": "qyprdxLrqNbUbzaIRo3AsvwE9bPwHO",
+    "oauth.api.secret": "hfCIjrZK0dS7JiByOhCbq15UHvjsDn0Dq8hyy2zE",
+    "username": "quickbooks@cloud-elements.com",
+    "password": "Cl0udEl3m3ntsQB@"
+  },
+  "servicemax": {
+    "oauth.api.key": "3MVG9A2kN3Bn17huqpbZ.99EPdkX87gc_4qzUWvrOIDc5Mex1O2aY5POBapXQbMPJCb6AUdYqXqjghWtyoCqQ",
+    "oauth.api.secret": "8236521153920984253",
+    "username": "tyler@8974servicemax.trial.com",
+    "password": "Cl0ud3l3m3nts!!",
+    "provisioning": "oauth2"
+  },
+  "sharepoint": {
+    "provisioning": "oauth2",
+    "oauth.api.key": "ed46bfc9-d063-4bd2-8583-32518dd0d875",
+    "oauth.api.secret": "HlemCznQr6fqb7WcNbJUAWIPJQKBNd4TKfm0rNlzPKk=",
+    "username": "cloudelements@CloudElements1.onmicrosoft.com",
+    "password": "Cl0udEl3m3nts2!",
+    "sharepoint.document.library": "/Shared Documents",
+    "document.tagging": "true",
+    "sharepoint.site.address": "cloudelements1.sharepoint.com",
+    "site.address": "cloudelements1.sharepoint.com",
+    "oauth.scope": "Web.Manage"
+  },
+  "magento": {
+    "oauth.api.key": "f070f882428ca32a1606afa8ebf44fa4",
+    "oauth.api.secret": "1d29783df4ef00f73e899478f5451e53",
+    "username": "admin",
+    "password": "Cl0udEl3m3ntsM",
+    "provisioning": "oauth1",
+    "site.address": "https://magento.cloud-elements.com",
+    "store.url": "https://magento.cloud-elements.com"
+  },
+  "sageoneus": {
+    "oauth.api.key": "d973dfca08fbbc40d34e",
+    "oauth.api.secret": "0e56fcb574051a8d85ccd8bb3cf325b58f0d201b",
+    "username": "cloudelements@mailinator.com",
+    "password": "Cloud3l3m3nts",
+    "provisioning": "oauth2"
+  },
+  "sageonev3": {
+    "oauth.api.key": "da81078b4c899ce70dc3",
+    "oauth.api.secret": "4072ea9aad901c32895dc3fe69233f89c7a8859e",
+    "username": "neeta.birajdar@gslab.com",
+    "password": "Cloudelement-1",
+    "oauth.scope" :"full_access",
+    "apim.subscription.key" : "118ab48256934b61a0522d8d09a5e840",
+    "provisioning": "oauth2",
+    "oauth.callback.url": "https://httpbin.org/get",
+    "country":"GB"
+      },
+  "sageoneuk": {
+    "oauth.api.key": "3359efef6c8f89d926ca",
+    "oauth.api.secret": "71c8fe8a5e9f0f39ed123c64124bb14b6d122142",
+    "username": "neeta.birajdar@gslab.com",
+    "password": "Cloud3l3m3nts",
+    "provisioning": "oauth2"
+  },
+  "sage200": {
+    "oauth.api.key": "MhqxtahLDKkDeM94oAB8uOVEycH2Viuz",
+    "oauth.api.secret": "NOqFeV0irpKf/VEeLU0oT9yrxV4y5jmlTdJ2KVGpgOA=",
+    "username": "duane@cloud-elements.com",
+    "password": "Austin1394",
+    "provisioning": "oauth2",
+    "oauth.scope": "armcoqp4();",
+    "subscription.key": "e1e966e9786e47b9940bbee8c2e94f9b",
+    "signing.key": "66cdd2c60b544ca887a8beac01dddc1a",
+    "company.name": "Cloud-Elements Demodata"
+  },
+  "bigcommerce": {
+    "password": "fcd26b55c544628b5257a2a7595209f62d4b594b",
+    "username": "integration",
+    "store.url": "https://store-wuxeae6.mybigcommerce.com/api/v2"
+  },
+  "eventmobiv1": {
+    "api.key": "6f008bc84debef1639601bc8f64123ca"
+  },
+  "mysql": {
+    "db.host": "159.203.5.166:3306",
+    "db.name": "dbx",
+    "username": "dbx",
+    "password": "dbxdb"
+  },
+  "postgresql": {
+    "db.host": "159.203.178.180:5432",
+    "db.name": "dbx",
+    "username": "dbx",
+    "password": "9639ETRpgatPv68Q4P6QHQ97"
+  },
+  "sqlserver": {
+    "db.host": "54.69.114.70:1433",
+    "db.name": "testdb",
+    "username": "ramana",
+    "password": "Cl0udEl3m3nts!",
+    "db.schemaname": "dbo"
+  },
+  "freshdeskv2": {
+    "username": "pcTlQRXAg1YWdxDwsxIX",
+    "subdomain": "cloudelements"
+  },
+  "slack": {
+       "oauth.api.key": "94244883909.140890868097",
+       "oauth.api.secret": "faf7fbd3a8c1a83692ead84e7009ad43",
+       "username": "developer@cloud-elements.com",
+       "password": "apisrainorshine",
+       "team": "superawesometeam-hq",
+       "provisioning": "oauth2",
+       "oauth.scope":"mpim:write, mpim:read, usergroups:write, usergroups:read, im:read, im:write, users:write, users:read, users:read.email, users.profile:read, users.profile:write, chat:write:user, search:read, files:read, files:write:user, channels:read, channels:write, channels:history, groups:read, groups:write, groups:history"
+ },
+  "stripe": {
+    "username": "sk_test_HZ6dO9HizZtYuHcO8Up9kmjI"
+  },
+  "brandfolder": {
+    "api-token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJvcmdhbml6YXRpb25fa2V5IjoiaW9qNndieWN3bTM0IiwidXNlcl9rZXkiOiJmNHB0MTByaSJ9.g1Uw1b3GntjcpXGmuEt8dKcW_Ay_MUi0WamBTtpBeyE"
+
+  },
+  "chargify": {
+    "username": "CNN1deeWSEV1cq6MzI5Wn5k7FezJL7m5Q271I9vwX0",
+    "site": "cloud-elements-sandbox",
+    "Password": "Cl0ud3l3m3nts!"
+  },
+  "magentosoapv19": {
+    "userName": "magentoapi",
+    "password": "Cloud3l3m3nts!",
+    "store.url": "https://magento.cloud-elements.com"
+  },
+  "autopilot": {
+    "api.key": "0c121bc5e228413e818ba56fdf0fe8a1"
+  },
+  "twiliov2": {
+    "username": "ACe7979e434267881a94a7f4df59b71f23",
+    "password": "96a410e5c747bc6fe4b367e13c64f39b"
+  },
+  "wrike": {
+    "oauth.api.key": "KbrRrciB",
+    "oauth.api.secret": "cI4dS0e0K1LOQQMiG6jv2WvUuDw5WiL8Y9iuV17mY6jE3h9NEIcNbyO97HxGpHp1",
+    "username": "developer@cloud-elements.com",
+    "password": "Cl0udEl3m3nts",
+    "oauth.scope": "wsReadWrite,amReadWriteWorkflow,amReadWriteInvitation,amReadWriteGroup,amReadWriteUser",
+    "provisioning": "oauth2"
+  },
+  "expensify": {
+    "partner.user.id": "aa_developer_cloud_elements_com",
+    "partner.user.secret": "48374f185651785cbf2af6a9fbb0572f2e591642"
+  },
+  "wufoo": {
+    "site": "cloudelementsdev",
+    "username": "M7HH-IUI8-TUO0-4RY6",
+    "password": "Cloud3l3m3nts!"
+  },
+  "kissmetrics": {
+    "authorization.token": "Y5eynlZekNdLfAyh6pBExnUZ2vkvWBjtrMhE8kbjjs9TPHloaigtHSgKp_Fjxpie"
+  },
+  "lithiumlsw": {
+    "username": "brianchan@cloud-elements.com",
+    "password": "Cl0ud3l3m3nts!",
+    "baseUrl": "ce.response.lithium.com"
+  },
+  "magentov20": {
+    "username": "admin",
+    "password": "Cloud3l3m3nts!",
+    "site": "https://magento2.cloud-elements.com/index.php/rest/V1",
+    "user": "true"
+  },
+  "intacct": {
+    "intacct.user.company.id": "Cloud Elements-DEV",
+    "intacct.user.id": "admin",
+    "intacct.user.password": "Cl0ud3l3m3nts!",
+    "intacct.sender.id": "Cloud Elements",
+    "intacct.sender.password": "3pyHxXltOd",
+    "intacct.control.id": "testControlId"
+  },
+  "netsuiteerpv2": {
+    "netsuite.accountId": "TSTDRV1390918",
+    "netsuite.single.session": "true",
+    "netsuite.single.session.key": "churros",
+    "user.password": "Cloud3l3m3nts!",
+    "user.username": "churros@cloud-elements.com",
+    "netsuite.sso.roleId": "3",
+    "netsuite.appId": "E70F2A24-916E-4897-B56D-A36287222F62",
+    "authentication.type": "Basic",
+    "consumer_key": "947e027e560115d43d4ca22db4ea695c7e641c2ebe1bdcf5fed24ac6f8aa6a4c",
+    "consumer_secret": "02ce4cb74072e1adb3bbea44b9be1776333d66e92f6e67648892f87af29b5f13",
+    "token_id": "0cf5e798f0272d8962b349c4a03b6c8ac850bc70538c0dd6fcef455df6994988",
+    "token_secret": "1045efa669cf9b404dabf91cd556d25a6b173a7f3d71c3c7db9e651851b3bcdc"
+  },
+  "netsuitehcv2": {
+    "netsuite.accountId": "TSTDRV1390918",
+    "netsuite.single.session": "true",
+    "netsuite.single.session.key": "churros",
+    "user.password": "Cloud3l3m3nts!",
+    "user.username": "churros@cloud-elements.com",
+    "netsuite.sso.roleId": "3",
+    "netsuite.appId": "E70F2A24-916E-4897-B56D-A36287222F62",
+    "authentication.type": "Basic",
+    "consumer_key": "947e027e560115d43d4ca22db4ea695c7e641c2ebe1bdcf5fed24ac6f8aa6a4c",
+    "consumer_secret": "02ce4cb74072e1adb3bbea44b9be1776333d66e92f6e67648892f87af29b5f13",
+    "token_id": "0cf5e798f0272d8962b349c4a03b6c8ac850bc70538c0dd6fcef455df6994988",
+    "token_secret": "1045efa669cf9b404dabf91cd556d25a6b173a7f3d71c3c7db9e651851b3bcdc"
+  },
+  "netsuitefinancev2": {
+    "netsuite.accountId": "TSTDRV1390918",
+    "netsuite.single.session": "true",
+    "netsuite.single.session.key": "churros",
+    "user.username": "churros@cloud-elements.com",
+    "user.password": "Cloud3l3m3nts!",
+    "netsuite.sso.roleId": "3",
+    "netsuite.appId": "E70F2A24-916E-4897-B56D-A36287222F62",
+    "authentication.type": "Basic",
+    "consumer_key": "947e027e560115d43d4ca22db4ea695c7e641c2ebe1bdcf5fed24ac6f8aa6a4c",
+    "consumer_secret": "02ce4cb74072e1adb3bbea44b9be1776333d66e92f6e67648892f87af29b5f13",
+    "token_id": "0cf5e798f0272d8962b349c4a03b6c8ac850bc70538c0dd6fcef455df6994988",
+    "token_secret": "1045efa669cf9b404dabf91cd556d25a6b173a7f3d71c3c7db9e651851b3bcdc"
+  },
+  "netsuitecrmv2": {
+    "netsuite.accountId": "TSTDRV1390918",
+    "netsuite.single.session": "true",
+    "netsuite.single.session.key": "churros",
+    "user.username": "churros@cloud-elements.com",
+    "user.password": "Cloud3l3m3nts!",
+    "netsuite.sso.roleId": "3",
+    "netsuite.appId": "E70F2A24-916E-4897-B56D-A36287222F62",
+    "authentication.type": "Basic",
+    "consumer_key": "947e027e560115d43d4ca22db4ea695c7e641c2ebe1bdcf5fed24ac6f8aa6a4c",
+    "consumer_secret": "02ce4cb74072e1adb3bbea44b9be1776333d66e92f6e67648892f87af29b5f13",
+    "token_id": "0cf5e798f0272d8962b349c4a03b6c8ac850bc70538c0dd6fcef455df6994988",
+    "token_secret": "1045efa669cf9b404dabf91cd556d25a6b173a7f3d71c3c7db9e651851b3bcdc"
+  },
+  "fieldawarev2": {
+    "api_key": "fcae3e872307412d9dc942c77a5c7717"
+  },
+  "twitter": {
+    "oauth.api.key": "ogpaso7AVR49Z9niif8hxOAT3",
+    "oauth.api.secret": "w14UTRUU0SGyKN4NLkUpDSkGN0zAv0EONkpZ5EcySLXJOM8fyk",
+    "username": "madhuri_ce",
+    "password": "password@123",
+    "provisioning": "oauth1"
+  },
+  "salesforcemarketingcloud": {
+    "clientId": "of2spgzds817lyu48v53rx49",
+    "clientSecret": "dvROjgGopoKXgMzFzfUGP0Fx",
+    "provisioning": "standard"
+  },
+  "sapanywhere": {
+    "oauth.api.key": "2692175750393548-b9jsB4L88FDbLSLvFXfXufjdL8femX1Y",
+    "oauth.api.secret": "U4Y-R1ut0CQ-62YUC7s-xLeZpemO",
+    "username": "brianchan@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2"
+  },
+  "gotowebinar": {
+    "oauth.api.key": "Ad8gqxDxBGxV1YXByNi5iD1gNg6q2znd",
+    "oauth.api.secret": "DsEQfFDR5aymjLsS",
+    "username": "agarwalgarima2@gmail.com",
+    "password": "gslab@123",
+    "provisioning": "oauth2"
+  },
+  "readytalkilluminate": {
+    "oauth.api.key": "gGVwX1tiBRpLemAjCg0qgbwEqGltzAaD",
+    "oauth.api.secret": "mzjSS_XsRiU-qMYkpsHAUSXMtS-D-u10SJnHE1liw9rWpHfLpXcmO82UvoBe4Dq9",
+    "username": "test@cloud-elements.com",
+    "password": "Integsarewhereit’sat!",
+    "provisioning": "oauth2"
+  },
+  "helpscout": {
+    "username": "fb3fc4c6bf9a01e4a9b64ea88f34c3751a75d360",
+    "mailbox.name": "Cloud Elements"
+  },
+  "himss": {
+	  "username": "ceUser",
+  	"password": "pQZmxhLj8i89",
+	  "provisioning": "Basic"
+  },
+  "ciscospark": {
+    "oauth.api.key": "C0597bdf5cc5acce63d2170142d7795f1040cab779115182f05a14a185ead1013",
+    "oauth.api.secret": "b47b1486410c0892d9cdf070cd3f296ee3a62b3f0e27f3a57cb19eed8ae00658",
+    "username": "sushma.jadhav@gslab.com",
+    "password": "Cloud3l3m3nts!",
+    "provisioning": "oauth2",
+    "oauth.scope": "spark:rooms_read spark:rooms_write spark:people_read spark:messages_read spark:messages_write spark:memberships_read spark:memberships_write spark:teams_write spark:teams_read spark:team_memberships_read spark:team_memberships_write spark-admin:organizations_read  spark-admin:licenses_read spark-admin:roles_read spark-admin:people_write spark-admin:people_read"
+
+  },
+  "sendgrid": {
+    "messaging.smtp.sendgrid.username": "cloudelementsdev",
+    "messaging.smtp.sendgrid.password": "Cl0udEl3m3ntsSGDEV"
+  },
+  "awscloudformation": {
+    "aws.accountid": "619522452981",
+    "aws.region": "us-east-1",
+    "aws.api.secret": "BT2AUfj58nAkYYgkF5vC9CAsEIffvcn0DNDqgio2",
+    "aws.api.key": "AKIAIHKU2BVGFPZQ2VUA"
+  },
+  "zuora": {
+    "username": "bhargav.gandhi@gslab.com",
+    "password": "Cl0ud3l3m3nts!!",
+    "base.url": "https://apisandbox-api.zuora.com/rest/v1",
+    "soap.base.url": "https://apisandbox.zuora.com"
+  },
+  "zuorav2": {
+    "username": "tyler+zuora2+testDrive@cloud-elements.com",
+    "password": "Cloud3l3m3nts!",
+    "zuorav2.sandbox": "true"
+  },
+  "paypalv2": {
+    "oauth.api.key": "AQQCFDDwEYyzBl8QfBG07jGMiqNn2Q8joqQi26k5-Pesl9JzI7yPRPlLEuO-051SsLDEs3ruIfIiqJju",
+    "oauth.api.secret": "EOoi3lK8QfUrhbQrCmGcHeRP4zHKuNjKze2iViV6J9tV6oBsj8ZVUH_9PRfjgI5bd27qwxP6yN1a5gyg",
+    "username": "paypal@cloud-elements.com",
+    "password": "Cl0udEl3m3ntsPP!",
+    "paypalv2.sandbox": "false",
+    "provisioning": "oauth2"
+  },
+  "sapc4ccrm": {
+    "subdomain": "my328080.crm.ondemand.com",
+    "username": "ELEMENTSCLAUDE7000109",
+    "password": "Elements0"
+  },
+  "noendpoint": {
+    "username": "nousername@nothing.com",
+    "password": "anypassword"
+  },
+  "onemodel": {
+    "username": "nousername@nothing.com",
+    "password": "anypassword"
+  }
+}

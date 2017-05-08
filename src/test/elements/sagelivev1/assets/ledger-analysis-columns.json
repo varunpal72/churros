@@ -1,0 +1,10 @@
+{
+    "LedgerAnalysis": "a0e0Y000000PruqQAC",
+    "Unit": "Balance",
+    "Name": "ce",
+    "Measure": "YTD",
+    "attributes": {
+      "type": "s2cor__Sage_ACC_Ledger_Analysis_Column__c",
+      "reference": "ce"
+    }
+  }

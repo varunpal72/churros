@@ -1,0 +1,13 @@
+{
+  "Description": "ce desc",
+  "Dimension": "a0C0Y000000Pm6eUAC",
+  "ImportType": "file",
+  "Job": "a1D0Y000000wlOsUAI",
+  "Name": "ce",
+  "OwnerId": "0050Y000000dB6oQAE",
+  "Status": "Ready",
+  "attributes": {
+    "referenceId": "ce",
+    "type": "importers"
+  }
+}

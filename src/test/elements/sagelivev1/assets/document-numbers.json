@@ -1,0 +1,9 @@
+{
+    "Dimension": "Check Number",
+    "Name": "ce",
+    "Number": 55,
+    "attributes": {
+      "type": "s2cor__Sage_ACC_Document_Numbers__c",
+      "refernce": "document-numbers"
+    }
+  }

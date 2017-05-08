@@ -1,0 +1,9 @@
+{
+  "FinancialYear": 2017,
+  "Name": "ce",
+  "Period": 4,
+  "attributes": {
+    "referenceId": "ce122",
+    "type": "consolidation_settings_c"
+  }
+}

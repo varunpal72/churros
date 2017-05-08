@@ -1,0 +1,13 @@
+{
+ "AccountNumber": "4234",
+ "Company": "a150Y000000DaR3QAK",
+  "IBAN": "IBAN",
+ "Name": "ce",
+ "Ownerid": "0050Y000000dB4YQAU",
+"RehreshInterval": "Day",
+  "Type": "Savings Account",
+ "attributes": {
+   "referenceId": "ce-123",
+   "type": "s2cor__Sage_ACC_Bank_Account__c"
+ }
+}

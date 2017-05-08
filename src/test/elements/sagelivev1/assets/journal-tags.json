@@ -1,0 +1,10 @@
+{
+
+    "Journal": "a0U0Y000000Pm4YUAS",
+    "Dimension": "a0C0Y000000Pm6pUAC",
+    "Name": "ce",
+    "attributes": {
+      "type": "s2cor__Sage_ACC_Journal_Tag__c",
+      "reference": "ce"
+    }
+  }

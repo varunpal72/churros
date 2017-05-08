@@ -1,0 +1,12 @@
+{
+  "Name": "ce",
+  "Schedulableid": "23",
+  "Active": true,
+ "CRONExpression": "0 1 12 L * ?",
+  "Type": "Recurrent Journals",
+  "Ownerid": "0050Y000000d9mwQAA",
+  "attributes": {
+    "type": "s2cor__Sage_COR_Job__c",
+    "reference": "ce"
+  }
+}

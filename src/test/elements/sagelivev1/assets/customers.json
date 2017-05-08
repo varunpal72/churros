@@ -1,0 +1,14 @@
+{
+    "Company": "a150Y000000DaR3QAK",
+    "Name": "ce 2",
+    "IsPublic": true,
+    "Currency": "a180Y000000Cvl4QAC",
+    "Active": true,
+    "Ownerid": "0050Y000000dB4YQAU",
+    "ProtectPosting": false,
+    "Dimension": "a0C0Y000000Pm6nUAC",
+    "attributes": {
+      "type": "s2cor__Sage_ACC_Tag__c",
+      "reference": "ce"
+    }
+  }

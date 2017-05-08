@@ -1,0 +1,10 @@
+{
+  "Company" : "a150Y000000DaR3QAK",
+  "FY": 10,
+  "Key": "ce",
+  "Period": 2,
+  "attributes": {
+    "referenceId": "ce12",
+    "type": "s2cor__Sage_consolidation_rates__c"
+  }
+}

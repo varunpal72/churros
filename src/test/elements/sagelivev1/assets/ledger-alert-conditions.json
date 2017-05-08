@@ -1,0 +1,10 @@
+{
+  "Amount": 200,
+  "Operator": "op",
+  "CompareTo" : "alert",
+  "LedgerAlert" :"a0Z0Y000000K7R0UAK",
+  "attributes": {
+    "referenceId": "ce",
+    "type": "string"
+  }
+}

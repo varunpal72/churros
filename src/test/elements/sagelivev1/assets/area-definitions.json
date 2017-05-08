@@ -1,0 +1,11 @@
+{
+  "Area": "Sales",
+  "LastViewedTab": "Customers",
+  "Name": "ce",
+  "SetupOwnerId": "00D0Y000000aIP2UAM",
+  "UserID": "0050Y000000g9OhQAI",
+  "attributes": {
+    "referenceId": "a1t0Y0000006hG9QAI",
+    "type": "s2cor__Sage_COR_Area_Definition__c"
+  }
+}

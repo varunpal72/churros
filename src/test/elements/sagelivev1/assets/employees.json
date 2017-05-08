@@ -1,0 +1,21 @@
+{
+  "AddressLine1": "Pune",
+  "City": "Pune",
+  "Country": "India",
+  "DateofBirth": "2017-05-02",
+  "EmailAddress": "ce@gmail.com",
+  "EmployeeCode": "ce1",
+  "FirstName": "first",
+  "Gender": "Female",
+  "LastName": "last",
+  "MiddleNames": "middle",
+  "Name": "first middle last",
+  "OwnerId": "0050Y000000d9mwQAA",
+  "PhoneNumberHome": "23423423423",
+  "State": "MH",
+  "Title": "ce",
+  "attributes": {
+    "referenceId": "ce",
+      "type": "s2cor__Sage_employee__c"
+}
+}

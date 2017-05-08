@@ -1,0 +1,11 @@
+{
+    "Journal": "a0U0Y000000PnYLUA0",
+    "Name": "ce",
+	"Amount" :200,
+    "Status": "Unsubmitted",
+    "attributes": {
+      "type": "s2cor__Sage_ACC_Journal_Item__c",
+      "reference": "ce"
+    },
+    "JournalType": "a0T0Y000000QBzkUAG"
+  }

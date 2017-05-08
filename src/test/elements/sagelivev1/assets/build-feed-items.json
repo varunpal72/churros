@@ -1,0 +1,9 @@
+{
+  "BuildFeedItems": true,
+  "Name": "ce",
+  "SetupOwnerId": "00D0Y000000aIP2UAM",
+  "attributes": {
+    "referenceId": "ce",
+    "type": "s2cor__Sage_build_feed_items__c"
+  }
+}

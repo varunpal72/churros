@@ -1,0 +1,13 @@
+{
+    "PropertyName": "Cheque Number Out",
+    "FeedBroker": "a0H0Y000001RPMQUA4",
+    "Priority": "1 - Low",
+    "PropertyValue": "{!CHEQUE}",
+    "Name": "ce",
+    "Regex": "cheque|CHEQUE (?<CHEQUE>[\\S]+)",
+    "Ownerid": "0050Y000000d9mwQAA",
+    "attributes": {
+      "type": "s2cor__Sage_ACC_FeedBrokerRule__c",
+      "reference": "feed-broker-rules"
+    }
+  }

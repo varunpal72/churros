@@ -1,0 +1,16 @@
+{
+   "Description": "Purchase Credit numbers",
+   "BalanceAccount": "a0W0Y000000PinCUAS",
+   "Name": "ce",
+   "AutoNumberFormat": "PCN-{000000000}",
+   "PluralName": "Purchase Credit Numbers",
+   "StatementReport": "Sage_FIN_Basic_Statement",
+   "Type": "Document Number",
+   "Ownerid": "0050Y000000d9mwQAA",
+   "attributes": {
+     "type": "s2cor__Sage_ACC_Dimension__c",
+     "reference": "dimensions"
+   },
+   "Key": "mykey",
+   "AutoNumberKey": "{!COMPANY}"
+ }
