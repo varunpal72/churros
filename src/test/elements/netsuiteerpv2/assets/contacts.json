@@ -1,10 +1,14 @@
 {
-  "lastName": "Churros",
+  "customForm": {
+    "internalId": "220",
+    "name": "Custom Contact Form"
+  },
+  "lastName": "<<name.lastName>>",
   "subsidiary": {
     "internalId": "1",
     "name": "Honeycomb Mfg."
   },
-  "firstName": "El Chappo",
+  "firstName": "<<name.firstName>>",
   "phone": "650-555-9788",
   "altEmail": "chu@cloud-elements.com",
   "email": "chu@cloud-elements.com",
