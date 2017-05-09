@@ -3,14 +3,13 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const payload = require('./assets/campaigns');
-const contactsPayload = require('./assets/contacts');
+const payload = tools.requirePayload(`${__dirname}/assets/campaigns.json`);
+const contactsPayload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 const leadsPayload = require('./assets/leads');
-contactsPayload.email = tools.randomEmail();
 
 suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
   test.should.supportCrus();
-  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
+  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.supportPagination();
   test.withName('should support searching campaigns by created_after').withOptions({ qs: { where: 'created_after=\'2015-01-01\'' } }).should.return200OnGet();
 
   it('should allow PUT for /campaigns/:id/contacts and /campaigns/:id/leads', () => {
