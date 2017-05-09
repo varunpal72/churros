@@ -1,5 +1,5 @@
 {
-  "email": "fake_email@fake.com",
-  "first name": "Robot",
-  "last name": "TestName"
+  "email": "fakeEmail@faker.com",
+  "first name": "<<name.firstName>>",
+  "last name": "<<name.lastName>>"
 }

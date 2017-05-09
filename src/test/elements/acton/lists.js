@@ -6,7 +6,6 @@ const contactPayload = require('./assets/contacts');
 const contactUpdatePayload = require('./assets/contactsUpdate');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-payload.listname = tools.random();
 
 suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
   test.should.supportCrds();
