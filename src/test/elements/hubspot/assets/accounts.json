@@ -1,8 +1,8 @@
 {
   "name": "<<name.firstName>>",
-  "description": "Robot Test Account",
+  "description": "<<lorem.sentence>>",
   "properties": {
-    "description": "Hubspot account",
-    "name": "My Account"
+    "description": "<<lorem.sentence>>",
+    "name": "<<name.firstName>>"
   }
 }
