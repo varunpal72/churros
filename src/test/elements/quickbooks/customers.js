@@ -3,10 +3,8 @@
 const suite = require('core/suite');
 const payload = require('./assets/customers');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const customers = build({ familyName: tools.random(), givenName: tools.random() });
 
-suite.forElement('finance', 'customers', { payload: customers }, (test) => {
+suite.forElement('finance', 'customers', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
