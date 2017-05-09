@@ -47,13 +47,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
-   case 'concur':
+    case 'concur':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('UserNameTxt')).sendKeys(username);
       browser.findElement(webdriver.By.id('PasswordTxt')).sendKeys(password);
       browser.findElement(webdriver.By.id('LoginBtn')).click();
       browser.wait(() => {
-        return browser.isElementPresent(webdriver.By.id('AllowBtn')); 
+        return browser.isElementPresent(webdriver.By.id('AllowBtn'));
       }, 1000);
       browser.findElement(webdriver.By.id('AllowBtn')).click();
       return browser.getCurrentUrl();
@@ -87,28 +87,22 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.getCurrentUrl();
     case 'campaignmonitor':
       browser.manage().window().setSize(1920, 1080)
-      
       browser.get(r.body.oauthUrl);
-
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
-      
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
-     
-      browser.findElement(webdriver.By.xpath("/html/body/div[@id='outer']/div[@id='inner']/div[@id='content']/div[@id='authBox']/div[@id='auth']/div[@id='login-form']/form/button[@class='primary']")).click();
+      browser.findElement(webdriver.By.xpath('//*[@id="login-form"]/form/button')).click();
+      return browser.wait(() => {
 
-
-     return browser.wait(() => {
-
-        console.log('there');
-        return browser.isElementPresent(webdriver.By.xpath("/html/body/div[@id='outer']/div[@id='inner']/div[@id='content']/div[@id='authBox']/div[@id='auth']/div[@id='approve-access']/form/button")); //slow load time for accept screen
-      }, 5000).then(r=> {
+        return browser.isElementPresent(webdriver.By.xpath('//*[@id="approve-access"]/form/button')); //slow load time for accept screen
+      }, 5000).then(r => {
 
         browser.sleep(3000);
-        browser.findElement(webdriver.By.xpath("/html/body/div[@id='outer']/div[@id='inner']/div[@id='content']/div[@id='authBox']/div[@id='auth']/div[@id='approve-access']/form/button")).click();
-        
+        browser.findElement(webdriver.By.xpath('//*[@id="approve-access"]/form/button')).click();
+
         return browser.getCurrentUrl();
-          
+
       });
+
     case 'sharefile':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.id('credentials-email')), 3000);
@@ -194,7 +188,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('login')).click();
       try {
         browser.findElement(webdriver.By.name('reauthorize')).click();
-      } catch (e) {
+      }
+      catch (e) {
         browser.findElement(webdriver.By.name('authorize')).click();
       }
       return browser.getCurrentUrl();
@@ -224,13 +219,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('Passwd')).submit();
       browser.sleep(2000);
       browser.findElement(webdriver.By.name('email'))
-      .then((element) => {
-        element.sendKeys("developer@cloud-elements.com");
-        element.submit();
-      }, (err) => {}); // ignore this
+        .then((element) => {
+          element.sendKeys("developer@cloud-elements.com");
+          element.submit();
+        }, (err) => {}); // ignore this
       browser.sleep(2000);
       browser.findElement(webdriver.By.id('submit_approve_access'))
-      .then((element) => element.click(), (err) => {}); // ignore this
+        .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000);
       return browser.getCurrentUrl();
     case 'gotowebinar':
@@ -264,16 +259,16 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.className('accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
-      case 'hubspot--oauth2New':
-        browser.get(r.body.oauthUrl);
-        browser.findElement(webdriver.By.id('username')).sendKeys(username);
-        browser.findElement(webdriver.By.id('password')).sendKeys(password);
-        browser.findElement(webdriver.By.id('loginBtn')).click();
-        browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]')), 5000)
-          .thenCatch(r => true); // ignore
-        browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]'))
-          .then((element) => element.click(), (err) => {}); // ignore this
-        return browser.getCurrentUrl();
+    case 'hubspot--oauth2New':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('username')).sendKeys(username);
+      browser.findElement(webdriver.By.id('password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('loginBtn')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]')), 5000)
+        .thenCatch(r => true); // ignore
+      browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]'))
+        .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
     case 'instagram':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('id_username')).clear();
@@ -319,7 +314,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then((element) => element.click(),
             (err) => {
               if (err.state && err.state === 'no such element') { // ignore this
-              } else { webdriver.promise.rejected(err); }
+              }
+              else {
+                webdriver.promise.rejected(err);
+              }
             });
         return browser.getTitle().then((title) => !title);
       }, 10000);
@@ -371,7 +369,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then((element) => element.click(),
             (err) => {
               if (err.state && err.state === 'no such element') { // ignore this
-              } else { webdriver.promise.rejected(err); }
+              }
+              else {
+                webdriver.promise.rejected(err);
+              }
             });
         return browser.getTitle().then((title) => !title);
       }, 10000);
@@ -542,7 +543,8 @@ const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, p
       if (attempt < 3) {
         logger.debug("OAuth exchange failed (%s) on attempt %s, retrying.", e.message, attempt);
         return attemptOAuthExchange(++attempt, manipulateDom, element, b, r, username, password, config);
-      } else {
+      }
+      else {
         browser.close();
         logger.error("OAuth exchange failed (%s) after %s attempts", e.message, attempt);
         throw e;
