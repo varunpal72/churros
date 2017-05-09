@@ -152,7 +152,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
   it('should support updating the tags for an element instance', () => {
     const validateTags = (id, tags) => {
       expect(tags.length).to.equal(1) && expect(tags[0]).to.equal('churros-testing');
-      provisioner.delete(id);
+      cloud.delete(`/instances/${id}`);
     };
 
     let id;
