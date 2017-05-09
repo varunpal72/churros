@@ -1,9 +1,0 @@
-{
-	"Name": "ce",
-	 "SetupOwnerId": "0050Y000000d9mwQAA",
-	"StartMonth" :"1",
-	    "attributes": {
- 	     "type": "s2cor__Sage_ACC_Financial_Year__c",
-      	     "reference": "ce"
-    		}
-  }
