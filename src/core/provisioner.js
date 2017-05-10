@@ -55,11 +55,16 @@ const parseProps = (element) => {
 };
 
 const addParams = (instance) => {
-   let instanceCopy = JSON.parse(JSON.stringify(instance));
-   if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
-   return instanceCopy;
+  let instanceCopy = JSON.parse(JSON.stringify(instance));
+  if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+  return instanceCopy;
 };
 
+const addParamsToOptions = (argOptions) => {
+  let optionsCopy = JSON.parse(JSON.stringify(argOptions));
+  if (argv.params) optionsCopy.qs = Object.assign({}, optionsCopy.qs, JSON.parse(argv.params));
+  return optionsCopy;
+};
 
 const createInstance = (element, config, providerData, baseApi) => {
   config.element = tools.getBaseElement(element);
@@ -128,8 +133,8 @@ const createExternalInstance = (element, config, providerData) => {
 const oauth = (element, args, config) => {
   let urlElement = tools.getBaseElement(element);
   const url = `/elements/${urlElement}/oauth/url`;
-  logger.debug('GET %s with options %s', url, args.options);
-  return cloud.withOptions(args.options).get(url)
+  logger.debug('GET %s with options %s', url, JSON.stringify(addParamsToOptions(args.options)));
+  return cloud.withOptions(addParamsToOptions(args.options)).get(url)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return o(element, r, args.username, args.password, config);
@@ -243,9 +248,9 @@ exports.delete = (id, baseApi) => {
 
   baseApi = (baseApi) ? baseApi : '/instances';
   // when running the delete API, don't include the element token in the auth header
-  const {userSecret, orgSecret} = defaults.secrets();
-  const headers = {Authorization: `User ${userSecret}, Organization ${orgSecret}`};
-  return cloud.withOptions({headers}).delete(`${baseApi}/${id}`)
+  const { userSecret, orgSecret } = defaults.secrets();
+  const headers = { Authorization: `User ${userSecret}, Organization ${orgSecret}` };
+  return cloud.withOptions({ headers }).delete(`${baseApi}/${id}`)
     .then(r => {
       logger.debug(`Deleted element instance with ID: ${id}`);
       defaults.reset();
