@@ -28,11 +28,8 @@ const fromOptions = (url, options) => {
       externalAuth: options.externalAuth,
       exclude: options.exclude,
       instance: options.instance,
-<<<<<<< HEAD
-      polling: options.polling
-=======
+      polling: options.polling,
       params: options.params
->>>>>>> master
     });
   });
 };
