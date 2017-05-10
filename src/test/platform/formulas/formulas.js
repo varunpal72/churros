@@ -62,7 +62,6 @@ suite.forPlatform('formulas', opts, (test) => {
       }
     }];
     const validateResults = (formulaId, r, fullResponse) => {
-      let formulas = r.body;
       expect(r.response.headers['elements-total-count']).to.be.below(fullResponse.response.headers['elements-total-count']);
       expect(r.response.headers['elements-returned-count']).to.be.below(fullResponse.response.headers['elements-returned-count']);
       cloud.delete(`/formulas/${formulaId}`);
