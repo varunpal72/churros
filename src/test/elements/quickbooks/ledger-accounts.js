@@ -1,7 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/ledger-accounts');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/ledger-accounts.json`);
 
 suite.forElement('finance', 'ledger-accounts', { payload: payload }, (test) => {
   test.should.supportCrs();

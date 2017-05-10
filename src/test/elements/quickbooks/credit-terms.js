@@ -1,7 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/credit-terms');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/credit-terms.json`);
 
 suite.forElement('finance', 'credit-terms', { payload: payload }, (test) => {
   test.should.supportCrs();
