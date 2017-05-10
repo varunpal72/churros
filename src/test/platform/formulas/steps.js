@@ -24,12 +24,14 @@ suite.forPlatform('formulas', { name: 'formula steps', schema: schema }, (test) 
     .withJson(invalidStatusCodeJson)
     .should.return400OnPost();
 
-  test
-    .withName('should allow creating a formula with a step that has an valid retryStatusCodes property')
-    .withJson(validStatusCodeJson)
-    .should.return200OnPost();
+  it('should allow creating a formula with a step that has an valid retryStatusCodes property', () => {
+    let validFormulaId;
+    return cloud.post(test.api, validStatusCodeJson)
+      .then(r => validFormulaId = r.body.id)
+      .then(r => cloud.delete(`formulas/${validFormulaId}`));
+  });
 
-	/* make sure step properties are being validated properly when adding a step to an existing formula */
+  /* make sure step properties are being validated properly when adding a step to an existing formula */
   it('should not allow adding a step to a formula that has an invalid retryAttempts property', () => {
     const validator = (r) => {
       expect(r).to.have.statusCode(400);
