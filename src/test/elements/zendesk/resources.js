@@ -46,10 +46,6 @@ suite.forElement('helpdesk', 'resources', { payload: incidentsPayload }, (test) 
   it('should support RU for /hubs/helpdesk/resources/articles and CEQL search', () => {
     let articleId;
     return cloud.withOptions({ qs: { where: `title='abc'` } }).get(`${test.api}/articles`)
-    .then(r => {
-      console.log(r.body);
-      return r
-    })
       .then(r => articleId = r.body[0].id)
       .then(r => cloud.patch(`${test.api}/articles/${articleId}`, articlesPayload));
   });
