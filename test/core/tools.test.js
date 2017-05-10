@@ -155,4 +155,13 @@ Josh,Wyse,2
     const fn = () => tools.requirePayload(`${__dirname}/assets/BadPath.json`);
     expect(fn).to.throw(Error);
   });
+  it('should reset and get cleanup file', () => {
+    tools.resetCleanup();
+    setTimeout(() => expect(tools.getCleanup()).to.equal([]), 1000);
+  });
+  it('should add to cleanup file', () => {
+    tools.resetCleanup();
+    tools.addCleanUp({url:'google.com', method: 'get', secrets: {}});
+    setTimeout(() => expect(tools.getCleanup()).to.deep.equal([{url:'google.com', method: 'get', secrets: {}}]), 1000);
+  });
 });

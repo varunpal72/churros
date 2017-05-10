@@ -96,6 +96,7 @@ const createInstance = (element, config, providerData, baseApi) => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       defaults.token(r.body.token);
+      tools.addCleanUp({url: `${props.get('url')}/elements/api-v2${baseApi}/${r.body.id}`, method: 'delete', secrets: defaults.secrets()});
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));

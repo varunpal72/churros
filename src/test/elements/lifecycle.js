@@ -28,6 +28,7 @@ let element = argv.element;
 let instanceId;
 
 before(() => {
+  tools.resetCleanup();
   logger.info('Running tests for element: %s', element);
   if (props.getOptionalForKey(argv.element, 'skip') === true) {
     logger.info('Skip provisioning and all tests for %s', element);

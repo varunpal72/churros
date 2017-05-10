@@ -253,3 +253,17 @@ exports.requirePayload = (path) => {
     throw new Error('Path is not valid');
   }
 };
+
+exports.addCleanUp = (obj) => {
+  if (!obj.hasOwnProperty('url') || !obj.hasOwnProperty('method') || !obj.hasOwnProperty('secrets')) throw new Error();
+  let datas;
+  try {
+    datas = JSON.parse(require('core/assets/cleanup'));
+  } catch (e) {
+    datas = require('core/assets/cleanup');
+  }
+  datas.push(obj);
+  fs.writeFileSync('src/core/assets/cleanup.json', JSON.stringify(datas), err => console.log(err));
+};
+exports.getCleanup = () => require('core/assets/cleanup');
+exports.resetCleanup = () => fs.writeFileSync('src/core/assets/cleanup.json', '[]');

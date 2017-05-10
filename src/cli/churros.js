@@ -12,3 +12,21 @@ commander
   .command('props', 'view/set properties')
   .command('clean', 'clean up platform resources')
   .parse(process.argv);
+
+//cleaning up if tests gets ctrl+c
+process.on('SIGINT', function(err) {
+  const tools = require('../core/tools');
+  const request = require('sync-request');
+  const cleanupData = tools.getCleanup();
+
+  cleanupData.forEach(data => {
+    let opts = {
+      headers: {
+        Authorization: `User ${data.secrets.userSecret}, Organization ${data.secrets.orgSecret}`
+      }
+    };
+
+    request(data.method, data.url, opts);
+  });
+  tools.resetCleanup();
+});
