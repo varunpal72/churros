@@ -83,6 +83,12 @@ const getPollerConfig = (element, instance) => {
   .catch(() => instance);
 };
 
+const addParams = (instance) => {
+   let instanceCopy = JSON.parse(JSON.stringify(instance));
+   if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+   return instanceCopy;
+};
+
 const createInstance = (element, config, providerData, baseApi) => {
   config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
@@ -91,7 +97,7 @@ const createInstance = (element, config, providerData, baseApi) => {
 
   if (providerData) instance.providerData = providerData;
   return getPollerConfig(tools.getBaseElement(element), instance)
-    .then(r => cloud.post(baseApi, r))
+    .then(r => cloud.post(baseApi, addParams(r)))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);

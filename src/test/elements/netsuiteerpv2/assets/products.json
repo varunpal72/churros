@@ -1,4 +1,8 @@
 {
+  "taxSchedule": {
+    "internalId": "1",
+    "name": "S1"
+  },
   "assetAccount": {
     "internalId": "120",
     "name": "Inventory Asset"
@@ -61,13 +65,13 @@
     "internalId": "8",
     "name": "Packages"
   },
-  "itemId": "The Churros",
+  "itemId": "<<name.title>>",
   "isDonationItem": false,
   "onSpecial": false,
-  "purchaseDescription": "Churros Desc",
+  "purchaseDescription": "<<name.title>>",
   "costEstimateUnits": "per Pkg",
   "autoLeadTime": true,
-  "displayName": "Churros Product",
+  "displayName": "<<name.title>>",
   "isOnline": false,
   "handlingCostUnits": "per Pkg",
   "costCategory": {
