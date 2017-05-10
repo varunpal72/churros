@@ -5,6 +5,8 @@ const cloud = require('core/cloud');
 const common = require('./assets/common');
 const expect = require('chakram').expect;
 const invalidJson = require('./assets/formulas/formula-with-invalid-step-properties');
+const invalidStatusCodeJson = require('./assets/formulas/formula-with-invalid-status-code-properties');
+const validStatusCodeJson = require('./assets/formulas/formula-with-valid-status-code-properties');
 const suite = require('core/suite');
 const schema = require('./assets/schemas/formula.schema');
 
@@ -17,7 +19,17 @@ suite.forPlatform('formulas', { name: 'formula steps', schema: schema }, (test) 
     .withJson(invalidJson)
     .should.return400OnPost();
 
-  /* make sure step properties are being validated properly when adding a step to an existing formula */
+  test
+    .withName('should not allow creating a formula with a step that has an invalid retryStatusCodes property')
+    .withJson(invalidStatusCodeJson)
+    .should.return400OnPost();
+
+  test
+    .withName('should allow creating a formula with a step that has an valid retryStatusCodes property')
+    .withJson(validStatusCodeJson)
+    .should.return400OnPost();
+
+	/* make sure step properties are being validated properly when adding a step to an existing formula */
   it('should not allow adding a step to a formula that has an invalid retryAttempts property', () => {
     const validator = (r) => {
       expect(r).to.have.statusCode(400);
