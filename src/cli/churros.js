@@ -20,7 +20,7 @@ process.on('SIGINT', function(err) {
   const cleanupData = tools.getCleanup();
 
   cleanupData.forEach(data => {
-    let opts = {
+    const opts = {
       headers: {
         Authorization: `User ${data.secrets.userSecret}, Organization ${data.secrets.orgSecret}`
       }

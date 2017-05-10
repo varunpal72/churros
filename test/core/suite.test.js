@@ -2,7 +2,6 @@
 
 require('core/assertions');
 const suite = require('core/suite');
-// const props = require('core/props');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const helper = require('./assets/suite-helper');

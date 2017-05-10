@@ -263,7 +263,7 @@ exports.addCleanUp = (obj) => {
     datas = require('core/assets/cleanup');
   }
   datas.push(obj);
-  return fs.writeFile('src/core/assets/cleanup.json', JSON.stringify(datas), err => console.log(err));
+  return fs.writeFile('src/core/assets/cleanup.json', JSON.stringify(datas));
 };
 exports.getCleanup = () => require('core/assets/cleanup');
 exports.resetCleanup = () => fs.writeFileSync('src/core/assets/cleanup.json', '[]');
