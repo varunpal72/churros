@@ -1,11 +1,11 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/lists');
-const contactPayload = require('./assets/contacts');
-const contactUpdatePayload = require('./assets/contactsUpdate');
-const cloud = require('core/cloud');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/lists.json`);
+const contactPayload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
+const contactUpdatePayload = tools.requirePayload(`${__dirname}/assets/contactsUpdate.json`);
+const cloud = require('core/cloud');
 
 suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
   test.should.supportCrds();
