@@ -1,8 +1,8 @@
 {
-  "name": "Formula with invalid elementRequest step property",
-  "description": "I contain an invalid elementRequest step, so I better fail",
+  "name": "Formula with valid elementRequest step property",
+  "description": "I contain an valid elementRequest step, so I better pass",
   "steps": [{
-    "name": "invalid-element-request-step",
+    "name": "valid-element-request-step",
     "type": "elementRequest",
     "properties": {
       "method": "GET",
@@ -16,7 +16,7 @@
   "triggers": [{
     "type": "event",
     "onSuccess": [
-      "invalid-element-request-step"
+      "valid-element-request-step"
     ],
     "properties": {
       "elementInstanceId": "${sfdc.instance.id}"

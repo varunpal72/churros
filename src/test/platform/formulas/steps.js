@@ -27,7 +27,7 @@ suite.forPlatform('formulas', { name: 'formula steps', schema: schema }, (test) 
   test
     .withName('should allow creating a formula with a step that has an valid retryStatusCodes property')
     .withJson(validStatusCodeJson)
-    .should.return400OnPost();
+    .should.return200OnPost();
 
 	/* make sure step properties are being validated properly when adding a step to an existing formula */
   it('should not allow adding a step to a formula that has an invalid retryAttempts property', () => {
