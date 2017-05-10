@@ -118,6 +118,10 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
       .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
       .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
       .then(r => chakram.all(deletes))
-      .then(r => common.deleteFormula(formulaId));
+      .then(r => common.deleteFormula(formulaId))
+      .catch(e => {
+        if (formulaId) common.deleteFormula(formulaId);
+        throw new Error(e);
+      });
   });
 });

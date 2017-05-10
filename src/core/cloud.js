@@ -179,7 +179,11 @@ exports.putFile = putFile;
 const crd = (api, payload, validationCb, options) => {
   return post(api, payload, validationCb, options)
     .then(r => get(api + '/' + r.body.id, validationCb, options))
-    .then(r => remove(api + '/' + r.body.id, null, options));
+    .then(r => remove(api + '/' + r.body.id, null, options))
+    .catch(e => {
+      remove(api + '/' + r.body.id, null, options);
+      throw new Error(e);
+    });
 };
 exports.crd = crd;
 
@@ -193,7 +197,11 @@ exports.crd = crd;
  */
 const cd = (api, payload, validationCb, options) => {
   return post(api, payload, validationCb, options)
-    .then(r => remove(api + '/' + r.body.id, null, options));
+    .then(r => remove(api + '/' + r.body.id, null, options))
+    .catch(e => {
+      remove(api + '/' + r.body.id, null, options);
+      throw new Error(e);
+    });
 };
 exports.cd = cd;
 
@@ -203,7 +211,11 @@ const crds = (api, payload, validationCb, options) => {
     .then(r => createdId = r.body.id)
     .then(r => get(api + '/' + createdId, validationCb, options))
     .then(r => get(api, validationCb, options))
-    .then(r => remove(api + '/' + createdId, null, options));
+    .then(r => remove(api + '/' + createdId, null, options))
+    .catch(e => {
+      remove(api + '/' + createdId, null, options);
+      throw new Error(e);
+    });
 };
 exports.crds = crds;
 
@@ -211,7 +223,11 @@ const crud = (api, payload, validationCb, updateCb, options) => {
   return post(api, payload, validationCb, options)
     .then(r => get(api + '/' + r.body.id, validationCb, options))
     .then(r => update(api + '/' + r.body.id, payload, validationCb, updateCb, options))
-    .then(r => remove(api + '/' + r.body.id, null, options));
+    .then(r => remove(api + '/' + r.body.id, null, options))
+    .catch(e => {
+      remove(api + '/' + r.body.id, null, options);
+      throw new Error(e);
+    });
 };
 exports.crud = crud;
 
@@ -222,7 +238,11 @@ const cruds = (api, payload, validationCb, updateCb, options) => {
     .then(r => get(`${api}/${createdId}`, validationCb, options))
     .then(r => update(`${api}/${createdId}`, payload, validationCb, updateCb, options))
     .then(r => get(api, validationCb, options))
-    .then(r => remove(`${api}/${createdId}`, null, options));
+    .then(r => remove(`${api}/${createdId}`, null, options))
+    .catch(e => {
+      remove(`${api}/${createdId}`, null, options);
+      throw new Error(e);
+    });
 };
 exports.cruds = cruds;
 

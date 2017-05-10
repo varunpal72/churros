@@ -32,7 +32,11 @@ const crudsInstance = (baseUrl) => {
     .then(r => cloud.get(`${baseUrl}`, instancesSchema))
     .then(r => expect(r.body.length).to.be.above(0))
     .then(r => cloud.put(`${baseUrl}/${id}`, genInstance('jira', { name: 'updated-instance' })))
-    .then(r => provisioner.delete(id, baseUrl));
+    .then(r => provisioner.delete(id, baseUrl))
+    .catch(e => {
+      if (id) provisioner.delete(id, baseUrl);
+      throw new Error(e);
+    });
 };
 
 const updateInstanceWithReprovision = (baseUrl, schema) => {
@@ -64,7 +68,11 @@ const updateInstanceWithReprovision = (baseUrl, schema) => {
     }))
     .then(r => cloud.get(`/hubs/ecommerce/orders`))
     .then(r => expect(r.body).to.be.instanceof(Array))
-    .then(r => provisioner.delete(id, baseUrl));
+    .then(r => provisioner.delete(id, baseUrl))
+    .catch(e => {
+      if (id) provisioner.delete(id, baseUrl);
+      throw new Error(e);
+    });
 };
 
 const opts = { schema: instanceSchema };
@@ -177,7 +185,14 @@ suite.forPlatform('elements/instances', opts, (test) => {
           expect(r.body.element.id).to.equal(clone.id);
         }))
       .then(r => provisioner.delete(instance.id, 'elements/shopify/instances'))
-      .then(r => cloud.delete(`elements/${clone.key}`));
+      .then(r => cloud.delete(`elements/${clone.key}`))
+      .catch(e => {
+        if (instance && clone) {
+          provisioner.delete(instance.id, 'elements/shopify/instances');
+          cloud.delete(`elements/${clone.key}`);
+        }
+        throw new Error(e);
+      });
   });
 
   it('should sanitize element instance name on create and update', () => {
@@ -188,7 +203,11 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => expect(r.body.name).to.equal('churros-xss'))
       .then(() => cloud.patch(`/instances/${id}`, { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss-updated</a>' }))
       .then(r => expect(r.body.name).to.equal('churros-xss-updated'))
-      .then(() => provisioner.delete(id));
+      .then(() => provisioner.delete(id))
+      .catch(e => {
+        if (id) provisioner.delete(id);
+        throw new Error(e);
+      });
   });
 
   it('should sanitize element instance tags on create and update', () => {
@@ -199,7 +218,11 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => expect(r.body.name).to.equal('@churros-xss') && expect(r.body.tags[0]).to.equal('@churros-xss'))
       .then(() => cloud.patch(`/instances/${id}`, { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">@churros-xss-updated</a>' }))
       .then(r => expect(r.body.name).to.equal('@churros-xss-updated'))
-      .then(() => provisioner.delete(id));
+      .then(() => provisioner.delete(id))
+      .catch(e => {
+        if (id) provisioner.delete(id);
+        throw new Error(e);
+      });
   });
 
   it('should fail with 401 for deleted instance api call', () => {
