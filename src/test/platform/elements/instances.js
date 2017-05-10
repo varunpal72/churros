@@ -152,14 +152,14 @@ suite.forPlatform('elements/instances', opts, (test) => {
   it('should support updating the tags for an element instance', () => {
     const validateTags = (id, tags) => {
       expect(tags.length).to.equal(1) && expect(tags[0]).to.equal('churros-testing');
-      cloud.delete(`/instances/${id}`);
     };
 
     let id;
     return provisioner.create('sfdc', { name: 'churros-test' })
       .then(r => id = r.body.id)
       .then(r => cloud.patch(`/instances/${id}`, { id: id, tags: ['churros-testing'] }))
-      .then(r => cloud.get(`/instances/${id}`, validateTags(id, r.body.tags)));
+      .then(r => cloud.get(`/instances/${id}`, validateTags(id, r.body.tags)))
+      .then(r => provisioner.delete(id));
   });
 
   it('should support switching an instance to the clone of an element', () => {
