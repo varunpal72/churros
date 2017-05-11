@@ -1,8 +1,8 @@
 {
-    "Name": "This is a Testing Campaing name",
-    "Subject": "My Subject",
-    "FromName": "My Name",
-    "FromEmail": "myemail@mydomain.com",
+    "Name": "<<random.word>>",
+    "Subject": "<<random.word>>",
+    "FromName": "<<random.word>>",
+    "FromEmail": "<<internet.email>>",
     "ReplyTo": "myemail@mydomain.com",
     "HtmlUrl": "http://www.example.com",
     "ListIDs": []
