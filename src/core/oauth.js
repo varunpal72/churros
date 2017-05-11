@@ -53,7 +53,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('PasswordTxt')).sendKeys(password);
       browser.findElement(webdriver.By.id('LoginBtn')).click();
       browser.wait(() => {
-        return browser.isElementPresent(webdriver.By.id('AllowBtn')); 
+        return browser.isElementPresent(webdriver.By.id('AllowBtn'));
       }, 1000);
       browser.findElement(webdriver.By.id('AllowBtn')).click();
       return browser.getCurrentUrl();
@@ -192,6 +192,24 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('submit')).click();
       return browser.getCurrentUrl();
     case 'googledrive':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('Email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('Email')).submit();
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('Passwd')).sendKeys(password);
+      browser.findElement(webdriver.By.id('Passwd')).submit();
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.name('email'))
+      .then((element) => {
+        element.sendKeys("developer@cloud-elements.com");
+        element.submit();
+      }, (err) => {}); // ignore this
+      browser.sleep(2000);
+      browser.findElement(webdriver.By.id('submit_approve_access'))
+      .then((element) => element.click(), (err) => {}); // ignore this
+      browser.sleep(2000);
+      return browser.getCurrentUrl();
+    case 'googlesheets':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('Email')).sendKeys(username);
       browser.findElement(webdriver.By.id('Email')).submit();
@@ -379,7 +397,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
       return browser.getCurrentUrl();
     case 'servicenowoauth':
-      return 'https://foo.bar.com?code=' + config.code; // they don't supply a code
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('user_name')).sendKeys(username);
+      browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('sysverb_login')).click();
+      browser.wait(() => browser.isElementPresent(webdriver.By.className('btn btn-primary')), 5000)
+        .thenCatch(r => true);
+      browser.findElement(webdriver.By.className('btn btn-primary')).click();
+      return browser.getCurrentUrl();
     case 'servicemax':
     case 'sagelive':
     case 'sfdc':

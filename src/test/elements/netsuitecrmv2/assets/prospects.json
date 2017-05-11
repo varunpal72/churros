@@ -23,5 +23,9 @@
   "phone": "<<phone.phoneNumber>>",
   "entityStatus": {
     "internalId": "8"
+  },
+  "customForm": {
+    "internalId": "16",
+    "name": "Ramsey Default Customer Form"
   }
 }

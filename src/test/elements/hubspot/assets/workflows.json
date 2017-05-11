@@ -1,8 +1,14 @@
 {
+  "unenrollmentSetting": {
+  "excludedWorkflows": [],
+  "type": "NONE"
+},    "onlyExecOnBizDays": false,
+  "allowContactToTriggerMultipleTimes": false,
+  "enabled":true,
   "name": "Test Workflow",
   "type": "STATIC_ANCHOR",
   "eventAnchor": {
-    "staticDateAnchor": "10/09/2014"
+    "staticDateAnchor": "10/09/2100"
   },
   "actions": [{
       "type": "DELAY",

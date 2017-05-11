@@ -25,17 +25,14 @@ const setupProps = () => {
     'user': 'franky',
     'oauth.callback.url': 'http://myfakecallbackurl',
     'myelement': {
-      'elementId': '123',
       'username': 'frank',
       'password': 'ricard'
     },
     'badelement': {
-      'elementId': '123',
       'username': 'frank',
       'password': 'ricard'
     },
     'myoauth1element': {
-      'elementId': '123',
       'provisioning': 'oauth1',
       'username': 'frank',
       'password': 'ricard',
@@ -43,7 +40,6 @@ const setupProps = () => {
       'oauth.api.secret': 'fill it up again'
     },
     'myoauth2element': {
-      'elementId': '123',
       'provisioning': 'oauth2',
       'username': 'frank',
       'password': 'ricard',
@@ -51,7 +47,6 @@ const setupProps = () => {
       'oauth.api.secret': 'fill it up again'
     },
     'myoauth2external': {
-      'elementId': '123',
       'provisioning': 'oauth2',
       'external': true,
       'username': 'frank',
@@ -61,7 +56,6 @@ const setupProps = () => {
       'tokenUrl': 'http://pvenkman.ghostbuster.com/token'
     },
     'myoauth1external': {
-      'elementId': '123',
       'provisioning': 'oauth1',
       'external': true,
       'username': 'frank',
@@ -71,7 +65,6 @@ const setupProps = () => {
       'tokenUrl': 'http://pvenkman.ghostbuster.com/token'
     },
     'noTokenUrl': {
-      'elementId': '123',
       'provisioning': 'oauth2',
       'external': true,
       'username': 'frank',
@@ -80,12 +73,10 @@ const setupProps = () => {
       'oauth.api.secret': 'fill it up again'
     },
     'customProvisioning': {
-      'elementId': '123',
       'provisioning': 'custom',
       'username': 'frank'
     },
     'myboguselement': {
-      'elementId': '123',
       'provisioning': 'oauth2',
       'external': true,
       'username': 'frank',
@@ -128,19 +119,7 @@ describe('provisioner', () => {
       .reply(200, () => new Object({
         token: 'token',
         secret: 'secret'
-      }))
-      .get('/elements/myelement')
-      .reply(200, () => {
-        return {key: 'myelement', id: 123, configuration: [{key: 'event.poller.configuration'}, {key: 'event.metadata', defaultValue: '{"webhook": {"Account": {"eventTypes": ["created", "updated", "deleted"]}, "Lead": {"eventTypes":\n        ["created", "updated", "deleted"]}, "Contact": {"eventTypes": ["created", "updated", "deleted"]},\n        "Opportunity": {"eventTypes": ["created", "updated", "deleted"]}, "{objectName}": {"eventTypes": ["created",\n        "updated", "deleted"]}}, "polling": {"Account": {"eventTypes":\n        ["created", "updated"]}, "Lead": {"eventTypes": ["created", "updated"]}, "Contact": {"eventTypes":\n        ["created", "updated"]}, "Opportunity": {"eventTypes": ["created", "updated"]}, "{objectName}": {"eventTypes":\n        ["created", "updated", "deleted"]}}}'}]};
-      })
-      .get('/elements/myoauth2element')
-      .reply(200, () => {
-        return {key: 'myoauth2element', id: 123, configuration: [{key: 'event.poller.configuration'}]};
-      })
-      .get('/elements/123/metadata')
-      .reply(200, () => {
-        return {events : {supported: true, methods: ['polling', 'webhook']}};
-      });
+      }));
 
     nock(baseUrl, headers())
       .get('/elements/myoauth1element/oauth/url')

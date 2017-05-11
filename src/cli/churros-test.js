@@ -29,6 +29,7 @@ const fromOptions = (url, options) => {
       exclude: options.exclude,
       instance: options.instance,
       requiredFields: options.requiredFields
+      params: options.params
     });
   });
 };
@@ -98,6 +99,7 @@ const run = (suite, options, cliArgs) => {
   if (cliArgs.externalAuth) args += ` --externalAuth`;
   if (cliArgs.instance) args += ` --instance ${cliArgs.instance}`;
   if (cliArgs.requiredFields) args += ` --requiredFields ${cliArgs.requiredFields}`;
+  if (cliArgs.params) args += ` --params '${cliArgs.params}'`;
 
   // loop over each element, constructing the proper paths to pass to mocha
   let cmd = "";
@@ -162,6 +164,7 @@ commander
   .option('-V, --verbose', 'logging verbose mode')
   .option('-i, --instance <instance>', 'element instance ID to run tests against (for development only)')
   .option('-R, --requiredFields', 'only runs and prints out required fields for each object')
+  .option('-P, --params <json>', 'add additional parameters for provisioning')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
@@ -169,6 +172,7 @@ commander
     console.log('    $ churros test elements/closeio');
     console.log('    $ churros test elements/closeio --test \'contacts\'');
     console.log('    $ churros test elements/closeio --file \'contacts\'');
+    console.log('    $ churros test elements/zuorav2 --params \'{"zuorav2.sandbox": true}\'');
     console.log('    $ churros test elements');
     console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
     console.log('    $ churros test elements --start freshbooks');

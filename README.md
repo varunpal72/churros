@@ -93,13 +93,15 @@ $ churros test elements/sfdc --browser phantomjs
 
 # Run suite on a existing instance(FOR DEVELOPMENT ONLY)
 $ churros test elements/pipedrive --instance 1234
+
+# Run suite with additional provisioning parameters
+$ churros test elements/zuorav2 --params '{"zuorav2.sandbox": true}'
 ```
 
 > __PROTIP:__ The `--test` value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
-
 >__PROTIP:__ The `--file` value will run all the tests inside the JavaScript. Leave the `.js` off of the value
-
 > __PROTIP:__ The `--browser` value defaults to `firefox`, however if you want to use a headless browser, you can pass `--browser phantomjs` as seen above
+>__PROTIP:__ The `--params` requires valid JSON
 
 ### Platform Tests
 

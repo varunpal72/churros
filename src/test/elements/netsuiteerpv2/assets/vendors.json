@@ -1,4 +1,8 @@
 {
+  "customForm": {
+    "internalId": "4",
+    "name": "GB Vendor Form"
+  },
   "is1099Eligible": false,
   "workCalendar": {
     "internalId": "1",
@@ -8,7 +12,7 @@
     "internalId": "1",
     "name": "Honeycomb Mfg."
   },
-  "companyName": "Churros company",
+  "companyName": "<<company.companyName>>",
   "isPerson": false,
   "isJobResourceVend": false,
   "terms": {
