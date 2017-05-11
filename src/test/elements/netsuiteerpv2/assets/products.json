@@ -65,13 +65,13 @@
     "internalId": "8",
     "name": "Packages"
   },
-  "itemId": "<<name.title>>",
+  "itemId": "<<commerce.productName>>",
   "isDonationItem": false,
   "onSpecial": false,
-  "purchaseDescription": "<<name.title>>",
+  "purchaseDescription": "<<commerce.productName>>",
   "costEstimateUnits": "per Pkg",
   "autoLeadTime": true,
-  "displayName": "<<name.title>>",
+  "displayName": "<<commerce.productName>>",
   "isOnline": false,
   "handlingCostUnits": "per Pkg",
   "costCategory": {
