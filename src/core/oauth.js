@@ -86,7 +86,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('consent_accept')).click();
       return browser.getCurrentUrl();
     case 'campaignmonitor':
-      browser.manage().window().setSize(1920, 1080)
+      browser.manage().window().setSize(1920, 1080);
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
