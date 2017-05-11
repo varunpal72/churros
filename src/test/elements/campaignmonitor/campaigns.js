@@ -5,7 +5,7 @@ const tools = require('core/tools');
 const expect = require('chakram').expect;
 const payload = tools.requirePayload(`${__dirname}/assets/campaigns.json`);
 
-suite.forElement('marketing', 'campaigns', {}, (test) => {
+suite.forElement('marketing', 'campaigns', (test) => {
   let accountId;
 
   beforeEach(() => {
@@ -32,12 +32,17 @@ suite.forElement('marketing', 'campaigns', {}, (test) => {
     return cloud.post('hubs/marketing/campaigns', payload)
       .then(r => campaingID = r.body.id)
       .then(r => cloud.get(`hubs/marketing/campaigns/${campaingID}`))
-      .then(r => cloud.delete(`hubs/marketing/campaigns/${campaingID}`))
-      .then(r => cloud.withOptions(({
+      .then(r => cloud.delete(`hubs/marketing/campaigns/${campaingID}`));
+  });
+
+  it(`Should allow where clause with status = sent, scheduled, or draft for ${test.api}`, () => {
+
+
+    return cloud.withOptions(({
         qs: {
           where: `id = '${accountId}' and status = 'sent'`
         }
-      })).get('hubs/marketing/campaigns'))
+      })).get('hubs/marketing/campaigns')
       .then(r => {
         expect(r).to.have.statusCode(200);
         expect(r.body).to.not.be.undefined;

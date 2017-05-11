@@ -7,10 +7,8 @@ const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 
-suite.forElement('marketing', 'contacts', {
-  skip: true
-}, (test) => {
-  
+suite.forElement('marketing', 'contacts', {skip: true}, (test) => {
+
   let listId, accountId;
 
   beforeEach(() => {
@@ -38,12 +36,18 @@ suite.forElement('marketing', 'contacts', {
       .then(r => email = r.body.EmailAddress)
       .then(r => cloud.get(`hubs/marketing/lists/${listId}/contacts/${email}`))
       .then(r => cloud.patch(`hubs/marketing/lists/${listId}/contacts/${email}`, payload))
-      .then(r => cloud.delete(`hubs/marketing/lists/${listId}/contacts/${email}`))
-      .then(r => cloud.withOptions({
+      .then(r => cloud.delete(`hubs/marketing/lists/${listId}/contacts/${email}`));
+
+  });
+
+  it(`Should allow where clause with status = active, unconfirmed, unsubscribed, bounced, and deleted for ${test.api}`, () => {
+
+
+    return cloud.withOptions({
         qs: {
           where: "status = 'active'"
         }
-      }).get(`hubs/marketing/lists/${listId}/contacts`))
+      }).get(`hubs/marketing/lists/${listId}/contacts`)
       .then(r => {
         expect(r).to.have.statusCode(200);
         expect(r.body).to.not.be.undefined;

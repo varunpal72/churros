@@ -5,7 +5,7 @@ const payload = require('./assets/lists');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 
-suite.forElement('marketing', 'lists', {}, (test) => {
+suite.forElement('marketing', 'lists', (test) => {
 
   let accountId;
 
@@ -18,13 +18,13 @@ suite.forElement('marketing', 'lists', {}, (test) => {
       });
   });
 
-  it(`Should perform CRUD for ${test.api}`, () => {
+  it(`Should allow CRUDs for ${test.api}`, () => {
     let listID;
     return cloud.post('hubs/marketing/lists', payload)
       .then(r => listID = r.body.id)
-      .then(r => cloud.get('hubs/marketing/lists/' + listID))
-      .then(r => cloud.patch('hubs/marketing/lists/' + listID, payload))
-      .then(r => cloud.delete('hubs/marketing/lists/' + listID))
+      .then(r => cloud.get(`hubs/marketing/lists/${listID}`))
+      .then(r => cloud.patch(`hubs/marketing/lists/${listID}`, payload))
+      .then(r => cloud.delete(`hubs/marketing/lists/${listID}`))
       .then(r => cloud.withOptions(({
         qs: {
           where: ` id = '${accountId}' `
