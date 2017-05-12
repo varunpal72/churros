@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const payload = require('./assets/users');
+const cloud = require('core/cloud');
 
 const options = {
   churros: {
