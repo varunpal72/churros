@@ -7,7 +7,7 @@
     "properties": {
       "method": "GET",
       "api": "/hubs/crm/accounts",
-      "elementInstanceId": "${sfdc.instance.id}",
+      "elementInstanceId": "${closeio.instance.id}",
       "retryDelay": 500,
       "retryAttempts": 2,
 	  "retryStatusCodes":"401-,400"
@@ -19,13 +19,13 @@
       "invalid-element-request-step"
     ],
     "properties": {
-      "elementInstanceId": "${sfdc.instance.id}"
+      "elementInstanceId": "${closeio.instance.id}"
     }
   }],
   "configuration": [{
-    "key": "sfdc.instance.id",
-    "name": "sfdcInstance",
+    "key": "closeio.instance.id",
+    "name": "closeioInstance",
     "type": "elementInstance",
-    "description": "The SFDC CRM element instance"
+    "description": "The closeio CRM element instance"
   }]
 }

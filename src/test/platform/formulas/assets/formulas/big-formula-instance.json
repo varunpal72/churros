@@ -3,7 +3,7 @@
   "configuration": {
     "stIdFieldName": "field2",
     "synchableFieldName": "field",
-    "sfdc.instance.id": "<replace-me>",
+    "closeio.instance.id": "<replace-me>",
     "sailthru.instance.id": "<replace-me>"
   },
   "settings": {

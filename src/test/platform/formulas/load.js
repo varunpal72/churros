@@ -88,20 +88,20 @@ const createXInstances = (x, formulaId, formulaInstance) => {
  * Tests formula executions under heavy load (number of events, size of events, etc.)
  */
 suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
-  let sfdcId;
+  let closeioId;
   before(() => cleaner.formulas.withName('complex-successful')
-    .then(r => common.provisionSfdcWithWebhook())
-    .then(r => sfdcId = r.body.id));
+    .then(r => common.provisioncloseioWithWebhook())
+    .then(r => closeioId = r.body.id));
 
   /** Clean up */
   after(() => {
-    if (sfdcId) return provisioner.delete(sfdcId);
+    if (closeioId) return provisioner.delete(closeioId);
   });
 
   it('should handle a very large event payload repeatedly', () => {
     const formula = require('./assets/formulas/complex-successful-formula');
     const formulaInstance = require('./assets/formulas/basic-formula-instance');
-    formulaInstance.configuration[ 'trigger-instance' ] = sfdcId;
+    formulaInstance.configuration[ 'trigger-instance' ] = closeioId;
 
     const numFormulaInstances = 1;
     const numEvents = 1;
@@ -114,7 +114,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
       .then(ids => ids.map(id => formulaInstances.push(id)))
-      .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
+      .then(r => simulateTrigger(numEvents, closeioId, genWebhookEvent('update', numInOneEvent), common.generatecloseioEvent))
       .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
       .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
       .then(r => chakram.all(deletes))

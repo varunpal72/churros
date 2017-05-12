@@ -46,7 +46,7 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
 
     const validateCreate = (r) => v(r, 'trigger-instance');
 
-    const validateUpdate = (r) => v(r, 'sfdc.instance');
+    const validateUpdate = (r) => v(r, 'closeio.instance');
 
     const parseConfig = (formula) => formula.configuration.filter((c) => c.key === 'trigger-instance')[0];
 
@@ -54,8 +54,8 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
 
     const genConfig = (formula) => {
       const c = parseConfig(formula);
-      c.key = 'sfdc.instance';
-      c.name = 'SFDC Instance';
+      c.key = 'closeio.instance';
+      c.name = 'closeio Instance';
       return c;
     };
 

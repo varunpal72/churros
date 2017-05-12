@@ -1,0 +1,22 @@
+{
+    "instance_id": "",
+    "accounts": [
+        {
+            "LastModifiedDate": "2015-12-15T05:34:58.000+0000",
+            "IsDeleted": false,
+            "SFSSDupeCatcher__Override_DupeCatcher__c": false,
+            "LastViewedDate": "2015-12-15T05:34:59.000+0000",
+            "LastReferencedDate": "2015-12-15T05:34:59.000+0000",
+            "Name": "Brian's Updated Account",
+            "AccountNumber": "123456",
+            "SystemModstamp": "2015-12-15T05:34:58.000+0000",
+            "CreatedById": "005i0000001VNdeAAG1",
+            "OwnerId": "005i0000001VNdeAAG1",
+            "CreatedDate": "2015-11-24T18:34:31.000+0000",
+            "PhotoUrl": "/services/images/photo/001i000001hB60bAAC1",
+            "Id": "001i000001hB60bAAC1",
+            "LastModifiedById": "005i0000001VNdeAAG1"
+        }
+    ],
+    "objectType": "accounts"
+}

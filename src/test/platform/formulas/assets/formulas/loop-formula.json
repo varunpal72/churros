@@ -1,15 +1,15 @@
 {
   "name": "loop-formula",
   "configuration": [{
-    "name": "sfdc.instance.id",
-    "description": "The SFDC element instance that will trigger this formula.",
+    "name": "closeio.instance.id",
+    "description": "The closeio element instance that will trigger this formula.",
     "type": "elementInstance",
-    "key": "sfdc.instance.id"
+    "key": "closeio.instance.id"
   }],
   "triggers": [{
     "type": "event",
     "properties": {
-      "elementInstanceId": "${sfdc.instance.id}"
+      "elementInstanceId": "${closeio.instance.id}"
     },
     "onSuccess": ["create-list"]
   }],
@@ -32,7 +32,7 @@
     "type": "request",
     "properties": {
       "method": "GET",
-      "api": "/elements/sfdc"
+      "api": "/elements/closeio"
     },
     "onSuccess": ["looper"]
   }]

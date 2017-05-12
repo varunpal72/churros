@@ -26,7 +26,7 @@ suite.forPlatform('formulas', opts, (test) => {
       "name": "someApi",
       "type": "elementRequest",
       "properties": {
-        "elementInstanceId": "${sfdc}",
+        "elementInstanceId": "${closeio}",
         "api": "/hubs/crm/accounts",
         "method": "GET"
       }
@@ -70,7 +70,7 @@ suite.forPlatform('formulas', opts, (test) => {
       "name": "bulk-download",
       "type": "elementRequest",
       "properties": {
-        "elementInstanceId": "${sfdc}",
+        "elementInstanceId": "${closeio}",
         "api": "/hubs/crm/bulk/123/contacts",
         "method": "GET"
       }
@@ -113,7 +113,7 @@ suite.forPlatform('formulas', opts, (test) => {
 
     const genFi = (id) => {
       let fi = require('./assets/formulas/big-formula-instance.json');
-      fi.configuration['sfdc.instance.id'] = id;
+      fi.configuration['closeio.instance.id'] = id;
       fi.configuration['sailthru.instance.id'] = id;
       return fi;
     };

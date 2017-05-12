@@ -68,26 +68,26 @@ const genInstance = (opts) => new Object({
   name: (opts.name || 'churros-formula-instance-name')
 });
 
-const provisionSfdcWithPolling = () => provisioner.create('sfdc', {
+const provisioncloseioWithPolling = () => provisioner.create('closeio', {
   'event.notification.enabled': true,
   'event.vendor.type': 'polling',
   'event.poller.refresh_interval': 999999999
 });
 
-const provisionSfdcWithWebhook = () => provisioner.create('sfdc', {
+const provisioncloseioWithWebhook = () => provisioner.create('closeio', {
   'event.notification.enabled': true,
   'event.vendor.type': 'webhook'
 });
 
-const generateSfdcEvent = (instanceId, payload) => {
-  const url = `/events/sfdc`;
+const generatecloseioEvent = (instanceId, payload) => {
+  const url = `/events/closeio`;
   const opts = { headers: { 'Element-Instances': instanceId } };
   return cloud
     .withOptions(opts)
     .post(url, payload);
 };
 
-const generateSfdcPollingEvent = (instanceId, payload) => {
+const generatecloseioPollingEvent = (instanceId, payload) => {
   const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
   const encodedId = b64(instanceId.toString());
 
@@ -95,7 +95,7 @@ const generateSfdcPollingEvent = (instanceId, payload) => {
 
   return cloud
     .withOptions({ 'headers': headers })
-    .post('/events/sfdcPolling/' + encodedId, payload);
+    .post('/events/closeioPolling/' + encodedId, payload);
 };
 
 const allExecutionsCompleted = (fId, fiId, numExecs, numExecVals) => () => new Promise((res, rej) => {
@@ -236,10 +236,10 @@ module.exports = {
   genFormula,
   genTrigger,
   genInstance,
-  provisionSfdcWithPolling,
-  provisionSfdcWithWebhook,
-  generateSfdcEvent,
-  generateSfdcPollingEvent,
+  provisioncloseioWithPolling,
+  provisioncloseioWithWebhook,
+  generatecloseioEvent,
+  generatecloseioPollingEvent,
   defaultValidator,
   execValidatorWrapper,
   testWrapper,

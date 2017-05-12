@@ -35,7 +35,7 @@
                 "method": "GET",
                 "api": "/hubs/crm/CampaignMember/{objectId}",
                 "path": "${trigger.body.message.events[0]}",
-                "elementInstanceId": "${sfdc.instance.id}"
+                "elementInstanceId": "${closeio.instance.id}"
             }
         },
         {
@@ -49,7 +49,7 @@
                 "method": "GET",
                 "api": "/hubs/crm/campaigns/{CampaignId}",
                 "path": "${3-get-campaignMember.response.body}",
-                "elementInstanceId": "${sfdc.instance.id}"
+                "elementInstanceId": "${closeio.instance.id}"
             }
         },
         {
@@ -74,7 +74,7 @@
                 "method": "GET",
                 "api": "/hubs/crm/{objectName}/{objectId}",
                 "path": "${5-trans-obj-name}",
-                "elementInstanceId": "${sfdc.instance.id}"
+                "elementInstanceId": "${closeio.instance.id}"
             }
         },
         {
@@ -233,7 +233,7 @@
                 "body": "${10-5-build-campaign-body}",
                 "api": "/hubs/crm/campaigns/{CampaignId}",
                 "path": "${3-get-campaignMember.response.body}",
-                "elementInstanceId": "${sfdc.instance.id}"
+                "elementInstanceId": "${closeio.instance.id}"
             }
         }
     ],
@@ -245,16 +245,16 @@
             ],
             "onFailure": [],
             "properties": {
-                "elementInstanceId": "${sfdc.instance.id}"
+                "elementInstanceId": "${closeio.instance.id}"
             }
         }
     ],
     "configuration": [
         {
-            "key": "sfdc.instance.id",
-            "name": "sfdcInstance",
+            "key": "closeio.instance.id",
+            "name": "closeioInstance",
             "type": "elementInstance",
-            "description": "The SFDC CRM element instance"
+            "description": "The closeio CRM element instance"
         },
         {
             "key": "sailthru.instance.id",
