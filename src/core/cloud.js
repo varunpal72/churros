@@ -294,6 +294,10 @@ exports.createEvents = (element, replacements, eventRequest, numEvents) => {
   let headers = eventRequest.headers;
   let query = eventRequest.query;
   let payload = eventRequest.body;
+  // console.log('headers', headers);
+  // console.log('query', query);
+  // console.log('payload', payload);
+  // console.log('eventRequest', eventRequest);
   for (var replaceKey in replacements) {
     if (headers) {
       for (var hkey in headers) {

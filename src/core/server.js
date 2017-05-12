@@ -89,6 +89,7 @@ exports.listen = (numEventsSent, waitSecs) => {
     let receivedEvents = 0;
     let events = [];
     setHandler((request, response) => {
+      console.log('hit');
       let fullBody = '';
       request.on('data', (chunk) => fullBody += chunk.toString());
       request.on('end', () => {
