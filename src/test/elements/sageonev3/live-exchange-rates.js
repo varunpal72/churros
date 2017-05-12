@@ -1,17 +1,17 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');
 const expect = require('chakram').expect;
+const cloud = require('core/cloud');
 
 suite.forElement('finance', 'live-exchange-rates', (test) => {
-  let id, show_legacy_id;
+  let id;
   it(`should allow SR for ${test.api}`, () => {
     return cloud.get(test.api)
       .then(r => {
         id = r.body[0].currency.id;
       })
-      .then(r => cloud.get(`${test.api}/${id}`))
+      .then(r => cloud.get(`${test.api}/${id}`));
   });
   //where clause not working
   test.should.supportPagination();

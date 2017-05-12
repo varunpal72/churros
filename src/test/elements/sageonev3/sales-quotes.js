@@ -15,7 +15,7 @@ suite.forElement('finance', 'sales-quotes', { payload: salesQuotesPayload }, (te
   test.should.supportPagination();
   it(`should support GET ${test.api}`, () => {
     return cloud.get(test.api)
-      .then(r => id = r.body[0].reference)
+      .then(r => id = r.body[0].reference);
   });
   test
     .withName(`should support searching ${test.api} by reference`)

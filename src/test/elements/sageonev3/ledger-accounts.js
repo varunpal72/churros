@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const expect = require('chakram').expect;
-const cloud = require('core/cloud');
 
 suite.forElement('finance', 'ledger-accounts', (test) => {
   test.should.supportSr();

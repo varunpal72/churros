@@ -23,7 +23,7 @@ suite.forElement('finance', 'contact-allocations', (test) => {
             const validValues = r.body.filter(obj => obj.lastModifiedDate >= `${date}`);
             expect(validValues.length).to.equal(r.body.length);
           }).should.return200OnGet();
-        return cloud.get(`${test.api}/${id}`)
+        return cloud.get(`${test.api}/${id}`);
       });
   });
 });

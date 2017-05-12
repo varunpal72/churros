@@ -18,7 +18,7 @@ suite.forElement('finance', 'invoices', { payload: purchaseCreditPayload }, (tes
       .then(r => code = r.body[0].reference)
       .then(r => cloud.get(test.api))
       .then(r => id = r.body[0].id)
-      .then(r => cloud.withOptions({ qs: { void_reason: `Temporary Reason` } }).delete(`${test.api}/${id}`))
+      .then(r => cloud.withOptions({ qs: { void_reason: `Temporary Reason` } }).delete(`${test.api}/${id}`));
   });
   test
     .withName(`should support searching ${test.api} by reference`)

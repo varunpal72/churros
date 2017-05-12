@@ -15,7 +15,7 @@ suite.forElement('finance', 'products', { payload: productsPayload }, (test) => 
   test.should.supportPagination();
   it(`should support GET ${test.api}`, () => {
     return cloud.get(test.api)
-      .then(r => code = r.body[0].item_code)
+      .then(r => code = r.body[0].item_code);
   });
   test
     .withName(`should support searching ${test.api} by item_code`)

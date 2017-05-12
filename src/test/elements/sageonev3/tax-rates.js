@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const expect = require('chakram').expect;
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const payload = require('./assets/tax-rates');
@@ -15,7 +14,7 @@ suite.forElement('finance', 'tax-rates', { payload: taxRatesPayload }, (test) =>
   test.should.supportPagination();
   it(`should support GET ${test.api}`, () => {
     return cloud.get(test.api)
-      .then(r => name = r.body[0].name)
+      .then(r => name = r.body[0].name);
   });
 });
 //where clause doesnot work

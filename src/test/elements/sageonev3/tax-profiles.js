@@ -1,6 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
+const expect = require('chakram').expect;
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'tax-profiles',{skip : true}, (test) => {
@@ -20,7 +21,7 @@ suite.forElement('finance', 'tax-profiles',{skip : true}, (test) => {
             const validValues = r.body.filter(obj => obj.reference === `${reference}`);
             expect(validValues.length).to.equal(r.body.length);
           }).should.return200OnGet();
-        return cloud.get(`${test.api}/${id}`)
+        return cloud.get(`${test.api}/${id}`);
       });
   });
 });

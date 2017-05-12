@@ -4,7 +4,6 @@ const suite = require('core/suite');
 const expect = require('chakram').expect;
 
 suite.forElement('finance', 'payment-methods', (test) => {
-  let show_legacy_id = 'true';
   test.should.supportSr();
   test.should.supportPagination();
   test

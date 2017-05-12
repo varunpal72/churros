@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-// const expect = require('chakram').expect;
+const expect = require('chakram').expect;
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'services', (test) => {
@@ -15,7 +15,7 @@ suite.forElement('finance', 'services', (test) => {
         if (r.body.length <= 0) {
           return;
         }
-        id = r.body[0].id
+        id = r.body[0].id;
         test
           .withName(`should support searching ${test.api} by item_code`)
           .withOptions({ qs: { where: `search ='${code}'` } })
@@ -24,7 +24,7 @@ suite.forElement('finance', 'services', (test) => {
             const validValues = r.body.filter(obj => obj.item_code === `${code}`);
             expect(validValues.length).to.equal(r.body.length);
           }).should.return200OnGet();
-        return cloud.get(`${test.api}/${id}`)
+        return cloud.get(`${test.api}/${id}`);
       });
   });
 });

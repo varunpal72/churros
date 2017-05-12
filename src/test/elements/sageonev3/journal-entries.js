@@ -1,11 +1,9 @@
 'use strict';
 
 const suite = require('core/suite');
-const expect = require('chakram').expect;
 const tools = require('core/tools');
-const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 const payload = require('./assets/journal-entries');
-const chakram = require('chakram');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const journalPayload = build({ date: Date(), reference: "re" + tools.randomInt() });
 

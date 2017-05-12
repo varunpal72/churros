@@ -1,10 +1,11 @@
 'use strict';
 
 const suite = require('core/suite');
+const expect = require('chakram').expect;
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'tax-codes', { skip: true }, (test) => {
-  let id;
+  let id,federal_tax ;
   it(`should support GET ${test.api}`, () => {
     return cloud.get(test.api)
       .then(r => {
@@ -20,7 +21,7 @@ suite.forElement('finance', 'tax-codes', { skip: true }, (test) => {
             const validValues = r.body.filter(obj => obj.reference === `${federal_tax}`);
             expect(validValues.length).to.equal(r.body.length);
           }).should.return200OnGet();
-        return cloud.get(`${test.api}/${id}`)
+        return cloud.get(`${test.api}/${id}`);
       });
   });
 });
