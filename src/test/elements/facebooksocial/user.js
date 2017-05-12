@@ -45,18 +45,9 @@ suite.forElement('social', 'user',{ payload:statusPayload }, (test) => {
       .then(r =>cloud.delete(`${test.api}/video/${videoId}`));
   });
 
-  it.skip('should allow GET for hubs/social/user/{id}/likes DELETE hubs/social/user/likes/{likeId}   ', () => {
-    let likeId;
+  it('should allow GET for hubs/social/user/{id}/likes ', () => {
     return cloud.get(`${test.api}/${userId}/likes`)
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${userId}/likes`))
-      .then(r => {
-        if (r.body.length <= 0) {
-          return;
-        }
-        likeId = r.body[0].id;
-        return cloud.delete(`${test.api}/likes/${likeId}`);       
-      });
- 
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${userId}/likes`));
   });
 
   it('should allow Cr for hubs/social/user/{id}/status ', () => {
