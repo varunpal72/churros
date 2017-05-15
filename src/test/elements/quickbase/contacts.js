@@ -8,8 +8,8 @@ suite.forElement('db', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportCeqlSearch('id');
   test.should.supportPagination();
-  it('should create a contact and then an attachment for that id', () => {
-    let contactId, fieldId,record;
+  it('should POST contact, GET /contacts/fields and CR for attachment of that id', () => {
+    let contactId, fieldId, record;
     return cloud.post(test.api, payload)
       .then(r => contactId = r.body.id)
       .then(r => cloud.get(`${test.api}/fields`))
