@@ -71,11 +71,12 @@ const getPollerConfig = (element, instance) => {
     if (elementObj.configuration.map(conf => conf.key).includes('event.metadata')) {
       instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
+      console.log(instanceCopy.configuration['event.objects']);
     } else {
       instanceCopy.configuration['event.poller.configuration'] = r;
     }
     instanceCopy.configuration['event.vendor.type'] = 'polling';
-    instanceCopy.configuration['event.notification.callback.url'] = props.get('eventCallbackUrl');
+    instanceCopy.configuration['event.notification.callback.url'] = 'https://google.com';
     instanceCopy.configuration['event.notification.enabled'] = 'true';
     instanceCopy.configuration['event.poller.refresh_interval'] = '1';
     return instanceCopy;
@@ -102,6 +103,7 @@ const createInstance = (element, config, providerData, baseApi) => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       defaults.token(r.body.token);
+      global.instanceId = r.body.id;
       tools.addCleanUp({url: `${props.get('url')}/elements/api-v2${baseApi}/${r.body.id}`, method: 'delete', secrets: defaults.secrets()});
       return r;
     })

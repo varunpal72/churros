@@ -1,5 +1,5 @@
 {
-  "firstName": "TastyChurros1",
-  "lastName": "ChurrosTest",
-  "email": "churrosTest11.test@delete.mq"
+  "firstName": "<<name.firstName>>",
+  "lastName": "test<<name.lastName>>",
+  "email": "test<<internet.email>>"
 }

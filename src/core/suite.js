@@ -14,6 +14,7 @@ const logger = require('winston');
 const request = require('request');
 const fs = require('fs');
 const argv = require('optimist').argv;
+const faker = require('faker');
 
 
 var exports = module.exports = {};
@@ -234,13 +235,18 @@ const itPolling = (name, pay, api, options, validationCb, payload) => {
   payload = payload ? payload : pay;
   let response;
   boomGoesTheDynamite(name, () => {
-    const baseUrl = props.get('eventCallbackUrl');
+    const baseUrl = faker.fake(props.get('eventCallbackUrl'));
     const url = baseUrl + '?returnQueue';
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
     const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => expect(res.count).to.be.above(0);
     if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
     expect(baseUrl).to.exist;
-    return cloud.get(`elements/${props.getForKey(props.get('element'), 'elementId')}/metadata`)
+    const instanceId = global.instanceId;
+    const updatePayload = { configuration: { "event.notification.callback.url": baseUrl } }
+
+    return cloud.patch(`/instances/${instanceId}`, updatePayload)
+    // .then(r => console.log(r.body))
+    .then(() => cloud.get(`elements/${props.getForKey(props.get('element'), 'elementId')}/metadata`))
     .then(r => {
       const supportsPolling = r.body.events.supported && r.body.events.methods.includes('polling');
       //logs error then fails test

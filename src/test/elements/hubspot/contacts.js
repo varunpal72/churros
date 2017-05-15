@@ -2,9 +2,9 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
-const propertiesPayload = require('./assets/contactsProperties');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
+const propertiesPayload = require('./assets/contactsProperties');
 
 payload.email = tools.randomEmail();
 
