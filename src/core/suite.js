@@ -242,7 +242,7 @@ const itPolling = (name, pay, api, options, validationCb, payload) => {
     if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
     expect(baseUrl).to.exist;
     const instanceId = global.instanceId;
-    const updatePayload = { configuration: { "event.notification.callback.url": baseUrl } }
+    const updatePayload = { configuration: { "event.notification.callback.url": baseUrl } };
 
     return cloud.patch(`/instances/${instanceId}`, updatePayload)
     // .then(r => console.log(r.body))

@@ -14,7 +14,7 @@ suite.forElement('crm', 'polling', null, (test) => {
 // To test if that works run the 2 tests below both uncommented and the second should always fail and the first should pass
 // then comment the first and make sure the second fails. do same with second nut that one should pass
 
-  // test.withApi('/hubs/crm/accounts').should.supportPolling(accountsPayload);
+  test.withApi('/hubs/crm/accounts').should.supportPolling(accountsPayload);
   test.withApi('/hubs/crm/campaigns').should.supportPolling(campaignsPayload);
 
 });
