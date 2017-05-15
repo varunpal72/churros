@@ -28,7 +28,7 @@ const fromOptions = (url, options) => {
       externalAuth: options.externalAuth,
       exclude: options.exclude,
       instance: options.instance,
-      requiredFields: options.requiredFields
+      requiredFields: options.requiredFields,
       params: options.params
     });
   });
