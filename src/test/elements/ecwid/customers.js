@@ -22,7 +22,7 @@ suite.forElement('ecommerce', 'customers', (test) => {
 
   it('should support GET ${test.api}', () => {
     return cloud.get(test.api)
-      .then(r => id = r.body[0].id)
+      .then(r => id = r.body[0].id);
   });
 
   test

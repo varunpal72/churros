@@ -6,7 +6,6 @@ const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 
 suite.forElement('ecommerce', 'orders', { payload: payload}, (test) => {
-  let date;
   test.should.supportSr();
 
   it.skip('it should support PATCH', () => {  //since no post for orders, patch is skipped
