@@ -12,6 +12,6 @@
   },
   "trackQtyOnHand": false,
 
-  "name": "2005 something",
-  "sku": "SKUNUMBER"
+  "name": "<<random.word>><<random.word>>",
+  "sku": "<<random.word>><<random.word>>"
 }

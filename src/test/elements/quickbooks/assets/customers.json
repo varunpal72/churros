@@ -2,8 +2,8 @@
     "primaryEmailAddr": {
         "address": "atulb@yahoo.com"
     },
-    "familyName": "Barve2",
-    "givenName": "Atul",
+    "familyName": "<<name.lastName>>",
+    "givenName": "<<name.firstName>>",
     "title": "Mr.",
     "billAddr": {
         "postalCode": "75019",

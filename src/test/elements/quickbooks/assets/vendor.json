@@ -10,11 +10,11 @@
     "taxIdentifier": "99-5688293",
     "acctNum": "35372649",
     "title": "Mr.",
-    "givenName": "vinod",
-    "familyName": "borole",
+    "givenName": "<<name.firstName>>",
+    "familyName": "<<name.lastName>>",
     "suffix": "Sr.",
     "companyName": "borole's Auto Shop",
-    "displayName": "borole's Auto Shop",
+    "displayName": "<<name.lastName>><<name.firstName>>",
     "printOnCheckName": "borole's vinod Shop",
     "primaryPhone": {
         "freeFormNumber": "(650) 555-2342"

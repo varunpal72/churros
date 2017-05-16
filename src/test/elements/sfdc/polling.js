@@ -3,6 +3,9 @@
 const suite = require('core/suite');
 const accountsPayload = require('./assets/accounts');
 const campaignsPayload = require('./assets/campaigns');
+const contactsPayload = require('./assets/contacts');
+const leadsPayload = require('./assets/leads');
+const opportunitiesPayload = require('./assets/opportunities');
 
 suite.forElement('crm', 'polling', null, (test) => {
 // Possible issue, all pollers are hitting the same session on keiths app. Just randomize the session
@@ -15,6 +18,8 @@ suite.forElement('crm', 'polling', null, (test) => {
 // then comment the first and make sure the second fails. do same with second nut that one should pass
 
   test.withApi('/hubs/crm/accounts').should.supportPolling(accountsPayload);
-  test.withApi('/hubs/crm/campaigns').should.supportPolling(campaignsPayload);
-
+  test.withApi('/hubs/crm/campaigns').should.supportPolling(campaignsPayload); //this one should fail
+  test.withApi('/hubs/crm/contacts').should.supportPolling(contactsPayload);
+  test.withApi('/hubs/crm/leads').should.supportPolling(leadsPayload);
+  test.withApi('/hubs/crm/opportunities').should.supportPolling(opportunitiesPayload);
 });

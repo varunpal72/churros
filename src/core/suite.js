@@ -230,23 +230,41 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
 };
-const itPolling = (name, pay, api, options, validationCb, payload) => {
+const itPolling = (name, pay, api, options, validationCb, payload, resource) => {
   name = 'polling ' + api;
   payload = payload ? payload : pay;
   let response;
   boomGoesTheDynamite(name, () => {
     const baseUrl = faker.fake(props.get('eventCallbackUrl'));
+    // console.log(baseUrl);
+    // console.log(api);
     const url = baseUrl + '?returnQueue';
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
-    const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => expect(res.count).to.be.above(0);
+    const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => {
+      expect(res.count).to.be.above(0);
+      // console.log(res.data);
+      var thingy = res.data.filter(call => {
+        var datas = JSON.parse(call.data);
+        console.log(datas.message.raw.objectType);
+        console.log(resource);
+        return datas.message.raw.objectType == resource
+      })
+
+      if (resource) expect(thingy.length).to.be.above(0);
+      // console.log(thingy);
+    }
     if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
     expect(baseUrl).to.exist;
     const instanceId = global.instanceId;
     const updatePayload = { configuration: { "event.notification.callback.url": baseUrl } };
 
     return cloud.patch(`/instances/${instanceId}`, updatePayload)
-    // .then(r => console.log(r.body))
     .then(() => cloud.get(`elements/${props.getForKey(props.get('element'), 'elementId')}/metadata`))
+    .then(r => {
+      // console.log(r.body.events.polling);
+      return r
+    })
+    // return cloud.get(`elements/${props.getForKey(props.get('element'), 'elementId')}/metadata`)
     .then(r => {
       const supportsPolling = r.body.events.supported && r.body.events.methods.includes('polling');
       //logs error then fails test
@@ -274,7 +292,11 @@ const itPolling = (name, pay, api, options, validationCb, payload) => {
       });
     })
     .then(r => validate(JSON.parse(r)))))
-    .then(() => cloud.delete(`${api}/${response.id}`));
+    .then(() => cloud.delete(`${api}/${response.id}`).catch(() => {}))
+    .catch(e => {
+      cloud.delete(`${api}/${response.id}`).catch(() => {});
+      throw new Error(e);
+    })
   }, (argv.polling ? false : true) || (options ? options.skip : false));
 };
 
@@ -421,7 +443,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     * @param {Function} validate A validate funtion with `expects` to test response
     * @memberof module:core/suite.test.should
     */
-    supportPolling: (pay) => itPolling(name, payload, api, options, validationCb, pay),
+    supportPolling: (pay, res) => itPolling(name, payload, api, options, validationCb, pay, res),
     /**
      * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
      * @param {object} metadata -> headers, query string etc...

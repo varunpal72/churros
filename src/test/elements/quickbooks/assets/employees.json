@@ -11,7 +11,7 @@
         "freeFormNumber": "303-555-5555"
     },
     "ssn": "078-05-1120",
-    "familyName": "Barve33",
-    "givenName": "DanDanDan",
-    "displayName": "DanDan"
+    "familyName": "<<name.lastName>>",
+    "givenName": "<<name.firstName>>",
+    "displayName": "<<name.lastName>><<name.firstName>>"
 }
