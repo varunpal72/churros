@@ -26,7 +26,7 @@ suite.forElement('marketing', 'campaigns', (test) => {
       });
   });
 
-  it(`Should allow CRDS for ${test.api}`, () => {
+  it(`should allow CRDS for ${test.api}`, () => {
     let campaingID;
 
     return cloud.post('hubs/marketing/campaigns', payload)
@@ -35,7 +35,7 @@ suite.forElement('marketing', 'campaigns', (test) => {
       .then(r => cloud.delete(`hubs/marketing/campaigns/${campaingID}`));
   });
 
-  it(`Should allow where clause with status = sent, scheduled, or draft for ${test.api}`, () => {
+  it(`Should allow where clause with status = sent for ${test.api}`, () => {
 
 
     return cloud.withOptions(({
@@ -47,22 +47,26 @@ suite.forElement('marketing', 'campaigns', (test) => {
         expect(r).to.have.statusCode(200);
         expect(r.body).to.not.be.undefined;
         expect(r.body).to.not.be.null;
-      })
-      .then(r => cloud.withOptions(({
+      });
+  });
+  it(`Should allow where clause with status = scheduled for ${test.api}`, () => {
+    return cloud.withOptions(({
         qs: {
           where: `id = '${accountId}' and status = 'scheduled'`
         }
-      })).get('hubs/marketing/campaigns'))
+      })).get('hubs/marketing/campaigns')
       .then(r => {
         expect(r).to.have.statusCode(200);
         expect(r.body).to.not.be.undefined;
         expect(r.body).to.not.be.null;
-      })
-      .then(r => cloud.withOptions(({
+      });
+  });
+  it(`Should allow where clause with status = draft for ${test.api}`, () => {
+    return cloud.withOptions(({
         qs: {
           where: `id = '${accountId}' and status = 'draft'`
         }
-      })).get('hubs/marketing/campaigns'))
+      })).get('hubs/marketing/campaigns')
       .then(r => {
         expect(r).to.have.statusCode(200);
         expect(r.body).to.not.be.undefined;

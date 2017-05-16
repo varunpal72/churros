@@ -18,7 +18,7 @@ suite.forElement('marketing', 'lists', (test) => {
       });
   });
 
-  it(`Should allow CRUDs for ${test.api}`, () => {
+  it(`should allow CRUDs for ${test.api}`, () => {
     let listID;
     return cloud.post('hubs/marketing/lists', payload)
       .then(r => listID = r.body.id)

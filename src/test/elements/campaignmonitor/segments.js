@@ -25,7 +25,7 @@ suite.forElement('marketing', 'segments', {}, (test) => {
       });
   });
 
-  it(`Should allow CRUDS for ${test.api}`, () => {
+  it(`should allow CRUDS for ${test.api}`, () => {
     let segmentId;
 
     return cloud.post(`hubs/marketing/segments`, payload)
