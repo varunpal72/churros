@@ -2,8 +2,6 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const cloud = require('core/cloud');
-const chakram = require('chakram');
 const expect = require('chakram').expect;
 
 suite.forElement('documents', 'search', null, (test) => {
@@ -20,5 +18,5 @@ suite.forElement('documents', 'search', null, (test) => {
   test.withOptions({ qs: { path: '/Test folder' } })
     .withValidation((r) => {
       expect(r).to.have.statusCode(400);
-    })
+    });
 });
