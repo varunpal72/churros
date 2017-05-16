@@ -90,13 +90,13 @@ const customerGroups = () => ({
 });
 
 suite.forElement('ecommerce', 'coupons', (test) => {
-  let ruleId,customerGroupId;
+  let ruleId, customerGroupId;
   it(`should allow CD for /hubs/ecommerce/coupons-generate`, () => {
-    let  couponCodes, autoGen = true;
+    let couponCodes, autoGen = true;
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r => ruleId = r.body.rule_id)
+      .then(r => ruleId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-generate`, couponGenerate(ruleId)))
       .then(r => couponCodes = r.body)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-delete-by-codes`, deleteByCodes(couponCodes)))
@@ -109,31 +109,31 @@ suite.forElement('ecommerce', 'coupons', (test) => {
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r =>  ruleId = r.body.rule_id)
+      .then(r => ruleId = r.body.id)
       .then(r => cloud.cruds(test.api, couponPost(ruleId)))
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
   test
-   .withName(`should support searching ${test.api} by ruleId`)
-   .withOptions({ qs: { where: `rule_id='${ruleId}'`} })
-   .withValidation((r) => {
-   expect(r).to.have.statusCode(200);
-   const validValues = r.body.filter(obj => obj.rule_id === '${ruleId}');
-   expect(validValues.length).to.equal(r.body.length);
-   }).should.return200OnGet();
+    .withName(`should support searching ${test.api} by ruleId`)
+    .withOptions({ qs: { where: `rule_id='${ruleId}'` } })
+    .withValidation((r) => {
+      expect(r).to.have.statusCode(200);
+      const validValues = r.body.filter(obj => obj.rule_id === '${ruleId}');
+      expect(validValues.length).to.equal(r.body.length);
+    }).should.return200OnGet();
 
   it(`should allow POST for /hubs/ecommerce/coupons/deleteByIds`, () => {
-    let couponId,autoGen = false;
+    let couponId, autoGen = false;
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r => ruleId = r.body.rule_id)
+      .then(r => ruleId = r.body.id)
       .then(r => cloud.post(`${test.api}`, couponPost(ruleId)))
       .then(r => couponId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-delete-by-ids`, deleteByIds(couponId)))
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
-    test.should.supportPagination();
+  test.should.supportPagination();
 });

@@ -4,25 +4,8 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
+const payload = require(`./assets/categories`);
 
-const payload = () => ({
-  "category": {
-     "name": tools.random(),
-    "is_active": true,
-    "position": 1,
-    "level": 1,
-    "children": "",
-    "path": "1/2",
-    "available_sort_by": [],
-    "include_in_menu": true,
-    "custom_attributes": [
-      {
-        "attribute_code": "display_mode",
-        "value": "PRODUCTS"
-      }
-    ]
-  }
-});
 const categoryProduct = (categoryId, position, sku) => ({
   "productLink": {
     "sku": sku,
@@ -36,30 +19,31 @@ const categoryMove = (parentId) => ({
 });
 const product = (attributeSetId) => ({
   "product": {
-      "attribute_set_id": attributeSetId,
-      "name": tools.random(),
-      "price": 300,
-      "sku": "ce"+tools.randomInt(),
-      "status": 1,
-      "type_id": "simple",
-      "visibility": 4,
-    "custom_attributes": [
-        {
-          "attribute_code": "description",
-          "value": tools.random()
-        }]
-    }});
-suite.forElement('ecommerce', 'categories', { payload: payload() }, (test) => {
-  let frontendInput='text';
+    "attribute_set_id": attributeSetId,
+    "name": tools.random(),
+    "price": 300,
+    "sku": "ce" + tools.randomInt(),
+    "status": 1,
+    "type_id": "simple",
+    "visibility": 4,
+    "custom_attributes": [{
+      "attribute_code": "description",
+      "value": tools.random()
+    }]
+  }
+});
+suite.forElement('ecommerce', 'categories', { payload: payload }, (test) => {
+  let frontendInput = 'text',
+    categoryId;
   test.should.supportCruds();
   test
-   .withName(`should support searching ${test.api} by depth`)
-   .withOptions({ qs: { where: 'depth = 1' } })
-   .withValidation((r) => {
-   expect(r).to.have.statusCode(200);
-   const validValues = r.body.filter(obj => obj.level === 1);
-   expect(validValues.length).to.equal(r.body.length);
-   }).should.return200OnGet();
+    .withName(`should support searching ${test.api} by depth`)
+    .withOptions({ qs: { where: 'depth = 1' } })
+    .withValidation((r) => {
+      expect(r).to.have.statusCode(200);
+      const validValues = r.body.filter(obj => obj.level === 1);
+      expect(validValues.length).to.equal(r.body.length);
+    }).should.return200OnGet();
 
   it(`should allow SR for /hubs/ecommerce/categories-attributes`, () => {
     return cloud.get(`/hubs/ecommerce/categories-attributes`)
@@ -67,22 +51,22 @@ suite.forElement('ecommerce', 'categories', { payload: payload() }, (test) => {
   });
 
   test
-   .withName(`should support searching /hubs/ecommerce/categories-attributes by frontend_input`)
-   .withOptions({ qs: { where: `frontend_input = '${frontendInput}'` } })
-   .withApi(`/hubs/ecommerce/categories-attributes`)
-   .withValidation((r) => {
-   expect(r).to.have.statusCode(200);
-   const validValues = r.body.filter(obj => obj.frontend_input === 'text');
-   expect(validValues.length).to.equal(r.body.length);
-   }).should.return200OnGet();
+    .withName(`should support searching /hubs/ecommerce/categories-attributes by frontend_input`)
+    .withOptions({ qs: { where: `frontend_input = '${frontendInput}'` } })
+    .withApi(`/hubs/ecommerce/categories-attributes`)
+    .withValidation((r) => {
+      expect(r).to.have.statusCode(200);
+      const validValues = r.body.filter(obj => obj.frontend_input === 'text');
+      expect(validValues.length).to.equal(r.body.length);
+    }).should.return200OnGet();
 
   it(`should allow GET for /hubs/ecommerce/categories/attributes/{attributeCode}/options`, () => {
     return cloud.get(`/hubs/ecommerce/categories-attributes`)
       .then(r => cloud.get(`/hubs/ecommerce/categories-attributes/${r.body[0].attribute_code}/options`));
   });
   it(`should allow PATCH for /hubs/ecommerce/categories/{id}/move`, () => {
-    let categoryId, parentId;
-    return cloud.post(`/hubs/ecommerce/categories`, payload())
+    let parentId;
+    return cloud.post(`/hubs/ecommerce/categories`, payload)
       .then(r => categoryId = r.body.id)
       .then(r => cloud.get(`/hubs/ecommerce/categories/${categoryId}`))
       .then(r => parentId = r.body.parent_id)
@@ -90,8 +74,8 @@ suite.forElement('ecommerce', 'categories', { payload: payload() }, (test) => {
       .then(r => cloud.delete(`/hubs/ecommerce/categories/${categoryId}`));
   });
   it(`should allow CUDS for /hubs/ecommerce/categories/{id}/products`, () => {
-    let categoryId, position, sku, attributeSetId;
-    return cloud.post(`/hubs/ecommerce/categories`, payload())
+    let position, sku, attributeSetId;
+    return cloud.post(`/hubs/ecommerce/categories`, payload)
       .then(r => categoryId = r.body.id)
       .then(r => cloud.get(`/hubs/ecommerce/categories/${categoryId}`))
       .then(r => position = r.body.position)

@@ -7,19 +7,19 @@ const expect = require('chakram').expect;
 
 const product = (attributeSetId) => ({
   "product": {
-      "attribute_set_id": attributeSetId,
-      "name": tools.random(),
-      "price": 300,
-      "sku": "ce"+tools.randomInt(),
-      "status": 1,
-      "type_id": "simple",
-      "visibility": 4,
-    "custom_attributes": [
-        {
-          "attribute_code": "description",
-          "value": tools.random()
-        }]
-    }});
+    "attribute_set_id": attributeSetId,
+    "name": tools.random(),
+    "price": 300,
+    "sku": "ce" + tools.randomInt(),
+    "status": 1,
+    "type_id": "simple",
+    "visibility": 4,
+    "custom_attributes": [{
+      "attribute_code": "description",
+      "value": tools.random()
+    }]
+  }
+});
 
 
 const productsStockItems = () => ({
@@ -83,18 +83,13 @@ suite.forElement('ecommerce', 'stock-items', (test) => {
       .then(r => cloud.put(`/hubs/ecommerce/products/${sku}/stockItems/${itemId}`, productsStockItems()))
       .then(r => cloud.delete(`/hubs/ecommerce/products/${sku}`));
   });
-  it(`should allow Pagination for ${test.api}/low-stock`, () => {
-    return cloud.withOptions({ qs: { where: `scopeId = 1 and qty = 1` }}).get(`${test.api}/low-stock`)
-    .then(r => test.should.supportPagination());
-  });
   test
-   .withName(`should support searching  ${test.api}/low-stock`)
-   .withOptions({ qs: { where: `scopeId = 1 and qty = 0`} })
-   .withApi(`${test.api}/low-stock`)
-   .withValidation((r) => {
-   expect(r).to.have.statusCode(200);
-   const validValues = (r.body.filter(obj => obj.qty === 0));
-   expect(validValues.length).to.equal(r.body.length);
-   }).should.return200OnGet();
-
+    .withName(`should support searching  ${test.api}/low-stock`)
+    .withOptions({ qs: { where: `scopeId = 1 and qty = 0` } })
+    .withApi(`${test.api}/low-stock`)
+    .withValidation((r) => {
+      expect(r).to.have.statusCode(200);
+      const validValues = (r.body.filter(obj => obj.qty === 0));
+      expect(validValues.length).to.equal(r.body.length);
+    }).should.return200OnGet();
 });

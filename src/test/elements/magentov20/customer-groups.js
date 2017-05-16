@@ -20,7 +20,7 @@ suite.forElement('ecommerce', 'customer-groups', { payload: payload() }, (test) 
       .then(r => cloud.get(`/hubs/ecommerce/customer-groups-default/${r.body.id}`));
   });
   it(`should allow GET for ${test.api}/{id}/permissions`, () => {
-    return cloud.get(`${test.api}`)
+    return cloud.get(test.api)
       .then(r => cloud.get(`${test.api}/${r.body[0].id}/permissions`));
   });
   test.should.supportPagination();
