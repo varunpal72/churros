@@ -1,5 +1,4 @@
 {
- 
   "Oppo_SCRMIsCrossSell": false,
   "oppo_SCRMwinner": null,
   "Oppo_Total": null,
@@ -9,7 +8,7 @@
   "Oppo_Forecast_CID": 2,
   "oppo_NoDiscAmtSum_CID": null,
   "oppo_TotalOrders": 0,
-  "Oppo_Note": "After the pilot this is the next step",
+  "Oppo_Note": "<<random.words>>",
   "Oppo_PrimaryPersonId": 27,
   "Oppo_Status": "In Progress",
   "oppo_targetclose": "2017-06-27T23:00:00Z",
@@ -18,7 +17,7 @@
   "Oppo_Total_CID": 2,
   "Oppo_Source": "Letter",
   "Oppo_Priority": "Normal",
-  "Oppo_Description": "Phase 2: 30 User rollout",
+  "Oppo_Description": "<<random.words>>",
   "Oppo_product": "ExpenseCheck",
   "oppo_smssent": null,
   "oppo_secterr": -2130706423,

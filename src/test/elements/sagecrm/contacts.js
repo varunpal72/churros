@@ -1,14 +1,12 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/contacts');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 const chakram = require('chakram');
-const expect = require('chakram').expect;
-const build = (overrides) => Object.assign({}, payload, overrides);
-const contactPayload = build({ Pers_LastName: tools.random(), Pers_FirstName: tools.random(), Pers_Title: tools.random() });
+const expect = chakram.expect;
 
-suite.forElement('crm', 'contacts', { payload: contactPayload }, (test) => {
+suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
@@ -18,7 +16,7 @@ suite.forElement('crm', 'contacts', { payload: contactPayload }, (test) => {
   };
   test.withOptions(options).should.supportCruds();
   test.withOptions(options).should.supportCruds(chakram.put);
-  test.should.supportNextPagePagination(1);
+  test.should.supportNextPagePagination(2);
   test.should.supportCeqlSearch('Pers_PersonId');
   test.withName(`should support searching ${test.api} by contact first name`)
     .withOptions({ qs: { where: `Pers_FirstName ='Test'` } })
@@ -27,5 +25,4 @@ suite.forElement('crm', 'contacts', { payload: contactPayload }, (test) => {
       const validValues = r.body.filter(obj => obj.Pers_FirstName = 'Test');
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
-
 });

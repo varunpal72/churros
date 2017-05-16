@@ -1,4 +1,4 @@
-{  
+{
   "Pers_SecTerr": -2147483638,
   "Pers_Gender": "",
   "Pers_LibraryDir": null,
@@ -11,19 +11,20 @@
   "Pers_IntForeignID": null,
   "pers_Website": null,
   "Pers_IntId": null,
-  "Pers_Title": "VP Systems Development",
+  "Pers_Title": "<<name.jobTitle>>",
   "Pers_ChannelId": null,
   "Pers_PrimaryAddressId": 25,
   "Pers_intlastsyncdate": null,
-  "Pers_FirstName": "Test",
+  "Pers_FirstName": "<<name.firstName>>",
   "Pers_TitleCode": "VP",
   "pers_source": null,
   "Pers_WorkflowID": null,
   "pers_promote": false,
   "Pers_OptOut": false,
   "Pers_ConflictResDate": null,
-  "Pers_LastName": "Andrews",
+  "Pers_LastName": "<<name.lastName>>",
   "Pers_CompanyId": 18,
   "Pers_AccountId": null,
   "pers_status": null,
-  "Pers_Suffix": ""}
+  "Pers_Suffix": ""
+}

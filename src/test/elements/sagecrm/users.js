@@ -13,5 +13,4 @@ suite.forElement('crm', 'users', null, (test) => {
       const validValues = r.body.filter(obj => obj.user_title = 'Test');
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
-
 });
