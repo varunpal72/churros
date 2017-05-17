@@ -219,6 +219,6 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(() => cloud.get('hubs/crap/account?pageSize=1'))
       .then(r => expect(r.body).to.deep.equal(withCorrectHub))
       .then(() => cloud.get('account?pageSize=1'))
-      .then(r => expect(r.body).to.deep.equal(withCorrectHub))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub));
   });
 });
