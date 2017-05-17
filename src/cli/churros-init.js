@@ -57,7 +57,7 @@ const saveSauce = (answers) => {
       github.authenticate({ type: 'oauth', token: token});
       github.repos.getContent({ user: user, repo: repo, path: path }, function(err, resp) {
         if (err) reject('Error writing sauce template from repo');
-        fs.writeFileSync(to, new Buffer(resp.content, 'base64').toString('ascii'));
+        fs.writeFileSync(to, new Buffer(resp.content, 'base64').toString('utf8'));
         resolve({ frm: frm, to: to });
       });
     } else {

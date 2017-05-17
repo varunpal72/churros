@@ -13,5 +13,5 @@
     "ssn": "078-05-1120",
     "familyName": "<<name.lastName>>",
     "givenName": "<<name.firstName>>",
-    "displayName": "<<name.lastName>><<name.firstName>>"
+    "displayName": "<<name.firstName>> <<name.lastName>>"
 }

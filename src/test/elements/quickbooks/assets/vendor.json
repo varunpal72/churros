@@ -1,4 +1,5 @@
 {
+  "middleName" : "Rooney",
     "billAddr": {
         "line1": "borole's Auto Shop",
         "line2": "vinod borole",
@@ -12,10 +13,10 @@
     "title": "Mr.",
     "givenName": "<<name.firstName>>",
     "familyName": "<<name.lastName>>",
-    "suffix": "Sr.",
-    "companyName": "borole's Auto Shop",
-    "displayName": "<<name.lastName>><<name.firstName>>",
-    "printOnCheckName": "borole's vinod Shop",
+    "suffix": "Roayls",
+    "companyName": "<<company.companyName>>",
+    "displayName": "<<company.companyName>>",
+    "printOnCheckName": "<<company.companyName>>",
     "primaryPhone": {
         "freeFormNumber": "(650) 555-2342"
     },
