@@ -39,16 +39,24 @@ suite.forPlatform('docs', {}, () => {
       return Promise.all(Array.from(elementIds).map(elementId => {
         return cloud.get(`/elements/${elementId}/docs`)
         .then(r => r.body)
-        .then(s => swaggerParser.validate(s, (err, api) => {
-            if(err) { throw new Error(`Docs for element '${elementId}' are invalid Swagger: ${err}`); }
-          }));
+        .then(s => {
+          return new Promise(function(resolve, reject) {
+            swaggerParser.validate(s, (err, api) => {
+              if (err) {
+                reject(err);
+              }
+              resolve();
+            });
+          });
+        });
       }));
   });
 
-  it('should return proper swagger json for AWS provider', (done) => {
-    return cloud.get(`/docs/crm?provider=aws`, () => {
-      expect(r.body).to.not.be.empty;
-      expect(r.body.paths['/accounts'].get.parameters[1].name).to.equal('x-api-key');
+  it('should return proper swagger json for AWS provider', () => {
+    return cloud.get(`/docs/crm?provider=aws`)
+    .then(r => {
+        expect(r.body).to.not.be.empty;
+        expect(r.body.paths['/accounts'].get.parameters[1].name).to.equal('x-api-key');
     });
   });
 });
