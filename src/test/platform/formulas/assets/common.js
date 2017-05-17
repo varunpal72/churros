@@ -182,8 +182,8 @@ const testWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, e
           fiIds.push(fiId);
         })
         .then(() => kickOffDatFormulaCb(fId, fiId))
-        .then(() => tools.wait.upTo(90000).for(allExecutionsCompleted(fId, fiId, numEs, numSevs)))
-        .then(() => tools.wait.upTo(90000).for(fetchAndValidateExecutions(fId, fiId)));
+        .then(() => tools.wait.upTo(120000).for(allExecutionsCompleted(fId, fiId, numEs, numSevs)))
+        .then(() => tools.wait.upTo(120000).for(fetchAndValidateExecutions(fId, fiId)));
     })))
     .then(() => tools.wait.upTo(10000).for(fetchAndValidateInstances(fId)))
     .then(() => Promise.all(fiIds.map(fiId => deleteFormulaInstance(fId, fiId))))
