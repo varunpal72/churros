@@ -37,32 +37,29 @@ const crudsInstance = (baseUrl) => {
 
 const updateInstanceWithReprovision = (baseUrl, schema) => {
   let id;
-  return provisioner.create('shopify')
+  return provisioner.create('closeio')
     .then(r => id = r.body.id)
     .then(r => cloud.get(`${baseUrl}/${id}`, (r) => {
       expect(r).to.have.schemaAnd200(schema);
       expect(r.body.configuration).to.not.be.empty;
-      expect(r.body.configuration.password).to.equal("********");
-      expect(r.body.configuration.username).to.equal(props.getForKey('shopify', 'username'));
+      expect(r.body.configuration.username).to.equal(props.getForKey('closeio', 'username'));
     }))
-    .then(r => provisioner.partialOauth('shopify'))
+    .then(r => provisioner.partialOauth('closeio'))
     .then(code =>
-      cloud.put(`${baseUrl}/${id}`, genInstance('shopify', { name: 'updated-instance', providerData: { code: code } }), r => {
+      cloud.put(`${baseUrl}/${id}`, genInstance('closeio', { name: 'updated-instance', providerData: { code: code } }), r => {
         expect(r.body.configuration).to.not.be.empty;
-        expect(r.body.configuration.password).to.equal("********");
-        expect(r.body.configuration.username).to.equal(props.getForKey('shopify', 'username'));
+        expect(r.body.configuration.username).to.equal(props.getForKey('closeio', 'username'));
         expect(r.body).to.not.have.key('providerData');
       }))
-    .then(r => cloud.get(`/hubs/ecommerce/orders`))
+    .then(r => cloud.get(`/hubs/crm/accounts`))
     .then(r => expect(r.body).to.be.instanceof(Array))
-    .then(r => provisioner.partialOauth('shopify'))
+    .then(r => provisioner.partialOauth('closeio'))
     .then(code => cloud.patch(`${baseUrl}/${id}`, { name: 'updated-instance', providerData: { code: code } }, r => {
       expect(r.body.configuration).to.not.be.empty;
-      expect(r.body.configuration.password).to.equal("********");
-      expect(r.body.configuration.username).to.equal(props.getForKey('shopify', 'username'));
+      expect(r.body.configuration.username).to.equal(props.getForKey('closeio', 'username'));
       expect(r.body).to.not.have.key('providerData');
     }))
-    .then(r => cloud.get(`/hubs/ecommerce/orders`))
+    .then(r => cloud.get(`/hubs/crm/accounts`))
     .then(r => expect(r.body).to.be.instanceof(Array))
     .then(r => provisioner.delete(id, baseUrl));
 };
@@ -168,15 +165,15 @@ suite.forPlatform('elements/instances', opts, (test) => {
       return;
     }
     let instance, clone;
-    return provisioner.create('shopify')
+    return provisioner.create('closeio')
       .then(r => instance = r.body)
-      .then(r => cloud.post('elements/shopify/clone'))
+      .then(r => cloud.post('elements/closeio/clone'))
       .then(r => clone = r.body)
       .then(r => cloud.patch(`instances/${instance.id}`, { element: { id: clone.id } })
         .then(r => {
           expect(r.body.element.id).to.equal(clone.id);
         }))
-      .then(r => provisioner.delete(instance.id, 'elements/shopify/instances'))
+      .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'))
       .then(r => cloud.delete(`elements/${clone.key}`));
   });
 
