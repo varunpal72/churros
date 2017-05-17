@@ -24,7 +24,7 @@ suite.forElement('crm', 'contacts', { payload: gen() }, (test) => {
   });
 
   const payload = () => cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' }).then(r =>  gen({ lead_id: r.body.id}));
-  test.should.supportPolling(payload);
+  test.should.supportPolling(payload, 'contacts');
 
   test.should.supportPagination();
   test.should.return404OnGet(-1);
