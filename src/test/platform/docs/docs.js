@@ -45,11 +45,10 @@ suite.forPlatform('docs', {}, () => {
       }));
   });
 
-  it('should return proper swagger json for AWS provider', () => {
-    return cloud.get(`/docs/crm?provider=aws`)
-    .then(r => {
-        expect(r.body).to.not.be.empty;
-        expect(r.body.paths['/accounts'].get.parameters[1].name).to.equal('x-api-key');
+  it('should return proper swagger json for AWS provider', (done) => {
+    return cloud.get(`/docs/crm?provider=aws`, () => {
+      expect(r.body).to.not.be.empty;
+      expect(r.body.paths['/accounts'].get.parameters[1].name).to.equal('x-api-key');
     });
   });
 });
