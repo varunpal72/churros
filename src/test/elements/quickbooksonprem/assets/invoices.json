@@ -1,73 +1,74 @@
 {
-  "ClassRef": {
-    "ListID": "60001-1019495266"
-  },
-  "InvoiceLineRet": [{
-      "Desc": "Blueprints (by hour)",
-      "ClassRef": {
-        "ListID": "60001-1019495266"
+  "InvoiceLineRet": [
+    {
+      "Desc": "dsh",
+      "SalesTaxCodeRef": {
+        "FullName": "Non"
       },
-      "Rate": "100.00",
-      "Amount": "1000.00",
-      "Quantity": "10",
+      "Rate": "5.00",
+      "Amount": "15.00",
+      "Quantity": "3",
       "ItemRef": {
-        "ListID": "670004-1044572237"
+        "FullName": "Deposit"
       }
     },
     {
-      "Desc": "Microwave - Appliance",
-      "ClassRef": {
-        "ListID": "60001-1019495266"
+      "Desc": "CA sales tax, San Tomas County",
+      "SalesTaxCodeRef": {
+        "FullName": "Non"
       },
-      "Rate": "222",
-      "Amount": "222.00",
-      "Quantity": "1",
+      "Rate": "0",
+      "Amount": "0.00",
       "ItemRef": {
-        "ListID": "670004-1044572237"
-      }
-    },
-    {
-      "Desc": "Plumbing fixtures - Bath - Materials",
-      "ClassRef": {
-        "ListID": "40003-1046373278"
-      },
-      "Rate": "58.74",
-      "Amount": "58.74",
-      "Quantity": "1",
-      "ItemRef": {
-        "ListID": "670004-1044572237"
+        "FullName": "San Tomas"
       }
     }
   ],
   "IsFinanceCharge": "false",
   "IsToBeEmailed": "false",
   "BillAddress": {
-    "Addr1": "Anabel Vasquez",
-    "Addr2": "5601 Legacy Parkway",
+    "Addr1": "3848 Q. St.",
     "State": "CA",
-    "PostalCode": "09402",
-    "City": "San Mateo"
+    "PostalCode": "95050",
+    "City": "San Jose"
   },
+  "SalesTaxTotal": "0.00",
   "ShipAddress": {
-    "Addr1": "Anabel Vasquez",
-    "Addr2": "5601 Legacy Parkway",
+    "Addr1": "3848 Q. St.",
     "State": "CA",
-    "PostalCode": "09402",
-    "City": "San Mateo"
+    "PostalCode": "95050",
+    "City": "San Jose"
   },
-  "TermsRef": {
-    "ListID": "20000-898307885"
+  "IsToBePrinted": "true",
+  "DueDate": "2011-06-17",
+  "ShipAddressBlock": {
+    "Addr1": "3848 Q. St.",
+    "Addr2": "San Jose, CA 95050"
   },
-  "IsToBePrinted": "false",
-  "RefNumber": "99912",
+  "IsPending": "false",
+  "SalesTaxPercentage": "0.00",
+  "TxnNumber": "893",
+  "ShipMethodRef": {
+    "FullName": "UPS"
+  },
+  "BillAddressBlock": {
+    "Addr1": "3848 Q. St.",
+    "Addr2": "San Jose, CA 95050"
+  },
+  "BalanceRemaining": "15.00",
+  "RefNumber": "rg",
+  "TxnDate": "2011-06-17",
+  "AppliedAmount": "0.00",
+  "Subtotal": "15.00",
+  "ShipDate": "2011-06-17",
+  "IsPaid": "false",
   "ARAccountRef": {
-    "ListID": "50001-896816252"
+    "FullName": "Accounts Receivable"
   },
   "CustomerRef": {
-    "ListID": "440001-1044573108"
+    "FullName": "Blue, Dale"
   },
   "TemplateRef": {
-    "ListID": "10000-896814306"
-  },
-  "Memo": "Basement Remodel NEw Invoice - Atul"
+    "FullName": "Intuit Service Invoice"
+  }
 }
