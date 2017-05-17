@@ -1,5 +1,5 @@
 {
   "firstName": "<<name.firstName>>",
-  "lastName": "test<<name.lastName>>",
-  "email": "test<<internet.email>>"
+  "lastName": "<<name.lastName>>",
+  "email": "<<internet.email>>"
 }

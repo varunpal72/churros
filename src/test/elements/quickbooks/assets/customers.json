@@ -1,6 +1,7 @@
 {
+  "displayName" : "<<name.firstName>> <<name.lastName>>",
     "primaryEmailAddr": {
-        "address": "atulb@yahoo.com"
+        "address": "temp@ce.com"
     },
     "familyName": "<<name.lastName>>",
     "givenName": "<<name.firstName>>",

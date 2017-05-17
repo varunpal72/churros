@@ -1,6 +1,6 @@
 {
-  "name": "<<company.companyName>>",
+  "name": "<<commerce.department>>",
   "active": true,
   "subDepartment": false,
-  "fullyQualifiedName": "<<company.companyName>>"
+  "fullyQualifiedName": "<<commerce.department>>"
 }
