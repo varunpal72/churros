@@ -461,7 +461,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.className('primary'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
-    case 'sageonev3':
+    case 'sageone':
       browser.manage().deleteAllCookies();
       browser.get(r.body.oauthUrl);
       browser.wait(() => browser.isElementPresent(webdriver.By.id('usflag')), 5000)
