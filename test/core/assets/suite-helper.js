@@ -137,6 +137,11 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(404, (uri, requestBody) => {
       return { message: 'No foo found with the given ID' };
     })
+    .patch('/instances/123')
+    .reply(200, (uri, requestBody) => {
+      requestBody.id = 123;
+      return requestBody;
+    })
     .put('/foo/123')
     .reply(200, (uri, requestBody) => {
       requestBody.id = 123;
@@ -170,7 +175,12 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .post('/foo/polling')
     .reply(200, (uri, requestBody) => {
       setInterval(() => {
-        request(props.get('eventCallbackUrl'), (err, res, body) => {});
+        const opts = {
+          method: 'POST',
+          uri: props.get('eventCallbackUrl'),
+          body: '{"message": {"raw": {"objectType": "tests"}}}'
+        };
+        request(opts, (err, res, body) => {});
       }, 1000);
       return genPayload({ id: 123 });
     });

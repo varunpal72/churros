@@ -15,7 +15,6 @@ const paymentMethodsPayload = tools.requirePayload(`${__dirname}/assets/payment-
 const paymentsPayload = require('./assets/payments');
 const productsPayload = tools.requirePayload(`${__dirname}/assets/products.json`);
 const purchaseOrdersPayload = require('./assets/purchase-orders');
-const purchasesPayload = require('./assets/purchases');
 const salesReceiptsPayload = require('./assets/sales-receipts');
 const timeActivitiesPayload = require('./assets/time-activities');
 const vendorCreditsPayload = require('./assets/vendor-credits');

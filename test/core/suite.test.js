@@ -2,6 +2,7 @@
 
 require('core/assertions');
 const suite = require('core/suite');
+const props = require('core/props');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const helper = require('./assets/suite-helper');
@@ -28,6 +29,7 @@ describe('suite', () => {
       baseUrl: baseUrl,
       headers: { Authorization: auth }
     });
+    props.set('eventCallbackUrl', 'https://knappkeith.pythonanywhere.com/request/churrosTest/');
   });
 
   /** Before each, reset the nock endpoints...have to do it beforeEach because: https://github.com/pgte/nock#specifying-hostname */
@@ -105,10 +107,10 @@ describe('suite', () => {
     test
       .withApi('/foo/pagination')
       .should.supportPagination();
-    // props.setForKey('myelement', 'elementId', '123');
+
     test
       .withApi('/foo/polling')
-      .should.supportPolling();
+      .should.supportPolling(null, 'tests');
     test
     .withApi('/foo/pagination')
     .should.supportPagination('id');

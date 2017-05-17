@@ -9,9 +9,9 @@ const opportunitiesPayload = require('./assets/opportunities');
 const tasksPayload = require('./assets/tasks');
 
 suite.forElement('crm', 'polling', null, (test) => {
-  test.withApi('/hubs/crm/accounts').should.supportPolling(accountsPayload);
-  test.withApi('/hubs/crm/contacts').should.supportPolling(contactsPayload);
-  test.withApi('/hubs/crm/leads').should.supportPolling(leadsPayload);
-  test.withApi('/hubs/crm/opportunities').should.supportPolling(opportunitiesPayload);
-  test.withApi('/hubs/crm/tasks').should.supportPolling(tasksPayload);
+  test.withApi('/hubs/crm/accounts').should.supportPolling(accountsPayload, 'accounts');
+  test.withApi('/hubs/crm/contacts').should.supportPolling(contactsPayload, 'contacts');
+  test.withApi('/hubs/crm/leads').should.supportPolling(leadsPayload, 'leads');
+  test.withApi('/hubs/crm/opportunities').should.supportPolling(opportunitiesPayload, 'opportunities');
+  test.withApi('/hubs/crm/tasks').should.supportPolling(tasksPayload, 'tasks');
 });

@@ -71,7 +71,6 @@ const getPollerConfig = (element, instance) => {
     if (elementObj.configuration.map(conf => conf.key).includes('event.metadata')) {
       instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
-      console.log(instanceCopy.configuration['event.objects']);
     } else {
       instanceCopy.configuration['event.poller.configuration'] = r;
     }
