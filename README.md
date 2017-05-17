@@ -62,7 +62,7 @@ Lastly, if you don't have a personal ngrok account, you'll need to signup for a 
 It is worth taking some time to familiarize yourself with the `churros` CLI.  This CLI can run tests, help setup new test suites, and add/view properties that are needed in order to run certain suites.  Run `churros help` and dig through some of the different sub-commands that are currently available.  To see some examples of the most common command, `churros test`, continue on below.
 
 ## API Docs
-For full API docs, see the API docs [here](http://cloud-elements.github.io/churros).
+For full API docs, see the API docs [here](http://cloud-elements.github.io/churros/).
 
 ## Examples
 
