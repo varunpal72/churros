@@ -3,33 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const payload = {
-  "attributes": {
-    "accountLocked": true,
-    "canModifyEmailSignature": true,
-    "forcePasswordChange": true,
-    "passwordNeverExpires": true,
-    "permanentlyDisabled": true,
-    "staffAssignmentDisabled": true,
-    "viewsReportsDisabled": true
-  },
-  "login": tools.random(),
-  "newPassword": tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10) + "@Abc123",
-  "name": {
-    "last": tools.random(),
-    "first": tools.random()
-  },
-  "profile": {
-    "id": {
-      "id": 3
-    }
-  },
-  "staffGroup": {
-    "id": {
-      "id": 100395
-    }
-  }
-};
+const payload = require('./assets/contacts');
 
 suite.forElement('helpdesk', 'contacts', (test) => {
   const updatePayload = {
