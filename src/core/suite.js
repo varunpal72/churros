@@ -246,7 +246,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource) => 
         return datas.message.raw.objectType === resource;
       });
 
-      if (resource) expect(thingy.length).to.be.above(0);
+      if (resource) expect(thingy).to.have.length.above(0);
     };
     if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
     expect(baseUrl).to.exist;

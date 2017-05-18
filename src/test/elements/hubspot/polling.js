@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const accountsPayload = require('./assets/accounts');
+const accountsPayload = tools.requirePayload(`${__dirname}/assets/accounts.json`);
 const contactsPayload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 suite.forElement('marketing', 'polling', null, (test) => {
