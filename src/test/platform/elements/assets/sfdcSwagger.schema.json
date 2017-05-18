@@ -567,8 +567,8 @@
             }
           }
         },
-        "/accounts/{accountId}": {
-          "id": "/accounts/{accountId}",
+        "/accounts/{id}": {
+          "id": "/accounts/{id}",
           "type": "object",
           "properties": {
             "delete": {
@@ -1755,8 +1755,8 @@
             }
           }
         },
-        "/myaccounts/{accountId}": {
-          "id": "/myaccounts/{accountId}",
+        "/myaccounts/{id}": {
+          "id": "/myaccounts/{id}",
           "type": "object",
           "properties": {
             "patch": {
@@ -2389,9 +2389,9 @@
       },
       "required": [
         "/accounts",
-        "/accounts/{accountId}",
+        "/accounts/{id}",
         "/myaccounts",
-        "/myaccounts/{accountId}"
+        "/myaccounts/{id}"
       ]
     },
     "host": {

@@ -67,14 +67,14 @@ const updateInstanceWithReprovision = (baseUrl, schema) => {
 const opts = { schema: instanceSchema };
 
 suite.forPlatform('elements/instances', opts, (test) => {
-  let sfdcId;
+  let closeioId;
   before(() => {
-    return provisioner.create('sfdc')
-      .then(r => sfdcId = r.body.id);
+    return provisioner.create('closeio')
+      .then(r => closeioId = r.body.id);
   });
 
   after(() => {
-    return sfdcId ? provisioner.delete(sfdcId) : true;
+    return closeioId ? provisioner.delete(closeioId) : true;
   });
 
   it('should support using filter.response.nulls config to filter out or display nulls', () => {
@@ -92,16 +92,17 @@ suite.forPlatform('elements/instances', opts, (test) => {
         .then(r => expect(r.length > 0).to.equal(shouldHaveNulls));
     };
 
-    let configuration;
+    let configuration, sfdcId;
 
-    return cloud.get(`/instances/${sfdcId}/configuration`)
+    return provisioner.create('sfdc')
+      .then(r => sfdcId = r.body.id)
+      .then(() => cloud.get(`/instances/${sfdcId}/configuration`))
       .then(r => validate(r))
       .then(r => {
         configuration = r;
         expect(configuration.propertyValue).to.equal('true');
       })
       .then(r => validateNullsPresent(false))
-
       .then(r => cloud.patch(`/instances/${sfdcId}/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'false' })))
       .then(r => cloud.get(`/instances/${sfdcId}/configuration/${r.body.id}`))
       .then(r => expect(r.body.propertyValue).to.equal('false'))
@@ -128,9 +129,9 @@ suite.forPlatform('elements/instances', opts, (test) => {
   it('should support update with reprovision by key', () => updateInstanceWithReprovision('/instances', instanceSchema));
 
   it('should support get instance specific docs', () => {
-    return cloud.post(`instances/${sfdcId}/objects/myaccounts/definitions`, objDefPayload)
-      .then(r => cloud.post(`instances/${sfdcId}/transformations/myaccounts`, transformationPayload))
-      .then(r => cloud.get(`instances/${sfdcId}/docs`, sfdcSwaggerSchema));
+    return cloud.post(`instances/${closeioId}/objects/myaccounts/definitions`, objDefPayload)
+      .then(r => cloud.post(`instances/${closeioId}/transformations/myaccounts`, transformationPayload))
+      .then(r => cloud.get(`instances/${closeioId}/docs`, sfdcSwaggerSchema));
   });
 
   it('should support updating the configuration for an element instance', () => {
@@ -139,10 +140,10 @@ suite.forPlatform('elements/instances', opts, (test) => {
       return r.body.filter(config => config.key === 'event.notification.enabled')[0];
     };
 
-    return cloud.get(`/instances/${sfdcId}/configuration`)
+    return cloud.get(`/instances/${closeioId}/configuration`)
       .then(r => validate(r))
-      .then(configuration => cloud.patch(`/instances/${sfdcId}/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'true' })))
-      .then(r => cloud.get(`/instances/${sfdcId}/configuration/${r.body.id}`))
+      .then(configuration => cloud.patch(`/instances/${closeioId}/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'true' })))
+      .then(r => cloud.get(`/instances/${closeioId}/configuration/${r.body.id}`))
       .then(r => expect(r.body.propertyValue).to.equal('true'));
   });
 
@@ -152,7 +153,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
     };
 
     let id;
-    return provisioner.create('sfdc', { name: 'churros-test' })
+    return provisioner.create('closeio', { name: 'churros-test' })
       .then(r => id = r.body.id)
       .then(r => cloud.patch(`/instances/${id}`, { id: id, tags: ['churros-testing'] }))
       .then(r => cloud.get(`/instances/${id}`, validateTags(id, r.body.tags)))
@@ -179,7 +180,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
 
   it('should sanitize element instance name on create and update', () => {
     let id;
-    return provisioner.create('sfdc', { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss</a>' })
+    return provisioner.create('closeio', { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss</a>' })
       .then(r => id = r.body.id)
       .then(() => cloud.get(`/instances/${id}`))
       .then(r => expect(r.body.name).to.equal('churros-xss'))
@@ -190,7 +191,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
 
   it('should sanitize element instance tags on create and update', () => {
     let id;
-    return provisioner.create('sfdc', { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">@churros-xss</a>' })
+    return provisioner.create('closeio', { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">@churros-xss</a>' })
       .then(r => id = r.body.id)
       .then(() => cloud.get(`/instances/${id}`))
       .then(r => expect(r.body.name).to.equal('@churros-xss') && expect(r.body.tags[0]).to.equal('@churros-xss'))
@@ -201,7 +202,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
 
   it('should fail with 401 for deleted instance api call', () => {
     let instanceId;
-    return provisioner.create('sfdc')
+    return provisioner.create('closeio')
       .then(r => instanceId = r.body.id)
       .then(() => provisioner.delete(instanceId))
       .then(() => cloud.get('hubs/crm/account?pageSize=1', (r) => expect(r).to.have.statusCode(401)));
