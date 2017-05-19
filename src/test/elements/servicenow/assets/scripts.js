@@ -5,6 +5,10 @@ const props = require('core/props');
 
 module.exports = (element, method) => {
   const b = props.get('browser');
+  const config = {
+    password: props.getForKey(element, 'dev.password'),
+    username: props.getForKey(element, 'dev.username')
+  };
   const browser = new webdriver.Builder()
     .forBrowser(b)
     .build();
@@ -14,10 +18,10 @@ module.exports = (element, method) => {
       browser.get("https://developer.servicenow.com/app.do#!/instance");
       browser.wait(webdriver.until.elementLocated(webdriver.By.id('username')), 10000);
       browser.findElement(webdriver.By.id('username')).clear();
-      browser.findElement(webdriver.By.id('username')).sendKeys('developer@cloud-elements.com');
+      browser.findElement(webdriver.By.id('username')).sendKeys(config.username);
       browser.sleep(1500);
       browser.findElement(webdriver.By.id('password')).clear();
-      browser.findElement(webdriver.By.id('password')).sendKeys('Cl0udEl3m3nts!SN');
+      browser.findElement(webdriver.By.id('password')).sendKeys(config.password);
       browser.findElement(webdriver.By.id('submitButton')).click();
       browser.sleep(5000);
       browser.get("https://developer.servicenow.com/app.do#!/instance");
