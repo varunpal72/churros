@@ -2,7 +2,6 @@
 
 const webdriver = require('selenium-webdriver');
 const props = require('core/props');
-const tools = require('core/tools');
 
 module.exports = (element, method) => {
   const b = props.get('browser');
