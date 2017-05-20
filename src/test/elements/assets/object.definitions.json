@@ -1010,5 +1010,11 @@
      "path": "id",
      "type": "string"
    }]
+ },
+ "price-rules": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
  }
 }
