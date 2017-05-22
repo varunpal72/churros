@@ -150,17 +150,6 @@ const execValidatorWrapper = execValidator => (executions, numEs, numSes, execut
  * The test wrapper to wrap them all ...
  */
 const testWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
-  console.log('kickOffDatFormulaCb', kickOffDatFormulaCb);
-  console.log('f', f);
-  console.log('fi', fi);
-  console.log('numEs', numEs);
-  console.log('numSes', numSes);
-  console.log('numSevs', numSevs);
-  console.log('execValidator', execValidator);
-  console.log('instanceValidator', instanceValidator);
-  console.log('executionStatus', executionStatus);
-  console.log('numInstances', numInstances);
-  console.log('');
   const fetchAndValidateExecutions = (fId, fiId) => () => new Promise((res, rej) => {
     return getFormulaInstanceExecutions(fiId)
     .then(r => Promise.all(r.body.map(fie => getFormulaInstanceExecutionWithSteps(fie.id))))
@@ -184,53 +173,20 @@ const testWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, e
   const fiIds = [];
   return createFormula(f)
     .then(f => fId = f.id)
-    .then(() => console.log('1'))
     .then(() => tools.times(numInstances || 1)(() => createFormulaInstance(fId, fi)))//cloud.post(`/formulas/${fId}/instances`, fi, fiSchema)))
-    .then(r => {
-      console.log('2', r.length);
-      return r
-    })
     .then(ps => Promise.all(ps.map(p => {
       let fiId;
       return p
-        .then(r => {
-          console.log('2.2');
-          return r
-        })
         .then(fi => {
           fiId = fi.id;
           fiIds.push(fiId);
         })
-        .then(r => {
-          console.log('2.3');
-          return r
-        })
         .then(() => kickOffDatFormulaCb(fId, fiId))
-        .then(r => {
-          console.log('2.4');
-          return r
-        })
         .then(() => tools.wait.upTo(120000).for(allExecutionsCompleted(fId, fiId, numEs, numSevs)))
-        .then(r => {
-          console.log('2.5');
-          return r
-        })
         .then(() => tools.wait.upTo(120000).for(fetchAndValidateExecutions(fId, fiId)));
     })))
-    .then(r => {
-      console.log('3');
-      return r
-    })
     .then(() => tools.wait.upTo(10000).for(fetchAndValidateInstances(fId)))
-    .then(r => {
-      console.log('4');
-      return r
-    })
     .then(() => Promise.all(fiIds.map(fiId => deleteFormulaInstance(fId, fiId))))
-    .then(r => {
-      console.log('5');
-      return r
-    })
     .then(() => deleteFormula(fId));
 };
 

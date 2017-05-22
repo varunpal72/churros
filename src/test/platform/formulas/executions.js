@@ -59,7 +59,7 @@ const validateLoopSuccessfulEmailStepExecution = se => {
 };
 
 const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
-  fileName = fileName || 'single-event-sfdc';
+  fileName = fileName || 'single-event-closeio';
   const payload = require(`./assets/events/${fileName}`);
   return Promise.all(Array(x).fill().reduce((p, c) => {
     p.push(common.generateSfdcPollingEvent(instanceId, payload));
@@ -504,7 +504,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   it('should have a unique formula context for a single-threaded formula that has multiple polling events trigger multiple executions at once', () => {
     const validator = (executions) => {
       // validate that each objectId exists once somewhere in the step execution values
-      const events = require('./assets/events/triple-event-sfdc');
+      const events = require('./assets/events/triple-event-closeio');
       const all = [];
       executions.forEach(e => {
         const debugStep = e.stepExecutions.filter((se) => se.stepName === 'debug')[0];
@@ -513,7 +513,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       events.accounts.forEach(account => expect(all.indexOf(account.Id)).to.be.above(-1));
     };
 
-    const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, 1, 'triple-event-sfdc');
+    const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, 1, 'triple-event-closeio');
     const f = require('./assets/formulas/single-threaded-formula');
     const fi = require('./assets/formulas/basic-formula-instance');
     return testWrapper(triggerCb, f, fi, 3, 2, 2, validator);
@@ -543,7 +543,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully execute a simple event trigger formula triggered manually', () => {
-    let event = require('./assets/events/single-event-sfdc.json');
+    let event = require('./assets/events/single-event-closeio.json');
     const eventBody = {
       message: {
         instance_id: closeioId,
