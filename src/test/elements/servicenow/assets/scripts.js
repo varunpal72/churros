@@ -34,7 +34,7 @@ module.exports = (element, method) => {
             .then(r => r.click())
             .thenCatch(r => false)
             .then(r => {
-              let nth = 1;
+              let nth = 0;
               //wait 10 sec, call wakeUpInstanceUrl, see if there is still an overlay
               //if exists, then rerun - else return currentUrl
               const isReloading = (nth) => {
@@ -42,8 +42,9 @@ module.exports = (element, method) => {
               };
               browser.get(wakeUpInstanceUrl);
               browser.sleep(5000)
-              .then(() => tools.wait.upTo(30000).for(() => {
+              .then(() => tools.wait.upTo(1800000).for(() => {
                 return new Promise(function(res, rej) {
+                  nth+=1
                   isReloading(nth).then(reloading => reloading === true ? res() : rej());
                 });
               }));
