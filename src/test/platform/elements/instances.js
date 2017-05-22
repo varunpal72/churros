@@ -209,4 +209,16 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(() => provisioner.delete(instanceId))
       .then(() => cloud.get('hubs/crm/account?pageSize=1', (r) => expect(r).to.have.statusCode(401)));
   });
+
+  it('should ignore any provided hub', () => {
+    let withCorrectHub;
+    return cloud.get('hubs/crm/account?pageSize=1')
+      .then(r => withCorrectHub = r.body)
+      .then(() => cloud.get('hubs/documents/account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub))
+      .then(() => cloud.get('hubs/crap/account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub))
+      .then(() => cloud.get('account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub));
+  });
 });
