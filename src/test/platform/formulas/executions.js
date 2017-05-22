@@ -417,7 +417,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         ses.filter(se => se.stepName !== 'trigger').map(validateSuccessfulStepExecution);
 
         expect(consolidated['simple-script.prop100']).to.exist;
-        expect(consolidated['end.triggerobjectid']).to.equal('001i000001hB60bAAC1');
+        expect(consolidated['end.triggerobjectid']).to.equal('lead_BW9v0Uf82ZZyJh2Jhi7YcDEYhGQw6naCg8KhYA7Ffus');
         expect(consolidated['end.prop100']).to.equal(JSON.parse(consolidated['simple-script.prop100']).a);
         expect(consolidated['end.done']).to.equal('true');
       });
