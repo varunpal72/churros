@@ -209,7 +209,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       return {
         name: 'churros-formula-instance',
         configuration: {
-          cron: `${dt.seconds()} ${dt.minutes()} ${dt.hours()} ${dt.date()} ${dt.month() + 1} ? ${dt.year()}`
+          cron: `0 0/1 * 1/1 * ? *`
         }
       };
     };
