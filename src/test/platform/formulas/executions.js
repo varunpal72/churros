@@ -633,6 +633,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     ////////////////////
     // modified from common.testwrapper()
     const myCustomTestWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
+      /*
       const fetchAndValidateExecutions = (fId, fiId) => () => new Promise((res, rej) => {
         return getFormulaInstanceExecutions(fiId)
         .then(r => Promise.all(r.body.map(fie => getFormulaInstanceExecutionWithSteps(fie.id))))
@@ -641,6 +642,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         .then(v => res(v))
         .catch(e => rej(e));
       });
+      */
 
       const instanceValidatorWrapper = fId => {
         if (typeof instanceValidator === 'function') { return instanceValidator(fId); }
@@ -679,7 +681,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               return new Promise(function(resolve, reject) {
                 setTimeout(() => {
                   resolve();
-                }, 2500) //time in ms
+                }, 2500); //time in ms
               });
             })
             // cancel, expect a 200
@@ -691,7 +693,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
               return new Promise(function(resolve, reject) {
                 setTimeout(() => {
                   resolve();
-                }, 1000) //time in ms
+                }, 1000); //time in ms
               });
             })
             // cancel again, expect 406 (can't cancel already completed formula)
@@ -699,10 +701,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
             .then(() => cloud.patch(`/formulas/instances/executions/${exId}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(406)))
             // cancel non-existent execution ID, expect 404
             .then(() => logger.debug(`cancelling non-existent execution ID ${exId + 100}, expecting 404...`))
-            .then(() => cloud.patch(`/formulas/instances/executions/${exId + 100}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(404)))
-            //.then(s => expect(s).to.have.status(406))
-            //.then(() => tools.wait.upTo(30000).for(common.allExecutionsCompleted(fId, fiId, numEs, numSevs)))
-            //.then(() => tools.wait.upTo(30000).for(fetchAndValidateExecutions(fId, fiId)));
+            .then(() => cloud.patch(`/formulas/instances/executions/${exId + 100}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(404)));
         })))
         .then(() => tools.wait.upTo(10000).for(fetchAndValidateInstances(fId)))
         .then(() => Promise.all(fiIds.map(fiId => common.deleteFormulaInstance(fId, fiId))))
