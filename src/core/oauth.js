@@ -96,6 +96,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.isElementPresent(webdriver.By.xpath('//*[@id="approve-access"]/form/button')); //slow load time for accept screen
       }, 5000).then(r => {
 
+
         browser.sleep(3000);
         browser.findElement(webdriver.By.xpath('//*[@id="approve-access"]/form/button')).click();
 
