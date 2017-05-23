@@ -81,14 +81,12 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
   });
 
-  after(done => {
+  after(() => {
     if (!closeioId) done();
     return provisioner.delete(closeioId)
       .then(r => provisioner.delete(dropboxId))
-      .then(() => done())
       .catch(e => {
         console.log(`Failed to finish after()...${e}`);
-        done();
       });
   });
 
@@ -510,7 +508,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         const debugStep = e.stepExecutions.filter((se) => se.stepName === 'debug')[0];
         all.push(debugStep.stepExecutionValues.filter((sev) => sev.key === 'debug.objectId')[0].value);
       });
-      events.accounts.forEach(account => expect(all.indexOf(account.Id)).to.be.above(-1));
+      events.accounts.forEach(account => expect(all.indexOf(account.id)).to.be.above(-1));
     };
 
     const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, 1, 'triple-event-closeio');
@@ -557,7 +555,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
 
   it('should successfully stream a bulk file using an elementRequestStream step in a formula', () => {
-    const configuration = { source: closeioId, target: closeioId, 'object.name': 'contacts' };
+    const configuration = { source: closeioId, target: closeioId, 'object.name': 'accounts' };
     let bulkUploadId;
     const validator = (executions) => {
       const bulkTransferStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'bulkTransfer');
@@ -583,11 +581,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
     };
 
-    let bulkId, contactId;
-
-    return cloud.post('/hubs/crm/contacts', { LastName: 'Churros' })
-      .then(r => contactId = r.body.Id)
-      .then(r => cloud.withOptions({ qs: { q: `select FirstName, LastName, Id from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
+    let bulkId, accountId;
+    return cloud.post('/hubs/crm/accounts', { name: 'RANDOMCHURROSTHINGY' })
+      .then(r => accountId = r.body.id)
+      .then(r => cloud.withOptions({ qs: { q: `select display_name from accounts where display_name = "RANDOMCHURROSTHINGY"` } }).post('/hubs/crm/bulk/query'))
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
@@ -596,14 +593,18 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         expect(r.body.status).to.equal('COMPLETED');
       })))
       .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator))
-      .then(r => tools.wait.upTo(20000).for(() => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/status`, r => {
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
       })))
       .then(r => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/errors`))
       .then(r => {
         expect(r.body.length).to.equal(0);
       })
-      .then(r => cloud.delete(`/hubs/crm/contacts/${contactId}`));
+      .then(r => cloud.delete(`/hubs/crm/accounts/${accountId}`))
+      .catch(e => {
+        if (accountId) cloud.delete(`/hubs/crm/accounts/${accountId}`)
+        throw new Error(e)
+      });
   });
 
   it('should successfully stream a file via the documents hub APIs using an elementRequestStream step in a formula', () => {
