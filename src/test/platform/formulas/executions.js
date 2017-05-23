@@ -81,7 +81,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
   });
 
-  after(() => {
+  after((done) => {
     if (!closeioId) done();
     return provisioner.delete(closeioId)
       .then(r => provisioner.delete(dropboxId))
@@ -602,8 +602,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       })
       .then(r => cloud.delete(`/hubs/crm/accounts/${accountId}`))
       .catch(e => {
-        if (accountId) cloud.delete(`/hubs/crm/accounts/${accountId}`)
-        throw new Error(e)
+        if (accountId) cloud.delete(`/hubs/crm/accounts/${accountId}`);
+        throw new Error(e);
       });
   });
 
