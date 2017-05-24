@@ -286,7 +286,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource) => 
     //runs through validation function
     .then(r => validate(JSON.parse(r)))))
     //clean up
-    .then(() => cloud.delete(`${api}/${response.id}`).catch(() => {})).catch(e => cloud.delete(`${api}/${response.id}`).catch(() => {}).then(() => { throw new Error(e); }));
+    .then(() => cloud.delete(`${api}/${response.id}`).catch(() => {})).catch(e => { if (response) {return cloud.delete(`${api}/${response.id}`).catch(() => {}).then(() => { throw new Error(e); })} else { throw new Error(e)}});
   }, (argv.polling ? false : true) || (options ? options.skip : false));
 };
 

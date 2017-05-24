@@ -72,10 +72,10 @@ const getPollerConfig = (element, instance) => {
       instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
     } else {
-      instanceCopy.configuration['event.poller.configuration'] = r;
+      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r;
     }
     instanceCopy.configuration['event.vendor.type'] = 'polling';
-    instanceCopy.configuration['event.notification.callback.url'] = 'https://google.com';
+    instanceCopy.configuration['event.notification.callback.url'] = 'https://knappkeith.pythonanywhere.com/request/churros/';
     instanceCopy.configuration['event.notification.enabled'] = 'true';
     instanceCopy.configuration['event.poller.refresh_interval'] = '1';
     return instanceCopy;

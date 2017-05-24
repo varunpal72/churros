@@ -2,10 +2,9 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = require('./assets/customers');
+const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
 
 suite.forElement('finance', 'customers', { payload: payload }, (test) => {
-    payload.firstName = tools.random();
     test.should.supportCruds();
 	  test.withOptions({ qs: { page: 1, pageSize: 5}}).should.supportPagination();
   	test.should.supportCeqlSearch('id');
