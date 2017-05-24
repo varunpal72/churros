@@ -69,7 +69,7 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
-  let sfdcId, dropboxId;
+  /*let sfdcId, dropboxId;
   before(() => {
     return provisioner.create('dropbox')
       .then(r => dropboxId = r.body.id)
@@ -91,7 +91,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         done();
       });
   });
-
+*/
   const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
     if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
     return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
@@ -696,9 +696,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
                 }, 1000); //time in ms
               });
             })
-            // cancel again, expect 406 (can't cancel already completed formula)
+            // cancel again, expect 400 (can't cancel already completed formula)
             .then(() => logger.debug(`cancelling execution ID ${exId} again ...`))
-            .then(() => cloud.patch(`/formulas/instances/executions/${exId}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(406)))
+            .then(() => cloud.patch(`/formulas/instances/executions/${exId}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(400)))
             // cancel non-existent execution ID, expect 404
             .then(() => logger.debug(`cancelling non-existent execution ID ${exId + 100}, expecting 404...`))
             .then(() => cloud.patch(`/formulas/instances/executions/${exId + 100}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(404)));
