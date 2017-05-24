@@ -241,8 +241,11 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource) => 
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
     const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => {
       expect(res.count).to.be.above(0);
+      console.log(res);
       var thingy = res.data.filter(call => {
         var datas = JSON.parse(call.data);
+        console.log(resource);
+        console.log(datas.message.raw.objectType);
         return datas.message.raw.objectType === resource;
       });
 
@@ -273,9 +276,11 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource) => 
         });
       });
     })
+    .then(() => console.log(pay))
     .then(() => pay)
     .then(r => cloud.withOptions(options).post(api, r))
     .then(r => response = r.body)
+    .then(() => console.log('response', response))
     //repeatly revalidates until either valid or time out
     .then(() => tools.wait.upTo(120000).for(() => new Promise((resolve, reject) => {
       request(url, (err, res, body) => {
