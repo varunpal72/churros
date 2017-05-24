@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const expect = require('chakram').expect;
-const searchField = `query='awesome'`;
+const searchField = `query='luke'`;
 
 suite.forElement('collaboration', 'search', (test) => {
   test

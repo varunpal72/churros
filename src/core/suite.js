@@ -96,8 +96,7 @@ const itPagination = (name, api, options, validationCb, unique) => {
   let result1 = { body: [] }, result2 = { body: [] }, result3 = { body: [] };
   const getWithOptions = (option, result) => {
     // Adding the 'where' clause if it exists
-    let optionsQS = where ? Object.defineProperty(option.qs, 'where', {  value: where,  writable: true,  configurable: true,  enumerable: true }) : option.qs;
-    option.qs = optionsQS;
+    if (where) option.qs.where = where;
     return cloud.withOptions(option).get(api)
       .then((r) => {
         if (r.body && r.body.length > 0) {
