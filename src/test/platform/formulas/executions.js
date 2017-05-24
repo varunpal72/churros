@@ -69,7 +69,7 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
-  /*let sfdcId, dropboxId;
+  let sfdcId, dropboxId;
   before(() => {
     return provisioner.create('dropbox')
       .then(r => dropboxId = r.body.id)
@@ -91,7 +91,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         done();
       });
   });
-*/
+
   const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
     if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
     return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
