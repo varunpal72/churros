@@ -1,4 +1,8 @@
 {
-  "name": "Robot Account Post",
-  "description": "Robot Test Account"
+  "name": "<<name.firstName>>",
+  "description": "<<lorem.sentence>>",
+  "properties": {
+    "description": "<<lorem.sentence>>",
+    "name": "<<name.firstName>>"
+  }
 }

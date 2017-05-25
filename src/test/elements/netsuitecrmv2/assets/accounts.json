@@ -1,7 +1,7 @@
 {
-  "phone": "206-555-1302",
+  "phone": "<<phone.phoneNumber>>",
   "leadSource": {
-    "internalId": "99993"
+    "internalId": "99995"
   },
   "billPay": false,
   "giveAccess": false,
@@ -9,31 +9,19 @@
     "internalId": "1"
   },
   "isInactive": false,
-  "addressbookList": {
-    "addressbook": [{
-      "addressbookAddress": {
-        "zip": "98106",
-        "addr1": "1306 Brighton Blvd",
-        "addr2": "Suite 630",
-        "state": "CO",
-        "addressee": "Cloud Elements",
-        "addrPhone": "206-555-1302",
-        "city": "Denver",
-        "country": {
-          "value": "_unitedStates"
-        }
-      },
-      "label": "Billing Address",
-      "defaultShipping": true,
-      "isResidential": false
-    }],
-    "replaceAll": false
-  },
-  "companyName": "Churros Test Account",
+  "companyName": "<<company.companyName>>",
   "shipComplete": false,
-  "email": "ce2ac@ccloud-elements.com",
+  "email": "<<internet.email>>",
   "sendEmail": false,
   "subsidiary": {
     "internalId": "1"
+  },
+  "entityStatus": {
+    "internalId": "13",
+    "name": "CUSTOMER-Closed Won1"
+  },
+  "customForm": {
+    "internalId": "16",
+    "name": "Ramsey Default Customer Form"
   }
 }

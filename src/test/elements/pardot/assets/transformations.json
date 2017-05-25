@@ -1,38 +1,30 @@
 {
   "contacts": {
     "vendorName": "prospect",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "leads": {
     "vendorName": "opportunity",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "campaigns": {
     "vendorName": "campaign",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "lists": {
     "vendorName": "list",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   }
 }

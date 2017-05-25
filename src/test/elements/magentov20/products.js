@@ -60,7 +60,7 @@ const productsGroupPrices = () => ({
   "price": "1"
 });
 
-suite.forElement('ecommerce', 'products', { payload: product(), skip: true }, (test) => {
+suite.forElement('ecommerce', 'products', { payload: product() }, (test) => {
   test.should.return200OnGet();
   it(`should allow CRUDS for ${test.api}`, () => {
     let attributeSetId, sku;

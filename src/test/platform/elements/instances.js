@@ -119,12 +119,12 @@ suite.forPlatform('elements/instances', opts, (test) => {
   });
 
   it('should support search tags', () => {
-    return cloud.withOptions({qs:{'tags[]': 'churros-instance'}}).get('instances')
-    .then(r => {
-      r.body.map(s => {
-        expect(s.tags.includes('churros-instance')).to.equal(true);
+    return cloud.withOptions({ qs: { 'tags[]': 'churros-instance' } }).get('instances')
+      .then(r => {
+        r.body.map(s => {
+          expect(s.tags.includes('churros-instance')).to.equal(true);
+        });
       });
-    });
   });
 
 
@@ -149,6 +149,19 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => expect(r.body.propertyValue).to.equal('true'));
   });
 
+  it('should support updating the tags for an element instance', () => {
+    const validateTags = (id, tags) => {
+      expect(tags.length).to.equal(1) && expect(tags[0]).to.equal('churros-testing');
+    };
+
+    let id;
+    return provisioner.create('sfdc', { name: 'churros-test' })
+      .then(r => id = r.body.id)
+      .then(r => cloud.patch(`/instances/${id}`, { id: id, tags: ['churros-testing'] }))
+      .then(r => cloud.get(`/instances/${id}`, validateTags(id, r.body.tags)))
+      .then(r => provisioner.delete(id));
+  });
+
   it('should support switching an instance to the clone of an element', () => {
     if (props.get('user') === 'system') {
       logger.warn('Unable to test element clone as system user. Skipping.');
@@ -159,33 +172,33 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => instance = r.body)
       .then(r => cloud.post('elements/shopify/clone'))
       .then(r => clone = r.body)
-      .then(r => cloud.patch(`instances/${instance.id}`, {element: {id: clone.id}})
-      .then(r => {
-        expect(r.body.element.id).to.equal(clone.id);
-      }))
+      .then(r => cloud.patch(`instances/${instance.id}`, { element: { id: clone.id } })
+        .then(r => {
+          expect(r.body.element.id).to.equal(clone.id);
+        }))
       .then(r => provisioner.delete(instance.id, 'elements/shopify/instances'))
       .then(r => cloud.delete(`elements/${clone.key}`));
   });
 
   it('should sanitize element instance name on create and update', () => {
     let id;
-    return provisioner.create('sfdc', {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss</a>'})
+    return provisioner.create('sfdc', { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss</a>' })
       .then(r => id = r.body.id)
       .then(() => cloud.get(`/instances/${id}`))
       .then(r => expect(r.body.name).to.equal('churros-xss'))
-      .then(() => cloud.patch(`/instances/${id}`, {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss-updated</a>'}))
+      .then(() => cloud.patch(`/instances/${id}`, { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss-updated</a>' }))
       .then(r => expect(r.body.name).to.equal('churros-xss-updated'))
       .then(() => provisioner.delete(id));
   });
 
   it('should sanitize element instance tags on create and update', () => {
     let id;
-    return provisioner.create('sfdc', {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss</a>'})
+    return provisioner.create('sfdc', { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">@churros-xss</a>' })
       .then(r => id = r.body.id)
       .then(() => cloud.get(`/instances/${id}`))
-      .then(r => expect(r.body.name).to.equal('churros-xss') && expect(r.body.tags[0]).to.equal('churros-xss'))
-      .then(() => cloud.patch(`/instances/${id}`, {name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss-updated</a>'}))
-      .then(r => expect(r.body.name).to.equal('churros-xss-updated'))
+      .then(r => expect(r.body.name).to.equal('@churros-xss') && expect(r.body.tags[0]).to.equal('@churros-xss'))
+      .then(() => cloud.patch(`/instances/${id}`, { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">@churros-xss-updated</a>' }))
+      .then(r => expect(r.body.name).to.equal('@churros-xss-updated'))
       .then(() => provisioner.delete(id));
   });
 
@@ -195,5 +208,17 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => instanceId = r.body.id)
       .then(() => provisioner.delete(instanceId))
       .then(() => cloud.get('hubs/crm/account?pageSize=1', (r) => expect(r).to.have.statusCode(401)));
+  });
+
+  it('should ignore any provided hub', () => {
+    let withCorrectHub;
+    return cloud.get('hubs/crm/account?pageSize=1')
+      .then(r => withCorrectHub = r.body)
+      .then(() => cloud.get('hubs/documents/account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub))
+      .then(() => cloud.get('hubs/crap/account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub))
+      .then(() => cloud.get('account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub));
   });
 });

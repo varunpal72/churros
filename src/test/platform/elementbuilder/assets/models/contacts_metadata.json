@@ -1,0 +1,156 @@
+{
+  "fields": [
+    {
+      "type": "string",
+      "vendorPath": "data.address.city"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.address.country"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.address.line1"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.address.postal_code"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.address.state"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.created_at"
+    },
+    {
+      "type": "number",
+      "vendorPath": "data.creator_id"
+    },
+    {
+      "type": "number",
+      "vendorPath": "data.custom_field_values[*].custom_field.data.id"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.custom_field_values[*].custom_field.data.name"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.custom_field_values[*].custom_field.data.resource_type"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.custom_field_values[*].custom_field.data.type"
+    },
+    {
+      "type": "boolean",
+      "vendorPath": "data.custom_field_values[*].value"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.customer_status"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.description"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.facebook"
+    },
+    {
+      "type": "number",
+      "vendorPath": "data.id"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.last_name"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.mobile"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.name"
+    },
+    {
+      "type": "number",
+      "vendorPath": "data.owner_id"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.phone"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.shipping_address"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.website"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.billing_address"
+    },
+    {
+      "type": "number",
+      "vendorPath": "data.contact_id"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.email"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.fax"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.first_name"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.industry"
+    },
+    {
+      "type": "boolean",
+      "vendorPath": "data.is_organization"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.linkedin"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.prospect_status"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.skype"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.title"
+    },
+    {
+      "type": "unknown",
+      "vendorPath": "data.twitter"
+    },
+    {
+      "type": "number",
+      "vendorPath": "data.tags[*].data.id"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.tags[*].data.name"
+    },
+    {
+      "type": "string",
+      "vendorPath": "data.tags[*].data.resource_type"
+    }
+  ]
+}

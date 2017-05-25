@@ -2,13 +2,10 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
-const propertiesPayload = require('./assets/contactsProperties');
 const tools = require('core/tools');
-const expect = require('chakram').expect;
-
-payload.email = tools.randomEmail();
-
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
+const propertiesPayload = require('./assets/contactsProperties');
+propertiesPayload.name = "a"+tools.random().toLowerCase();
 const options = {
   churros: {
     updatePayload: {
@@ -17,9 +14,10 @@ const options = {
     }
   }
 };
+
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
-  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
   it('should allow CRUD for hubs/marketing/contacts/properties', () => {
     let id;
     const fieldsUpdate = {
@@ -34,7 +32,7 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       "formField": false,
       "displayMode": "current_value",
       "groupName": "conversioninformation",
-      "name": "chuors_temp_1",
+      "name": "a"+tools.random().toLowerCase(),
       "options": [],
       "fieldType": "text",
       "calculated": false,
@@ -53,12 +51,12 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
     const propertygroups = {
       "displayName": "test_churros_1",
       "displayOrder": 0,
-      "name": "test12"
+      "name": tools.random()
     };
     const updatePropertygroups = {
       "displayName": "test_churros1",
       "displayOrder": 0,
-      "name": "test12"
+      "name": tools.random()
     };
     return cloud.post(`${test.api}/propertygroups`, propertygroups)
       .then(r => id = r.body.name)
@@ -67,26 +65,8 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/propertygroups/${id}`, updatePropertygroups))
       .then(r => cloud.delete(`${test.api}/propertygroups/${id}`));
   });
-
-  it('should support bulk upload of contacts using the batch API', () => {
-    let bulkId;
-    const metaData = { useBatchUpload: true };
-    const opts = { formData: { metaData: JSON.stringify(metaData) } };
-
-    // start bulk upload
-    return cloud.withOptions(opts).postFile('/hubs/marketing/bulk/contacts', `${__dirname}/assets/contacts.csv`)
-      .then(r => {
-        expect(r.body.status).to.equal('CREATED');
-        bulkId = r.body.id;
-      })
-      // get bulk upload status
-      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/marketing/bulk/${bulkId}/status`, r => {
-        expect(r.body.status).to.equal('COMPLETED');
-        expect(r.body.recordsCount).to.equal(2);
-        expect(r.body.recordsFailedCount).to.equal(0);
-      })))
-      // get bulk upload errors
-      .then(r => cloud.get(`/hubs/marketing/bulk/${bulkId}/errors`));
-  });
+  const metaData = { useBatchUpload: true };
+  const opts = { formData: { metaData: JSON.stringify(metaData) } };
+  test.should.supportBulkUpload(opts, `${__dirname}/assets/contacts.csv`, 'contacts', `email='test123@churros.com'`);
 
 });

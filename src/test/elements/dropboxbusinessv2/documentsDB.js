@@ -1,8 +1,11 @@
 'use strict';
+
+const expect = require('chakram').expect;
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const suite = require('core/suite');
 const folderPayload = require('./assets/folders');
+const faker = require('faker');
 const memberId = "dbmid:AAAFACcOADjRo0pt6cE_w3RmDSTmtSq5mqY";
 exports.all = () => {
   exports.files();
@@ -41,10 +44,39 @@ exports.files = () => {
         .then(r => cloud.withOptions({ qs: { path: file.path }, headers: { "Elements-As-Team-Member": memberId } }).delete('/hubs/documents/files'));
     });
 
-    it('should allow GET /files/links and /files/:id/links', () => {
+    it('should allow GET /files/links and /files/:id/links with correct download and view URLs', () => {
       const cb = (file) => {
-        return cloud.withOptions({ headers: { "Elements-As-Team-Member": memberId } }).get(`/hubs/documents/files/${file.id}/links`)
-          .then(() => cloud.withOptions({ qs: { path: file.path }, headers: { "Elements-As-Team-Member": memberId } }).get('/hubs/documents/files/links'));
+        return cloud.withOptions({ headers: { "Elements-As-Team-Member": memberId } })
+          .get(`/hubs/documents/files/${file.id}/links`)
+          .then(r => expect(r.body).to.not.contain.key('raw'))
+          .then(() => cloud.withOptions({
+              qs: { path: file.path },
+              headers: { "Elements-As-Team-Member": memberId }
+            })
+            .get('/hubs/documents/files/links')
+            .then(r => {
+              expect(r.body).to.not.contain.key('raw');
+              expect(r.body.providerLink).to.contain('dl=1');
+              expect(r.body.providerViewLink).to.contain('dl=0');
+          })
+          );
+      };
+
+      return fileWrap(cb);
+    });
+
+    it('should allow GET /files/links and /files/:id/links with raw payload', () => {
+      const cb = (file) => {
+        return cloud.withOptions({ qs: { raw: true }, headers: { "Elements-As-Team-Member": memberId } })
+          .get(`/hubs/documents/files/${file.id}/links`)
+          .then(r => expect(r.body).to.contain.key('raw'))
+          .then(() => cloud.withOptions({
+              qs: { path: file.path, raw: true },
+              headers: { "Elements-As-Team-Member": memberId }
+            })
+            .get('/hubs/documents/files/links')
+            .then(r => expect(r.body).to.contain.key('raw'))
+          );
       };
 
       return fileWrap(cb);
@@ -67,8 +99,8 @@ exports.files = () => {
     });
 
     it('should allow POST /files/copy and POST /files/:id/copy', () => {
-      const copy1 = { path: '/churrosCopy1' };
-      const copy2 = { path: '/churrosCopy2' };
+      const copy1 = { path: `/${faker.system.fileName()}` };
+      const copy2 = { path: `/${faker.system.fileName()}` };
 
       const cb = (file) => {
         let fileCopy1, fileCopy2;
@@ -110,7 +142,7 @@ exports.folders = (test) => {
     let random = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
     folderPayload.path += `-${random}`;
     folderPayload.name += `-${random}`;
-    
+
     // let memberId = "dbmid:AADkTHIEUNMxlMLbejOdxXt8bZsciJP1sRE";
     const folderWrap = (cb) => {
       let folder;
@@ -158,8 +190,8 @@ exports.folders = (test) => {
 
     it('should allow POST /folders/copy and POST /folders/:id/copy', () => {
 
-      const copy1 = { path: '/churrosCopy1' };
-      const copy2 = { path: '/churrosCopy2' };
+      const copy1 = { path: `/${faker.system.fileName()}` };
+      const copy2 = { path: `/${faker.system.fileName()}` };
 
       const cb = (folder) => {
         let folderCopy1, folderCopy2;

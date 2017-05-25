@@ -1,0 +1,19 @@
+{
+  "product": {
+    "name": "Churro",
+    "price": 100,
+    "status": 1,
+    "visibility": 4,
+    "type_id": "simple",
+    "weight": 150,
+    "extension_attributes": {
+      "stock_item": {
+        "is_in_stock": 1,
+        "qty": 200
+      }
+    },
+    "attribute_set_id": 4,
+    "sku": "churrosItem"
+  },
+  "saveOptions": true
+}

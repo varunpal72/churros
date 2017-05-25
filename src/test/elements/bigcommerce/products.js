@@ -1,14 +1,16 @@
 'use strict';
 
 const suite = require('core/suite');
+const tools = require('core/tools');
 const payload = require('./assets/products');
 const brandsPayload = require('./assets/brands');
-const categoriesPayload = require('./assets/categories');
+const categoriesPayload = tools.requirePayload(`${__dirname}/assets/categories.json`);
 const fieldsPayload = require('./assets/fields');
 const imagesPayload = require('./assets/images');
 const skusPayload = require('./assets/skus');
 const cloud = require('core/cloud');
 
+const name = tools.randomStr();
 const productsUpdate = () => ({
   "name": "Cloud Elements"
 });
@@ -24,7 +26,7 @@ const brandsUpdate = () => ({
 });
 
 const categoriesUpdate = () => ({
-  "name": "X-Men toys"
+  "name": name
 });
 
 const fieldsUpdate = () => ({
@@ -39,6 +41,8 @@ const imagesUpdate = () => ({
 const skusUpdate = () => ({
   "upc": "Updated"
 });
+
+brandsPayload.name = tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10);
 
 suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
@@ -70,7 +74,7 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
       .then(r => categoryId = r.body.id)
       .then(r => cloud.get(`${test.api}/categories`))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/categories`))
-      .then(r => cloud.withOptions({ qs: { where: 'name=\'Xmen toys\'' } }).get(`${test.api}/categories`))
+      .then(r => cloud.withOptions({ qs: { where: `name='${name}'` } }).get(`${test.api}/categories`))
       .then(r => cloud.get(`${test.api}/categories/${categoryId}`))
       .then(r => cloud.patch(`${test.api}/categories/${categoryId}`, categoriesUpdate()))
       .then(r => cloud.delete(`${test.api}/categories/${categoryId}`));

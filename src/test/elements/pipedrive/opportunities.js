@@ -19,7 +19,7 @@ suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (tes
   };
   test.withOptions(options).should.supportCruds(chakram.put);
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'title = \'Demo Deal NEW\'' } }).should.return200OnGet();
+  test.withOptions({ qs: { where: 'id = \'2171\'' } }).should.return200OnGet();
 
   const updatePayloadActivites = {
     "subject": tools.random()
@@ -61,11 +61,10 @@ suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (tes
       .then(r => cloud.delete(`${test.api}/${opportunitiesId}`));
   });
 
-  it('should GET /accounts emails and mails', () => {
+  it('should GET /accounts mails', () => {
     let opportunityId;
     return cloud.post(test.api, opportunitiesPayload)
       .then(r => opportunityId = r.body.id)
-      .then(r => cloud.get(`${test.api}/${opportunityId}/emails`))
       .then(r => cloud.get(`${test.api}/${opportunityId}/mails`))
       .then(r => cloud.delete(`${test.api}/${opportunityId}`));
 

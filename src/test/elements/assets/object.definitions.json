@@ -276,6 +276,12 @@
       "type": "string"
     }]
   },
+  "expense-group-configurations": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "incidents": {
     "fields": [{
       "path": "id",
@@ -406,7 +412,7 @@
       }
     ]
   },
-  "payments": {
+    "payments": {
     "fields": [{
       "path": "id",
       "type": "string"
@@ -1038,21 +1044,21 @@
     }]
   },
   "stacks": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  },
-  "policies": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  },
-  "location": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  }
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "policies": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "location": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ }
 }

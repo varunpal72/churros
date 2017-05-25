@@ -11,8 +11,15 @@ const payload = () => ({
   "id": tools.random()
 });
 
+ const options = {
+    churros: {
+      updatePayload: {
+        "name": tools.random()
+      }
+    }
+  };
 suite.forElement('payment', 'plans', { payload: payload() }, (test) => {
-  test.should.supportCruds();
+  test.withOptions(options).should.supportCruds();
   test.withApi(test.api).withOptions({ qs: { where: `created >= 1463157076` } }).should.return200OnGet();
   test.should.supportPagination();
   test.should.supportNextPagePagination(1);

@@ -8,7 +8,7 @@ const tools = require('core/tools');
 suite.forElement('documents', 'links', null, (test) => {
 
     let path = __dirname + '/assets/brady.jpg';
-    let query = { path: `/brady-${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}.jpg` };
+    let query = { path: `/brady-${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}.jpg`, overwrite: true };
 
     const fileWrap = (cb) => {
         let file;
@@ -17,14 +17,17 @@ suite.forElement('documents', 'links', null, (test) => {
             .then(r => file = r.body)
             .then(r => cb(file))
             .then(r => cloud.delete(`/hubs/documents/files/${file.id}`));
+
     };
 
-    it('should create a link with no expiration and public visibility from GET /files/links by default', () => {
+    it('should create a link with no expiration and public visibility from GET /files/links by default while having correct download and view URLs', () => {
         const cb = (file) => {
-            return cloud.withOptions({ qs: { path: file.path } }).get('/hubs/documents/files/links')
+            return cloud.withOptions({ qs: { path: file.path } }).get('/hubs/documents/files/links?raw=true')
                 .then(r => {
                     expect(r.body.expires).to.be.null;
                     expect(r.body.raw.linkPermissions.requestedVisibility).to.equal('PUBLIC');
+                    expect(r.body.providerViewLink).to.contain('dl=0');
+                    expect(r.body.providerLink).to.contain('dl=1');
                 });
         };
 
@@ -44,11 +47,11 @@ suite.forElement('documents', 'links', null, (test) => {
 
     it('should return the existing link from GET /files/links on subsequent calls for a path, regardless of supplied parameters', () => {
         const cb = (file) => {
-            return cloud.withOptions({ qs: { path: file.path, visibility: 'TEAM_ONLY'} }).get('/hubs/documents/files/links')
+            return cloud.withOptions({ qs: { path: file.path, visibility: 'TEAM_ONLY'} }).get('/hubs/documents/files/links?raw=true')
                 .then(r => {
                     expect(r.body.raw.linkPermissions.requestedVisibility).to.equal('TEAM_ONLY');
                 })
-                .then(r => cloud.withOptions({ qs: { path: file.path, visibility: 'PASSWORD' } }).get('/hubs/documents/files/links'))
+                .then(r => cloud.withOptions({ qs: { path: file.path, visibility: 'PASSWORD' } }).get('/hubs/documents/files/links?raw=true'))
                 .then(r => {
                     expect(r.body.raw.linkPermissions.requestedVisibility).to.equal('TEAM_ONLY');
                 });

@@ -69,9 +69,11 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
-  let sfdcId;
+  let sfdcId, dropboxId;
   before(() => {
-    return provisioner.create('sfdc', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 })
+    return provisioner.create('dropbox')
+      .then(r => dropboxId = r.body.id)
+      .then(r => provisioner.create('sfdc', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
       .then(r => sfdcId = r.body.id)
       .catch(e => {
         console.log(`Failed to finish before()...${e}`);
@@ -82,6 +84,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   after(done => {
     if (!sfdcId) done();
     return provisioner.delete(sfdcId)
+      .then(r => provisioner.delete(dropboxId))
       .then(() => done())
       .catch(e => {
         console.log(`Failed to finish after()...${e}`);
@@ -553,8 +556,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
 
-  it('should successfully execute a elementRequestStream step in a formula', () => {
+  it('should successfully stream a bulk file using an elementRequestStream step in a formula', () => {
     const configuration = { source: sfdcId, target: sfdcId, 'object.name': 'contacts' };
+    let bulkUploadId;
     const validator = (executions) => {
       const bulkTransferStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'bulkTransfer');
       const bulkTransferStepExecutionValues = bulkTransferStepExecutions[0].stepExecutionValues;
@@ -575,6 +579,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       bulkTransferStepExecutionValues.filter(sevs => sevs.key === 'bulkTransfer.upload.response.body').map(sev => {
         const sevJSON = JSON.parse(sev.value);
         expect(sevJSON.status).to.equal('CREATED');
+        bulkUploadId = sevJSON.id;
       });
     };
 
@@ -582,7 +587,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     return cloud.post('/hubs/crm/contacts', { LastName: 'Churros' })
       .then(r => contactId = r.body.Id)
-      .then(r => cloud.withOptions({ qs: { q: `select FirstName, LastName from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
+      .then(r => cloud.withOptions({ qs: { q: `select FirstName, LastName, Id from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
@@ -591,6 +596,35 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         expect(r.body.status).to.equal('COMPLETED');
       })))
       .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator))
+      .then(r => tools.wait.upTo(20000).for(() => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/status`, r => {
+        expect(r.body.status).to.equal('COMPLETED');
+      })))
+      .then(r => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/errors`))
+      .then(r => {
+        expect(r.body.length).to.equal(0);
+      })
       .then(r => cloud.delete(`/hubs/crm/contacts/${contactId}`));
+  });
+
+  it('should successfully stream a file via the documents hub APIs using an elementRequestStream step in a formula', () => {
+    const configuration = { 'dropbox.instance': dropboxId };
+
+    const validator = (executions) => {
+      logger.debug('validating...');
+      executions.map(e => {
+        expect(e.status).to.equal('success');
+      });
+
+      const streamStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'stream');
+      const streamStepExecutionValues = streamStepExecutions[0].stepExecutionValues;
+      logger.debug('ssevs: ' + JSON.stringify(streamStepExecutionValues));
+
+      streamStepExecutionValues.filter(sevs => sevs.key === 'stream.download.response.code').map(sev => {
+        logger.debug('code json: ' + JSON.stringify(sev));
+        logger.debug('code: ' + sev.value);
+        expect(sev.value).to.equal('200');
+      });
+    };
+    return manualTriggerTest('documents-stream', configuration, { foo: 'bar' }, 4, validator);
   });
 });

@@ -1,0 +1,20 @@
+{
+  "fields": [
+    {
+      "path": "mynewId",
+      "type": "string"
+    },
+    {
+      "path": "mynewdescription",
+      "type": "string"
+    },
+    {
+      "path": "mynewemail",
+      "type": "string"
+    },
+    {
+      "path": "myfirstname",
+      "type": "string"
+    }
+  ]
+}

@@ -11,6 +11,7 @@ const o = require('core/oauth');
 const r = require('request');
 const defaults = require('core/defaults');
 const cloud = require('core/cloud');
+const argv = require('optimist').argv;
 
 var exports = module.exports = {};
 
@@ -53,14 +54,27 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
+const addParams = (instance) => {
+  let instanceCopy = JSON.parse(JSON.stringify(instance));
+  if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+  return instanceCopy;
+};
+
+const addParamsToOptions = (argOptions) => {
+  let optionsCopy = JSON.parse(JSON.stringify(argOptions));
+  if (argv.params) optionsCopy.qs = Object.assign({}, optionsCopy.qs, JSON.parse(argv.params));
+  return optionsCopy;
+};
+
 const createInstance = (element, config, providerData, baseApi) => {
+  config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
 
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
 
-  return cloud.post(baseApi, instance)
+  return cloud.post(baseApi, addParams(instance))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
@@ -81,6 +95,7 @@ const createExternalInstance = (element, config, providerData) => {
   if (!tokenUrl) {
     throw Error("Token URL must be present in the element props as 'tokenUrl'");
   }
+  let instanceElement = tools.getBaseElement(element);
 
   return new Promise((res, rej) => {
     r.post({
@@ -97,7 +112,7 @@ const createExternalInstance = (element, config, providerData) => {
       let refreshToken = body.refresh_token;
       instanceBody = {
         "element": {
-          "key": element
+          "key": instanceElement
         },
         "configuration": {
           "oauth.user.refresh_token": refreshToken,
@@ -116,9 +131,10 @@ const createExternalInstance = (element, config, providerData) => {
 };
 
 const oauth = (element, args, config) => {
-  const url = `/elements/${element}/oauth/url`;
-  logger.debug('GET %s with options %s', url, args.options);
-  return cloud.withOptions(args.options).get(url)
+  let urlElement = tools.getBaseElement(element);
+  const url = `/elements/${urlElement}/oauth/url`;
+  logger.debug('GET %s with options %s', url, JSON.stringify(addParamsToOptions(args.options)));
+  return cloud.withOptions(addParamsToOptions(args.options)).get(url)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return o(element, r, args.username, args.password, config);
@@ -232,9 +248,9 @@ exports.delete = (id, baseApi) => {
 
   baseApi = (baseApi) ? baseApi : '/instances';
   // when running the delete API, don't include the element token in the auth header
-  const {userSecret, orgSecret} = defaults.secrets();
-  const headers = {Authorization: `User ${userSecret}, Organization ${orgSecret}`};
-  return cloud.withOptions({headers}).delete(`${baseApi}/${id}`)
+  const { userSecret, orgSecret } = defaults.secrets();
+  const headers = { Authorization: `User ${userSecret}, Organization ${orgSecret}` };
+  return cloud.withOptions({ headers }).delete(`${baseApi}/${id}`)
     .then(r => {
       logger.debug(`Deleted element instance with ID: ${id}`);
       defaults.reset();

@@ -1,4 +1,4 @@
 {
-    "origin": "User: Atul Barve via Act-On API",
-    "email": "max.spector0@act-on.net"
+    "origin": "User: <<name.firstName>> via Act-On API",
+    "email": "<<name.firstName>>@act-on.net"
   }

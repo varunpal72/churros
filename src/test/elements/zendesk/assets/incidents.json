@@ -3,5 +3,6 @@
     "description": "RobotDescription",
     "assignee": 350087189,
     "status": "open",
-    "summary": "RobotTestSummary"
+    "summary": "RobotTestSummary",
+    "requester_id" : 1089444815
 }

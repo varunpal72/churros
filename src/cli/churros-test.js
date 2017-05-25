@@ -26,7 +26,9 @@ const fromOptions = (url, options) => {
       browser: options.browser,
       verbose: options.verbose === undefined ? false : options.verbose, // hack...i can't figure out why it's not default to false
       externalAuth: options.externalAuth,
-      exclude: options.exclude
+      exclude: options.exclude,
+      instance: options.instance,
+      params: options.params
     });
   });
 };
@@ -65,21 +67,21 @@ const run = (suite, options, cliArgs) => {
   const baseMochaPaths = [rootTestDir + '/lifecycle'];
   if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
 
-  const isAfterStart = (start, suite) => {
+  const isAfterStart = (start, suite, arr) => {
     if (!start) return true;
     let folderPath = `${rootTestDir}/${resourceType}/${start}`;
     if (!fs.existsSync(folderPath)) {
       console.log('Invalid suite: %s', start);
       process.exit(1);
     }
-    return suite >= start;
+    return arr.indexOf(suite) >= arr.indexOf(start);
   };
 
   // if we want to run multiple tests, we need to find all of the available element or platform tests and add them to our resources array
   isRunMultiple(suite) ?
     fs.readdirSync(`${rootTestDir}/${resourceType}`)
     .filter(e => e !== 'assets' && options.exclude.indexOf(e) < 0)
-    .filter(e => isAfterStart(options.start, e))
+    .filter((e, i, self) => isAfterStart(options.start, e, self))
     .map(e => resources.push(e)) :
     resources.push(suite.split('/')[1]);
 
@@ -94,19 +96,24 @@ const run = (suite, options, cliArgs) => {
   if (cliArgs.verbose) args += ` --verbose ${cliArgs.verbose}`;
   if (cliArgs.browser) args += ` --browser ${cliArgs.browser}`;
   if (cliArgs.externalAuth) args += ` --externalAuth`;
+  if (cliArgs.instance) args += ` --instance ${cliArgs.instance}`;
+  if (cliArgs.params) args += ` --params '${cliArgs.params}'`;
 
   // loop over each element, constructing the proper paths to pass to mocha
   let cmd = "";
+  if (resources.includes('.DS_Store')) resources.splice(resources.indexOf('.DS_Store'), 1);
   resources.forEach((resource, index) => {
     const allMochaPaths = baseMochaPaths.slice();
-
+    let baseResource = resource;
+    if (resource.includes('--')) {
+      baseResource = resource.substring(0, resource.indexOf('--'));
+    }
     // validate the root suite path before continuing
-    let testPath = `${rootTestDir}/${resourceType}/${resource}`;
+    let testPath = `${rootTestDir}/${resourceType}/${baseResource}`;
     if (!fs.existsSync(testPath)) {
       console.log('Invalid suite: %s', suite);
       process.exit(1);
     }
-
     // add the suite next, unless a specific file was passed
     if (file.length < 1) allMochaPaths.push(testPath);
     else {
@@ -153,12 +160,16 @@ commander
   .option('-s, --exclude <resource>', 'element(s) or platform resource(s) to exclude if running all tests', collect, [])
   .option('-S, --start <suite>', 'specific suite to start with, everything before this will be skipped')
   .option('-V, --verbose', 'logging verbose mode')
+  .option('-i, --instance <instance>', 'element instance ID to run tests against (for development only)')
+  .option('-P, --params <json>', 'add additional parameters for provisioning')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
     console.log('    # Element Tests');
     console.log('    $ churros test elements/closeio');
     console.log('    $ churros test elements/closeio --test \'contacts\'');
+    console.log('    $ churros test elements/closeio --file \'contacts\'');
+    console.log('    $ churros test elements/zuorav2 --params \'{"zuorav2.sandbox": true}\'');
     console.log('    $ churros test elements');
     console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
     console.log('    $ churros test elements --start freshbooks');

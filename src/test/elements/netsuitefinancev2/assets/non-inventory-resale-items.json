@@ -61,7 +61,7 @@
     "name": "S1"
   },
   "isDropShipItem": false,
-  "itemId": "Sample Churros Item",
+  "itemId": "<<random.words>>",
   "isDonationItem": false,
   "onSpecial": false,
   "expenseAccount": {
