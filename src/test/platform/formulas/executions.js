@@ -630,7 +630,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
   it('should cancel a running formula instance execution and not attempt to cancel an already cancelled/finished execution', () => {
 
-    const myCustomTestWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
+    const cancelTestCustomTestWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
 
     const instanceValidatorWrapper = fId => {
       if (typeof instanceValidator === 'function') { return instanceValidator(fId); }
@@ -691,40 +691,40 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(() => tools.wait.upTo(10000).for(fetchAndValidateInstances(fId)))
       .then(() => Promise.all(fiIds.map(fiId => common.deleteFormulaInstance(fId, fiId))))
       .then(() => common.deleteFormula(fId));
-  };
+    };
 
-  const myTestWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-  if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
-  return myCustomTestWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
-  };
+    const cancelTestWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
+    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
+    return cancelTestCustomTestWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
+    };
 
-  const myManualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus) => {
-  const f = require(`./assets/formulas/${fName}`);
-  let fi = { name: 'churros-manual-formula-instance' };
+    const cancelManualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus) => {
+      const f = require(`./assets/formulas/${fName}`);
+      let fi = { name: 'churros-manual-formula-instance' };
 
-  if (configuration) {
-    fi.configuration = configuration;
-  }
+      if (configuration) {
+        fi.configuration = configuration;
+      }
 
-  const validatorWrapper = (executions) => {
-    executions.map(e => {
-      e.stepExecutions.filter(se => se.stepName === 'trigger')
-        .map(t => {
-          expect(t.stepExecutionValues.length).to.equal(1);
-          const sev = t.stepExecutionValues[0];
-          expect(sev).to.have.property('key').and.equal('trigger.args');
+      const validatorWrapper = (executions) => {
+        executions.map(e => {
+          e.stepExecutions.filter(se => se.stepName === 'trigger')
+            .map(t => {
+              expect(t.stepExecutionValues.length).to.equal(1);
+              const sev = t.stepExecutionValues[0];
+              expect(sev).to.have.property('key').and.equal('trigger.args');
+            });
         });
-    });
-    if (typeof validator === 'function') validator(executions);
-  };
+        if (typeof validator === 'function') validator(executions);
+      };
 
-  const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
-  const numSes = f.steps.length + 1; // steps + trigger
-  return myTestWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
-  };
+      const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
+      const numSes = f.steps.length + 1; // steps + trigger
+      return cancelTestWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
+    };
 
-  var f = myManualTriggerTest('formula-waitForIt-selfContained', null, { foo: 'bar' }, 2, common.defaultValidator, 'success');
-  console.log("manual trigger state", f);
-  return f;
+    var f = cancelManualTriggerTest('formula-waitForIt-selfContained', null, { foo: 'bar' }, 2, common.defaultValidator, 'success');
+    console.log("manual trigger state", f);
+    return f;
   });
 });
