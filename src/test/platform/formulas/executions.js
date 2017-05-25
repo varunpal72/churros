@@ -630,120 +630,101 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
   it('should cancel a running formula instance execution and not attempt to cancel an already cancelled/finished execution', () => {
 
-    ////////////////////
-    // modified from common.testwrapper()
     const myCustomTestWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
-      /*
-      const fetchAndValidateExecutions = (fId, fiId) => () => new Promise((res, rej) => {
-        return getFormulaInstanceExecutions(fiId)
-        .then(r => Promise.all(r.body.map(fie => getFormulaInstanceExecutionWithSteps(fie.id))))
-        .then(executions => execValidator(executions, numEs, numSes, executionStatus, fId, fiId))
-        //.then(() => console.log(executions))
-        .then(v => res(v))
-        .catch(e => rej(e));
-      });
-      */
 
-      const instanceValidatorWrapper = fId => {
-        if (typeof instanceValidator === 'function') { return instanceValidator(fId); }
-        return Promise.resolve(fId);
-      };
-
-      const fetchAndValidateInstances = fId => () => new Promise ((res, rej) => {
-        instanceValidatorWrapper(fId)
-        .then(v => res(v))
-        .catch(e => rej(e));
-      });
-
-      let fId;
-      const fiIds = [];
-      let exId;
-      return common.createFormula(f)
-        .then(f => fId = f.id)
-        .then(() => tools.times(numInstances || 1)(() => common.createFormulaInstance(fId, fi)))//cloud.post(`/formulas/${fId}/instances`, fi, fiSchema)))
-        .then(ps => Promise.all(ps.map(p => {
-          let fiId;
-          return p
-            .then(fi => {
-              fiId = fi.id;
-              fiIds.push(fiId);
-            })
-            .then(() => kickOffDatFormulaCb(fId, fiId))
-              .then(() => logger.debug("formula ID  ", fId, "\ninstance ID ", fiId))
-            // get first execution
-            .then(() => cloud.get(`/formulas/${fId}/instances/${fiId}/executions`))
-            .then(r => {
-              exId = r.body[0].id;
-              //console.log(r.body[0]);
-            })
-              .then(() => logger.debug("execution ID", exId))
-            .then(() => {
-              return new Promise(function(resolve, reject) {
-                setTimeout(() => {
-                  resolve();
-                }, 2500); //time in ms
-              });
-            })
-            // cancel, expect a 200
-            .then(() => logger.debug(`cancelling execution ID ${exId} ...`))
-            .then(() => cloud.patch(`/formulas/instances/executions/${exId}`, {'status': 'cancelled'}))
-            .then(r => expect(r).to.have.statusCode(200))
-              //.then(r => console.log(r.statusCode.statusCode))
-            .then(() => {
-              return new Promise(function(resolve, reject) {
-                setTimeout(() => {
-                  resolve();
-                }, 1000); //time in ms
-              });
-            })
-            // cancel again, expect 400 (can't cancel already completed formula)
-            .then(() => logger.debug(`cancelling execution ID ${exId} again ...`))
-            .then(() => cloud.patch(`/formulas/instances/executions/${exId}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(400)))
-            // cancel non-existent execution ID, expect 404
-            .then(() => logger.debug(`cancelling non-existent execution ID ${exId + 100}, expecting 404...`))
-            .then(() => cloud.patch(`/formulas/instances/executions/${exId + 100}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(404)));
-        })))
-        .then(() => tools.wait.upTo(10000).for(fetchAndValidateInstances(fId)))
-        .then(() => Promise.all(fiIds.map(fiId => common.deleteFormulaInstance(fId, fiId))))
-        .then(() => common.deleteFormula(fId));
+    const instanceValidatorWrapper = fId => {
+      if (typeof instanceValidator === 'function') { return instanceValidator(fId); }
+      return Promise.resolve(fId);
     };
 
-    // from testWrapper()
-    const myTestWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-      if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
-      return myCustomTestWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
-    };
+    const fetchAndValidateInstances = fId => () => new Promise ((res, rej) => {
+      instanceValidatorWrapper(fId)
+      .then(v => res(v))
+      .catch(e => rej(e));
+    });
 
-    // from manualTriggerTest()
-    const myManualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus) => {
-      const f = require(`./assets/formulas/${fName}`);
-      let fi = { name: 'churros-manual-formula-instance' };
-
-      if (configuration) {
-        fi.configuration = configuration;
-      }
-
-      const validatorWrapper = (executions) => {
-        executions.map(e => {
-          e.stepExecutions.filter(se => se.stepName === 'trigger')
-            .map(t => {
-              expect(t.stepExecutionValues.length).to.equal(1);
-              const sev = t.stepExecutionValues[0];
-              expect(sev).to.have.property('key').and.equal('trigger.args');
+    let fId;
+    const fiIds = [];
+    let exId;
+    return common.createFormula(f)
+      .then(f => fId = f.id)
+      .then(() => tools.times(numInstances || 1)(() => common.createFormulaInstance(fId, fi)))//cloud.post(`/formulas/${fId}/instances`, fi, fiSchema)))
+      .then(ps => Promise.all(ps.map(p => {
+        let fiId;
+        return p
+          .then(fi => {
+            fiId = fi.id;
+            fiIds.push(fiId);
+          })
+          .then(() => kickOffDatFormulaCb(fId, fiId))
+            .then(() => logger.debug("formula ID  ", fId, "\ninstance ID ", fiId))
+          .then(() => cloud.get(`/formulas/${fId}/instances/${fiId}/executions`))
+          .then(r => {
+            exId = r.body[0].id;
+          })
+            .then(() => logger.debug("execution ID", exId))
+          .then(() => {
+            return new Promise(function(resolve, reject) {
+              setTimeout(() => {
+                resolve();
+              }, 2500);
             });
+          })
+          // cancel, expect a 200
+          .then(() => logger.debug(`cancelling execution ID ${exId} ...`))
+          .then(() => cloud.patch(`/formulas/instances/executions/${exId}`, {'status': 'cancelled'}))
+          .then(r => expect(r).to.have.statusCode(200))
+          .then(() => {
+            return new Promise(function(resolve, reject) {
+              setTimeout(() => {
+                resolve();
+              }, 1000); 
+            });
+          })
+          // cancel again, expect 400 (can't cancel already completed formula)
+          .then(() => logger.debug(`cancelling execution ID ${exId} again ...`))
+          .then(() => cloud.patch(`/formulas/instances/executions/${exId}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(400)))
+          // cancel non-existent execution ID, expect 404
+          .then(() => logger.debug(`cancelling non-existent execution ID ${exId + 100}, expecting 404...`))
+          .then(() => cloud.patch(`/formulas/instances/executions/${exId + 100}`, {'status': 'cancelled'}, (r) => expect(r).to.have.statusCode(404)));
+      })))
+      .then(() => tools.wait.upTo(10000).for(fetchAndValidateInstances(fId)))
+      .then(() => Promise.all(fiIds.map(fiId => common.deleteFormulaInstance(fId, fiId))))
+      .then(() => common.deleteFormula(fId));
+  };
+
+  const myTestWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
+  if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
+  return myCustomTestWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
+  };
+
+  const myManualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus) => {
+  const f = require(`./assets/formulas/${fName}`);
+  let fi = { name: 'churros-manual-formula-instance' };
+
+  if (configuration) {
+    fi.configuration = configuration;
+  }
+
+  const validatorWrapper = (executions) => {
+    executions.map(e => {
+      e.stepExecutions.filter(se => se.stepName === 'trigger')
+        .map(t => {
+          expect(t.stepExecutionValues.length).to.equal(1);
+          const sev = t.stepExecutionValues[0];
+          expect(sev).to.have.property('key').and.equal('trigger.args');
         });
-        if (typeof validator === 'function') validator(executions);
-      };
+    });
+    if (typeof validator === 'function') validator(executions);
+  };
 
-      const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
-      const numSes = f.steps.length + 1; // steps + trigger
-      return myTestWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
-    };
-    ////////////////////    
+  const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
+  const numSes = f.steps.length + 1; // steps + trigger
+  return myTestWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
+  };
 
-    // trigger the formula - no configuration needed
-    var f = myManualTriggerTest('formula-waitForIt-selfContained', null, { foo: 'bar' }, 2, common.defaultValidator, 'success');
-    console.log("manual trigger state", f);
-    return f;
+  var f = myManualTriggerTest('formula-waitForIt-selfContained', null, { foo: 'bar' }, 2, common.defaultValidator, 'success');
+  console.log("manual trigger state", f);
+  return f;
   });
 });
