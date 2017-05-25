@@ -1,7 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/optouts');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/optouts.json`);
 const fs = require('fs');
 const cloud = require('core/cloud');
 

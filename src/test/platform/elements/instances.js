@@ -152,14 +152,14 @@ suite.forPlatform('elements/instances', opts, (test) => {
   it('should support updating the tags for an element instance', () => {
     const validateTags = (id, tags) => {
       expect(tags.length).to.equal(1) && expect(tags[0]).to.equal('churros-testing');
-      provisioner.delete(id);
     };
 
     let id;
     return provisioner.create('sfdc', { name: 'churros-test' })
       .then(r => id = r.body.id)
       .then(r => cloud.patch(`/instances/${id}`, { id: id, tags: ['churros-testing'] }))
-      .then(r => cloud.get(`/instances/${id}`, validateTags(id, r.body.tags)));
+      .then(r => cloud.get(`/instances/${id}`, validateTags(id, r.body.tags)))
+      .then(r => provisioner.delete(id));
   });
 
   it('should support switching an instance to the clone of an element', () => {
@@ -208,5 +208,17 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => instanceId = r.body.id)
       .then(() => provisioner.delete(instanceId))
       .then(() => cloud.get('hubs/crm/account?pageSize=1', (r) => expect(r).to.have.statusCode(401)));
+  });
+
+  it('should ignore any provided hub', () => {
+    let withCorrectHub;
+    return cloud.get('hubs/crm/account?pageSize=1')
+      .then(r => withCorrectHub = r.body)
+      .then(() => cloud.get('hubs/documents/account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub))
+      .then(() => cloud.get('hubs/crap/account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub))
+      .then(() => cloud.get('account?pageSize=1'))
+      .then(r => expect(r.body).to.deep.equal(withCorrectHub));
   });
 });

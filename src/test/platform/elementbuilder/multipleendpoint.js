@@ -4,9 +4,9 @@ const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const provisioner = require('core/provisioner');
-const noendpointElement = require('./assets/noendpoint_element.json');
-const noendpointInstanceSchema = require('./assets/noendpoint_instance_schema.json');
-const noendpointInstancePostSchema = require('./assets/noendpoint_instance_postschema.json');
+const noendpointElement = require('./assets/multipleendpoint/noendpoint_element.json');
+const noendpointInstanceSchema = require('./assets/multipleendpoint/noendpoint_instance_schema.json');
+const noendpointInstancePostSchema = require('./assets/multipleendpoint/noendpoint_instance_postschema.json');
 
 suite.forPlatform('elementbuilder', {}, (test) => {
   let createdNoendpoint;

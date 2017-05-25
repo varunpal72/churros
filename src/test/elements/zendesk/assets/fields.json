@@ -1,4 +1,5 @@
 {
   "title": "UpdateFieldChurros",
-  "key": "ChurrosTestKey"
+  "key": "ChurrosTestKey",
+  "type" : "text"
 }
