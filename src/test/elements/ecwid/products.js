@@ -9,13 +9,13 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
   let id;
   test.should.supportSr();
 
-  it.skip('it should support PATCH', () => { //Since no post for products, so directly using value
-    return cloud.get('/hubs/ecommerce/products')
-      .then(r => r.body.filter(r => r.id))
-      .then(filteredProducts => cloud.patch(`/hubs/ecommerce/products/${filteredProducts[0].id}`, payload));
+  it.skip(`should allow PATCH for ${test.api}`, () => { //Since no post for products, so directly using value
+    return cloud.get(test.api)
+      .then(r => id=r.body[0].id)
+      .then(r => cloud.patch(`${test.api}/${id}`, payload));
   });
 
-  it('it should support GET  by category', () => {
+  it('it should support GET /hubs/ecommerce/orders', () => {
     return cloud.get('/hubs/ecommerce/orders')
       .then(r => id = r.body[0].items.categoryId);
   });
