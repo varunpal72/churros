@@ -17,7 +17,7 @@ suite.forElement('ecommerce', 'customers', (test) => {
     .withOptions({ qs: { where: 'customer_id=987379423' } }) //negative testing
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.id === 987379423);
+      const validValues = r.body.filter(obj => obj.id = 987379423);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
   test.should.supportPagination();

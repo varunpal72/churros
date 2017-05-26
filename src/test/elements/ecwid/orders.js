@@ -16,7 +16,9 @@ suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
   });
 
   it(`it should support GET ${test.api}/{id}/payments`, () => {
-    return cloud.get(`${test.api}/${id}/payments`);
+    return cloud.get(test.api)
+      .then(r => id = r.body[0].id)
+      .then(r => cloud.get(`${test.api}/${id}/payments`));
   });
 
   it(`it should support GET ${test.api}/{id}/refunds`, () => {
@@ -28,7 +30,7 @@ suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
     .withOptions({ qs: { where: `date = '2018-03-22 16:22:25'` } })
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.created === '2018-03-22 16:22:25');
+      const validValues = r.body.filter(obj => obj.created = '2018-03-22 16:22:25');
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
 

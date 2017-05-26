@@ -15,16 +15,12 @@ suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/${id}`, payload));
   });
 
-  it('it should support GET /hubs/ecommerce/orders', () => {
-    return cloud.get('/hubs/ecommerce/orders')
-      .then(r => id = r.body[0].items.categoryId);
-  });
   test
     .withName(`should support searching ${test.api} by category`)
     .withOptions({ qs: { where: `category = 10756089` } }) //Since no delete for products, so directly using value of category
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.category === id);
+      const validValues = r.body.filter(obj => obj.category = 10756089);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
 
