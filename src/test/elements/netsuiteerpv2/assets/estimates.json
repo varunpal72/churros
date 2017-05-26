@@ -1,4 +1,10 @@
 {
+  "exchangeRate": 1,
+  "customForm": {
+    "internalId": "175",
+    "name": "Z - HM Quote Form"
+  },
+  "currencyName": "USA",
   "expectedCloseDate": "2016-05-24T02:00:00-05:00",
   "email": "aa@fake-email.com",
   "toBePrinted": false,

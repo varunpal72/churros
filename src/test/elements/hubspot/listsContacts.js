@@ -11,7 +11,7 @@ suite.forElement('marketing', 'lists', null, (test) => {
     let listId, contactId, updatedPayload;
     return cloud.post(test.api, { name: tools.random() })
       .then(r => listId = r.body.id)
-      .then(r => cloud.post(contactsApi, { email: email, firstName: tools.random(), lastName: tools.random() }))
+      .then(r => cloud.post(contactsApi, {address: "Baner",city: "Pune", company: "CE",phone: "42343251",state: "MH", website: "www.googleas.com",zip: "431605", email: email, firstName: tools.random(), lastName: tools.random() }))
       .then(r => contactId = r.body.id)
       .then(r => updatedPayload = [{ properties: { email: email }, vid: contactId }])
       .then(r => cloud.post(`${test.api}/${listId}/contacts`, updatedPayload))

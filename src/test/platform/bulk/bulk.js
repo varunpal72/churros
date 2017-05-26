@@ -39,10 +39,12 @@ suite.forPlatform('bulk', (test) => {
       // get bulk query results in JSON
       .then(r => cloud.withOptions({ headers: { accept: "application/json" }, qs: {json: '{ "convertToNativeType": "false" }' }}).get(`/hubs/crm/bulk/${bulkId}/accounts`, r => {
         expect(r.body).to.not.be.empty;
+        expect(r.response.headers['content-type']).to.equal('application/json');
       }))
       // get bulk query results in CSV
       .then(r => cloud.withOptions({ headers: { accept: "text/csv" } }).get(`/hubs/crm/bulk/${bulkId}/accounts`, r => {
         expect(r.body).to.not.be.empty;
+        expect(r.response.headers['content-type']).to.equal('text/csv');
       }));
   });
 

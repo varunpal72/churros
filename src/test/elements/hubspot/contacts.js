@@ -16,6 +16,7 @@ const options = {
     }
   }
 };
+
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportNextPagePagination(1);
@@ -33,7 +34,7 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       "formField": false,
       "displayMode": "current_value",
       "groupName": "conversioninformation",
-      "name": "chuors_temp_1",
+      "name": "a"+tools.random().toLowerCase(),
       "options": [],
       "fieldType": "text",
       "calculated": false,
