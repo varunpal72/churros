@@ -11,5 +11,5 @@ const contactsPayload = {
   }
 };
 suite.forElement('marketing', 'polling', null, (test) => {
-  test.withApi('/hubs/marketing/contacts').should.supportPolling(contactsPayload, 'contacts');
+  test.withApi('/hubs/marketing/contacts').should.supportPolling(contactsPayload, 'leads');
 });
