@@ -227,6 +227,6 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(() => cloud.get(`/account`, r => expect(r).to.have.statusCode(403)))
       .then(() => cloud.get(`/objects`))
       .then(() =>cloud.put(`instances/${sfdcId}/enabled`))
-      .then(() => cloud.get(`/account`))
+      .then(() => cloud.get(`/account`));
   });
 });
