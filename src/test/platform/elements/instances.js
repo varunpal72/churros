@@ -221,4 +221,12 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(() => cloud.get('account?pageSize=1'))
       .then(r => expect(r.body).to.deep.equal(withCorrectHub));
   });
+
+  it('should allow disabling and enabling  an instance', () => {
+    return cloud.delete(`instances/${sfdcId}/enabled`)
+      .then(() => cloud.get(`/account`, r => expect(r).to.have.statusCode(403)))
+      .then(() => cloud.get(`/objects`))
+      .then(() =>cloud.put(`instances/${sfdcId}/enabled`))
+      .then(() => cloud.get(`/account`))
+  });
 });
