@@ -13,15 +13,14 @@ suite.forElement('db', 'contacts', { payload: payload }, (test) => {
     return cloud.post(test.api, payload)
       .then(r => contactId = r.body.id)
       .then(r => cloud.get(`${test.api}/fields`))
-	.then(r =>{ record = r.body.filter(function(list) {
+      .then(r => {
+        record = r.body.filter(function(list) {
           return list.label === "file";
         });
-		fieldId = record[0]["@id"];
-		}
-	)
-      .then(r => cloud.withOptions({ qs: { fieldName : 'file' } }).postFile(`${test.api}/${contactId}/attachments`, __dirname + '/assets/attach.txt'))
+        fieldId = record[0]["@id"];
+      })
+      .then(r => cloud.withOptions({ qs: { fieldName: 'file' } }).postFile(`${test.api}/${contactId}/attachments`, __dirname + '/assets/attach.txt'))
       .then(r => cloud.get(`${test.api}/${contactId}/attachments/${fieldId}`))
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
-
