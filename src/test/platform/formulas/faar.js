@@ -30,7 +30,7 @@ const cleanup = (formulaId, formulaInstanceId) => {
 };
 
 suite.forPlatform('formulas', {name: 'FaaRs'}, test => {
-  before(() => {
+  beforeEach(() => {
     const filter = name => name === manualFormula.name;
     return cloud
       .get('/formulas/instances')
