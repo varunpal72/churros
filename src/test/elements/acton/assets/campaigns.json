@@ -1,6 +1,6 @@
 {
     "type":"template",
-    "subject":"My First Campaign!",
-    "textbody":"This is a test message to me",
-    "messagebody":"This is a test message to me"
+    "subject":"<<name.title>>",
+    "textbody":"<<lorem.sentence>>",
+    "messagebody":"<<lorem.paragraph>>"
 }

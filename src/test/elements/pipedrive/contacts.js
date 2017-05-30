@@ -112,11 +112,10 @@ suite.forElement('crm', 'contacts', { payload: contactsPayload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 
-  it('should GET /contacts emails and mails', () => {
+  it('should GET /contacts  mails', () => {
     let contactId;
     return cloud.post(test.api, contactsPayload)
       .then(r => contactId = r.body.id)
-      .then(r => cloud.get(`${test.api}/${contactId}/emails`))
       .then(r => cloud.get(`${test.api}/${contactId}/mails`))
       .then(r => cloud.delete(`${test.api}/${contactId}`));
 

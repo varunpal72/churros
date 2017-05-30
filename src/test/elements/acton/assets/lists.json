@@ -2,7 +2,7 @@
   "headings": "y",
   "fieldseparator": "COMMA",
   "quotecharacter": "NONE",
-  "listname": "churrosList",
+  "listname": "<<name.title>>",
   "uploadspecs": [{
       "columnHeading": "Email",
       "ignoreColumn": "N",

@@ -1,6 +1,7 @@
 'use strict';
 
 const cloud = require('core/cloud');
+const objectPayload = require('./element.object.payload.json');
 
 var exports = module.exports = {};
 
@@ -16,6 +17,14 @@ exports.genElement = (opts) => ({
   description: (opts.description || "A Churros element"),
   authentication: (opts.authentication) || { type: 'basic' },
   configuration: (opts.configuration) || [exports.genBaseUrlConfig({})]
+});
+
+exports.genElementWithObjects = (opts) => ({
+  name: (opts.name || 'Churros'),
+  description: (opts.description || "A Churros element"),
+  authentication: (opts.authentication) || { type: 'basic' },
+  configuration: (opts.configuration) || [exports.genBaseUrlConfig({})],
+  objects: objectPayload
 });
 
 exports.genDBElement = (opts) => ({

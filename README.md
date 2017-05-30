@@ -62,7 +62,7 @@ Lastly, if you don't have a personal ngrok account, you'll need to signup for a 
 It is worth taking some time to familiarize yourself with the `churros` CLI.  This CLI can run tests, help setup new test suites, and add/view properties that are needed in order to run certain suites.  Run `churros help` and dig through some of the different sub-commands that are currently available.  To see some examples of the most common command, `churros test`, continue on below.
 
 ## API Docs
-For full API docs, see the API docs [here](http://cloud-elements.github.io/churros).
+For full API docs, see the API docs [here](http://cloud-elements.github.io/churros/).
 
 ## Examples
 
@@ -93,13 +93,15 @@ $ churros test elements/sfdc --browser phantomjs
 
 # Run suite on a existing instance(FOR DEVELOPMENT ONLY)
 $ churros test elements/pipedrive --instance 1234
+
+# Run suite with additional provisioning parameters
+$ churros test elements/zuorav2 --params '{"zuorav2.sandbox": true}'
 ```
 
 > __PROTIP:__ The `--test` value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
-
 >__PROTIP:__ The `--file` value will run all the tests inside the JavaScript. Leave the `.js` off of the value
-
 > __PROTIP:__ The `--browser` value defaults to `firefox`, however if you want to use a headless browser, you can pass `--browser phantomjs` as seen above
+>__PROTIP:__ The `--params` requires valid JSON
 
 ### Platform Tests
 

@@ -11,6 +11,7 @@ const o = require('core/oauth');
 const r = require('request');
 const defaults = require('core/defaults');
 const cloud = require('core/cloud');
+const argv = require('optimist').argv;
 
 var exports = module.exports = {};
 
@@ -53,32 +54,16 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
-const getPollerConfig = (element, instance) => {
-  let elementObj;
-  return cloud.get('/elements/' + element)
-  .then(r => elementObj = r.body)
-  .then(r => props.setForKey(element, 'elementId', elementObj.id))
-  .then(r => cloud.get(`elements/${elementObj.id}/metadata`))
-  .then(r => {
-    return r.body.events.supported && r.body.events.methods.includes('polling');
-  })
-  .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
-  .then(r => {
-    if (r === null) return instance;
-    let instanceCopy = JSON.parse(JSON.stringify(instance));
-    if (elementObj.configuration.map(conf => conf.key).includes('event.metadata')) {
-      instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
-      .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
-    } else {
-      instanceCopy.configuration['event.poller.configuration'] = r;
-    }
-    instanceCopy.configuration['event.vendor.type'] = 'polling';
-    instanceCopy.configuration['event.notification.callback.url'] = props.get('eventCallbackUrl');
-    instanceCopy.configuration['event.notification.enabled'] = 'true';
-    instanceCopy.configuration['event.poller.refresh_interval'] = '1';
-    return instanceCopy;
-  })
-  .catch(() => instance);
+const addParams = (instance) => {
+  let instanceCopy = JSON.parse(JSON.stringify(instance));
+  if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+  return instanceCopy;
+};
+
+const addParamsToOptions = (argOptions) => {
+  let optionsCopy = JSON.parse(JSON.stringify(argOptions));
+  if (argv.params) optionsCopy.qs = Object.assign({}, optionsCopy.qs, JSON.parse(argv.params));
+  return optionsCopy;
 };
 
 const createInstance = (element, config, providerData, baseApi) => {
@@ -88,8 +73,8 @@ const createInstance = (element, config, providerData, baseApi) => {
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
-  return getPollerConfig(tools.getBaseElement(element), instance)
-    .then(r => cloud.post(baseApi, r))
+
+  return cloud.post(baseApi, addParams(instance))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
@@ -148,8 +133,8 @@ const createExternalInstance = (element, config, providerData) => {
 const oauth = (element, args, config) => {
   let urlElement = tools.getBaseElement(element);
   const url = `/elements/${urlElement}/oauth/url`;
-  logger.debug('GET %s with options %s', url, args.options);
-  return cloud.withOptions(args.options).get(url)
+  logger.debug('GET %s with options %s', url, JSON.stringify(addParamsToOptions(args.options)));
+  return cloud.withOptions(addParamsToOptions(args.options)).get(url)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return o(element, r, args.username, args.password, config);
@@ -198,8 +183,6 @@ const oauth1 = (element, args) => {
  * @return {Promise}         JS promise that resolves to the instance created
  */
 const orchestrateCreate = (element, args, baseApi, cb) => {
-  // Setting which element we are currently running on
-  props.set('element', element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
   config.element = element;
@@ -265,9 +248,9 @@ exports.delete = (id, baseApi) => {
 
   baseApi = (baseApi) ? baseApi : '/instances';
   // when running the delete API, don't include the element token in the auth header
-  const {userSecret, orgSecret} = defaults.secrets();
-  const headers = {Authorization: `User ${userSecret}, Organization ${orgSecret}`};
-  return cloud.withOptions({headers}).delete(`${baseApi}/${id}`)
+  const { userSecret, orgSecret } = defaults.secrets();
+  const headers = { Authorization: `User ${userSecret}, Organization ${orgSecret}` };
+  return cloud.withOptions({ headers }).delete(`${baseApi}/${id}`)
     .then(r => {
       logger.debug(`Deleted element instance with ID: ${id}`);
       defaults.reset();
