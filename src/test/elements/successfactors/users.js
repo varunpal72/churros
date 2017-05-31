@@ -19,7 +19,7 @@ suite.forElement('Humancapital', 'users', { payload: payload }, (test) => {
   it(`should allow CEQL search for ${test.api}`, () => {
     return cloud.withOptions({ qs: { where: `userId='${id}'` } }).get(test.api)
       .then(r => {
-        expect(r.body).to.not.be.empty
+        expect(r.body).to.not.be.empty;
         expect(r.body.length).to.equal(1);
         expect(r.body[0].userId).to.equal(id);
       });

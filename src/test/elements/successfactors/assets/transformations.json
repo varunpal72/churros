@@ -10,7 +10,7 @@
     "vendorName": "employee.personIdExternal",
     "fields": [{
       "path": "id",
-      "vendorPath": "userId"
+      "vendorPath": "personIdExternal"
     }]
   }
 }
