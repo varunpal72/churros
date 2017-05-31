@@ -23,7 +23,7 @@ const baseUrl = 'https://api.cloud-elements.com/elements/api-v2;';
 argv.polling = 'true';
 const setupProps = () => {
   props({
-    'url': 'google.com',
+    'url': 'http://google.com',
     'user': 'franky',
     'oauth.callback.url': 'http://myfakecallbackurl',
     'myelement': {

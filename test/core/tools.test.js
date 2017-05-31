@@ -161,7 +161,7 @@ Josh,Wyse,2
   });
   it('should add to cleanup file', () => {
     tools.resetCleanup();
-    tools.addCleanUp({url:'google.com', method: 'get', secrets: {}});
-    setTimeout(() => expect(tools.getCleanup()).to.deep.equal([{url:'google.com', method: 'get', secrets: {}}]), 1000);
+    tools.addCleanUp({url:'http://google.com', method: 'get', secrets: {}});
+    setTimeout(() => expect(tools.getCleanup()).to.deep.equal([{url:'http://google.com', method: 'get', secrets: {}}]), 1000);
   });
 });

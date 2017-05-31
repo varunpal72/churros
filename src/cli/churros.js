@@ -13,9 +13,8 @@ commander
   .command('clean', 'clean up platform resources')
   .parse(process.argv);
 
-//cleaning up after tests no matter what (ctrl+c)
-const nodeCleanup = require('node-cleanup');
-nodeCleanup((exitCode, signal) => {
+//cleaning up if tests end early
+const cleanUpFunc = () => {
   const tools = require('../core/tools');
   const request = require('sync-request');
   const cleanupData = tools.getCleanup();
@@ -30,4 +29,9 @@ nodeCleanup((exitCode, signal) => {
     request(data.method, data.url, opts);
   });
   tools.resetCleanup();
-});
+};
+process.on('SIGINT', cleanUpFunc);
+process.on('SIGQUIT', cleanUpFunc);
+process.on('SIGTERM', cleanUpFunc);
+process.on('uncaughtException', cleanUpFunc);
+process.on('exit', cleanUpFunc);
