@@ -3,11 +3,9 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const payload = require('./assets/status');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const statusPayload = build({ message: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/status.json`);
 
-suite.forElement('social', 'user',{ payload:statusPayload }, (test) => {
+suite.forElement('social', 'user',{ payload:payload }, (test) => {
   let userId,statusId;
   it('should allow GET for hubs/social/user/me and GET user by id ', () => {
     return cloud.get(`${test.api}/me`)

@@ -5,8 +5,9 @@ const cloud = require('core/cloud');
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 const propertiesPayload = require('./assets/contactsProperties');
+const propertiesPayload = tools.requirePayload(`${__dirname}/assets/contactsProperties.json`);
+propertiesPayload.name = propertiesPayload.name.toLowerCase();
 
-propertiesPayload.name = "a"+tools.random().toLowerCase();
 const options = {
   churros: {
     updatePayload: {

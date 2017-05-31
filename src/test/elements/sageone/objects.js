@@ -4,9 +4,9 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'objects', (test) => {
-  let id = 'addresses';
+  let objectName = 'addresses';
   it(`should allow SR for ${test.api}`, () => {
     return cloud.get(test.api)
-      .then(r => cloud.get(`${test.api}/${id}/metadata`));
+      .then(r => cloud.get(`${test.api}/${objectName}/metadata`));
   });
 });
