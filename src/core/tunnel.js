@@ -25,3 +25,7 @@ exports.start = (port) => {
     });
   });
 };
+
+exports.stop = (port) => {
+  ngrok.disconnect(port)
+}
