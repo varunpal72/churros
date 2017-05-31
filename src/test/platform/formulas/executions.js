@@ -6,7 +6,6 @@ const logger = require('winston');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
-const moment = require('moment');
 const tools = require('core/tools');
 const fs = require('fs');
 const props = require('core/props');
@@ -203,9 +202,6 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const triggerCb = () => logger.debug('No trigger CB for scheduled formulas');
 
     const setupCron = (r) => {
-      const currentDt = r.body.dateTime;
-      const dt = moment.parseZone(currentDt);
-      dt.add(1, 'minute');
       return {
         name: 'churros-formula-instance',
         configuration: {
