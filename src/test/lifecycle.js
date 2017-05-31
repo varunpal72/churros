@@ -97,7 +97,7 @@ const cleanUpFunc = () => {
     request(data.method, data.url, opts);
   });
   tools.resetCleanup();
-  tunnel.stop(props.getForKey('events', 'port'))
+  tunnel.stop(props.getForKey('events', 'port'));
 };
 process.on('SIGINT', cleanUpFunc);
 process.on('SIGQUIT', cleanUpFunc);
