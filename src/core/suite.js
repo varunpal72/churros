@@ -435,6 +435,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     /**
     * @param {object || Function} pay: The payload used to create a new object
     * @param {Function} validate A validate funtion with `expects` to test response
+    * @param {Function} addMethod A method to create or update a reasource. Ex: cloud.postFile('/path')
     * @memberof module:core/suite.test.should
     */
     supportPolling: (pay, res, addMethod) => itPolling(name, payload, api, options, validationCb, pay, res, addMethod),
