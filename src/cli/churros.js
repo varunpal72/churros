@@ -13,8 +13,9 @@ commander
   .command('clean', 'clean up platform resources')
   .parse(process.argv);
 
-//cleaning up if tests gets ctrl+c
-process.on('SIGINT', function(err) {
+//cleaning up after tests no matter what (ctrl+c)
+const nodeCleanup = require('node-cleanup');
+nodeCleanup((exitCode, signal) => {
   const tools = require('../core/tools');
   const request = require('sync-request');
   const cleanupData = tools.getCleanup();
