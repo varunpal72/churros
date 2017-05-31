@@ -14,5 +14,6 @@ suite.forElement('finance', 'time-activities', { payload: payload }, (test) => {
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
+  
   test.should.supportPagination();
 });
