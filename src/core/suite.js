@@ -241,7 +241,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
     const baseUrl = faker.fake(props.get('eventCallbackUrl'));
 
     const url = baseUrl + '?returnQueue';
-    const addReasource = (r) => addMethod ? addMethod(r) : cloud.withOptions(options).post(api, r);
+    const addResource = (r) => addMethod ? addMethod(r) : cloud.withOptions(options).post(api, r);
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
     const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => {
       expect(res.count).to.be.above(0);
@@ -278,7 +278,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
       });
     })
     .then(() => pay)
-    .then(r => addReasource(r))
+    .then(r => addResource(r))
     .then(r => response = r.body)
     //repeatly revalidates until either valid or time out
     .then(() => tools.wait.upTo(120000).for(() => new Promise((resolve, reject) => {
