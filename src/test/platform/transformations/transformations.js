@@ -87,7 +87,11 @@ const crud = (url, payload, updatePayload, schema) => {
   return cloud.post(url, payload, schema)
     .then(r => cloud.get(url, schema))
     .then(r => cloud.put(url, updatePayload, schema))
-    .then(r => cloud.delete(url));
+    .then(r => cloud.delete(url))
+    .catch(e => {
+      cloud.delete(url);
+      throw new Error(e);
+    });
 };
 
 const getObjectDefUrl = (level, objectName) => {
@@ -108,7 +112,11 @@ const crudTransformsByName = (level, elementKey, payload, updatePayload, schema)
   let objectName = 'churros-object-' + tools.random();
   return cloud.post(getObjectDefUrl(level, objectName), genDefaultObjectDef({}))
     .then(r => crud(getTransformUrl(level, objectName, elementKey), payload, updatePayload, schema))
-    .then(r => cloud.delete(getObjectDefUrl(level, objectName)));
+    .then(r => cloud.delete(getObjectDefUrl(level, objectName)))
+    .catch(e => {
+      cloud.delete(getObjectDefUrl(level, objectName));
+      throw new Error(e);
+    });
 };
 
 const testTransformationForInstance = (objectName, objDefUrl, transUrl) => {
@@ -140,7 +148,12 @@ const testTransformationForInstance = (objectName, objDefUrl, transUrl) => {
       });
     }))
     .then(r => cloud.delete(transUrl))
-    .then(r => cloud.delete(objDefUrl));
+    .then(r => cloud.delete(objDefUrl))
+    .catch(e => {
+      cloud.delete(transUrl);
+      cloud.delete(objDefUrl);
+      throw new Error(e);
+    });
 };
 
 const testTransformation = (instanceId, objectName, objDefUrl, transUrl) => testTransformationForInstance(objectName, objDefUrl, transUrl);
@@ -297,6 +310,18 @@ suite.forPlatform('transformations', { schema: schema }, (test) => {
       .then(r => cloud.delete(getTransformUrl('accounts/' + accountId, objectName, elementKey)))
       .then(r => cloud.delete(getObjectDefUrl('accounts/' + accountId, objectName)))
       .then(r => cloud.delete(getTransformUrl('organizations', objectName, elementKey)))
-      .then(r => cloud.delete(getObjectDefUrl('organizations', objectName)));
+      .then(r => cloud.delete(getObjectDefUrl('organizations', objectName)))
+      //clean up if there is a failure
+      .catch(e => {
+        if (sfdcId && objectName && accountId && elementKey) {
+          cloud.delete(getTransformUrl('instances/' + sfdcId, objectName));
+          cloud.delete(getObjectDefUrl('instances/' + sfdcId, objectName));
+          cloud.delete(getTransformUrl('accounts/' + accountId, objectName, elementKey));
+          cloud.delete(getObjectDefUrl('accounts/' + accountId, objectName));
+          cloud.delete(getTransformUrl('organizations', objectName, elementKey));
+          cloud.delete(getObjectDefUrl('organizations', objectName));
+        }
+        throw new Error(e);
+      });
   });
 });

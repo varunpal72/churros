@@ -86,40 +86,43 @@ const itCs = (name, api, payload, validationCb, options) => {
 };
 
 const itPagination = (name, api, options, validationCb, unique) => {
-  const n = name || `should allow paginating with page and pageSize ${api}`;
+  const n = name || `should allow paginating with page and pageSize for ${api}`;
   const pageSize = options ? options.qs ? options.qs.pageSize ? options.qs.pageSize : 2 : 2 : 2;
   const page = options ? options.qs ? options.qs.page ? options.qs.page : 1 : 1 : 1;
+  const where = options ? options.qs ? options.qs.where ? options.qs.where : null : null: null;
   const options1 = Object.assign({}, options, { qs: { page: page, pageSize: pageSize } });
   const options2 = Object.assign({}, options, { qs: { page: page + 1, pageSize: pageSize } });
   const options3 = Object.assign({}, options, { qs: { page: page, pageSize: (pageSize * 2) } });
-  let result1 = {body:[]}, result2 = {body:[]}, result3 = {body:[]};
+  let result1 = { body: [] }, result2 = { body: [] }, result3 = { body: [] };
   const getWithOptions = (option, result) => {
+    // Adding the 'where' clause if it exists
+    if (where) option.qs.where = where;
     return cloud.withOptions(option).get(api)
-    .then((r) => {
-      if(r.body && r.body.length > 0) {
-        result.body = r.body;
-        expect(result.body.length).to.be.below(option.qs.pageSize + 1);
-        return r.response.headers['elements-next-page-token'];
-      }
-    });
+      .then((r) => {
+        if (r.body && r.body.length > 0) {
+          result.body = r.body;
+          expect(result.body.length).to.be.below(option.qs.pageSize + 1);
+          return r.response.headers['elements-next-page-token'];
+        }
+      });
   };
   return boomGoesTheDynamite(n, () => {
     return getWithOptions(options1, result1)
-    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage, page: page+1 }} : options2, result2))
-    .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
-    .then(() => {
-      if (unique) {
-        result3.body = tools.getKey(result3.body, unique);
-        result2.body = tools.getKey(result2.body, unique);
-        result1.body = tools.getKey(result1.body, unique);
-      }
-      if (result3.body.length === pageSize*2 && result1.body.length === pageSize && result2.body.length === pageSize) {
-        expect(result3.body[0]).to.deep.equal(result1.body[0]);
-        expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
-        expect(result3.body[pageSize]).to.deep.equal(result2.body[0]);
-      }
-      return expect(result3.body).to.deep.equal(result1.body.concat(result2.body));
-    });
+      .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage, page: page + 1 } } : options2, result2))
+      .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2 } } : options3, result3))
+      .then(() => {
+        if (unique) {
+          result3.body = tools.getKey(result3.body, unique);
+          result2.body = tools.getKey(result2.body, unique);
+          result1.body = tools.getKey(result1.body, unique);
+        }
+        if (result3.body.length === pageSize * 2 && result1.body.length === pageSize && result2.body.length === pageSize) {
+          expect(result3.body[0]).to.deep.equal(result1.body[0]);
+          expect(result3.body[result3.body.length - 1]).to.deep.equal(result2.body[result2.body.length - 1]);
+          expect(result3.body[pageSize]).to.deep.equal(result2.body[0]);
+        }
+        return expect(result3.body).to.deep.equal(result1.body.concat(result2.body));
+      });
   }, options ? options.skip : false);
 };
 
@@ -232,26 +235,26 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
   // gets metadata ready for testing csv and json responses
   const getJson = opts ? opts.json : false;
   jsonMeta = JSON.parse(JSON.stringify(metadata));
-  metadata ? metadata.headers ? jsonMeta.headers.accept = "application/json" : jsonMeta.headers = {accept: "application/json"} : jsonMeta = {headers : {accept: "application/json"}};
+  metadata ? metadata.headers ? jsonMeta.headers.accept = "application/json" : jsonMeta.headers = { accept: "application/json" } : jsonMeta = { headers: { accept: "application/json" } };
   const getCsv = opts ? opts.csv : false;
   csvMeta = JSON.parse(JSON.stringify(metadata));
-  metadata ? metadata.headers ? csvMeta.headers.accept = "text/csv" : csvMeta.headers = {accept: "text/csv"} : csvMeta = {headers : {accept: "text/csv"}};
+  metadata ? metadata.headers ? csvMeta.headers.accept = "text/csv" : csvMeta.headers = { accept: "text/csv" } : csvMeta = { headers: { accept: "text/csv" } };
 
   metadata = tools.updateMetadata(metadata);
   boomGoesTheDynamite(n, () => {
     // start bulk download
-    return cloud.withOptions(metadata).post(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/query`)
+    return cloud.withOptions(metadata).post(apiOverride ? `${apiOverride}` : `/hubs/${hub}/bulk/query`)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
       // gets regular call to later check the validity of the bulk job
       .then(r => cloud.withOptions(metadata)
-      .get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`, r => {
-        bulkResults = r.body;
-      }))
+        .get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`, r => {
+          bulkResults = r.body;
+        }))
       // get bulk download status
-      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status` : `/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
         return r;
       })))
@@ -261,20 +264,20 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
       })
       // Checks results match the where statement
       .then(r => cloud
-      .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-        let bulkDownloadResults = r.body.split('\n').slice(0, -1).map(el => JSON.parse(el));
-        expect(bulkDownloadResults).to.deep.equal(bulkResults);
-      }))
+        .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+          let bulkDownloadResults = r.body.split('\n').slice(0, -1).map(el => JSON.parse(el));
+          expect(bulkDownloadResults).to.deep.equal(bulkResults);
+        }))
       // get bulk query results in JSON
       .then(r => getJson ? cloud.withOptions(jsonMeta)
-      .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-        expect(r.body, 'json').to.not.be.empty;
-      }) : Promise.resolve(null))
-     // get bulk query results in CSV
-     .then(r => getCsv ? cloud.withOptions(csvMeta)
-     .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-       expect(r.body, 'csv').to.not.be.empty;
-     }) : Promise.resolve(null));
+        .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+          expect(r.body, 'json').to.not.be.empty;
+        }) : Promise.resolve(null))
+      // get bulk query results in CSV
+      .then(r => getCsv ? cloud.withOptions(csvMeta)
+        .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+          expect(r.body, 'csv').to.not.be.empty;
+        }) : Promise.resolve(null));
   }, options ? options.skip : false);
 };
 
@@ -283,18 +286,18 @@ const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverr
   let bulkId;
   boomGoesTheDynamite(n, () => {
     expect(fs.existsSync(filePath)).to.be.true;
-    let file = fs.readFileSync(filePath,'utf8');
+    let file = fs.readFileSync(filePath, 'utf8');
     try { file = JSON.parse(file); } catch (e) { file = tools.csvParse(file); }
     expect(file).to.exist;
     logger.info('Running bulk process, may take upto 2 minutes');
     // start bulk upload
-    return cloud.withOptions(metadata).postFile(apiOverride ? `${apiOverride}`:`/hubs/${hub}/bulk/${endpoint}`, filePath)
+    return cloud.withOptions(metadata).postFile(apiOverride ? `${apiOverride}` : `/hubs/${hub}/bulk/${endpoint}`, filePath)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
       // get bulk upload status
-      .then(r => tools.wait.upTo(120000).for(() => cloud.get(apiOverride ? `${apiOverride}/status`:`/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(120000).for(() => cloud.get(apiOverride ? `${apiOverride}/status` : `/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
         return r;
       })))
@@ -304,18 +307,18 @@ const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverr
       })
       .then((r) => {
         const deleteIds = (where) => {
-          return cloud.withOptions({qs: {where: where}}).get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`)
-          .then(r => {
-            return r.body.filter(obj => obj.id).map(obj => obj.id);
-          })
-          .then(ids => ids.map(id => cloud.delete(apiOverride ? `${apiOverride}/${id}` : `/hubs/${hub}/${endpoint}/${id}`)));
+          return cloud.withOptions({ qs: { where: where } }).get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`)
+            .then(r => {
+              return r.body.filter(obj => obj.id).map(obj => obj.id);
+            })
+            .then(ids => ids.map(id => cloud.delete(apiOverride ? `${apiOverride}/${id}` : `/hubs/${hub}/${endpoint}/${id}`)));
         };
         return where ? deleteIds(where) : Promise.all(file.map(obj => {
           where = tools.createExpression(obj);
           return deleteIds(where);
         }));
       });
-    }, options ? options.skip : false);
+  }, options ? options.skip : false);
 };
 
 const runTests = (api, payload, validationCb, tests, hub) => {

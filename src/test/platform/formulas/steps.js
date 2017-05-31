@@ -43,6 +43,10 @@ suite.forPlatform('formulas', { name: 'formula steps', schema: schema }, (test) 
     return cloud.post(test.api, common.genFormula({}))
       .then(r => formulaId = r.body.id)
       .then(r => cloud.post(`${test.api}/${formulaId}/steps`, invalidJson.steps[0], validator))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 });
