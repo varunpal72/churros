@@ -173,7 +173,7 @@
     "internalId": "121",
     "name": "Cost of Goods Sold"
   },
-  "itemId": "ABC12345TYL0001",
+  "itemId": "<<random.words>>",
   "purchaseUnit": {
     "internalId": "6",
     "name": "Cases"
