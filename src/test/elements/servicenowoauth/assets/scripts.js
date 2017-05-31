@@ -4,9 +4,6 @@ const webdriver = require('selenium-webdriver');
 const props = require('core/props');
 
 module.exports = (element, method) => {
-  const config = {
-    password: props.getForKey(element, 'password')
-  };
   const b = props.get('browser');
   const browser = new webdriver.Builder()
     .forBrowser(b)
@@ -20,9 +17,9 @@ module.exports = (element, method) => {
       browser.findElement(webdriver.By.id('username')).sendKeys('developer@cloud-elements.com');
       browser.sleep(1500);
       browser.findElement(webdriver.By.id('password')).clear();
-      browser.findElement(webdriver.By.id('password')).sendKeys(config.password);
+      browser.findElement(webdriver.By.id('password')).sendKeys('Cl0udEl3m3nts!SN');
       browser.findElement(webdriver.By.id('submitButton')).click();
-      browser.sleep(3000);
+      browser.sleep(5000);
       browser.get("https://developer.servicenow.com/app.do#!/instance");
       browser.sleep(5000);
       return browser.wait(() => browser.isElementPresent(webdriver.By.id('instanceWakeUpBtn')), 5000)

@@ -1,4 +1,8 @@
 {
+  "customForm": {
+    "internalId": "16",
+    "name": "Ramsey Default Customer Form"
+  },
   "isPerson": false,
   "billPay": false,
   "accessRole": {
@@ -10,7 +14,7 @@
     "name": "USA"
   },
   "email": "churros-prospect@cloud-elements.com",
-  "companyName": "Churros Test Prospect Company",
+  "companyName": "<<company.companyName>>",
   "leadSource": {
     "internalId": "100010",
     "name": "Summer End Promotions"
