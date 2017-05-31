@@ -34,4 +34,3 @@ process.on('SIGINT', cleanUpFunc);
 process.on('SIGQUIT', cleanUpFunc);
 process.on('SIGTERM', cleanUpFunc);
 process.on('uncaughtException', cleanUpFunc);
-process.on('exit', cleanUpFunc);
