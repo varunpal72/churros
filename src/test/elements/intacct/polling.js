@@ -9,7 +9,6 @@ const itemsPayload = tools.requirePayload(`${__dirname}/assets/items.json`);
 const journalsPayload = tools.requirePayload(`${__dirname}/assets/journals.json`);
 const ledgerAccountsPayload = tools.requirePayload(`${__dirname}/assets/ledger-accounts.json`);
 const paymentsPayload = tools.requirePayload(`${__dirname}/assets/payments.json`);
-const projectsPayload = tools.requirePayload(`${__dirname}/assets/projects.json`);
 const vendorsPayload = tools.requirePayload(`${__dirname}/assets/vendor.json`);
 
 suite.forElement('finance', 'polling', null, (test) => {

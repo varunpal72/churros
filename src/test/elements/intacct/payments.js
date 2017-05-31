@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-const payload = require('./assets/payments')
+const payload = require('./assets/payments');
 
 suite.forElement('finance', 'payments', { payload: payload, skip: true }, (test) => {
   it(`should allow CRS for ${test.api}`, () => {

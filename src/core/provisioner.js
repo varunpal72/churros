@@ -63,7 +63,7 @@ const getPollerConfig = (element, instance) => {
   .then(r => cloud.get(`elements/${elementObj.id}/metadata`))
   .then(r => {
     const pollsSupported = r.body.events.supported && r.body.events.methods.includes('polling');
-    if (!pollsSupported) logger.error('Polling is not supported for this element.')
+    if (!pollsSupported) logger.error('Polling is not supported for this element.');
     return pollsSupported;
   })
   .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
@@ -73,10 +73,8 @@ const getPollerConfig = (element, instance) => {
     if (elementObj.configuration.map(conf => conf.key).includes('event.metadata')) {
       instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
-      console.log(instanceCopy.configuration['event.objects']);
     } else {
       if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getForKey(element, 'username'));
-      console.log(r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getForKey(element, 'username')));
     }
     instanceCopy.configuration['event.vendor.type'] = 'polling';
     instanceCopy.configuration['event.notification.callback.url'] = 'https://knappkeith.pythonanywhere.com/request/churros/';

@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
 
 const accountsPayload = require('./assets/accounts');
 const contactsPayload = require('./assets/contacts');

@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const listsPayload = tools.requirePayload(`${__dirname}/assets/lists.json`);
-const statusesPayload = tools.requirePayload(`${__dirname}/assets/statuses.json`);
+// const statusesPayload = tools.requirePayload(`${__dirname}/assets/statuses.json`);
 
 suite.forElement('social', 'polling', null, (test) => {
   test.withApi('/hubs/social/lists').should.supportPolling(listsPayload, 'lists');

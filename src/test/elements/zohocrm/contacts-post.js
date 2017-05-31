@@ -18,7 +18,7 @@ suite.forElement('crm', 'contacts-post', {skip: true}, (test) => {
   after(() => cloud.delete(`elements/zohocrm/resources/${newResourceId}`));
 
   it('should test newly added account resource contacts-post', () => {
-      return cloud.post(`contacts-post`, contactsPayload)
+      return cloud.post(`contacts-post`, payload)
       .then(r => {
         expect(r.body).to.not.be.empty;
       });
