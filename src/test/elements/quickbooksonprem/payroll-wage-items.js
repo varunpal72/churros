@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const expect = require('chakram').expect;
 const payload = tools.requirePayload(`${__dirname}/assets/payroll-wage-items.json`);
 
 suite.forElement('finance', 'payroll-wage-items', { payload: payload }, (test) => {

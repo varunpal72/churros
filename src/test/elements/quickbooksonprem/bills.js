@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const expect = require('chakram').expect;
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/bills.json`);
 
@@ -12,7 +11,7 @@ const update = (editseq, isPaid) => ({
 });
 
 suite.forElement('finance', 'bills', { payload: payload }, (test) => {
-  let id, editseq, isPaid;
+  let id, editseq, isPaid, refno;
   it(`should support CRUDS and Ceql searching for ${test.api}`, () => {
     return cloud.post(test.api, payload)
       .then(r => {

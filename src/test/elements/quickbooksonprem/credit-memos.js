@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const expect = require('chakram').expect;
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/credit-memos.json`);
 const update = (editseq) => ({

@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');;
+const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 
 suite.forElement('finance', 'payment-methods', null, (test) => {

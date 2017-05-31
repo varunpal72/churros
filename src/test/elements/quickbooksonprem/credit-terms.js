@@ -1,9 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');
 const expect = require('chakram').expect;
-const tools = require('core/tools');
 
 suite.forElement('finance', 'credit-terms', null, (test) => {
   test.should.supportSr();

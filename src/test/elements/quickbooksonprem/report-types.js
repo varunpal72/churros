@@ -1,6 +1,6 @@
 'use strict';
 
-const suite = require('core/suite')
+const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'report-types', null, (test) => {
