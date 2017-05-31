@@ -45,7 +45,8 @@ module.exports = (element, method) => {
               .then(() => tools.wait.upTo(1800000).for(() => {
                 return new Promise(function(res, rej) {
                   nth+=1
-                  isReloading(nth).then(reloading => reloading === true ? res() : rej());
+                  isReloading(nth).then(reloading => reloading === true)
+                  .then(r => r ? res() : browser.navigate().refresh().catch(() => {}).then(() => browser.sleep(5000)).then(rej));
                 });
               }));
             })
