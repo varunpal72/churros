@@ -82,7 +82,11 @@ suite.forPlatform('formulas', opts, (test) => {
           return cloud.put(`${test.api}/${formulaId}/instances/${fiId}`, fi);
         })
         .then(r => expect(r.body.name).to.equal(`@${updatedName}`))
-        .then(r => common.deleteFormulaInstance(formulaId, fiId));
+        .then(r => common.deleteFormulaInstance(formulaId, fiId))
+        .catch(e => {
+          if (formulaId && fiId) common.deleteFormulaInstance(formulaId, fiId);
+          throw new Error(e);
+        });
     });
 
     it('should allow CRUD a formula instance with notification settings', () => {
@@ -163,7 +167,11 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(r => formulaInstanceId = r.body.id)
         .then(() => cloud.get('/jobs'))
         .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.have.length(1))
-        .then(r => cleaner.formulas.withName(formula.name));
+        .then(r => cleaner.formulas.withName(formula.name))
+        .catch(e => {
+          if (formula.name) cleaner.formulas.withName(formula.name);
+          throw new Error(e);
+        });
     });
 
     it('should not create a job for a new inactive formula and active instance triggered by schedule', () => {
@@ -177,7 +185,11 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(r => formulaInstanceId = r.body.id)
         .then(r => cloud.get('/jobs'))
         .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty)
-        .then(r => cleaner.formulas.withName(formula.name));
+        .then(r => cleaner.formulas.withName(formula.name))
+        .catch(e => {
+          if (formula.name) cleaner.formulas.withName(formula.name);
+          throw new Error(e);
+        });
     });
 
     it('should not create a job for a new active formula and inactive instance triggered by schedule', () => {
@@ -191,7 +203,11 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(r => formulaInstanceId = r.body.id)
         .then(r => cloud.get('/jobs'))
         .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty)
-        .then(r => cleaner.formulas.withName(formula.name));
+        .then(r => cleaner.formulas.withName(formula.name))
+        .catch(e => {
+          if (formula.name) cleaner.formulas.withName(formula.name);
+          throw new Error(e);
+        });
     });
 
     it('should create and delete jobs for a schedule triggered instance updated to active and inactive using the active endpoint', () => {
@@ -216,7 +232,11 @@ suite.forPlatform('formulas', opts, (test) => {
         // yep, you guessed it, check that there is no longer a job for it
         .then(() => cloud.get('/jobs'))
         .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty)
-        .then(r => cleaner.formulas.withName(formula.name));
+        .then(r => cleaner.formulas.withName(formula.name))
+        .catch(e => {
+          if (formula.name) cleaner.formulas.withName(formula.name);
+          throw new Error(e);
+        });
     });
 
     it('should create and delete jobs for a schedule triggered instance updated to active and inactive using a PUT', () => {
@@ -249,7 +269,11 @@ suite.forPlatform('formulas', opts, (test) => {
         // yep, you guessed it, check that there is no longer a job for it
         .then(r => cloud.get('/jobs'))
         .then(r => expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.be.empty)
-        .then(r => cleaner.formulas.withName(formula.name));
+        .then(r => cleaner.formulas.withName(formula.name))
+        .catch(e => {
+          if (formula.name) cleaner.formulas.withName(formula.name);
+          throw new Error(e);
+        });
     });
 
     it('should create and delete jobs for a all schedule triggered instances with formula updated to active and inactive using a PUT', () => {
@@ -297,7 +321,11 @@ suite.forPlatform('formulas', opts, (test) => {
           expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.have.length(1);
         })
         .then(() => common.deleteFormulaInstance(formulaId, formulaInstanceId2))
-        .then(r => cleaner.formulas.withName(formula.name));
+        .then(r => cleaner.formulas.withName(formula.name))
+        .catch(e => {
+          if (formula.name) cleaner.formulas.withName(formula.name);
+          throw new Error(e);
+        });
     });
 
     it('should create and delete jobs for a all schedule triggered instances with formula trigger type switched to manual and back', () => {
@@ -344,7 +372,11 @@ suite.forPlatform('formulas', opts, (test) => {
         .then(r => {
           expect(r.body.filter(j => j.description.indexOf(description(formulaId, formulaInstanceId)) > -1)).to.have.length(1);
         })
-        .then(r => cleaner.formulas.withName(formula.name));
+        .then(r => cleaner.formulas.withName(formula.name))
+        .catch(e => {
+          if (formula.name) cleaner.formulas.withName(formula.name);
+          throw new Error(e);
+        });
     });
   });
 });
