@@ -242,15 +242,12 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
     const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => {
       expect(res.count).to.be.above(0);
-      console.log(res);
-      var thingy = res.data.filter(call => {
-        var datas = JSON.parse(call.data);
-        console.log(resource);
-        console.log(datas.message.raw.objectType);
+      let objCalls = res.data.filter(call => {
+        let datas = JSON.parse(call.data);
         return datas.message.raw.objectType === resource;
       });
 
-      if (resource) expect(thingy).to.have.length.above(0);
+      if (resource) expect(objCalls).to.have.length.above(0);
     };
     if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
     expect(baseUrl).to.exist;
@@ -277,11 +274,9 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
         });
       });
     })
-    .then(() => console.log(pay))
     .then(() => pay)
     .then(r => addReasource(r))
     .then(r => response = r.body)
-    .then(() => console.log('response', response))
     //repeatly revalidates until either valid or time out
     .then(() => tools.wait.upTo(120000).for(() => new Promise((resolve, reject) => {
       request(url, (err, res, body) => {
