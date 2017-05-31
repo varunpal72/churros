@@ -224,7 +224,15 @@ const fake = (str, startDelim, endDelim) => {
 
   const token = str.substr(start + 2,  end - start - 2);
   const method = token.replace(endDelim, '').replace(startDelim, '');
-  const result = faker.fake(`{{${method}}}`);
+  //allows you say specify how many words or numbers or whatnot
+  let result = '';
+  if (method.includes('##')) {
+    let num = parseInt(method.substr(method.indexOf('##') + 2));
+    const moddedMethod = method.substr(0, method.indexOf('##'));
+    result = Array(num).fill(0).map((x, i) => faker.fake(`{{${moddedMethod}}}`)).join('');
+  } else {
+    result = faker.fake(`{{${method}}}`);
+  }
 
   str = str.replace(startDelim + token + endDelim, result);
 
@@ -250,7 +258,7 @@ exports.requirePayload = (path) => {
     const payload = fake(str);
     return JSON.parse(payload);
   } else {
-    throw new Error('Path is not valid');
+    throw new Error('Path is not valid:' + path);
   }
 };
 

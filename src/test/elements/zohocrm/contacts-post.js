@@ -4,11 +4,8 @@ const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const newResource = require('./assets/newResourcePost.json');
-const payload = require('./assets/contacts');
 const tools = require('core/tools');
-
-const build = (overrides) => Object.assign({}, payload, overrides);
-const contactsPayload = build({ firstName: tools.random(), lastName: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 // Test for extending zoho crm and invoking the extended resource
 suite.forElement('crm', 'contacts-post', {skip: true}, (test) => {

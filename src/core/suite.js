@@ -230,7 +230,7 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
 };
-const itPolling = (name, pay, api, options, validationCb, payload, resource) => {
+const itPolling = (name, pay, api, options, validationCb, payload, resource, addMethod) => {
   name = 'polling ' + api;
   payload = payload ? payload : pay;
   let response;
@@ -238,6 +238,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource) => 
     const baseUrl = faker.fake(props.get('eventCallbackUrl'));
 
     const url = baseUrl + '?returnQueue';
+    const addReasource = (r) => addMethod ? addMethod(r) : cloud.withOptions(options).post(api, r);
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
     const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => {
       expect(res.count).to.be.above(0);
@@ -278,7 +279,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource) => 
     })
     .then(() => console.log(pay))
     .then(() => pay)
-    .then(r => cloud.withOptions(options).post(api, r))
+    .then(r => addReasource(r))
     .then(r => response = r.body)
     .then(() => console.log('response', response))
     //repeatly revalidates until either valid or time out
@@ -438,7 +439,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     * @param {Function} validate A validate funtion with `expects` to test response
     * @memberof module:core/suite.test.should
     */
-    supportPolling: (pay, res) => itPolling(name, payload, api, options, validationCb, pay, res),
+    supportPolling: (pay, res, addMethod) => itPolling(name, payload, api, options, validationCb, pay, res, addMethod),
     /**
      * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
      * @param {object} metadata -> headers, query string etc...
