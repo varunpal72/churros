@@ -30,8 +30,6 @@ let instanceId;
 
 before(() => {
   logger.info('Running tests for element: %s', element);
-  console.log(argv);
-
   if (props.getOptionalForKey(argv.element, 'skip') === true) {
     logger.info('Skip provisioning and all tests for %s', element);
     return {};
