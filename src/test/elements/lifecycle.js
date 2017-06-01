@@ -6,6 +6,7 @@ const util = require('util');
 const provisioner = require('core/provisioner');
 const tools = require('core/tools');
 const defaults = require('core/defaults');
+const cleaner = require('core/cleaner');
 const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
@@ -29,11 +30,14 @@ let instanceId;
 
 before(() => {
   logger.info('Running tests for element: %s', element);
+  console.log(argv);
+
   if (props.getOptionalForKey(argv.element, 'skip') === true) {
     logger.info('Skip provisioning and all tests for %s', element);
     return {};
   }
   return tools.runFile(element, `${__dirname}/${element}/assets/scripts.js`, 'before')
+  .then(() => !argv.save ? cleaner.cleanElementsBefore() : null)
   .then(() => {
     const getInstance = argv.instance ? cloud.get(`/instances/${argv.instance}`)
       .then(r => {
