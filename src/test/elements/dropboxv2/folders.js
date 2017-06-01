@@ -12,6 +12,10 @@ suite.forElement('documents', 'folders', null, (test) => {
     return cloud.withOptions({qs: query}).get("/hubs/documents/folders/metadata")
       .then(r => encodeURIComponent(r.body.id))
       .then(r => cloud.get(`/hubs/documents/folders/${r}/metadata`))
-      .then(r => expect(r).to.have.statusCode(200))
+      .then(r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body.path).to.equal(rootPath);
+        expect(r.body.directory).to.equal(true);
+      })
   });
 });
