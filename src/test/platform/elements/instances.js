@@ -223,10 +223,13 @@ suite.forPlatform('elements/instances', opts, (test) => {
   });
 
   it('should allow disabling and enabling  an instance', () => {
-    return cloud.delete(`instances/${sfdcId}/enabled`)
-      .then(() => cloud.get(`/account`, r => expect(r).to.have.statusCode(403)))
+    let instanceId;
+    return provisioner.create('jira')
+      .then(r => instanceId = r.body.id)
+      .then(() => cloud.delete(`instances/${instanceId}/enabled`))
+      .then(() => cloud.get(`/incidents`, r => expect(r).to.have.statusCode(403)))
       .then(() => cloud.get(`/objects`))
-      .then(() =>cloud.put(`instances/${sfdcId}/enabled`))
-      .then(() => cloud.get(`/account`));
+      .then(() =>cloud.put(`instances/${instanceId}/enabled`))
+      .then(() => cloud.get(`/incidents`));
   });
 });
