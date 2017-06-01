@@ -62,7 +62,7 @@ const cleanElementsBefore = () => {
   .then(r => filter(r, 'name', ['churros-instance']))
   // only delete if hour old
   .then(r => r.filter(obj => moment.utc().valueOf() - Date.parse(obj.createdDate) - 3.6e+6 > 0))
-  .then(r => deleteAll('instances', r.map(r => r.id)));
+  .then(r => deleteAll('instances', r.map(r => r.id))).catch(() => logger.debug('failed to clean up before'));
 };
 exports.cleanElementsBefore = () => cleanElementsBefore();
 
