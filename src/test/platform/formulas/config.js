@@ -27,7 +27,11 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
       .then(r => formulaId = r.body.id)
       .then(r => cloud.post(`${test.api}/${formulaId}/configuration`, config))
       .then(r => cloud.post(`${test.api}/${formulaId}/configuration`, config, validator))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 
   /**
@@ -68,6 +72,10 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
       })
       .then(r => cloud.put(`${test.api}/${formulaId}/configuration/${formulaConfigId}`, genConfig(f)))
       .then(r => cloud.get(`${test.api}/${formulaId}`, validateUpdate))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 });
