@@ -97,6 +97,8 @@ suite.forPlatform('formulas', {name: 'FaaRs'}, test => {
     return cloud.post(`/formulas`, manualFormula).then(r => (formula = r.body))
       .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: '/bingo', }, }, v))
       .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: 'GET', }, }, v))
-      .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: 'GET missing-a-slash', }, }, v));
+      .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: 'GET missing-a-slash', }, }, v))
+      .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: 'GET /accounts', }, }, v))
+      .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: 'GET /formulas/instances', }, }, v));
   });
 });
