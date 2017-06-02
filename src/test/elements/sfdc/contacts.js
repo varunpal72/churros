@@ -60,8 +60,30 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   });
 
   it('should not allow malformed bulk query and throw a 400', () => {
-    return cloud.withOptions({ qs: { q: 'select * contacts'} })
+    return cloud.withOptions({ qs: { q: 'select * contacts' } })
       .post('/hubs/crm/bulk/query', null,
-            r => { (expect(r).to.have.statusCode(400) && expect(r.body.message).to.include('Error parsing query')); });
+        r => {
+          (expect(r).to.have.statusCode(400) && expect(r.body.message).to.include('Error parsing query')); });
+  });
+  it('should find contact with quote in first name', () => {
+    let contactId;
+    let contactPayload = {
+      "firstName": "Churro's",
+      "lastName": "TestDude",
+      "title": "Salesman",
+      "department": "Sales",
+      "phone": "444-444-4444",
+      "email": "bob@churrostest.com"
+    };
+    let query = { where: "Name='Churro''s TestDude'" };
+
+    return cloud.post(test.api, contactPayload)
+      .then(r => contactId = r.body.id)
+      .then(r => cloud.withOptions({ qs: query }).get(test.api))
+      .then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.null &&
+        expect(r.body).to.be.a('array') && expect(r.body).to.have.length(1) &&
+        expect(r.body[0]).to.contain.key('Name') &&
+        expect(r.body[0].Name).to.equal("Churro's TestDude"))
+      .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
