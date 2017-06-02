@@ -38,7 +38,8 @@ module.exports = (element, method) => {
               //wait 10 sec, call wakeUpInstanceUrl, see if there is still an overlay
               //if exists, then rerun - else return currentUrl
               const isReloading = (nth) => {
-                return browser.isElementPresent(webdriver.By.className('hib-overlay ng-scope'));
+                return browser.findElement(webdriver.By.className('hib-overlay ng-scope'))
+                  .then((element) => element.isDisplayed(element), (err) => false);
               };
               browser.get(wakeUpInstanceUrl);
               browser.sleep(5000)
@@ -46,7 +47,7 @@ module.exports = (element, method) => {
                 return new Promise(function(res, rej) {
                   nth+=1
                   isReloading(nth).then(reloading => reloading === true)
-                  .then(r => r ? res() : browser.navigate().refresh().catch(() => {}).then(() => browser.sleep(5000)).then(rej));
+                  .then(r => r ? browser.navigate().refresh().catch(() => {}).then(() => browser.sleep(5000)).then(rej) : res());
                 });
               }));
             })
