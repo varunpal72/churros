@@ -637,7 +637,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       return Promise.resolve(fId);
     };
 
-    const fetchAndValidateInstances = fId => () => instanceValidatorWrapper(fId)
+    const fetchAndValidateInstances = fId => () => instanceValidatorWrapper(fId);
 
     let fId;
     const fiIds = [];
