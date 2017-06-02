@@ -6,7 +6,7 @@ const swaggerParser = require('swagger-parser');
 const expect = require('chakram').expect;
 
 const elementKeys = ['hubspot', 'hubspotcrm', 'dynamicscrmadfs', 'quickbooks',
-'quickbooksonprem'];
+'quickbooksonprem', 'netsuitecrmv2', 'netsuiteerpv2', 'netsuitefinancev2', 'marketo', 'zendesk'];
 
 suite.forPlatform('docs', {}, () => {
   let hubs, elementIds;
