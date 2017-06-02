@@ -9,6 +9,6 @@ payload.firstName = tools.random();
 
 suite.forElement('fsa', 'users', { payload: payload }, (test) => {
   	test.should.supportCruds();
-    test.withOptions({ qs: { page: 1, pageSize: 5}}).should.return200OnGet();
+    test.should.supportPagination();
   	test.should.supportCeqlSearch('firstName');
 });
