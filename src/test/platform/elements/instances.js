@@ -244,4 +244,16 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(() => cloud.get('account?pageSize=1'))
       .then(r => expect(r.body).to.deep.equal(withCorrectHub));
   });
+
+  it('should allow disabling and enabling  an instance', () => {
+    let instanceId;
+    return provisioner.create('jira')
+      .then(r => instanceId = r.body.id)
+      .then(() => cloud.delete(`instances/${instanceId}/enabled`))
+      .then(() => cloud.get(`/incidents`, r => expect(r).to.have.statusCode(403)))
+      .then(() => cloud.get(`/objects`))
+      .then(() =>cloud.put(`instances/${instanceId}/enabled`))
+      .then(() => cloud.get(`/incidents`))
+      .then(() => provisioner.delete(instanceId));
+  });
 });
