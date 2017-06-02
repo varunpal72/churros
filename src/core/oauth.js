@@ -241,10 +241,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return acc.then(() => {
           return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[1]/small`))
             .then((element) => element.getText().then(t => t.toLowerCase().includes('churros') ? element.click() : null), (err) => {}); // ignore this
-        })
+        });
       }, Promise.resolve(null)))
       .then(() => browser.sleep(3000))
-      .then(() => browser.getCurrentUrl())
+      .then(() => browser.getCurrentUrl());
     case 'hubspotcrm':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
@@ -265,10 +265,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return acc.then(() => {
           return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[1]/small`))
             .then((element) => element.getText().then(t => t.toLowerCase().includes('churros') ? element.click() : null), (err) => {}); // ignore this
-        })
+        });
       }, Promise.resolve(null)))
       .then(() => browser.sleep(3000))
-      .then(() => browser.getCurrentUrl())
+      .then(() => browser.getCurrentUrl());
     case 'instagram':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('id_username')).clear();
