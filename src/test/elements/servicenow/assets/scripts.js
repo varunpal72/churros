@@ -27,7 +27,7 @@ module.exports = (element, method) => {
       browser.findElement(webdriver.By.id('submitButton')).click();
       browser.sleep(5000);
       browser.get(wakeUpInstanceUrl);
-      browser.sleep(5000);
+      browser.sleep(7500);
       return browser.wait(() => browser.isElementPresent(webdriver.By.id('instanceWakeUpBtn')), 3000)
         .then(() => {
           return browser.findElement(webdriver.By.id('instanceWakeUpBtn'))
@@ -45,7 +45,7 @@ module.exports = (element, method) => {
               browser.sleep(5000)
               .then(() => tools.wait.upTo(1800000).for(() => {
                 return new Promise(function(res, rej) {
-                  nth+=1
+                  nth+=1;
                   isReloading(nth).then(reloading => reloading === true)
                   .then(r => r ? browser.navigate().refresh().catch(() => {}).then(() => browser.sleep(5000)).then(rej) : res());
                 });
