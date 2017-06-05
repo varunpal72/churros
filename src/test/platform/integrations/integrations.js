@@ -36,7 +36,11 @@ suite.forPlatform('integrations', { schema, payload }, (test) => {
     return cloud.post('/integrations', payload)
       .then(r => id = r.body.id)
       .then(() => cloud.post('/integrations', payload, (r) => expect(r).to.have.statusCode(409)))
-      .then(() => cloud.delete(`/integrations/${id}`));
+      .then(() => cloud.delete(`/integrations/${id}`))
+      .catch(e => {
+        if (id) cloud.delete(`/integrations/${id}`);
+        throw new Error(e);
+      });
   });
 
   it('should support adding and removing a formula and formula instance from an integration', () => {
@@ -53,6 +57,16 @@ suite.forPlatform('integrations', { schema, payload }, (test) => {
       .then(() => cloud.delete(`/integrations/${id}/formulas/${formulaId}`))
       .then(() => cloud.delete(`/formulas/${formulaId}/instances/${formulaInstanceId}`))
       .then(() => cloud.delete(`/formulas/${formulaId}`))
-      .then(() => cloud.delete(`/integrations/${id}`));
+      .then(() => cloud.delete(`/integrations/${id}`))
+      .catch(e => {
+        if (id && formulaId && formulaInstanceId) {
+          cloud.delete(`/integrations/${id}/formulas/instances/${formulaInstanceId}`);
+          cloud.delete(`/integrations/${id}/formulas/${formulaId}`);
+          cloud.delete(`/formulas/${formulaId}/instances/${formulaInstanceId}`);
+          cloud.delete(`/formulas/${formulaId}`);
+          cloud.delete(`/integrations/${id}`);
+        }
+        throw new Error(e);
+      });
   });
 });

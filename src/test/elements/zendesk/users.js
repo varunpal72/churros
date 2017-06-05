@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = require('./assets/users');
+const payload = tools.requirePayload(`${__dirname}/assets/users.json`);
 
 const options = {
   churros: {
@@ -13,7 +13,6 @@ const options = {
   }
 };
 
-payload.email = tools.randomEmail();
 
 suite.forElement('helpdesk', 'users', { payload }, (test) => {
   test.should.supportPagination();

@@ -1,4 +1,4 @@
 {
-  "visible_to": "1",
-  "name": "Robot Account 1"
+  "visible_to": "<<random.number>>",
+  "name": "<<random.word##2>>"
 }

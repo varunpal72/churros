@@ -1,6 +1,6 @@
 {
-  "firstName": "Bob",
-  "lastName": "RobotTestDude",
+  "firstName": "<<name.firstName>>",
+  "lastName": "<<name.lastName>>",
   "title": "Salesman",
   "department": "Sales",
   "phone": "444-444-4444",
