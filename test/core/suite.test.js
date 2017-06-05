@@ -29,7 +29,7 @@ describe('suite', () => {
       baseUrl: baseUrl,
       headers: { Authorization: auth }
     });
-    props.set('eventCallbackUrl', 'https://knappkeith.pythonanywhere.com/request/churrosTest/');
+    props.set('event.callback.url', 'https://callback.com/churrosTest');
   });
 
   /** Before each, reset the nock endpoints...have to do it beforeEach because: https://github.com/pgte/nock#specifying-hostname */

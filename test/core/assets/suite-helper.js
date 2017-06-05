@@ -1,7 +1,6 @@
 'use strict';
 
 const nock = require('nock');
-const request = require('request');
 const props = require('core/props');
 
 var exports = module.exports = {};
@@ -174,14 +173,6 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
     .post('/foo/polling')
     .reply(200, (uri, requestBody) => {
-      setInterval(() => {
-        const opts = {
-          method: 'POST',
-          uri: props.get('eventCallbackUrl'),
-          body: '{"message": {"raw": {"objectType": "tests"}}}'
-        };
-        request(opts, (err, res, body) => {});
-      }, 1000);
       return genPayload({ id: 123 });
     });
 
@@ -244,4 +235,20 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .delete('/foo/polling/123')
     .reply(200, (uri, requestBody) => ({}));
 
+  nock('https://callback.com', {})
+    .get('/churrosTest?returnQueue')
+    .reply(200, (uri, requestBody) => {
+      const output = {
+        count: 1,
+        data: [{
+        url: "https://knappkeith.pythonanywhere.com/request/idontevenknow/",
+        headers: "Fake Head",
+        data: '{"message": {"raw": {"objectType": "tests"}}}',
+        method: "GET",
+        timestamp: "2017-06-05 22:30:29.766811"
+        }],
+        session_id: "churrosTest"
+      };
+      return output;
+    });
 };

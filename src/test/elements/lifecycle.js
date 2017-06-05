@@ -131,6 +131,7 @@ it.skip('should not allow provisioning with bad credentials', () => {
      });
 });
 after(done => {
+  tools.resetCleanup();
   instanceId && !argv.instance ? provisioner
         .delete(instanceId)
         .then(() => done())

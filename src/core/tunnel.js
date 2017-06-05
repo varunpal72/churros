@@ -26,4 +26,4 @@ exports.start = (port) => {
   });
 };
 
-exports.stop = (port) => ngrok.disconnect(port);
+exports.stop = (port) => ngrok.kill(() => logger.debug('Killed  ngrok'));
