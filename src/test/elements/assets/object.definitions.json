@@ -239,6 +239,12 @@
       "type": "string"
     }]
   },
+  "expense-group-configurations": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "incidents": {
     "fields": [{
       "path": "id",
@@ -350,7 +356,7 @@
       "type": "string"
     }]
   },
-  "payments": {
+    "payments": {
     "fields": [{
       "path": "id",
       "type": "string"

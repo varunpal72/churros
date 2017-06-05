@@ -6,9 +6,18 @@
     "internalId": "1",
     "name": "Honeycomb Mfg."
   },
-  "firstName": "Churros Test",
+  "firstName": "<<name.firstName>>",
   "entityStatus": {
     "internalId": "13",
     "name": "CUSTOMER-Closed Won"
-  }
+  },
+  "currency": {
+    "internalId": "1",
+    "name": "USA"
+  },
+  "customForm": {
+    "internalId": "16",
+    "name": "Ramsey Default Customer Form"
+  },
+  "phone": "800-643-0913"
 }

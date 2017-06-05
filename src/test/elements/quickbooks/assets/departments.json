@@ -1,6 +1,6 @@
 {
-  "name": "Sales Department",
+  "name": "<<commerce.department>>",
   "active": true,
   "subDepartment": false,
-  "fullyQualifiedName": "Sales Department"
+  "fullyQualifiedName": "<<commerce.department>>"
 }

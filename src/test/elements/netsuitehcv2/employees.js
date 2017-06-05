@@ -15,6 +15,11 @@ suite.forElement('humancapital', 'employees', { payload: employeesPayload }, (te
     }
   };
   test.withOptions(options).should.supportCruds();
-  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
+  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.supportPagination();
   test.should.supportCeqlSearch('id');
+  test.withOptions({ qs: { page: 1,
+                           pageSize: 5,
+                           where : "savedSearchId = '712'"
+                         } }).should.supportPagination();
+
 });

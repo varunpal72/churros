@@ -1,0 +1,28 @@
+
+{
+  "attributes": {
+    "accountLocked": true,
+    "canModifyEmailSignature": true,
+    "forcePasswordChange": true,
+    "passwordNeverExpires": true,
+    "permanentlyDisabled": true,
+    "staffAssignmentDisabled": true,
+    "viewsReportsDisabled": true
+  },
+  "login": "jordanV",
+  "newPassword": "jordan@Abc123",
+  "name": {
+    "last": "Hanusam",
+    "first": "Jordan"
+  },
+  "profile": {
+    "id": {
+      "id": 3
+    }
+  },
+  "staffGroup": {
+    "id": {
+      "id": 100395
+    }
+  }
+}

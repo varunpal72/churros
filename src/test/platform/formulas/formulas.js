@@ -20,6 +20,36 @@ suite.forPlatform('formulas', opts, (test) => {
 
   test.should.supportCrud(chakram.put);
 
+  it('should retrieve abridged payloads', () => {
+    const f = common.genFormula({});
+    f.steps = [{
+      "name": "someApi",
+      "type": "elementRequest",
+      "properties": {
+        "elementInstanceId": "${sfdc}",
+        "api": "/hubs/crm/accounts",
+        "method": "GET"
+      }
+    }];
+    const validateResults = (formulaId, formulas) => {
+      formulas.forEach(formula => {
+        if (formula.id === formulaId) {
+          expect(formula).to.contain.key('name') && expect(formula).to.not.contain.key('steps');
+          cloud.delete(`/formulas/${formulaId}`);
+          return true;
+        }
+      });
+      cloud.delete(`/formulas/${formulaId}`);
+      return false;
+    };
+
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.withOptions({ qs: { abridged: true } }).get(test.api))
+      .then(r => validateResults(formulaId, r.body));
+  });
+
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
     const f = common.genFormula({});
     const t = common.genTrigger({});
@@ -71,7 +101,11 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => formulaId = r.body.id)
       .then(r => cloud.post(`${test.api}/${formulaId}/triggers`, t, triggerSchema))
       .then(r => cloud.post(`/formulas/${formulaId}/instances`, fi, (r) => expect(r).to.have.statusCode(400)))
-      .then(r => cloud.delete(`/formulas/${formulaId}`));
+      .then(r => cloud.delete(`/formulas/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`/formulas/${formulaId}`);
+        throw new Error(e);
+      });
   });
 
   it('should allow creating a big azz formula and then an instance', () => {
@@ -96,7 +130,14 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => cloud.post(`/formulas/${formulaId}/instances`, genFi(id), instanceSchema))
       .then(r => cloud.delete(`/formulas/${formulaId}/instances/${r.body.id}`, formulaId, r.body.id))
       .then(r => cloud.delete(`/formulas/${formulaId}`))
-      .then(r => provisioner.delete(id));
+      .then(r => provisioner.delete(id))
+      .catch(e => {
+        if (formulaId && id) {
+          cloud.delete(`/formulas/${formulaId}`);
+          provisioner.delete(id);
+        }
+        throw new Error(e);
+      });
   });
 
   it('should allow exporting a formula', () => {
@@ -106,7 +147,11 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => formulaId = r.body.id)
       .then(r => cloud.get(`${test.api}/${formulaId}/export`))
       .then(r => expect(r.body.name).to.equal(f.name))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 
   it('should allow PATCHing a formula', () => {
@@ -128,7 +173,11 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => formulaId = r.body.id)
       .then(r => cloud.patch(`${test.api}/${formulaId}`, patchBody))
       .then(r => validator(r.body))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 
   test
@@ -148,7 +197,14 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(r => formulaId = r.body.id)
       .then(r => cloud.put(`${test.api}/${formulaId}/monitored`, {}))
       .then(r => cloud.delete(`${test.api}/${formulaId}/monitored`, {}))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) {
+          cloud.delete(`${test.api}/${formulaId}/monitored`, {});
+          cloud.delete(`${test.api}/${formulaId}`);
+        }
+        throw new Error(e);
+      });
   });
 
   it('should sanitize formula name on create and update', () => {
@@ -162,10 +218,14 @@ suite.forPlatform('formulas', opts, (test) => {
       .then(f => formulaId = f.id)
       .then(() => cloud.get(`${test.api}/${formulaId}`))
       .then(r => expect(r.body.name).to.equal(name))
-      .then(() => cloud.put(`${test.api}/${formulaId}`, { name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${putName}</a>`}))
+      .then(() => cloud.put(`${test.api}/${formulaId}`, { name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${putName}</a>` }))
       .then(r => expect(r.body.name).to.equal(putName))
-      .then(() => cloud.patch(`${test.api}/${formulaId}`, { name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${patchName}</a>`}))
+      .then(() => cloud.patch(`${test.api}/${formulaId}`, { name: `<a href="#" onClick="javascript:alert(\'xss\');return false;">${patchName}</a>` }))
       .then(r => expect(r.body.name).to.equal(patchName))
-      .then(() => cloud.delete(`${test.api}/${formulaId}`));
+      .then(() => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 });

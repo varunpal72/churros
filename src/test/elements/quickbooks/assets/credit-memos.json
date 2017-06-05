@@ -1,4 +1,8 @@
 {
+  "currencyRef": {
+      "name": "United States Dollar",
+      "value": "USD"
+    },
   "line": [{
     "detailType": "SALES_ITEM_LINE_DETAIL",
     "amount": 80,

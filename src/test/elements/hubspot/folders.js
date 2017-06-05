@@ -1,8 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/folders');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/folders.json`);
 const options = {
   churros: {
     updatePayload: {
@@ -10,6 +10,7 @@ const options = {
     }
   }
 };
+
 suite.forElement('marketing', 'folders', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();

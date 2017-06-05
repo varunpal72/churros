@@ -10,7 +10,7 @@
   "formField": false,
   "displayMode": "current_value",
   "groupName": "conversioninformation",
-  "name": "chuors_temp_1",
+  "name": "<<random.word>>",
   "options": [],
   "fieldType": "text",
   "calculated": false,

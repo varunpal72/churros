@@ -1,6 +1,7 @@
 'use strict';
 
 const cloud = require('core/cloud');
+const objectPayload = require('./element.object.payload.json');
 
 var exports = module.exports = {};
 
@@ -16,6 +17,14 @@ exports.genElement = (opts) => ({
   description: (opts.description || "A Churros element"),
   authentication: (opts.authentication) || { type: 'basic' },
   configuration: (opts.configuration) || [exports.genBaseUrlConfig({})]
+});
+
+exports.genElementWithObjects = (opts) => ({
+  name: (opts.name || 'Churros'),
+  description: (opts.description || "A Churros element"),
+  authentication: (opts.authentication) || { type: 'basic' },
+  configuration: (opts.configuration) || [exports.genBaseUrlConfig({})],
+  objects: objectPayload
 });
 
 exports.genDBElement = (opts) => ({
@@ -113,7 +122,11 @@ exports.crudSubResource = (url, schema, listSchema, payload, updatePayload) => {
     .then(r => subResource = r.body)
     .then(r => cloud.get(url, listSchema))
     .then(r => cloud.put(url + '/' + subResource.id, updatePayload, schema))
-    .then(r => cloud.delete(url + '/' + subResource.id));
+    .then(r => cloud.delete(url + '/' + subResource.id))
+    .catch(e => {
+      if (subResource) cloud.delete(url + '/' + subResource.id);
+      throw new Error(e);
+    });
 };
 
 
@@ -124,5 +137,9 @@ exports.crudsResource = (url, schema, listSchema, payload, updatePayload) => {
     .then(r => cloud.get(url + '/' + subResource.id))
     .then(r => cloud.get(url, listSchema))
     .then(r => cloud.put(url + '/' + subResource.id, updatePayload, schema))
-    .then(r => cloud.delete(url + '/' + subResource.id));
+    .then(r => cloud.delete(url + '/' + subResource.id))
+    .catch(e => {
+      if (subResource) cloud.delete(url + '/' + subResource.id);
+      throw new Error(e);
+    });
 };

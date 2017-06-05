@@ -74,5 +74,7 @@ suite.forElement('ecommerce', 'customers', { payload: payload() }, (test) => {
       .then(r => cloud.delete(`${test.api}/${customerId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customerGroups/${customerGroupId}`));
   });
+  test.withOptions({ qs: {orderBy : 'id'} }).should.return200OnGet();
+  test.withOptions({ qs: {orderBy : 'id desc'} }).should.return200OnGet();
   test.should.supportPagination();
 });

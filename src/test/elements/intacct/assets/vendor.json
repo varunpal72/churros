@@ -1,0 +1,115 @@
+{
+  "vendorid": "<<random.alphaNumeric##10>>",
+  "name": "<<random.word>>",
+  "termname": "N30",
+  "taxid": "39-1837105",
+  "creditlimit": "100",
+  "billingtype": "openitem",
+  "donotcutcheck": "false",
+  "comments": "<<random.word>>",
+  "status": "active",
+  "currency": "USD",
+  "onetime": "false",
+  "primary": {
+    "contact": {
+      "contactname": "<<random.word>>",
+      "printas": "<<random.word>>",
+      "companyname": "<<random.word>>",
+      "prefix": "Ms.",
+      "firstname": "<<random.word>>",
+      "lastname": "<<random.word>>",
+      "initial": "<<random.word>>",
+      "phone1": "877-446-7746",
+      "cellphone": "877-446-7746",
+      "pager": "877-446-7746",
+      "fax": "877-446-7746",
+      "email1": "churros1@gmail.com",
+      "url1": "www.ce3.com",
+      "mailaddress": {
+        "address1": "addison",
+        "city": "Dallas",
+        "state": "Texas",
+        "zip": "76001",
+        "country": "USA"
+      }
+    }
+  },
+  "returnto": {
+    "contact": {
+      "contactname": "<<random.word>>",
+      "printas": "<<random.word>>",
+      "companyname": "<<random.word>>",
+      "prefix": "Ms.",
+      "firstname": "<<random.word>>",
+      "lastname": "<<random.word>>",
+      "initial": "<<random.word>>",
+      "phone1": "877-446-7746",
+      "cellphone": "877-446-7746",
+      "pager": "877-446-7746",
+      "fax": "877-446-7746",
+      "email1": "churros3@gmail.com",
+      "url1": "www.ce4.com",
+      "mailaddress": {
+        "address1": "addison",
+        "city": "Dallas",
+        "state": "Texas",
+        "zip": "76001",
+        "country": "USA"
+      }
+    }
+  },
+  "payto": {
+    "contact": {
+      "contactname": "<<random.word>>",
+      "printas": "<<random.word>>",
+      "companyname": "<<random.word>>",
+      "prefix": "Ms.",
+      "firstname": "<<random.word>>",
+      "lastname": "<<random.word>>",
+      "initial": "<<random.word>>",
+      "phone1": "877-446-7746",
+      "cellphone": "877-446-7746",
+      "pager": "877-446-7746",
+      "fax": "877-446-7746",
+      "email1": "churros5@gmail.com",
+      "url1": "www.ce5.com",
+      "mailaddress": {
+        "address1": "addison",
+        "city": "Dallas",
+        "state": "Texas",
+        "zip": "76001",
+        "country": "USA"
+      }
+    }
+  },
+  "contactinfo": {
+    "contact": {
+      "contactname": "<<random.word>>",
+      "printas": "<<random.word>>",
+      "companyname": "<<random.word>>",
+      "prefix": "Ms.",
+      "firstname": "<<random.word>>",
+      "lastname": "<<random.word>>",
+      "initial": "<<random.word>>",
+      "phone1": "877-446-7746",
+      "cellphone": "877-446-7746",
+      "pager": "877-446-7746",
+      "fax": "877-446-7746",
+      "email1": "churros6@gmail.com",
+      "url1": "www.ce6.com",
+      "mailaddress": {
+        "address1": "addison",
+        "city": "Dallas",
+        "state": "Texas",
+        "zip": "76001",
+        "country": "USA"
+      }
+    }
+  },
+  "contactlist": {
+    "contactitem": {
+      "category": "PAYMENT ADDRESS",
+      "contactname": "4imprint"
+    }
+  }
+}

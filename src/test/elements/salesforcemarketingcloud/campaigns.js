@@ -5,5 +5,5 @@ const payload = require('./assets/campaigns');
 
 suite.forElement('marketing', 'campaigns', { payload: payload}, (test) => {
   test.should.supportCrds();
-  test.should.supportPagination();
+  test.should.supportPagination('id');
 });

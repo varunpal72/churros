@@ -4,7 +4,7 @@
   },
   "employeePaid": false,
   "inactive": false,
-  "name": "Churros Item",
+  "name": "<<random.word>>",
   "subsidiary": {
     "internalId": "1",
     "name": "Honeycomb Mfg."

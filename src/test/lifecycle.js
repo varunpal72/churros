@@ -80,3 +80,26 @@ before(() => {
       process.exit(1);
     });
 });
+
+//cleaning up if tests end early
+const cleanUpFunc = () => {
+  const tools = require('../core/tools');
+  const request = require('sync-request');
+  const cleanupData = tools.getCleanup();
+
+  cleanupData.forEach(data => {
+    const opts = {
+      headers: {
+        Authorization: `User ${data.secrets.userSecret}, Organization ${data.secrets.orgSecret}`
+      }
+    };
+
+    request(data.method, data.url, opts);
+  });
+  tools.resetCleanup();
+  tunnel.stop(props.getForKey('events', 'port'));
+};
+process.on('SIGINT', cleanUpFunc);
+process.on('SIGQUIT', cleanUpFunc);
+process.on('SIGTERM', cleanUpFunc);
+process.on('uncaughtException', cleanUpFunc);

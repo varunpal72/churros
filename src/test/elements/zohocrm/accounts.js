@@ -1,14 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/accounts');
-const payload2 = require('./assets/notes');
 const tools = require('core/tools');
+const accountsPayload = tools.requirePayload(`${__dirname}/assets/accounts.json`);
+const notesPayload = tools.requirePayload(`${__dirname}/assets/notes.json`);
 const cloud = require('core/cloud');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const build2 = (overrides) => Object.assign({}, payload2, overrides);
-const accountsPayload = build({ name: tools.random(), description: tools.random() });
-const notesPayload = build2({ Title: tools.random() });
 
 suite.forElement('crm', 'accounts', { payload: accountsPayload }, (test) => {
   it('should allow ping for zohocrm', () => {

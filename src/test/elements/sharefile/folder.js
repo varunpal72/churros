@@ -6,7 +6,7 @@ const suite = require('core/suite');
 const payload = require('./assets/folder');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-
+const faker = require('faker');
 const rootFolder = '/My Files & Folders';
 
 
@@ -38,10 +38,7 @@ suite.forElement('documents', 'folders', (test) => {
   it('should update folder', () => {
     return cloud.withOptions({ qs: { path: '/My Files & Folders' } }).get('/hubs/documents/folders/contents')
       .then(r => cloud.withOptions({ qs: { path: r.body[0].path } }).patch('/hubs/documents/folders/metadata', r.body[0]))
-      .then(r => cloud.patch('/hubs/documents/folders/' + r.body.id + '/metadata', r.body))
-      .then(r => cloud.withOptions({ qs: { path: r.body.path } }).post('/hubs/documents/folders/copy', { path: rootFolder + `/churros-${tools.random()}` }))
-      .then(r => cloud.withOptions({ qs: { path: r.body.path } }).post('hubs/documents/folders/favorites'))
-      .then(r => cloud.delete('/hubs/documents/folders/' + r.body.id));
+      .then(r => cloud.patch('/hubs/documents/folders/' + r.body.id + '/metadata', Object.assign({}, r.body, {name: faker.random.words()})));
   });
 
   it('should disallow downloading a folder', () => {
