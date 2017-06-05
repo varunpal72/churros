@@ -1019,5 +1019,11 @@
      "path": "id",
      "type": "string"
    }]
+ },
+ "productsCategories": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
  }
 }

@@ -10,7 +10,7 @@ const customersPayload = build({ last_name: tools.random(), first_name: tools.ra
 suite.forElement('ecommerce', 'customers', { payload: customersPayload }, (test) => {
   test.should.supportCruds();
   // unique is "id"
-  test.should.supportPagination();
+  test.should.supportPagination('id');
   test
   .withName(`should support searching ${test.api} by created_date`)
   .withOptions({ qs: { where: 'after = \'2016-04-28T21:58:25\'' } })
