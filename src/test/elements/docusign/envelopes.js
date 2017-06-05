@@ -12,6 +12,7 @@ const documentsSchema = require('./assets/documents.schema.json');
 const recipient = require('./assets/envelopes.recipient.json');
 const tab = require('./assets/recipients.tab.json');
 const documents = require('./assets/envelopes.documents.json');
+const patchDocument = require('./assets/envelopes.patchDocument.json');
 
 suite.forElement('esignature', 'envelopes', (test) => {
   it(`should support CRU on ${test.api}`, () => {
@@ -33,6 +34,7 @@ suite.forElement('esignature', 'envelopes', (test) => {
     const opts = { formData: { envelope: JSON.stringify(createPayload) } };
     let documentId;
     const putDocuments = { formData: { document: JSON.stringify(documents), file: fs.createReadStream(documentPath) } };
+    const patchDocuments = { formData: { document: JSON.stringify(patchDocument), file: fs.createReadStream(documentPath) } };
 
     return cloud.withOptions(opts).postFile(test.api, path)
       .then(r => envelopeId = r.body.envelopeId)
@@ -42,6 +44,8 @@ suite.forElement('esignature', 'envelopes', (test) => {
         (r) => expect(r).to.have.schemaAnd200(documentsSchema)))
       .then(r => cloud.get(`${test.api}/${envelopeId}/documents`))
       .then(r => documentId = r.body[0].documentId)
+      .then(r => cloud.withOptions(patchDocuments).patch(`${test.api}/${envelopeId}/documents/${documentId}`, undefined,
+        (r) => expect(r).to.have.schemaAnd200(documentsSchema)))
       .then(r => cloud.get(`${test.api}/${envelopeId}/documents/${documentId}`));
   });
 
