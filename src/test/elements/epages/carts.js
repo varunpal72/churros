@@ -15,8 +15,8 @@ suite.forElement('ecommerce', 'carts', { payload: payload }, (test) => {
       .then(r => payload.lineItems[0].productId = r.body[0].id)
       .then(r => cloud.post(`${test.api}`, payload))
       .then(r => {
-        cartId = r.body.id
-        epagesCartToken = r.response.headers['x-epages-cart-token']
+        cartId = r.body.id;
+        epagesCartToken = r.response.headers['x-epages-cart-token'];
       })
       .then(r => cloud.withOptions({ qs: { cartToken: epagesCartToken } }).get(`${test.api}/${cartId}`))
       .then(r => cloud.withOptions({ qs: { cartToken: epagesCartToken } }).put(`${test.api}/${cartId}/billing-addresses`, randomAddressPayload))
