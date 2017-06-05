@@ -16,7 +16,7 @@
 			"lastname": "<<name.lastName>>"
 		}
 	},
-	"customerid": 10056,
+	"customerid": "<<random.number>>",
 	"name": "<<name.firstName>> <<name.lastName>>",
 	"status": "active"
 }

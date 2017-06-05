@@ -1,29 +1,29 @@
 {
-  "name": "Test Tester",
-  "first_name": "Test",
-  "last_name": "Tester",
+  "name": "<<name.firstName>>",
+  "first_name": "<<name.firstName>>",
+  "last_name": "<<name.lastName>>",
   "email1": {
-    "value": "tester@cloud-elements.com",
-    "label": "tester"
+    "value": "<<internet.email>>",
+    "label": "<<random.word>>"
   },
   "email2": {
-    "value": "tester2@cloud-elements.com",
-    "label": "tester2"
+    "value": "<<internet.email>>",
+    "label": "<<random.word>>"
   },
   "email3": {
-    "value": "tester3@cloud-elements.com",
-    "label": "tester3"
+    "value": "<<internet.email>>",
+    "label": "<<random.word>>"
   },
   "phone1": {
-    "value": "800-456-4561",
-    "label": "p1"
+    "value": "<<phone.phoneNumber>>",
+    "label": "<<random.word>>"
   },
   "phone2": {
-    "value": "800-456-4562",
-    "label": "p2"
+    "value": "<<phone.phoneNumber>>",
+    "label": "<<random.word>>"
   },
   "phone3": {
-    "value": "800-456-4563",
-    "label": "p3"
+    "value": "<<phone.phoneNumber>>",
+    "label": "<<random.word>>"
   }
 }
