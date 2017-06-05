@@ -814,6 +814,15 @@
       "type": "string"
     }]
   },
+  "listsActivities": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "emails_sent",
+      "type": "string"
+    }]
+  },
   "serialized-inventory-items": {
     "fields": [{
       "path": "id",
@@ -1056,6 +1065,12 @@
    }]
  },
  "location": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "productsCategories": {
    "fields": [{
      "path": "id",
      "type": "string"

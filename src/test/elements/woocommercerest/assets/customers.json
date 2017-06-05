@@ -1,8 +1,8 @@
 {
-  "email": "john.doe@example.com",
-  "first_name": "John",
-  "last_name": "Doe",
-  "username": "john.doe",
+  "email": "<<internet.email>>",
+  "first_name": "<<name.firstName>>",
+  "last_name": "<<name.lastName>>",
+  "username": "<<internet.userName>>",
   "password": "Cloud3l3m3nts",
   "billing": {
     "first_name": "John",

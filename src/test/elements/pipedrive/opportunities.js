@@ -2,13 +2,11 @@
 
 const suite = require('core/suite');
 const chakram = require('chakram');
-const payload = require('./assets/opportunities');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/opportunities.json`);
 const cloud = require('core/cloud');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const opportunitiesPayload = build({ title: tools.random(), value: tools.randomInt() });
 
-suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (test) => {
+suite.forElement('crm', 'opportunities', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
@@ -63,7 +61,7 @@ suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (tes
 
   it('should GET /accounts mails', () => {
     let opportunityId;
-    return cloud.post(test.api, opportunitiesPayload)
+    return cloud.post(test.api, payload)
       .then(r => opportunityId = r.body.id)
       .then(r => cloud.get(`${test.api}/${opportunityId}/mails`))
       .then(r => cloud.delete(`${test.api}/${opportunityId}`));

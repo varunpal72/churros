@@ -70,6 +70,8 @@ suite.forPlatform('organizations/objects/definitions', { payload: objects }, (te
 
   /** * Safety first... */
   before(() => deleteEm());
+  //Just in case of failure
+  after(() => deleteEm());
 
   it('Should throw a 409 when associated transformations exist on one or more object definitions', () => {
     return cloud.post('/organizations/objects/definitions', objects)

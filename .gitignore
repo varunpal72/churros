@@ -36,3 +36,5 @@ build/
 dist/
 
 .coveralls.yml
+
+letsencrypt-x3-xsign.pem

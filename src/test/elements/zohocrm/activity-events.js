@@ -1,12 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/activity-events');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const eventsPayload = build({ subject: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/activity-events.json`);
 
-suite.forElement('crm', 'activity-events', { payload: eventsPayload }, (test) => {
+suite.forElement('crm', 'activity-events', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
