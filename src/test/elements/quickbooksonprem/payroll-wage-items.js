@@ -12,6 +12,7 @@ suite.forElement('finance', 'payroll-wage-items', { payload: payload }, (test) =
       .then(r => id = r.body.ListID)
       .then(r => cloud.get(test.api))
       .then(r => cloud.withOptions({ qs: { page: 2, pageSize: 3 } }).get(test.api))
+      .then(r => cloud.withOptions({ qs: { where: `ListID='${id}'` } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
