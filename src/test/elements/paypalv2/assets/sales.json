@@ -2,11 +2,14 @@
   "intent": "sale",
   "note_to_payer": "tani123",
   "payer": {
+    "payer_info": {
+      "email": "paypal-buyer@cloud-elements.com"
+    },
     "payment_method": "paypal"
   },
   "redirect_urls": {
-    "cancel_url": "http://www.hawaii.com",
-    "return_url": "http://www.amazon.com"
+    "cancel_url": "https://httpbin.org/get",
+    "return_url": "https://httpbin.org/get"
   },
   "transactions": [{
     "amount": {

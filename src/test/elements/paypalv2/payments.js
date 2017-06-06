@@ -20,12 +20,10 @@ let options = {
         "state": "CA"
       }
     }
-  },
-  skip: true
+  }
 };
 
 suite.forElement('payment', 'payments', { payload: payload }, (test) => {
-  //TODO: Skipping - update is recieiving internal service error
   test.withOptions(options).should.supportCrus();
   it.skip(`should allow C for ${test.api} and ${test.api}/:id/execute`, () => {
     let id;
