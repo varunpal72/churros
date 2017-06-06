@@ -25,6 +25,7 @@ suite.forElement('finance', 'time-activities', { payload: payload }, (test) => {
       })
       .then(r => cloud.get(test.api))
       .then(r => cloud.get(`${test.api}/${id}`))
+      .then(r => cloud.withOptions({ qs: { where: `TxnID='${id}'` } }).get(test.api))
       .then(r => cloud.patch(`${test.api}/${id}`, updatePayload(editseq)))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
