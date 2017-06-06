@@ -1,11 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const contactsPayload = require('./assets/contacts');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, contactsPayload, overrides);
-const payload = build({ first_name: tools.random(), last_name: tools.random(), user_name: tools.random() + '.' + tools.random(), email: tools.randomEmail() });
-
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 const options = {
   churros: {

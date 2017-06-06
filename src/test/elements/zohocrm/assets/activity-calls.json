@@ -1,10 +1,10 @@
 {
   "Call Start Time": "2016-01-19 10:53:00",
-  "description": "Had a call with a robot",
+  "description": "<<random.words>>",
   "Call Purpose": "Administrative",
   "Billable": "false",
   "Call Duration": "15:00",
-  "subject": "Test Call",
+  "subject": "<<random.word>>",
   "Call Type": "Outbound",
   "Call Status": "Attended Dialled"
 }

@@ -1,4 +1,5 @@
 {
+    "docNumber": "<<random.word>><<random.word>>",
     "line": [
       {
         "detailType": "SALES_ITEM_LINE_DETAIL",

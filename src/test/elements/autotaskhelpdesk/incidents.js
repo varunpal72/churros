@@ -3,10 +3,8 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const fs = require('fs');
-const payload = require('./assets/incidents');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const incidentPayload = build({ title: tools.random(), description: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/incidents.json`);
 const comment = require('./assets/comments');
 const updatedComment = require('./assets/updatedComments');
 
@@ -16,9 +14,7 @@ const updatePayload = {
   "description": "This has been changed"
 };
 
-suite.forElement('helpdesk', 'incidents', { payload: incidentPayload }, (test) => {
-  const build = (overrides) => Object.assign({}, incidentPayload, overrides);
-  const payload = build({ title: tools.random(), description: tools.random() });
+suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   it(`should support paging, Ceql search and Crus for ${test.api}, comments and attachments`, () => {
     let incidentId, attachmentId, commentId;
     let query = { fileName: "attach.txt" };

@@ -8,7 +8,7 @@ const gen = (opts) => {
   opts = opts ? opts : {};
   const random = tools.random();
   return new Object({
-    lead_id: (opts.lead_id),
+    lead_id: (opts.lead_id) || 'lead_' + random,
     name: (opts.name || 'mr. churros ' + random),
     officeEmail: (opts.officeEmail || 'churros@churros.com')
   });
@@ -22,6 +22,9 @@ suite.forElement('crm', 'contacts', { payload: gen() }, (test) => {
       .then(r => cloud.cruds(test.api, gen({ lead_id: accountId })))
       .then(r => cloud.delete('/hubs/crm/accounts/' + accountId));
   });
+
+  const payload = () => cloud.post('/hubs/crm/accounts', { name: 'churros tmp account' }).then(r =>  gen({ lead_id: r.body.id}));
+  test.should.supportPolling(payload, 'contacts');
 
   test.should.supportPagination();
   test.should.return404OnGet(-1);

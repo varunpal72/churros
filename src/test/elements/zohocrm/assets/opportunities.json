@@ -1,7 +1,7 @@
 {
-  "name": "ROBOT_TEST_OPPORTUNITY",
+  "name": "<<random.word>> <<random.word>>",
   "type": "New Customer",
   "source": "Web",
   "stage": "Prospecting",
-  "description": "A cool test opportunity"
+  "description": "<<random.words>>"
 }

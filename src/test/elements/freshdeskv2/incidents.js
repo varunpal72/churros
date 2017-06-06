@@ -1,14 +1,12 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/incidents');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/incidents.json`);
 const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
-let email = tools.randomEmail();
-payload.email = email;
-payload.name = tools.random();
+
 var date = new Date();
 date.setFullYear(date.getFullYear() + tools.randomInt());
 payload.due_by = date.toISOString();
