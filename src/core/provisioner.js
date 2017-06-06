@@ -77,7 +77,7 @@ const getPollerConfig = (element, instance) => {
       if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getForKey(element, 'username'));
     }
     instanceCopy.configuration['event.vendor.type'] = 'polling';
-    instanceCopy.configuration['event.notification.callback.url'] = 'https://replaceable.com';
+    instanceCopy.configuration['event.notification.callback.url'] = 'https://httpbin.org/get';
     instanceCopy.configuration['event.notification.enabled'] = 'true';
     instanceCopy.configuration['event.poller.refresh_interval'] = '1';
     return instanceCopy;
