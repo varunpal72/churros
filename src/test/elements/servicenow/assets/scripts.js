@@ -21,23 +21,21 @@ module.exports = (element, method) => {
       browser.wait(webdriver.until.elementLocated(webdriver.By.id('username')), 10000);
       browser.findElement(webdriver.By.id('username')).clear();
       browser.findElement(webdriver.By.id('username')).sendKeys(config.username);
-      browser.sleep(1500);
       browser.findElement(webdriver.By.id('password')).clear();
       browser.findElement(webdriver.By.id('password')).sendKeys(config.password);
       browser.findElement(webdriver.By.id('submitButton')).click();
       browser.sleep(5000);
       browser.get(wakeUpInstanceUrl);
       browser.sleep(7500);
-      return browser.wait(() => browser.isElementPresent(webdriver.By.id('instanceWakeUpBtn')), 3000)
+      return browser.wait(() => browser.isElementPresent(webdriver.By.id('instanceWakeUpBtn')), 10000)
         .then(() => {
           return browser.findElement(webdriver.By.id('instanceWakeUpBtn'))
             .then(r => r.click())
             .thenCatch(r => false)
             .then(r => {
-              let nth = 0;
               //wait 10 sec, call wakeUpInstanceUrl, see if there is still an overlay
               //if exists, then rerun - else return currentUrl
-              const isReloading = (nth) => {
+              const isReloading = () => {
                 return browser.findElement(webdriver.By.className('hib-overlay ng-scope'))
                   .then((element) => element.isDisplayed(element), (err) => false);
               };
@@ -45,8 +43,7 @@ module.exports = (element, method) => {
               browser.sleep(5000)
               .then(() => tools.wait.upTo(1800000).for(() => {
                 return new Promise(function(res, rej) {
-                  nth+=1;
-                  isReloading(nth).then(reloading => reloading === true)
+                  isReloading().then(reloading => reloading === true)
                   .then(r => r ? browser.navigate().refresh().catch(() => {}).then(() => browser.sleep(5000)).then(rej) : res());
                 });
               }));
