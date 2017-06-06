@@ -33,14 +33,14 @@ module.exports = (element, method) => {
             .then(r => r.click())
             .thenCatch(r => false)
             .then(r => {
-              //wait 10 sec, call wakeUpInstanceUrl, see if there is still an overlay
+              //wait 5 sec, call wakeUpInstanceUrl, see if there is still an overlay
               //if exists, then rerun - else return currentUrl
               const isReloading = () => {
                 return browser.findElement(webdriver.By.className('hib-overlay ng-scope'))
                   .then((element) => element.isDisplayed(element), (err) => false);
               };
               browser.get(wakeUpInstanceUrl);
-              browser.sleep(5000)
+              browser.sleep(5000);
               .then(() => tools.wait.upTo(1800000).for(() => {
                 return new Promise(function(res, rej) {
                   isReloading().then(reloading => reloading === true)
