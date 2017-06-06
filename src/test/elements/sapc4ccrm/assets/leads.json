@@ -1,6 +1,6 @@
 {
- "Name": "Mr Churro",
- "Company": "Churros.co",
- "ContactFirstName": "Senior",
- "ContactLastName": "Churro"
- }
+  "Name": "<<random.word>>",
+  "Company": "<<company.companyName>>",
+  "ContactFirstName": "<<name.firstName>>",
+  "ContactLastName": "<<name.lastName>>"
+}

@@ -1,6 +1,6 @@
 {
-  "FirstName": "Senior",
-  "LastName": "Churros",
+  "FirstName": "<<name.firstName>>",
+  "LastName": "<<name.lastName>>",
   "CategoryCode": "1",
   "AccountID": "CE001"
 }
