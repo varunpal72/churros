@@ -40,13 +40,13 @@ module.exports = (element, method) => {
                   .then((element) => element.isDisplayed(element), (err) => false);
               };
               browser.get(wakeUpInstanceUrl);
-              browser.sleep(5000);
-              .then(() => tools.wait.upTo(1800000).for(() => {
-                return new Promise(function(res, rej) {
-                  isReloading().then(reloading => reloading === true)
-                  .then(r => r ? browser.navigate().refresh().catch(() => {}).then(() => browser.sleep(5000)).then(rej) : res());
-                });
-              }));
+              browser.sleep(5000)
+                .then(() => tools.wait.upTo(1800000).for(() => {
+                  return new Promise(function(res, rej) {
+                    isReloading().then(reloading => reloading === true)
+                      .then(r => r ? browser.navigate().refresh().catch(() => {}).then(() => browser.sleep(5000)).then(rej) : res());
+                  });
+                }));
             })
             .then(r => browser.getCurrentUrl());
         }, () => {
