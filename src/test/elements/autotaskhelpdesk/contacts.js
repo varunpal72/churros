@@ -19,6 +19,7 @@ suite.forElement('helpdesk', 'contacts', { payload: contactPayload }, (test) => 
     return cloud.post(test.api, payload)
       .then(r => contactId = r.body.id)
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
+      .then(r => cloud.withOptions({ qs: { where: 'lastActivityDate > \'2012-05-25T11:13:29-0500\' and  (lastName = \'Eckle\' or lastName = \'Schrage\') ' } }).get(test.api))
       .then(r => cloud.withOptions({ qs: { where: 'active = 1' } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${contactId}`))
       .then(r => cloud.patch(`${test.api}/${contactId}`, updatePayload));

@@ -8,6 +8,6 @@ payload.name += tools.random();
 
 suite.forElement('fsa', 'custom-fields', { payload: payload }, (test) => {
   test.should.supportCruds();
-  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
+  test.should.supportPagination();
   test.should.supportCeqlSearch('name');
 });
