@@ -242,6 +242,20 @@ describe('provisioner', () => {
       .then(r => mockery.disable());
   });
 
+  it('should allow creating an oauth2 element instance with debug', () => {
+    setupProps();
+    return provisioner.create('myoauth2element', {debug : true})
+      .then(r => {
+        expect(r).not.to.be.null;
+        expect(r.body).not.to.be.null;
+        expect(r.body.id).to.equal(123);
+        expect(r.body.providerData).not.to.be.null;
+        expect(r.body.providerData.code).to.equal('speakercity');
+        expect(r.body.providerData.debug).to.equal(true);
+      })
+      .then(r => mockery.disable());
+  });
+
   it('should allow creating an oauth2 external instance', () => {
     setupProps();
     return provisioner.create('myoauth2external')

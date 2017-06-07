@@ -98,6 +98,11 @@ const addParamsToOptions = (argOptions) => {
   return optionsCopy;
 };
 
+const addDebugToParams = (args, params) => {
+  if (args && args.debug) params.debug = true;
+  return params;
+};
+
 const createInstance = (element, config, providerData, baseApi) => {
   config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
@@ -193,6 +198,9 @@ const oauth = (element, args, config) => {
         realmId: query.realmId,
         dataSource: query.dataSource
       };
+      if(args && args.debug) {
+        providerData.debug = true;
+      }
       return providerData;
     });
 };
@@ -234,6 +242,7 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
       logger.debug('Using callback URL: ' + config.ec['oauth.callback.url']);
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
+        .then(r => addDebugToParams(args, r))
         .then(r => oauth(element, r, config.ec))
         .then(r => cb(type, config, r));
     case 'custom':
