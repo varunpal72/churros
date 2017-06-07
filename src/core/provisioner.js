@@ -74,7 +74,7 @@ const getPollerConfig = (element, instance) => {
       instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
     } else {
-      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getForKey(element, 'username'));
+      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getOptionalForKey(element, 'username'));
     }
     instanceCopy.configuration['event.vendor.type'] = 'polling';
     instanceCopy.configuration['event.notification.callback.url'] = 'https://knappkeith.pythonanywhere.com/request/churros/';
