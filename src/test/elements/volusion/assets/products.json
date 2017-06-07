@@ -1,4 +1,4 @@
 {
-  "ProductName": "Volusion-Element",
-  "ProductCode": "GFT"
+  "ProductName": "<<random.word##2>>",
+  "ProductCode": "<<random.alphaNumeric##3>>"
 }

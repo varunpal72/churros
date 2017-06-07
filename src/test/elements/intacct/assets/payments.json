@@ -1,0 +1,12 @@
+{
+  "customerid": "AGR001",
+  "paymentamount": "1234.56",
+  "bankaccountid": "CHK-WFB0004",
+  "refid": "tmPay001",
+  "datereceived": {
+    "year": "2016",
+    "month": "08",
+    "day": "12"
+  },
+  "paymentmethod": "Cash"
+}

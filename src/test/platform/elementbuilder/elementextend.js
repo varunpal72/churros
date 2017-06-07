@@ -17,14 +17,13 @@ const accountPayload = require('./assets/elementextend/account.json');
 const userPayload = require('./assets/elementextend/user.json');
 
 suite.forPlatform('element-extend', {}, (test) => {
-  let baseElement, newResourceId, overrideResourceId;
+  let baseElement, newResourceId;
   // Get a system element, count the resources
   before(() => cloud.get(`elements/closeio`)
     .then(r => baseElement = r.body));
 
   //delete new/overide resource should work fine
-  after(() => cloud.delete(`elements/closeio/resources/${newResourceId}`)
-    .then(() => cloud.delete(`elements/closeio/resources/${overrideResourceId}`)));
+  after(() => cloud.delete(`elements/closeio/resources/${newResourceId}`));
 
     // Create a resource under system account
     it('should create new resource under system catalog element', () => {
@@ -95,7 +94,12 @@ suite.forPlatform('element-extend', {}, (test) => {
             });
         })
         .then(() => cloud.delete(`users/${newUser.id}`))
-        .then(() => cloud.delete(`accounts/${newAccount.id}`));
+        .then(() => cloud.delete(`accounts/${newAccount.id}`))
+        .catch((e) => {
+          if (newAccount) cloud.delete(`accounts/${newAccount.id}`);
+          if (newUser) cloud.delete(`users/${newUser.id}`);
+          throw new Error(e);
+        });
     });
 
     // Execute the newly created resource and Execute the newly created resource and system resource
@@ -105,16 +109,26 @@ suite.forPlatform('element-extend', {}, (test) => {
           .then(r => instance = r.body)
           .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/mynewcontacts', (r) => expect(r).to.have.statusCode(200)))
           .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/contacts', (r) => expect(r).to.have.statusCode(200)))
-          .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'));
+          .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'))
+          .catch((e) => {
+            if (instance) provisioner.delete(instance.id, 'elements/closeio/instances');
+            throw new Error(e);
+          });
     });
 
     // Override a system resource
     it('should override the existing system catalog resource as new resource for the element', () => {
+      let overrideResourceId;
       return cloud.post(`elements/closeio/resources`, overrideResource)
         .then(r => {
           expect(r.body).to.not.be.empty;
           expect(r.body.id).to.not.be.empty;
           overrideResourceId = r.body.id;
+        })
+        .then(() => cloud.delete(`elements/closeio/resources/${overrideResourceId}`))
+        .catch((e) => {
+          if (overrideResourceId) cloud.delete(`elements/closeio/resources/${overrideResourceId}`);
+          throw new Error(e);
         });
     });
 
@@ -133,7 +147,11 @@ suite.forPlatform('element-extend', {}, (test) => {
         return provisioner.create('closeio')
           .then(r => instance = r.body)
           .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/contacts', (r) => expect(r).to.have.statusCode(200)))
-          .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'));
+          .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'))
+          .catch((e) => {
+            if (instance) provisioner.delete(instance.id, 'elements/closeio/instances');
+            throw new Error(e);
+          });
     });
 
     // try adding/update parameter to system resource and it should fail
@@ -154,7 +172,11 @@ suite.forPlatform('element-extend', {}, (test) => {
         return cloud.post(`elements/closeio/resources/${newResourceId}/parameters`, newParameter)
           .then(r => newParameterId = r.body.id)
           .then(() => cloud.put(`elements/closeio/resources/${newResourceId}/parameters/${newParameterId}`, newParameter))
-          .then(() => cloud.delete(`elements/closeio/resources/${newResourceId}/parameters/${newParameterId}`));
+          .then(() => cloud.delete(`elements/closeio/resources/${newResourceId}/parameters/${newParameterId}`))
+          .catch((e) => {
+            if (newParameterId) cloud.delete(`elements/closeio/resources/${newResourceId}/parameters/${newParameterId}`);
+            throw new Error(e);
+          });
     });
 
     // add/delete model to system resource and should fail
@@ -168,7 +190,11 @@ suite.forPlatform('element-extend', {}, (test) => {
     // add/delete model to new resource
     it('should be create and delete a model for newly created resource', () => {
         return cloud.post(`elements/closeio/resources/${newResourceId}/models`, newmodel)
-          .then(() => cloud.delete(`elements/closeio/resources/${newResourceId}/models`));
+          .then(() => cloud.delete(`elements/closeio/resources/${newResourceId}/models`))
+          .catch((e) => {
+            cloud.delete(`elements/closeio/resources/${newResourceId}/models`);
+            throw new Error(e);
+          });
     });
 
     // Should be able to create transformations for newly created model
@@ -189,7 +215,15 @@ suite.forPlatform('element-extend', {}, (test) => {
           .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('hubs/crm/newtransformedcontacts', (r) => expect(r).to.have.statusCode(200)))
           .then(r => cloud.delete(`instances/${instance.id}/transformations/newtransformedcontacts`))
           .then(r => cloud.delete(`instances/${instance.id}/objects/newtransformedcontacts/definitions`))
-          .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'));
+          .then(r => provisioner.delete(instance.id, 'elements/closeio/instances'))
+          .catch((e) => {
+            if (instance) {
+              cloud.delete(`instances/${instance.id}/transformations/newtransformedcontacts`);
+              cloud.delete(`instances/${instance.id}/objects/newtransformedcontacts/definitions`);
+              provisioner.delete(instance.id, 'elements/closeio/instances');
+            }
+            throw new Error(e);
+          });
     });
 
 });
