@@ -7,8 +7,8 @@
     "payment_method": "paypal"
   },
   "redirect_urls": {
-    "cancel_url": "https://www.paypal.com?success=false",
-    "return_url": "https://www.paypal.com?success=true"
+    "cancel_url": "https://httpbin.org/get",
+    "return_url": "https://httpbin.org/get"
   },
   "transactions": [{
     "amount": {

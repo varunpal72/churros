@@ -1,11 +1,14 @@
 {
   "intent": "order",
   "payer": {
+    "payer_info": {
+      "email": "paypal-buyer@cloud-elements.com"
+    },
     "payment_method": "paypal"
   },
   "redirect_urls": {
-    "cancel_url": "http://www.paypal.com/cancel",
-    "return_url": "http://www.paypal.com/return"
+    "cancel_url": "https://httpbin.org/get",
+    "return_url": "https://httpbin.org/get"
   },
   "transactions": [{
     "amount": {
