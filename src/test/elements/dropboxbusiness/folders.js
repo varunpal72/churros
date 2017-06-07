@@ -3,11 +3,12 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const props = require('core/props');
 
 suite.forElement('documents', 'folders', (test) => {
   let rootId = "%2F";
   let rootPath = "/";
-  let memberId = "developer@cloud-elements.com";
+  let memberId = props.getForKey('dropboxbusinessv2', 'username');
 
   it('should allow GET /folders/metadata for root folder', () => {
     let query = { path: rootPath };
