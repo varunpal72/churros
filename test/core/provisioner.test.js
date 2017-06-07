@@ -137,7 +137,7 @@ describe('provisioner', () => {
       })
       .get('/elements/myoauth2element')
       .reply(200, () => {
-        return {key: 'myoauth2element', id: 123, configuration: [{key: 'event.poller.configuration'}]};
+        return {key: 'myoauth2element', id: 123, configuration: [{key: 'event.poller.configuration', defaultValue: "Empty String"}]};
       })
       .get('/elements/123/metadata')
       .reply(200, () => {
