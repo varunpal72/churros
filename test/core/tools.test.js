@@ -130,6 +130,17 @@ Josh,Wyse,2
     const where = `firstName = 'Austin' AND lastName = 'Mahan' AND id = '12'`;
     expect(tools.createExpression(obj)).to.equal(where);
   });
+  it('should get the key value on top layer', () => {
+    const obj = {id: 'randoId', name: 'Austin'};
+    expect(tools.getKey(obj, 'id')).to.deep.equal(['randoId']);
+  });
+  it('should get the key value from complex structures', () => {
+    const obj = [[{user: {ids: {id: "someId"}}},[{id:"nextId"}]],{allPeeps: [[{user1: {anotherfield: {stuff: [{id: "lastId"}]}}}]]}];
+    expect(tools.getKey(obj, 'id')).to.deep.equal(['someId', 'nextId', 'lastId']);
+  });
+  it('should return empty array if object is not a Object', () => {
+    expect(tools.getKey('', 'id')).to.deep.equal([]);
+  });
   it('should require a JSON payload with no changes', () => {
     const regular = require(`${__dirname}/assets/test.json`);
     const modified = tools.requirePayload(`${__dirname}/assets/test.json`);
@@ -143,5 +154,14 @@ Josh,Wyse,2
   it('should throw error with bad path', () => {
     const fn = () => tools.requirePayload(`${__dirname}/assets/BadPath.json`);
     expect(fn).to.throw(Error);
+  });
+  it('should reset and get cleanup file', () => {
+    tools.resetCleanup();
+    setTimeout(() => expect(tools.getCleanup()).to.equal([]), 1000);
+  });
+  it('should add to cleanup file', () => {
+    tools.resetCleanup();
+    tools.addCleanUp({url:'http://google.com', method: 'get', secrets: {}});
+    setTimeout(() => expect(tools.getCleanup()).to.deep.equal([{url:'http://google.com', method: 'get', secrets: {}}]), 1000);
   });
 });

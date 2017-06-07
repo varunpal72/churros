@@ -2,9 +2,8 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const contactsPayload = require('./assets/contacts');
 const tools = require('core/tools');
-contactsPayload.emailAddress = tools.randomEmail();
+const contactsPayload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 suite.forElement('marketing', 'campaigns', null, (test) => {
   it('should allow GET for /hubs/marketing/campaigns', () => {

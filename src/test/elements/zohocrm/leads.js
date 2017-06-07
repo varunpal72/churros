@@ -1,14 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/leads');
-const payload2 = require('./assets/notes');
-const cloud = require('core/cloud');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const build2 = (overrides) => Object.assign({}, payload2, overrides);
-const leadsPayload = build({ firstName: tools.random(), lastName: tools.random() });
-const notesPayload = build2({ Title: tools.random() });
+const cloud = require('core/cloud');
+const leadsPayload = tools.requirePayload(`${__dirname}/assets/leads.json`);
+const notesPayload = tools.requirePayload(`${__dirname}/assets/notes.json`);
 
 suite.forElement('crm', 'leads', { payload: leadsPayload }, (test) => {
   const options = {

@@ -2,11 +2,14 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = require('./assets/customers');
+const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
 
 suite.forElement('crm', 'customers', { payload: payload }, (test) => {
-  payload.firstName = tools.random();
   test.should.supportCruds();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.should.supportCeqlSearch('id');
+  test.withOptions({ qs: { page: 1,
+                           pageSize: 5,
+                           where : "savedSearchId = '18'"
+                         } }).should.return200OnGet();
 });

@@ -3,12 +3,10 @@
 const suite = require('core/suite');
 const chakram = require('chakram');
 const cloud = require('core/cloud');
-const payload = require('./assets/accounts');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const accountsPayload = build({ visible_to: tools.randomInt(), name: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/accounts.json`);
 
-suite.forElement('crm', 'accounts', { payload: accountsPayload }, (test) => {
+suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
@@ -18,7 +16,7 @@ suite.forElement('crm', 'accounts', { payload: accountsPayload }, (test) => {
   };
   test.withOptions(options).should.supportCruds(chakram.put);
   test.should.supportPagination();
-  test.withOptions({ qs: { where: 'name = \'Robot Account 1\'' } }).should.return200OnGet();
+  test.withOptions({ qs: { where: 'name = \'newTestName3\'' } }).should.return200OnGet();
 
   const updatePayloadActivites = {
     "subject": tools.random()
@@ -60,11 +58,10 @@ suite.forElement('crm', 'accounts', { payload: accountsPayload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${accountId}`));
   });
 
-  it('should GET /accounts emails and mails', () => {
+  it('should GET /accounts  mails', () => {
     let accountId;
-    return  cloud.post(test.api, accountsPayload)
+    return  cloud.post(test.api, payload)
       .then(r => accountId = r.body.id)
-      .then(r => cloud.get(`${test.api}/${accountId}/emails`))
       .then(r => cloud.get(`${test.api}/${accountId}/mails`))
       .then(r => cloud.delete(`${test.api}/${accountId}`));
   });

@@ -27,7 +27,9 @@ const fromOptions = (url, options) => {
       verbose: options.verbose === undefined ? false : options.verbose, // hack...i can't figure out why it's not default to false
       externalAuth: options.externalAuth,
       exclude: options.exclude,
-      instance: options.instance
+      instance: options.instance,
+      polling: options.polling,
+      params: options.params
     });
   });
 };
@@ -66,21 +68,21 @@ const run = (suite, options, cliArgs) => {
   const baseMochaPaths = [rootTestDir + '/lifecycle'];
   if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
 
-  const isAfterStart = (start, suite) => {
+  const isAfterStart = (start, suite, arr) => {
     if (!start) return true;
     let folderPath = `${rootTestDir}/${resourceType}/${start}`;
     if (!fs.existsSync(folderPath)) {
       console.log('Invalid suite: %s', start);
       process.exit(1);
     }
-    return suite >= start;
+    return arr.indexOf(suite) >= arr.indexOf(start);
   };
 
   // if we want to run multiple tests, we need to find all of the available element or platform tests and add them to our resources array
   isRunMultiple(suite) ?
     fs.readdirSync(`${rootTestDir}/${resourceType}`)
     .filter(e => e !== 'assets' && options.exclude.indexOf(e) < 0)
-    .filter(e => isAfterStart(options.start, e))
+    .filter((e, i, self) => isAfterStart(options.start, e, self))
     .map(e => resources.push(e)) :
     resources.push(suite.split('/')[1]);
 
@@ -96,9 +98,11 @@ const run = (suite, options, cliArgs) => {
   if (cliArgs.browser) args += ` --browser ${cliArgs.browser}`;
   if (cliArgs.externalAuth) args += ` --externalAuth`;
   if (cliArgs.instance) args += ` --instance ${cliArgs.instance}`;
-
+  if (cliArgs.polling) args += ` --polling ${cliArgs.polling}`;
+  if (cliArgs.params) args += ` --params '${cliArgs.params}'`;
   // loop over each element, constructing the proper paths to pass to mocha
   let cmd = "";
+  if (resources.includes('.DS_Store')) resources.splice(resources.indexOf('.DS_Store'), 1);
   resources.forEach((resource, index) => {
     const allMochaPaths = baseMochaPaths.slice();
     let baseResource = resource;
@@ -158,12 +162,17 @@ commander
   .option('-S, --start <suite>', 'specific suite to start with, everything before this will be skipped')
   .option('-V, --verbose', 'logging verbose mode')
   .option('-i, --instance <instance>', 'element instance ID to run tests against (for development only)')
+  .option('--polling', 'runs the polling tests')
+  .option('-P, --params <json>', 'add additional parameters for provisioning')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
     console.log('    # Element Tests');
     console.log('    $ churros test elements/closeio');
     console.log('    $ churros test elements/closeio --test \'contacts\'');
+    console.log('    $ churros test elements/closeio --file \'contacts\'');
+    console.log('    $ churros test elements/sfdc --polling');
+    console.log('    $ churros test elements/zuorav2 --params \'{"zuorav2.sandbox": true}\'');
     console.log('    $ churros test elements');
     console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
     console.log('    $ churros test elements --start freshbooks');

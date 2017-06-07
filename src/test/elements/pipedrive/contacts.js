@@ -3,40 +3,10 @@
 const suite = require('core/suite');
 const chakram = require('chakram');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const contactsPayload = build({
-  name: tools.random(),
-  first_name: tools.random(),
-  last_name: tools.random(),
-  email1: {
-    value: tools.randomEmail(),
-    label: tools.random()
-  },
-  email2: {
-    value: tools.randomEmail(),
-    label: tools.random()
-  },
-  email3: {
-    value: tools.randomEmail(),
-    label: tools.random()
-  },
-  phone1: {
-    value: tools.randomInt() + '1234' + tools.randomInt(),
-    label: tools.random()
-  },
-  phone2: {
-    value: tools.randomInt() + '3456' + tools.randomInt(),
-    label: tools.random()
-  },
-  phone3: {
-    value: tools.randomInt() + '5678' + tools.randomInt(),
-    label: tools.random()
-  }
-});
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
-suite.forElement('crm', 'contacts', { payload: contactsPayload }, (test) => {
+suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
@@ -112,11 +82,10 @@ suite.forElement('crm', 'contacts', { payload: contactsPayload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 
-  it('should GET /contacts emails and mails', () => {
+  it('should GET /contacts  mails', () => {
     let contactId;
-    return cloud.post(test.api, contactsPayload)
+    return cloud.post(test.api, payload)
       .then(r => contactId = r.body.id)
-      .then(r => cloud.get(`${test.api}/${contactId}/emails`))
       .then(r => cloud.get(`${test.api}/${contactId}/mails`))
       .then(r => cloud.delete(`${test.api}/${contactId}`));
 

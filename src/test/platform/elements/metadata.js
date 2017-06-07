@@ -22,9 +22,9 @@ suite.forPlatform('elements/metadata', opts, (test) => {
       .then(r => cloud.get(`elements/${r.body.id}/metadata`, metadataSchema));
   });
 
-  it('should return element metadata for exapnd', () => {
+  it('should return element metadata for expand', () => {
     return cloud.get('elements/sfdc')
-      .then(r => cloud.get(`elements/${r.body.id}/metadata?expand=true`, metadataExpandedSchema));
+      .then(r => cloud.get(`/elements/${r.body.id}/metadata?expand=true`, metadataExpandedSchema));
   });
 
   it('should return 404 for invalid element ID', () => {

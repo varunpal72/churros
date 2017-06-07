@@ -1,4 +1,8 @@
 {
+  "expenseAccountRef": {
+     "name": "Purchases",
+     "value": "180"
+   },
   "unitPrice": 112312,
   "purchaseCost": 0,
   "taxable": true,
@@ -12,6 +16,6 @@
   },
   "trackQtyOnHand": false,
 
-  "name": "2005 something",
-  "sku": "SKUNUMBER"
+  "name": "<<random.word>><<random.word>>",
+  "sku": "<<random.word>><<random.word>>"
 }

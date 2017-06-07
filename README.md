@@ -62,32 +62,64 @@ Lastly, if you don't have a personal ngrok account, you'll need to signup for a 
 It is worth taking some time to familiarize yourself with the `churros` CLI.  This CLI can run tests, help setup new test suites, and add/view properties that are needed in order to run certain suites.  Run `churros help` and dig through some of the different sub-commands that are currently available.  To see some examples of the most common command, `churros test`, continue on below.
 
 ## API Docs
-For full API docs, see the API docs [here](http://cloud-elements.github.io/churros).
+For full API docs, see the API docs [here](http://cloud-elements.github.io/churros/).
 
 ## Examples
 
-#### Element Tests
+### Element Tests
 To run the tests for any element, you must have the necessary properties setup for that element.  *ALL* properties for the elements below must be populated.  To see what properties are required, you can call `churros props {element}`.  You can also run `churros help props` for more info.
 
 ```bash
+# Run all elements tests
+$ churros test elements
+
+# Run all elements tests except a suite
+$ churros test elements --exclude 'onedrive'
+
+# Run all elements tests starting at certain element
+$ churros test elements --start 'box'
+
 # Run the entire suite for the closeio element
 $ churros test elements/closeio
 
 # Run just the tests for the closeio contacts resource
 $ churros test elements/closeio --test 'contacts'
 
-# Run the entire suite for the sfdc element
-$ churros test elements/sfdc
+# Run just the tests in the contacts.js file
+$ churros test elements/closeio --file 'contacts'
 
 # Run the entire suite for the sfdc element and during provisioning use the phantomjs browser
 $ churros test elements/sfdc --browser phantomjs
+
+# Run the polling tests if there are any
+$ churros test elements/sfdc --polling
+
+# Run suite on a existing instance(FOR DEVELOPMENT ONLY)
+$ churros test elements/pipedrive --instance 1234
+
+# Run suite with additional provisioning parameters
+$ churros test elements/zuorav2 --params '{"zuorav2.sandbox": true}'
 ```
 
 > __PROTIP:__ The `--test` value will search all tests `describe(...)` and `it(...)` strings to determine which test(s) to run
-
+>__PROTIP:__ The `--file` value will run all the tests inside the JavaScript. Leave the `.js` off of the value
 > __PROTIP:__ The `--browser` value defaults to `firefox`, however if you want to use a headless browser, you can pass `--browser phantomjs` as seen above
+>__PROTIP:__ The `--params` requires valid JSON
 
-#### Platform Tests
+### Platform Tests
+
+#### All Platform
+```bash
+# Run all platform tests
+$ churros test platform
+
+# Run all platform tests except a suite
+$ churros test platform --exclude 'bulk'
+
+# Run all platform tests starting at certain suite
+$ churros test platform --start 'jobs'
+
+```
 
 #### Formulas
 ```bash
@@ -98,7 +130,7 @@ $ churros test platform/formulas
 $ churros test platform/formulas --test 'should not allow'
 
 # Run all test that contain 'should allow' as a different user than is setup in your properties file:
-$ churros test platform/formulas --test 'should allow' --user frank --password ricard
+$ churros test platform/formulas --test 'should allow' --user frank --password sinatra
 ```
 
 > __PROTIP:__ Passing a `--user`, `--password` and/or `--url` to `churros test [suite]` overrides the default value that was setup during `churros init`.
