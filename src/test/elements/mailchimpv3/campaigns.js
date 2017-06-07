@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/campaigns');
+const payload = require('core/tools').requirePayload(`${__dirname}/assets/campaigns.json`);
 const cloud = require('core/cloud');
 
 const updatePayload = () => ({

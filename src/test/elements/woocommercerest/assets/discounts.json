@@ -1,5 +1,5 @@
 {
-  "code": "10off",
+  "code": "<<random.word>>",
   "discount_type": "percent",
   "amount": "100",
   "individual_use": true,

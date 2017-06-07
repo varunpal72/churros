@@ -8,7 +8,7 @@
     "internalId":"1",
     "name":"Honeycomb Mfg."
   },
-  "companyName":"Churros company",
+  "companyName":"<<company.companyName>>",
   "isPerson":false,
   "isJobResourceVend":false,
   "terms":{

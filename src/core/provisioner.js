@@ -54,6 +54,37 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
+const getPollerConfig = (element, instance) => {
+  if (!argv.polling) return Promise.resolve(instance);
+  let elementObj;
+  return cloud.get('/elements/' + element)
+  .then(r => elementObj = r.body)
+  .then(r => props.setForKey(element, 'elementId', elementObj.id))
+  .then(r => cloud.get(`elements/${elementObj.id}/metadata`))
+  .then(r => {
+    const pollsSupported = r.body.events.supported && r.body.events.methods.includes('polling');
+    if (!pollsSupported) logger.error('Polling is not supported for this element.');
+    return pollsSupported;
+  })
+  .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
+  .then(r => {
+    if (r === null) return instance;
+    let instanceCopy = JSON.parse(JSON.stringify(instance));
+    if (elementObj.configuration.map(conf => conf.key).includes('event.metadata')) {
+      instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
+      .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
+    } else {
+      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getForKey(element, 'username'));
+    }
+    instanceCopy.configuration['event.vendor.type'] = 'polling';
+    instanceCopy.configuration['event.notification.callback.url'] = 'https://knappkeith.pythonanywhere.com/request/churros/';
+    instanceCopy.configuration['event.notification.enabled'] = 'true';
+    instanceCopy.configuration['event.poller.refresh_interval'] = '1';
+    return instanceCopy;
+  })
+  .catch(() => instance);
+};
+
 const addParams = (instance) => {
   let instanceCopy = JSON.parse(JSON.stringify(instance));
   if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
@@ -73,12 +104,14 @@ const createInstance = (element, config, providerData, baseApi) => {
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
-
-  return cloud.post(baseApi, addParams(instance))
+  return getPollerConfig(tools.getBaseElement(element), instance)
+    .then(r => cloud.post(baseApi, addParams(r)))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       defaults.token(r.body.token);
+      global.instanceId = r.body.id;
+      tools.addCleanUp({url: `${props.get('url')}/elements/api-v2${baseApi}/${r.body.id}`, method: 'delete', secrets: defaults.secrets()});
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
@@ -183,6 +216,8 @@ const oauth1 = (element, args) => {
  * @return {Promise}         JS promise that resolves to the instance created
  */
 const orchestrateCreate = (element, args, baseApi, cb) => {
+  // Setting which element we are currently running on
+  props.set('element', element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
   config.element = element;

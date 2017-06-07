@@ -48,7 +48,8 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     return cloud.get(test.api)
       .then(r => listId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${listId}/activities`))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/activities`));
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/activities`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/listsActivities`));
   });
 
   it('should allow CRUDS for lists/{id}/contacts and  GET lists/{id}/contacts/{contactId}/activities', () => {

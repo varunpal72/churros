@@ -1,15 +1,18 @@
 {
   "accounts": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "name",
-      "type": "string"
-    }, {
-      "path": "description",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      }
+    ]
   },
   "agents": {
     "fields": [{
@@ -19,18 +22,22 @@
   },
   "activities": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "body",
-      "type": "string"
-    }, {
-      "path": "type",
-      "type": "string"
-    }, {
-      "path": "contactId",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "body",
+        "type": "string"
+      },
+      {
+        "path": "type",
+        "type": "string"
+      },
+      {
+        "path": "contactId",
+        "type": "string"
+      }
+    ]
   },
   "assets": {
     "fields": [{
@@ -88,51 +95,65 @@
   },
   "comments": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "comment_id",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "comment_id",
+        "type": "string"
+      }
+    ]
   },
   "contacts": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "firstName",
-      "type": "string"
-    }, {
-      "path": "lastName",
-      "type": "string"
-    }, {
-      "path": "accountId",
-      "type": "string"
-    }, {
-      "path": "title",
-      "type": "string"
-    }, {
-      "path": "department",
-      "type": "string"
-    }, {
-      "path": "address",
-      "type": "address"
-    }, {
-      "path": "description",
-      "type": "string"
-    }, {
-      "path": "phone",
-      "type": "string"
-    }, {
-      "path": "mobile",
-      "type": "string"
-    }, {
-      "path": "email",
-      "type": "string"
-    }, {
-      "path": "name",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "firstName",
+        "type": "string"
+      },
+      {
+        "path": "lastName",
+        "type": "string"
+      },
+      {
+        "path": "accountId",
+        "type": "string"
+      },
+      {
+        "path": "title",
+        "type": "string"
+      },
+      {
+        "path": "department",
+        "type": "string"
+      },
+      {
+        "path": "address",
+        "type": "address"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "phone",
+        "type": "string"
+      },
+      {
+        "path": "mobile",
+        "type": "string"
+      },
+      {
+        "path": "email",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      }
+    ]
   },
   "contact-types": {
     "fields": [{
@@ -143,12 +164,13 @@
   "customers": {
     "fields": [{
         "path": "id",
-        "type": "string",
         "type": "string"
-      }, {
+      },
+      {
         "path": "firstName",
         "type": "string"
-      }, {
+      },
+      {
         "path": "lastName",
         "type": "string"
       },
@@ -190,42 +212,51 @@
   },
   "shipments": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "result",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "result",
+        "type": "string"
+      }
+    ]
   },
   "addresses": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "postId",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "postId",
+        "type": "string"
+      }
+    ]
   },
   "eloquaCustomObject": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "name",
-      "type": "string"
-    }, {
-      "path": "email",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      },
+      {
+        "path": "email",
+        "type": "string"
+      }
+    ]
   },
   "employees": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "postId",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "postId",
+        "type": "string"
+      }
+    ]
   },
   "estimates": {
     "fields": [{
@@ -234,6 +265,12 @@
     }]
   },
   "expenses": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "expense-group-configurations": {
     "fields": [{
       "path": "id",
       "type": "string"
@@ -265,30 +302,37 @@
   },
   "leads": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "firstName",
-      "type": "string"
-    }, {
-      "path": "lastName",
-      "type": "string"
-    }, {
-      "path": "email",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "firstName",
+        "type": "string"
+      },
+      {
+        "path": "lastName",
+        "type": "string"
+      },
+      {
+        "path": "email",
+        "type": "string"
+      }
+    ]
   },
   "lists": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "listId",
-      "type": "string"
-    }, {
-      "path": "contactId",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "listId",
+        "type": "string"
+      },
+      {
+        "path": "contactId",
+        "type": "string"
+      }
+    ]
   },
   "fields": {
     "fields": [{
@@ -304,36 +348,46 @@
   },
   "opportunities": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "name",
-      "type": "string"
-    }, {
-      "path": "accountId",
-      "type": "string"
-    }, {
-      "path": "type",
-      "type": "string"
-    }, {
-      "path": "source",
-      "type": "string"
-    }, {
-      "path": "description",
-      "type": "string"
-    }, {
-      "path": "amount",
-      "type": "string"
-    }, {
-      "path": "closeDate",
-      "type": "string"
-    }, {
-      "path": "stage",
-      "type": "string"
-    }, {
-      "path": "probability",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "name",
+        "type": "string"
+      },
+      {
+        "path": "accountId",
+        "type": "string"
+      },
+      {
+        "path": "type",
+        "type": "string"
+      },
+      {
+        "path": "source",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "amount",
+        "type": "string"
+      },
+      {
+        "path": "closeDate",
+        "type": "string"
+      },
+      {
+        "path": "stage",
+        "type": "string"
+      },
+      {
+        "path": "probability",
+        "type": "string"
+      }
+    ]
   },
   "orders": {
     "fields": [{
@@ -349,12 +403,14 @@
   },
   "owners": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "email",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "email",
+        "type": "string"
+      }
+    ]
   },
     "payments": {
     "fields": [{
@@ -370,18 +426,29 @@
   },
   "products": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "result",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "result",
+        "type": "string"
+      }
+    ]
   },
   "tasks": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "description",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+        "type": "string"
+      }
+    ]
   },
   "templates": {
     "fields": [{
@@ -415,12 +482,14 @@
   },
   "vendors": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "Id",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "Id",
+        "type": "string"
+      }
+    ]
   },
   "vendor-payments": {
     "fields": [{
@@ -637,12 +706,6 @@
       "type": "string"
     }]
   },
-  "locations": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  },
   "classes": {
     "fields": [{
       "path": "id",
@@ -751,6 +814,15 @@
       "type": "string"
     }]
   },
+  "listsActivities": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }, {
+      "path": "emails_sent",
+      "type": "string"
+    }]
+  },
   "serialized-inventory-items": {
     "fields": [{
       "path": "id",
@@ -764,12 +836,6 @@
     }]
   },
   "friendships": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  },
-  "terms": {
     "fields": [{
       "path": "id",
       "type": "string"
@@ -813,12 +879,14 @@
   },
   "statuses": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "wrong_id",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "wrong_id",
+        "type": "string"
+      }
+    ]
   },
   "blocks-id": {
     "fields": [{
@@ -833,12 +901,6 @@
     }]
   },
   "places": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  },
-  "users": {
     "fields": [{
       "path": "id",
       "type": "string"
@@ -862,18 +924,6 @@
       "type": "string"
     }]
   },
-  "tasks": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "description",
-      "type": "string"
-    }, {
-      "path": "subject",
-      "type": "string"
-    }]
-  },
   "meetings": {
     "fields": [{
       "path": "id",
@@ -884,7 +934,8 @@
     "fields": [{
         "path": "id",
         "type": "string"
-      }, {
+      },
+      {
         "path": "description",
         "type": "string"
       },
@@ -902,12 +953,14 @@
   },
   "activity-events": {
     "fields": [{
-      "path": "id",
-      "type": "string"
-    }, {
-      "path": "subject",
-      "type": "string"
-    }]
+        "path": "id",
+        "type": "string"
+      },
+      {
+        "path": "subject",
+        "type": "string"
+      }
+    ]
   },
   "contactS": {
     "fields": [{
@@ -1006,6 +1059,18 @@
    }]
  },
  "policies": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "location": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "productsCategories": {
    "fields": [{
      "path": "id",
      "type": "string"

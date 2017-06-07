@@ -20,7 +20,11 @@ const crudModelsWithRequest = (url, schema) => {
     .then(r => model = r.body)
     .then(r => cloud.get(url, schema))
     .then(r => cloud.put(url, common.genModelWithRequestSwagger({ name: 'updatedName', requestName: 'bodyName' }), schema))
-    .then(r => cloud.delete(url));
+    .then(r => cloud.delete(url))
+    .catch(e => {
+      cloud.delete(url);
+      throw new Error(e);
+    });
 };
 
 const opts = { paylod: common.genParameter({}), schema: schema };
