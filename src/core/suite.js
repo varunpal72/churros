@@ -261,7 +261,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
 
     //updates the instance with new callback url to get a unique bin each for each poller
     return cloud.patch(`/instances/${instanceId}`, updatePayload)
-    .then(() => cloud.get(`elements/${props.getForKey(props.get('element'), 'elementId')}/metadata`))
+    .then(() => cloud.get(`elements/${props.getForKey(tools.getBaseElement(props.get('element')), 'elementId')}/metadata`))
     .then(r => {
       const supportsPolling = r.body.events.supported && r.body.events.methods.includes('polling');
       //logs error then fails test

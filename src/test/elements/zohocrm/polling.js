@@ -11,12 +11,12 @@ const contactsPayload = tools.requirePayload(`${__dirname}/assets/contacts.json`
 const leadsPayload = tools.requirePayload(`${__dirname}/assets/leads.json`);
 const opportunitiesPayload = tools.requirePayload(`${__dirname}/assets/opportunities.json`);
 
-suite.forElement('ecommerce', 'polling', null, (test) => {
-  test.withApi('/hubs/ecommerce/accounts').should.supportPolling(accountsPayload, 'accounts');
-  test.withApi('/hubs/ecommerce/activity-calls').should.supportPolling(activityCallsPayload, 'activity-calls');
-  test.withApi('/hubs/ecommerce/activity-events').should.supportPolling(activityEventsPayload, 'activity-events');
-  test.withApi('/hubs/ecommerce/campaigns').should.supportPolling(campaignsPayload, 'campaigns');
-  test.withApi('/hubs/ecommerce/contacts').should.supportPolling(contactsPayload, 'contacts');
-  test.withApi('/hubs/ecommerce/leads').should.supportPolling(leadsPayload, 'leads');
-  test.withApi('/hubs/ecommerce/opportunities').should.supportPolling(opportunitiesPayload, 'opportunities');
+suite.forElement('crm', 'polling', null, (test) => {
+  test.withApi('/hubs/crm/accounts').should.supportPolling(accountsPayload, 'accounts');
+  test.withApi('/hubs/crm/activity-calls').should.supportPolling(activityCallsPayload, 'activity-calls');
+  test.withApi('/hubs/crm/activity-events').should.supportPolling(activityEventsPayload, 'activity-events');
+  test.withApi('/hubs/crm/campaigns').should.supportPolling(campaignsPayload, 'campaigns');
+  test.withApi('/hubs/crm/contacts').should.supportPolling(contactsPayload, 'contacts');
+  test.withApi('/hubs/crm/leads').should.supportPolling(leadsPayload, 'leads');
+  test.withApi('/hubs/crm/opportunities').should.supportPolling(opportunitiesPayload, 'opportunities');
 });
