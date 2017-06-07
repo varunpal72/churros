@@ -24,7 +24,7 @@ suite.forElement('ecommerce', 'transactions', (test) => {
       .withOptions({ qs: { where: `created_at='${createdAt}'` } })
       .withValidation((r) => {
         expect(r).to.have.statusCode(200);
-        const validValues = r.body.filter(obj => obj.created_at === '${createdAt}');
+        const validValues = r.body.filter(obj => obj.created_at === createdAt);
         expect(validValues.length).to.equal(r.body.length);
       }).should.return200OnGet();
   }

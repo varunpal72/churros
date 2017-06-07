@@ -4,6 +4,7 @@ const suite = require('core/suite');
 const expect = require('chakram').expect;
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const customerGroup = tools.requirePayload(`${__dirname}/assets/customerGroup.json`);
 
 const payload = (customerGroupId, storeId) => ({
   "customer": {
@@ -28,18 +29,10 @@ const customerPut = (customerGroupId, storeId) => ({
   }
 });
 
-const customerGroup = () => ({
-  "group": {
-    "code": tools.random(),
-    "tax_class_id": 3,
-    "tax_class_name": "Retail Customer"
-  }
-});
-
 suite.forElement('ecommerce', 'customers', { payload: payload() }, (test) => {
   let customerGroupId, storeId, email, customerId;
   it(`should allow CRUD for ${test.api}`, () => {
-    return cloud.post(`/hubs/ecommerce/customerGroups`, customerGroup())
+    return cloud.post(`/hubs/ecommerce/customerGroups`, customerGroup)
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.get(`/hubs/ecommerce/stores`))
       .then(r => storeId = r.body[0].id)
@@ -58,11 +51,11 @@ suite.forElement('ecommerce', 'customers', { payload: payload() }, (test) => {
     .withOptions({ qs: { where: `email='${email}'` } })
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.email === '${email}');
+      const validValues = r.body.filter(obj => obj.email === email);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
   it(`should allow GET for ${test.api}/{customerId}/billingAddress`, () => {
-    return cloud.post(`/hubs/ecommerce/customerGroups`, customerGroup())
+    return cloud.post(`/hubs/ecommerce/customerGroups`, customerGroup)
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.get(`/hubs/ecommerce/stores`))
       .then(r => storeId = r.body[0].id)
@@ -73,7 +66,7 @@ suite.forElement('ecommerce', 'customers', { payload: payload() }, (test) => {
       .then(r => cloud.delete(`/hubs/ecommerce/customerGroups/${customerGroupId}`));
   });
   it(`should allow GET for ${test.api}/{customerId}/shippingAddress`, () => {
-    return cloud.post(`/hubs/ecommerce/customerGroups`, customerGroup())
+    return cloud.post(`/hubs/ecommerce/customerGroups`, customerGroup)
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.get(`/hubs/ecommerce/stores`))
       .then(r => storeId = r.body[0].id)

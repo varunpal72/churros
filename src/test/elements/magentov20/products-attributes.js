@@ -21,7 +21,6 @@ suite.forElement('ecommerce', 'products-attributes', { payload: productsAttribut
   productsAttributes.attribute.default_frontend_label = "label" + tools.randomInt();
   productsAttributes.attribute.attribute_code = attributeCode;
   it(`should allow CRDS for ${test.api}`, () => {
-    let frontendInput;
     return cloud.post(`${test.api}`, productsAttributes)
       .then(r => frontendInput = r.body.frontend_input)
       .then(r => cloud.withOptions({ qs: { where: `frontend_input=${frontendInput}` } }).get(`${test.api}`))
@@ -34,7 +33,7 @@ suite.forElement('ecommerce', 'products-attributes', { payload: productsAttribut
     .withOptions({ qs: { where: `frontend_input='${frontendInput}'` } })
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.frontend_input === '${frontendInput}');
+      const validValues = r.body.filter(obj => obj.frontend_input === frontendInput);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
 

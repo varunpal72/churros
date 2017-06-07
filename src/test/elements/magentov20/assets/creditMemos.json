@@ -19,9 +19,9 @@
     "weee_tax_applied": "[]",
     "product_id": 1483,
     "base_price": 0,
-    "name": "ce",
+    "name": "<<name.firstName>>",
     "base_row_total": 0,
-    "sku": "sku"
+    "sku": "<<random.number>>"
   }],
   "order_id": 2
 }

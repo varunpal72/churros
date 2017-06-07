@@ -5,6 +5,7 @@ const cloud = require('core/cloud');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 const productPayload = require(`./assets/products`);
+const customerGroup = tools.requirePayload(`${__dirname}/assets/customerGroup.json`);
 
 const productsWebsites = (sku) => ({
   "productWebsiteLink": {
@@ -37,13 +38,7 @@ const productsOptionsPatch = (sku) => ({
     "sort_order": 0
   }
 });
-const customerGroup = () => ({
-  "group": {
-    "code": tools.random(),
-    "tax_class_id": 3,
-    "tax_class_name": "Retail Customer"
-  }
-});
+
 const productsGroupPrices = () => ({
   "qty": "1",
   "price": "1"
@@ -74,7 +69,7 @@ suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) =>
     .withOptions({ qs: { where: `created_at='${createdAt}'` } })
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.created_at === '${createdAt}');
+      const validValues = r.body.filter(obj => obj.created_at === createdAt);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
 
@@ -129,7 +124,7 @@ suite.forElement('ecommerce', 'products', { payload: productPayload }, (test) =>
       .then(r => attributeSetId = r.body[0].id)
       .then(r => cloud.post(test.api, productPayload))
       .then(r => sku = r.body.sku)
-      .then(r => cloud.post(`/hubs/ecommerce/customer-groups`, customerGroup()))
+      .then(r => cloud.post(`/hubs/ecommerce/customer-groups`, customerGroup))
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/products/${sku}/group-prices/${customerGroupId}/tiers`, productsGroupPrices()))
       .then(r => cloud.delete(`/hubs/ecommerce/products/${sku}/group-prices/${customerGroupId}/tiers/${qty}`))

@@ -1,4 +1,4 @@
-'use strict';
+    'use strict';
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
@@ -46,7 +46,7 @@ suite.forElement('ecommerce', 'products-attribute-sets', { payload: productsAttr
       .then(r => {
         cloud.withOptions({ qs: { where: `attribute_set_name='${attributeSetName}'` } }).get(test.api);
         expect(r).to.have.statusCode(200);
-        const validValues = r.body.filter(obj => obj.attribute_set_name === `'${attributeSetName}'`);
+        const validValues = r.body.filter(obj => obj.attribute_set_name === attributeSetName);
         expect(validValues.length).to.equal(r.body.length);
       });
   });

@@ -2,6 +2,6 @@
 
 const suite = require('core/suite');
 
-suite.forElement('ecommerce', 'ping', null, (test) => {
+suite.forElement('ecommerce', 'ping', (test) => {
   test.should.return200OnGet();
 });

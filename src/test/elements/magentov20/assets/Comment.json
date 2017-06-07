@@ -1,6 +1,6 @@
 {
   "entity": {
-    "comment": "ce-comment",
+    "comment": "<<lorem.sentences>>",
     "entity_id": "entity_id",
     "parent_id": 1
   }

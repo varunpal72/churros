@@ -10,14 +10,12 @@ const expect = require('chakram').expect;
 suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
   let attributeSetId, comments, sku, orderId, orderPutPayload, addressPayload, protectCode;
 
-  //test.should.supportPagination('id');     
-
   it(`should allow CRUDS for ${test.api}`, () => {
     return cloud.get(`/hubs/ecommerce/products-attribute-sets`)
       .then(r => {
         attributeSetId = r.body[0].id;
         productPayload.product.attribute_set_id = attributeSetId;
-        productPayload.product.name = tools.random();
+       productPayload.product.name = tools.random();
         productPayload.product.sku = "ce" + tools.randomInt();
       })
       .then(r => cloud.post(`/hubs/ecommerce/products`, productPayload))
@@ -57,7 +55,8 @@ suite.forElement('ecommerce', 'orders', { payload: payload }, (test) => {
     .withOptions({ qs: { where: `protect_code='${protectCode}'` } })
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.protect_code === '${protectCode}');
+      const validValues = r.body.filter(obj => obj.protect_code === protectCode);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
+    test.withOptions(protectCode).should.supportPagination;
 });

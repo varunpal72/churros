@@ -3,16 +3,9 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const payload = tools.requirePayload(`${__dirname}/assets/customerGroup.json`);
 
-const payload = () => ({
-  "group": {
-    "code": tools.random(),
-    "tax_class_id": 3,
-    "tax_class_name": "Retail Customer"
-  }
-});
-
-suite.forElement('ecommerce', 'customer-groups', { payload: payload() }, (test) => {
+suite.forElement('ecommerce', 'customer-groups', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportCeqlSearch('code');
   it(`should allow SR for /hubs/ecommerce/customer-groups-default`, () => {

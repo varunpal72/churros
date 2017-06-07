@@ -1,6 +1,6 @@
 {
   "rule": {
-    "name": "name",
+    "name": "<<name.firstName>>",
     "website_ids": [
       1
     ],

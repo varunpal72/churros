@@ -68,7 +68,7 @@ suite.forElement('ecommerce', 'shipments', { payload: payload }, (test) => {
     .withOptions({ qs: { where: `entity_id='${parentId}'` } })
     .withValidation((r) => {
       expect(r).to.have.statusCode(200);
-      const validValues = r.body.filter(obj => obj.entity_id === '${parentId}');
+      const validValues = r.body.filter(obj => obj.entity_id === parentId);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
   test.should.supportPagination();
