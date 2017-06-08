@@ -1,7 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/employee');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/employee.json`);
 const options = {
   churros: {
     updatePayload: {

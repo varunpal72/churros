@@ -10,6 +10,9 @@ exports.all = () => {
   exports.storage();
   exports.search();
 };
+exports.override = (name, func) => {
+  exports[name] = func;
+};
 
 exports.files = () => {
   suite.forElement('documents', 'files', (test) => {
