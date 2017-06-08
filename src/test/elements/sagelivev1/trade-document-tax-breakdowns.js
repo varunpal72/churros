@@ -19,7 +19,7 @@ suite.forElement('finance', 'trade-document-tax-breakdowns', { payload: payload 
       payload.TradeDocument = r.body[0].id;
       id1 = r.body[0].id;
     }));
-  test.should.supportCruds();
+  test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
   test
     .withName(`should support searching ${test.api} by Name`)
