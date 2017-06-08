@@ -239,7 +239,6 @@ suite.forPlatform('formulas', { name: 'formula errors' }, (test) => {
     const execValidator = (executions, fId, fiId) => {
       return cloud.get(`/formulas/${fId}/instances/${fiId}`)
         .then(r => {
-          console.log("this is the start: " + startingNotifications);
           expect(r.body.active).to.be.true;
           expect(r.body.numberConsecutiveErrors).to.equal(51);
           expect(r.body.numberConsecutiveErrorWarningNotifications).to.equal(1);

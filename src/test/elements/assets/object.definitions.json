@@ -1065,6 +1065,12 @@
    }]
  },
  "price-rules": {
+ "products-attribute-sets-groups": {
+ "fields": [{
+   "path": "id",
+   "type": "string"
+ }]
+},
  "location": {
    "fields": [{
      "path": "id",
