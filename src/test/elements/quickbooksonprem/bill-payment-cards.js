@@ -5,7 +5,7 @@ const cloud = require('core/cloud');
 
 suite.forElement('finance', 'bill-payment-cards', null, (test) => {
   let id;
-  it('should support S for /hubs/finance/bill-payment-cards', () => {
+  it.skip('should support SRD and pagination for /hubs/finance/bill-payment-cards', () => {
     return cloud.get(test.api)
       .then(r => {
         if (r.body.length > 0) {
