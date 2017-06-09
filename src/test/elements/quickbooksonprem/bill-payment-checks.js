@@ -11,7 +11,6 @@ suite.forElement('finance', 'bill-payment-checks', null, (test) => {
         id = r.body[0].TxnID;
         refno = r.body[0].RefNumber;
       })
-      .then(r => id = r.body[0].TxnID)
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
 	    .then(r => cloud.withOptions({ qs: { where: `RefNumber='${refno}'` } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${id}`));
