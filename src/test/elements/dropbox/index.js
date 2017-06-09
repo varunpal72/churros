@@ -7,5 +7,5 @@ documents.override('search', () => {
   suite.forElement('documents', 'search', (test) => {
     test.withOptions({ qs:{'text':'abc'}}).should.return200OnGet();
   });
-})
+});
 documents.all();
