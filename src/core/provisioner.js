@@ -117,7 +117,7 @@ const createInstance = (element, config, providerData, baseApi) => {
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       defaults.token(r.body.token);
       global.instanceId = r.body.id;
-      // tools.addCleanUp({url: `${props.get('url')}/elements/api-v2${baseApi}/${r.body.id}`, method: 'delete', secrets: defaults.secrets()});
+      tools.addCleanUp({url: `${props.get('url')}/elements/api-v2${baseApi}/${r.body.id}`, method: 'delete', secrets: defaults.secrets()});
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
