@@ -1,0 +1,375 @@
+{
+  "definitions": {},
+  "properties": {
+    "basePath": {
+      "type": "string"
+    },
+    "definitions": {
+      "properties": {
+        "Account-POST": {
+          "properties": {
+            "properties": {
+              "properties": {
+                "AccountNumber": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "AnnualRevenue": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "BillingCity": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "BillingCountry": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "BillingPostalCode": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "BillingState": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "BillingStreet": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Description": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Fax": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Industry": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Name": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "NumberOfEmployees": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Ownership": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Phone": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Rating": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "ShippingStreet": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Sic": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Type": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                },
+                "Website": {
+                  "properties": {
+                    "type": {
+                      "type": "string"
+                    }
+                  },
+                  "type": "object"
+                }
+              },
+              "type": "object"
+            },
+            "required": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "host": {
+      "type": "string"
+    },
+    "info": {
+      "properties": {
+        "contact": {
+          "properties": {
+            "email": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        },
+        "title": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "paths": {
+      "properties": {
+        "/accounts": {
+          "properties": {
+            "post": {
+              "properties": {
+                "operationId": {
+                  "type": "string"
+                },
+                "parameters": {
+                  "items": {
+                    "properties": {
+                      "description": {
+                        "type": "string"
+                      },
+                      "in": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "required": {
+                        "type": "boolean"
+                      },
+                      "type": {
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "type": "array"
+                },
+                "responses": {
+                  "properties": {
+                    "200": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        },
+                        "schema": {
+                          "properties": {
+                            "$ref": {
+                              "type": "string"
+                            }
+                          },
+                          "type": "object"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "400": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "401": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "403": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "404": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "405": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "406": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "409": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "415": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "500": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    },
+                    "502": {
+                      "properties": {
+                        "description": {
+                          "type": "string"
+                        }
+                      },
+                      "type": "object"
+                    }
+                  },
+                  "type": "object"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "tags": {
+                  "items": {
+                    "type": "string"
+                  },
+                  "type": "array"
+                }
+              },
+              "type": "object"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "type": "object"
+    },
+    "schemes": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "swagger": {
+      "type": "string"
+    },
+    "tags": {
+      "items": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "type": "object"
+}
