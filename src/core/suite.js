@@ -206,7 +206,7 @@ const itCeqlSearch = (name, api, payload, field, options) => {
         const myOptions = Object.assign({}, options, { qs: { where: clause } });
         return cloud.withOptions(myOptions).get(api, (r) => {
           expect(r).to.have.statusCode(200);
-          expect(r.body.length).to.equal(1);
+          expect(r.body.filter(obj => obj[field] === value).length).to.equal(r.body.length);
         });
       })
       .then(r => cloud.delete(api + '/' + id));
