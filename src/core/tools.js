@@ -268,10 +268,10 @@ exports.addCleanUp = (obj) => {
   try {
     datas = JSON.parse(require('core/assets/cleanup'));
   } catch (e) {
-    datas = require('core/assets/cleanup');
+    datas = require(`${__dirname}/assets/cleanup`);
   }
   datas.push(obj);
-  return fs.writeFile('src/core/assets/cleanup.json', JSON.stringify(datas));
+  return fs.writeFile(`${__dirname}/assets/cleanup.json`, JSON.stringify(datas));
 };
-exports.getCleanup = () => require('core/assets/cleanup');
-exports.resetCleanup = () => fs.writeFileSync('src/core/assets/cleanup.json', '[]');
+exports.getCleanup = () => require(`${__dirname}/assets/cleanup`);
+exports.resetCleanup = () => fs.writeFileSync(`${__dirname}/assets/cleanup.json`, '[]');

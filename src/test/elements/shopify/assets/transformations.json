@@ -39,6 +39,15 @@
       }
     ]
   },
+  "price-rules": {
+    "vendorName": "price-rules",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  },
   "shops": {
     "vendorName": "shop",
     "fields": [

@@ -21,7 +21,7 @@ suite.forPlatform('pagination', { name: 'formula execution pagination' }, (test)
   let formulaId, formulaInstanceId, elementInstanceId;
   before(() => {
     const config = { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 };
-    const e = require('./assets/events/single-event-sfdc');
+    const e = require('./assets/events/single-event-closeio');
 
     return common.createFAndFI('sfdc', config)
       .then(r => {

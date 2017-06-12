@@ -39,9 +39,16 @@ suite.forPlatform('docs', {}, () => {
       return Promise.all(Array.from(elementIds).map(elementId => {
         return cloud.get(`/elements/${elementId}/docs`)
         .then(r => r.body)
-        .then(s => swaggerParser.validate(s, (err, api) => {
-            if(err) { throw new Error(`Docs for element '${elementId}' are invalid Swagger: ${err}`); }
-          }));
+        .then(s => {
+          return new Promise(function(resolve, reject) {
+            swaggerParser.validate(s, (err, api) => {
+              if (err) {
+                reject(err);
+              }
+              resolve();
+            });
+          });
+        });
       }));
   });
 
