@@ -1,0 +1,11 @@
+{
+  "productsCategories": {
+    "vendorName": "productsCategories",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
+  }
+}

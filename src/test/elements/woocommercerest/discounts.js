@@ -3,11 +3,9 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
-const payload = require('./assets/discounts');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const discountsPayload = build({ code: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/discounts.json`);
 
-suite.forElement('ecommerce', 'discounts', { payload: discountsPayload }, (test) => {
+suite.forElement('ecommerce', 'discounts', { payload: payload }, (test) => {
   test.should.supportCruds();
   // unique is "id"
   test.should.supportPagination();

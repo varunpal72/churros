@@ -4,13 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const contactPayload = require('./assets/contacts.json');
 const accountPayload = require('./assets/accounts.json');
-const payload = {
-  "CloseDate": "2017-09-30",     // close date must be in future
-  "ContactId":300000000787157,   // contactId must be valid contact "PartyId"
-  "CustomerId":300000000786253,  // customerId must be valid account "PartyId"
-  "DealSize":1100,
-  "DealType": "ORA_EXISTING"
-};
+const payload = require('./assets/deals.json');
 
 // This needs to be added to the assets/transformations.json file, but it currently breaks the test
 // "deals": {

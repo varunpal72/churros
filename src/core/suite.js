@@ -9,8 +9,13 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const props = require('core/props');
 const logger = require('winston');
+const request = require('request');
 const fs = require('fs');
+const argv = require('optimist').argv;
+const faker = require('faker');
+
 
 var exports = module.exports = {};
 
@@ -201,7 +206,7 @@ const itCeqlSearch = (name, api, payload, field, options) => {
         const myOptions = Object.assign({}, options, { qs: { where: clause } });
         return cloud.withOptions(myOptions).get(api, (r) => {
           expect(r).to.have.statusCode(200);
-          expect(r.body.length).to.equal(1);
+          expect(r.body.filter(obj => obj[field] === value).length).to.equal(r.body.length);
         });
       })
       .then(r => cloud.delete(api + '/' + id));
@@ -227,6 +232,66 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
       })
       .then(r => cloud.delete(api + '/' + id));
   }, options ? options.skip : false);
+};
+const itPolling = (name, pay, api, options, validationCb, payload, resource, addMethod) => {
+  name = 'polling ' + api;
+  payload = payload ? payload : pay;
+  let response;
+  boomGoesTheDynamite(name, () => {
+    const baseUrl = faker.fake(props.get('eventCallbackUrl'));
+
+    const url = baseUrl + '?returnQueue';
+    const addResource = (r) => addMethod ? addMethod(r) : cloud.withOptions(options).post(api, r);
+    const defaultValidation = (r) => expect(r).to.have.statusCode(200);
+    const validate = validationCb && typeof validationCb === 'function' && validationCb.toString() !== defaultValidation.toString() ? validationCb : (res) => {
+      expect(res.count).to.be.above(0);
+      let objCalls = res.data.filter(call => {
+        let datas = JSON.parse(call.data);
+        return datas.message.raw.objectType === resource;
+      });
+
+      if (resource) expect(objCalls).to.have.length.above(0);
+    };
+    if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
+    expect(baseUrl).to.exist;
+    const instanceId = global.instanceId;
+    const updatePayload = { configuration: { "event.notification.callback.url": baseUrl } };
+
+    //updates the instance with new callback url to get a unique bin each for each poller
+    return cloud.patch(`/instances/${instanceId}`, updatePayload)
+    .then(() => cloud.get(`elements/${props.getForKey(tools.getBaseElement(props.get('element')), 'elementId')}/metadata`))
+    .then(r => {
+      const supportsPolling = r.body.events.supported && r.body.events.methods.includes('polling');
+      //logs error then fails test
+      if (!supportsPolling) logger.error('This element doesn\'t support polling');
+      expect(supportsPolling).to.be.true;
+    })
+    .then(r => {
+      logger.info('Testing polling may take up to 2 minutes');
+      pay = typeof payload === 'function' ? payload() : payload;
+      //clears the bin before creating and checking bin again
+      return new Promise((resolve, reject) => {
+        request(url, (err, res, body) => {
+          if(err) reject(err);
+          resolve(body);
+        });
+      });
+    })
+    .then(() => pay)
+    .then(r => addResource(r))
+    .then(r => response = r.body)
+    //repeatly revalidates until either valid or time out
+    .then(() => tools.wait.upTo(120000).for(() => new Promise((resolve, reject) => {
+      request(url, (err, res, body) => {
+        if(err) reject(err);
+        resolve(body);
+      });
+    })
+    //runs through validation function
+    .then(r => validate(JSON.parse(r)))))
+    //clean up
+    .then(() => cloud.delete(`${api}/${response.id}`).catch(() => {})).catch(e => { if (response) {return cloud.delete(`${api}/${response.id}`).catch(() => {}).then(() => { throw new Error(e); });} else { throw new Error(e);}});
+  }, (argv.polling ? false : true) || (options ? options.skip : false));
 };
 
 const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
@@ -367,6 +432,13 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      * @memberof module:core/suite.test.should
      */
     return200OnGet: () => itGet(name, api, options, validationCb),
+    /**
+    * @param {object || Function} pay: The payload used to create a new object
+    * @param {Function} validate A validate funtion with `expects` to test response
+    * @param {Function} addMethod A method to create or update a reasource. Ex: cloud.postFile('/path')
+    * @memberof module:core/suite.test.should
+    */
+    supportPolling: (pay, res, addMethod) => itPolling(name, payload, api, options, validationCb, pay, res, addMethod),
     /**
      * Downloads bulk with options and verifies it completes and that none fail. Validates accuracy of bulk
      * @param {object} metadata -> headers, query string etc...
