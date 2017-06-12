@@ -18,7 +18,7 @@ const manualSubFormulas = require('./assets/formulas/sub-formula-executions/manu
 const manualSubFormulasFailedRequest = require('./assets/formulas/sub-formula-executions/manual-sub-formulas-failed-request');
 const filterSubFormulas = require('./assets/formulas/sub-formula-executions/filter-sub-formulas');
 const errorSubFormulas = require('./assets/formulas/sub-formula-executions/error-sub-formulas');
-const event = require('./assets/events/single-event-sfdc');
+const event = require('./assets/events/single-event-closeio');
 
 suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (test) => {
   const cleanFormulas = () => {
