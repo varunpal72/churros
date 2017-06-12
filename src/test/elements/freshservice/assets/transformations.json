@@ -8,6 +8,33 @@
       }
     ]
   },
+  "changes": {
+    "vendorName": "changes",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "display_id"
+      },
+       {
+        "path": "ID",
+        "vendorPath": "id"
+      }
+
+    ]
+  }, "problems": {
+    "vendorName": "problems",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "display_id"
+      },
+       {
+        "path": "ID",
+        "vendorPath": "id"
+      }
+
+    ]
+  },
   "users": {
     "vendorName": "requesters",
     "fields": [
