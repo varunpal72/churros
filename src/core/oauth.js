@@ -97,6 +97,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000).then(r => {
 
 
+
         browser.sleep(3000);
         browser.findElement(webdriver.By.xpath('//*[@id="approve-access"]/form/button')).click();
 
