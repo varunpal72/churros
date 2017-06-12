@@ -4,88 +4,88 @@
         {
             "onSuccess": [],
             "onFailure": [],
-            "name": "delete-contact",
+            "name": "delete-accounts",
             "type": "elementRequest",
             "properties": {
                 "method": "DELETE",
                 "retryAttempts": "3",
-                "path": "${delete-contact-path}",
+                "path": "${delete-accounts-path}",
                 "retry": "true",
                 "retryDelay": "200",
                 "retryStatusCodes": "400,500,503",
                 "elementInstanceId": "${trigger-instance}",
-                "api": "/hubs/crm/contacts/{id}",
+                "api": "/hubs/crm/accounts/{id}",
                 "acceptableStatusCodes": "200"
             }
         },
         {
             "onSuccess": [
-                "delete-contact"
+                "delete-accounts"
             ],
             "onFailure": [],
-            "name": "delete-contact-path",
+            "name": "delete-accounts-path",
             "type": "script",
             "properties": {
-                "body": "var path = { \"id\": steps['get-contact'].response.body[0].Id }\n\ndone(path);"
+                "body": "var path = { \"id\": steps['get-accounts'].response.body[0].id }\n\ndone(path);"
             }
         },
         {
             "onSuccess": [
-                "delete-contact-path"
+                "delete-accounts-path"
             ],
             "onFailure": [],
-            "name": "get-contact",
+            "name": "get-accounts",
             "type": "elementRequest",
             "properties": {
                 "method": "GET",
                 "retryAttempts": "3",
-                "query": "${get-contact-query.query}",
+                "query": "${get-accounts-query.query}",
                 "retry": "true",
                 "retryDelay": "200",
                 "retryStatusCodes": "400,500,503",
                 "elementInstanceId": "${trigger-instance}",
-                "api": "/hubs/crm/contacts",
+                "api": "/hubs/crm/accounts",
                 "acceptableStatusCodes": "200"
             }
         },
         {
             "onSuccess": [
-                "get-contact"
+                "get-accounts"
             ],
             "onFailure": [],
-            "name": "get-contact-query",
+            "name": "get-accounts-query",
             "type": "script",
             "properties": {
-                "body": "var contact = steps['post-contact'].response.body\n\nvar query = { \"query\": { \"where\": \"Id='\" + contact.Id + \"'\" } };\n\ndone(query);"
+                "body": "var accounts = steps['post-accounts'].response.body\n\nvar query = { \"query\": { \"where\": \"name='\" + accounts.name + \"'\" } };\n\ndone(query);"
             }
         },
         {
             "onSuccess": [
-                "get-contact-query"
+                "get-accounts-query"
             ],
             "onFailure": [],
-            "name": "post-contact",
+            "name": "post-accounts",
             "type": "elementRequest",
             "properties": {
-                "body": "${post-contact-payload.contact}",
+                "body": "${post-accounts-payload.accounts}",
                 "method": "POST",
                 "retryAttempts": "3",
                 "retry": "true",
                 "retryDelay": "200",
                 "retryStatusCodes": "400,500,503",
                 "elementInstanceId": "${trigger-instance}",
-                "api": "/hubs/crm/contacts"
+                "api": "/hubs/crm/accounts"
             }
         },
         {
             "onSuccess": [
-                "post-contact"
+                "post-accounts"
             ],
             "onFailure": [],
-            "name": "post-contact-payload",
+            "name": "post-accounts-payload",
             "type": "script",
             "properties": {
-                "body": "var contact = { \"contact\": {\n  \"Phone\": \"123-456-7890\",\n  \"Email\": \"devnull@cloud-elements.com\",\n  \"FirstName\": \"Dev\",\n  \"LastName\": \"Null\",\n  \"MobilePhone\": \"987-654-3210\",\n  \"Title\": \"Colonel\",\n  \"Salutation\": \"Mr.\",\n  \"Birthdate\": \"1977-01-01\"\n}};\n\ndone(contact);\n\n"
+                "body": "var accounts = { \"accounts\": {\n  \"name\": \"formula-churros\"}};\n\ndone(accounts);\n\n"
             }
         }
     ],
@@ -94,7 +94,7 @@
             "type": "event",
             "async": true,
             "onSuccess": [
-                "post-contact-payload"
+                "post-accounts-payload"
             ],
             "onFailure": [],
             "properties": {
