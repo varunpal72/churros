@@ -75,7 +75,7 @@ const getPollerConfig = (element, instance) => {
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
       console.log('1', instanceCopy.configuration['event.objects']);
     } else {
-      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getOptionalForKey(element, 'username'));
+      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getOptionalForKey(element, 'username'));
       if (instanceCopy.configuration['event.poller.configuration']) instanceCopy.configuration["event.poller.urls"] = Object.keys(JSON.parse(instanceCopy.configuration['event.poller.configuration'])).join('|');
       else instanceCopy.configuration['event.poller.urls'] = elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.urls' ? conf.defaultValue : acc ,null);
       console.log('2', instanceCopy.configuration['event.poller.configuration']);
