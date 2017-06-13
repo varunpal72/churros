@@ -136,7 +136,7 @@
       "name": "ten-ids-please",
       "type": "script",
       "properties": {
-        "body": "var contacts = steps['get-contacts'].response.body;\nvar response = {ids:[]};\n\n// only care about 10 of these bad boyz...\nfor (var i = 0; i < 10; i ++) {\n  var c = contacts[i];\n  response.ids.push(c.Id);\n}\n\ndone(response);"
+        "body": "var contacts = steps['get-contacts'].response.body;\nvar response = {ids:[]};\n\n// only care about 10 of these bad boyz...\nfor (var i = 0; i < 10; i ++) {\n  var c = contacts[i];\n  response.ids.push(c.id);\n}\n\ndone(response);"
       }
     }
   ]

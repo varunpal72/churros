@@ -20,7 +20,7 @@
       "retry": "true",
       "retryAttempts": "3",
       "retryDelay": "100",
-      "retryStatusCodes": "404",
+      "retryStatusCodes": "400",
       "elementInstanceId": "${trigger-instance}",
       "method": "GET"
     }

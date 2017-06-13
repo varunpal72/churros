@@ -3,6 +3,8 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const expect = require('chakram').expect;
+const customerGroups = tools.requirePayload(`${__dirname}/assets/customerGroup.json`);
 
 const salesRulePost = (customerGroupId, autoGen) => ({
   "rule": {
@@ -82,17 +84,11 @@ const deleteByIds = (couponId) => ({
   "ignoreInvalidCoupons": true
 });
 
-const customerGroups = () => ({
-  "group": {
-    "code": tools.random()
-  }
-});
-
 suite.forElement('ecommerce', 'coupons', (test) => {
+  let ruleId, customerGroupId;
   it(`should allow CD for /hubs/ecommerce/coupons-generate`, () => {
-    let ruleId, couponCodes, customerGroupId;
-    let autoGen = true;
-    return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
+    let couponCodes, autoGen = true;
+    return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups)
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
       .then(r => ruleId = r.body.id)
@@ -104,9 +100,8 @@ suite.forElement('ecommerce', 'coupons', (test) => {
   });
 
   it(`should allow CRUDS for ${test.api}`, () => {
-    let ruleId, customerGroupId;
     let autoGen = false;
-    return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
+    return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups)
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
       .then(r => ruleId = r.body.id)
@@ -114,11 +109,18 @@ suite.forElement('ecommerce', 'coupons', (test) => {
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
+  test
+    .withName(`should support searching ${test.api} by ruleId`)
+    .withOptions({ qs: { where: `rule_id='${ruleId}'` } })
+    .withValidation((r) => {
+      expect(r).to.have.statusCode(200);
+      const validValues = r.body.filter(obj => obj.rule_id === ruleId);
+      expect(validValues.length).to.equal(r.body.length);
+    }).should.return200OnGet();
 
   it(`should allow POST for /hubs/ecommerce/coupons/deleteByIds`, () => {
-    let ruleId, couponId, customerGroupId;
-    let autoGen = false;
-    return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups())
+    let couponId, autoGen = false;
+    return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups)
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
       .then(r => ruleId = r.body.id)
@@ -128,6 +130,5 @@ suite.forElement('ecommerce', 'coupons', (test) => {
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
   });
-  test.withOptions({ qs: {orderBy : 'rule_id'} }).should.return200OnGet();
-  test.withOptions({ qs: {orderBy : 'rule_id desc'} }).should.return200OnGet();
+  test.should.supportPagination();
 });

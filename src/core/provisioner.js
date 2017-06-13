@@ -74,7 +74,8 @@ const getPollerConfig = (element, instance) => {
       instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
       .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
     } else {
-      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getForKey(element, 'username'));
+      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/<PUT USERNAME HERE>/g, props.getOptionalForKey(element, 'username'));
+      if (instanceCopy.configuration['event.poller.configuration']) instanceCopy.configuration["event.poller.urls"] = Object.keys(JSON.parse(instanceCopy.configuration['event.poller.configuration'])).join('|');
     }
     instanceCopy.configuration['event.vendor.type'] = 'polling';
     instanceCopy.configuration['event.notification.callback.url'] = 'https://knappkeith.pythonanywhere.com/request/churros/';
@@ -95,6 +96,11 @@ const addParamsToOptions = (argOptions) => {
   let optionsCopy = JSON.parse(JSON.stringify(argOptions));
   if (argv.params) optionsCopy.qs = Object.assign({}, optionsCopy.qs, JSON.parse(argv.params));
   return optionsCopy;
+};
+
+const addDebugToParams = (args, params) => {
+  if (args && args.debug) params.debug = true;
+  return params;
 };
 
 const createInstance = (element, config, providerData, baseApi) => {
@@ -192,6 +198,9 @@ const oauth = (element, args, config) => {
         realmId: query.realmId,
         dataSource: query.dataSource
       };
+      if(args && args.debug) {
+        providerData.debug = true;
+      }
       return providerData;
     });
 };
@@ -233,6 +242,7 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
       logger.debug('Using callback URL: ' + config.ec['oauth.callback.url']);
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
+        .then(r => addDebugToParams(args, r))
         .then(r => oauth(element, r, config.ec))
         .then(r => cb(type, config, r));
     case 'custom':

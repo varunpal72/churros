@@ -137,7 +137,7 @@ describe('provisioner', () => {
       })
       .get('/elements/myoauth2element')
       .reply(200, () => {
-        return {key: 'myoauth2element', id: 123, configuration: [{key: 'event.poller.configuration'}]};
+        return {key: 'myoauth2element', id: 123, configuration: [{key: 'event.poller.configuration', defaultValue: "Empty String"}]};
       })
       .get('/elements/123/metadata')
       .reply(200, () => {
@@ -238,6 +238,20 @@ describe('provisioner', () => {
         expect(r.body.id).to.equal(123);
         expect(r.body.providerData).not.to.be.null;
         expect(r.body.providerData.code).to.equal('speakercity');
+      })
+      .then(r => mockery.disable());
+  });
+
+  it('should allow creating an oauth2 element instance with debug', () => {
+    setupProps();
+    return provisioner.create('myoauth2element', {debug : true})
+      .then(r => {
+        expect(r).not.to.be.null;
+        expect(r.body).not.to.be.null;
+        expect(r.body.id).to.equal(123);
+        expect(r.body.providerData).not.to.be.null;
+        expect(r.body.providerData.code).to.equal('speakercity');
+        expect(r.body.providerData.debug).to.equal(true);
       })
       .then(r => mockery.disable());
   });

@@ -1,0 +1,5 @@
+{
+    "CompanyName": "<<company.companyName>>",
+    "Country": "<<address.country>>",
+    "TimeZone": "(GMT+10:00) Canberra, Melbourne, Sydney"
+}
