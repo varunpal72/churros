@@ -9,7 +9,7 @@ const instanceSchema = require('./assets/element.instance.schema');
 const instancesSchema = require('./assets/element.instances.schema');
 const transformationPayload = require('./assets/accountTransformation');
 const objDefPayload = require('./assets/accountObjectDefinition');
-const sfdcSwaggerSchema = require('./assets/sfdcSwagger.schema');
+const sfdcSwaggerSchema = require('./assets/closeioSwagger.schema');
 const logger = require('winston');
 
 const genInstance = (element, o) => ({

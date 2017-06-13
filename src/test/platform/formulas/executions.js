@@ -82,11 +82,12 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
   after((done) => {
     if (!closeioId) done();
-    return provisioner.delete(closeioId)
+    provisioner.delete(closeioId)
       .then(r => provisioner.delete(dropboxId))
       .catch(e => {
         console.log(`Failed to finish after()...${e}`);
-      });
+      })
+      .then(() => done());
   });
 
   const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
@@ -391,13 +392,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const validator = (executions) => {
       executions.map(e => {
         const consolidated = consolidateStepExecutionValues(e.stepExecutions);
-        expect(consolidated['delete-contact.response.code']).to.equal('200');
+        expect(consolidated['delete-accounts.response.code']).to.equal('200');
       });
     };
 
     const configuration = {
       "trigger-instance": closeioId,
-      "resource.name": "contacts"
+      "resource.name": "accounts"
     };
 
     return manualTriggerTest('element-request-with-configured-api-successful-formula', configuration, { foo: 'bar' }, 7, validator);
@@ -671,7 +672,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
             return new Promise(function(resolve, reject) {
               setTimeout(() => {
                 resolve();
-              }, 1000); 
+              }, 1000);
             });
           })
           // cancel again, expect 400 (can't cancel already completed formula)
@@ -687,7 +688,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const cancelTestWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
+    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = closeioId;
     return cancelTestCustomTestWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
     };
 

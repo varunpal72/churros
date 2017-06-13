@@ -9,6 +9,7 @@ const keysSchema = require('./assets/keys.schema.json');
 const schema = require('./assets/element.schema.json');
 const listSchema = require('./assets/elements.schema.json');
 const logger = require('winston');
+const faker = require('faker');
 
 const getElementId = (key) => {
   return cloud.get(`elements/${key}`)
@@ -72,8 +73,14 @@ suite.forPlatform('elements', opts, (test) => {
   it('should support search', () => cloud.get('elements', listSchema));
   it('should support get keys', () => cloud.get('elements/keys', keysSchema));
 
-  it('should support CRUD by key', () => crudElement('key', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
-  it('should support CRUD by ID', () => crudElement('id', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
+  it('should support CRUD by key', () => {
+    const name = 'Churros DB element ' + faker.random.number();
+    return crudElement('key', common.genElement({name}), common.genElement({ description: "An updated Churros element", name }), schema);
+  });
+  it('should support CRUD by ID', () => {
+    const name = 'Churros DB element ' + faker.random.number();
+    return crudElement('id', common.genElement({name}), common.genElement({ description: "An updated Churros element", name }), schema);
+  });
   it('should support CRUD by ID with objects', () => crudElement('id', common.genElementWithObjects({}), common.genElementWithObjects({ description: "An updated Churros element" }), schema));
 
   it('should support JDBC element CRUD by key', () => crudElement('key', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
