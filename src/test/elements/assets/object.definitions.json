@@ -1081,23 +1081,5 @@
      "path": "id",
      "type": "string"
    }]
- },
-  "changes": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    },{
-      "path": "ID",
-      "type": "string"
-    }]
-  },
-  "problems": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    },{
-      "path": "ID",
-      "type": "string"
-    }]
-  }
+ }
 }
