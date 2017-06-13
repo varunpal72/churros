@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const cloud = require('core/cloud');
 const payload = tools.requirePayload(`${__dirname}/assets/status.json`);
 const comments = tools.requirePayload(`${__dirname}/assets/statusComments.json`);
 
