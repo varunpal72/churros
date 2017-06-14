@@ -1,6 +1,6 @@
 {
-  "employeeid": "<<lorem.word>>",
-  "title": "<<random.word>>",
+  "employeeid": "<<random.alphaNumeric##8>>",
+  "title": "<<random.alphaNumeric##8>>",
   "locationid": "100",
   "departmentid": "10",
   "supervisorid": "1",
@@ -21,13 +21,13 @@
   "externalid": "ext123",
   "personalinfo": {
     "contact": {
-      "contactname": "<<random.word>>",
-      "printas": "<<random.word>>",
-      "companyname": "<<random.word>>",
+      "contactname": "<<random.alphaNumeric##8>>",
+      "printas": "<<random.alphaNumeric##8>>",
+      "companyname": "<<random.alphaNumeric##8>>",
       "prefix": "Ms",
-      "firstname": "<<random.word>>",
-      "lastname": "<<random.word>>",
-      "initial": "<<random.word>>",
+      "firstname": "<<random.alphaNumeric##8>>",
+      "lastname": "<<random.alphaNumeric##8>>",
+      "initial": "<<random.alphaNumeric##8>>",
       "phone1": "(781) 756 3725",
       "phone2": "(781) 756-3724",
       "cellphone": "(978) 902-0815",

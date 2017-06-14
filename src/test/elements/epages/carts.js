@@ -12,7 +12,14 @@ suite.forElement('ecommerce', 'carts', { payload: payload }, (test) => {
   it(`should allow CR for ${test.api} and UD billing and shipping addresses then create the order.`, () => {
     let cartId,epagesCartToken;
     return cloud.get(`/hubs/ecommerce/products`)
-      .then(r => payload.lineItems[0].productId = r.body[0].id)
+    .then(r => {
+      for (let i = 0; i < r.body.length; i ++) {
+        if (r.body[i].availability === 'OnStock') {
+          return r.body[i]
+        }
+      }
+    })
+      .then(r => payload.lineItems[0].productId = r.id)
       .then(r => cloud.post(`${test.api}`, payload))
       .then(r => {
         cartId = r.body.id;
