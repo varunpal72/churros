@@ -1,0 +1,6 @@
+{
+  "AccountName": "<<internet.userName>>",
+  "Email": "<<internet.email>>",
+  "Phone": "1231231234",
+  "RoleCode": "CRM000"
+}
