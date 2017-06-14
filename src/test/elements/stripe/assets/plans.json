@@ -1,0 +1,7 @@
+{
+  "amount": "<<random.number>>",
+  "interval": "month",
+  "name": "<<random.word##2>>",
+  "currency": "usd",
+  "id": "<<random.uuid>>"
+}

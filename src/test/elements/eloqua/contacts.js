@@ -3,9 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const payload = require('./assets/contacts');
-
-payload.emailAddress = tools.randomEmail();
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   const opts = {

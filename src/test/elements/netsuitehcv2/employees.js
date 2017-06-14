@@ -15,7 +15,7 @@ suite.forElement('humancapital', 'employees', { payload: employeesPayload }, (te
     }
   };
   test.withOptions(options).should.supportCruds();
-  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.supportPagination();
+  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.supportPagination('id');
   test.should.supportCeqlSearch('id');
   test.withOptions({ qs: { page: 1,
                            pageSize: 5,

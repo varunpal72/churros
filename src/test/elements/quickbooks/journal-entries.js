@@ -1,12 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/journal-entries');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const journalentries = build({ docNumber: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/journal-entries.json`);
 
-suite.forElement('finance', 'journal-entries', { payload: journalentries }, (test) => {
+suite.forElement('finance', 'journal-entries', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {

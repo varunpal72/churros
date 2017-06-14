@@ -1,9 +1,10 @@
 {
   "contacts": {
-    "vendorName": "Contacts",
+    "vendorName": "contacts",
     "fields": [{
       "path": "id",
       "vendorPath": "record_id_"
     }]
   }
 }
+

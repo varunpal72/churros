@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/lot-numbered-inventory-items');
+const payload = require('core/tools').requirePayload(`${__dirname}/assets/lot-numbered-inventory-items.json`);
 
 suite.forElement('finance', 'lot-numbered-inventory-items', { payload: payload }, (test) => {
   	test.should.supportCruds();

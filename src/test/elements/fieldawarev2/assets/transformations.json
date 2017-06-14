@@ -80,6 +80,15 @@
       }
     ]
   },
+  "location": {
+    "vendorName": "job",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "uuid"
+      }
+    ]
+  },
   "assets": {
     "vendorName": "asset",
     "fields": [

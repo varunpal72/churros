@@ -48,7 +48,7 @@ const post = (api, payload, validationCb, options) => {
 exports.post = (api, payload, validationCb) => post(api, payload, validationCb, null);
 
 const get = (api, validationCb, options) => {
-  logger.debug('GET %s with options %s', api, options);
+  logger.debug('GET %s with options %s', api, JSON.stringify(options));
   return chakram.get(api, options)
     .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to retrieve or validate: %s', r, api));

@@ -5,6 +5,6 @@ const payload = require('./assets/contacts');
 
 suite.forElement('fsa', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();
-  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
+  test.should.supportPagination();
   test.should.supportCeqlSearchForMultipleRecords('firstName');
 });
