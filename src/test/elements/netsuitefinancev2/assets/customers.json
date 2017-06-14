@@ -6,7 +6,7 @@
     "internalId":"1",
     "name":"Honeycomb Mfg."
   },
-  "firstName":"Churros Test",
+  "firstName":"<<name.firstName>>",
   "entityStatus":{
     "internalId":"13",
     "name":"CUSTOMER-Closed Won"

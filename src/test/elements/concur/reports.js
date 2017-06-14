@@ -1,13 +1,11 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/reports');
-const expect = require('chakram').expect;
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const reportsPayload = build({ Name: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/reports.json`);
+const expect = require('chakram').expect;
 
-suite.forElement('expense', 'reports', { payload: reportsPayload }, (test) => {
+suite.forElement('expense', 'reports', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {

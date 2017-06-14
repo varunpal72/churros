@@ -3,11 +3,9 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const payload = require('./assets/files');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const filesPayload = build({ path: `/${tools.random()}` });
+const payload = tools.requirePayload(`${__dirname}/assets/files.json`);
 
-suite.forElement('documents', 'files', { payload: filesPayload }, (test) => {
+suite.forElement('documents', 'files', { payload: payload }, (test) => {
   it('should allow ping for sharepoint', () => {
     return cloud.get(`/hubs/documents/ping`);
   });
@@ -18,10 +16,10 @@ suite.forElement('documents', 'files', { payload: filesPayload }, (test) => {
     return cloud.withOptions({ qs: { path: `/${tools.random()}`, overwrite: 'true', size: '777835' } }).postFile(test.api, UploadFile)
       .then(r => srcPath = r.body.path)
       .then(r => cloud.withOptions({ qs: { path: `${srcPath}` } }).get(test.api))
-      .then(r => cloud.withOptions({ qs: { path: `${srcPath}` } }).post(`${test.api}/copy`, filesPayload))
+      .then(r => cloud.withOptions({ qs: { path: `${srcPath}` } }).post(`${test.api}/copy`, payload))
       .then(r => cloud.withOptions({ qs: { path: `${srcPath}` } }).get(`${test.api}/links`))
       .then(r => cloud.withOptions({ qs: { path: `${srcPath}` } }).get(`${test.api}/metadata`))
-      .then(r => cloud.withOptions({ qs: { path: `${srcPath}` } }).patch(`${test.api}/metadata`, filesPayload))
+      .then(r => cloud.withOptions({ qs: { path: `${srcPath}` } }).patch(`${test.api}/metadata`, payload))
       .then(r => srcPath = r.body.path)
       .then(r => cloud.withOptions({ qs: { path: `${srcPath}` } }).delete(test.api));
   });
@@ -32,10 +30,10 @@ suite.forElement('documents', 'files', { payload: filesPayload }, (test) => {
     return cloud.withOptions({ qs: { path: `/${tools.random()}`, overwrite: 'true', size: '777835' } }).postFile(test.api, UploadFile)
       .then(r => fileId = r.body.id)
       .then(r => cloud.get(`${test.api}/${fileId}`))
-      .then(r => cloud.post(`${test.api}/${fileId}/copy`, filesPayload))
+      .then(r => cloud.post(`${test.api}/${fileId}/copy`, payload))
       .then(r => cloud.get(`${test.api}/${fileId}/links`))
       .then(r => cloud.get(`${test.api}/${fileId}/metadata`))
-      .then(r => cloud.patch(`${test.api}/${fileId}/metadata`, filesPayload))
+      .then(r => cloud.patch(`${test.api}/${fileId}/metadata`, payload))
       .then(r => fileId = r.body.id)
       .then(r => cloud.delete(`${test.api}/${fileId}`));
   });
