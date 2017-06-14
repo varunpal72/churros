@@ -241,7 +241,7 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
       const output = {
         count: 1,
         data: [{
-        url: "https://knappkeith.pythonanywhere.com/request/idontevenknow/",
+        url: "https://httpbin.org/get",
         headers: "Fake Head",
         data: '{"message": {"raw": {"objectType": "tests"}}}',
         method: "GET",
