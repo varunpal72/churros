@@ -1755,8 +1755,8 @@
             }
           }
         },
-        "/myaccounts/{id}": {
-          "id": "/myaccounts/{id}",
+        "/myaccounts/{objectId}": {
+          "id": "/myaccounts/{objectId}",
           "type": "object",
           "properties": {
             "patch": {
@@ -2391,7 +2391,7 @@
         "/accounts",
         "/accounts/{id}",
         "/myaccounts",
-        "/myaccounts/{id}"
+        "/myaccounts/{objectId}"
       ]
     },
     "host": {
@@ -2402,329 +2402,28 @@
       "id": "definitions",
       "type": "object",
       "properties": {
-        "Account": {
-          "id": "Account",
-          "type": "object",
+        "accountsNotes": {
           "properties": {
-            "description": {
-              "id": "description",
+            "note": {
               "type": "string"
             },
-            "properties": {
-              "id": "properties",
-              "type": "object",
-              "properties": {
-                "AccountNumber": {
-                  "id": "AccountNumber",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "AnnualRevenue": {
-                  "id": "AnnualRevenue",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "BillingCity": {
-                  "id": "BillingCity",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "BillingCountry": {
-                  "id": "BillingCountry",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "BillingPostalCode": {
-                  "id": "BillingPostalCode",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "BillingState": {
-                  "id": "BillingState",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "BillingStreet": {
-                  "id": "BillingStreet",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "CreatedById": {
-                  "id": "CreatedById",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "CreatedDate": {
-                  "id": "CreatedDate",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Description": {
-                  "id": "Description",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Fax": {
-                  "id": "Fax",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Id": {
-                  "id": "Id",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Industry": {
-                  "id": "Industry",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "IsDeleted": {
-                  "id": "IsDeleted",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "LastModifiedById": {
-                  "id": "LastModifiedById",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "LastModifiedDate": {
-                  "id": "LastModifiedDate",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "LastReferencedDate": {
-                  "id": "LastReferencedDate",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "LastViewedDate": {
-                  "id": "LastViewedDate",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Name": {
-                  "id": "Name",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "NumberOfEmployees": {
-                  "id": "NumberOfEmployees",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "OwnerId": {
-                  "id": "OwnerId",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Ownership": {
-                  "id": "Ownership",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Phone": {
-                  "id": "Phone",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "PhotoUrl": {
-                  "id": "PhotoUrl",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Rating": {
-                  "id": "Rating",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "ShippingStreet": {
-                  "id": "ShippingStreet",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Sic": {
-                  "id": "Sic",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "SystemModStamp": {
-                  "id": "SystemModStamp",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Type": {
-                  "id": "Type",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                },
-                "Website": {
-                  "id": "Website",
-                  "type": "object",
-                  "properties": {
-                    "type": {
-                      "id": "type",
-                      "type": "string"
-                    }
-                  }
-                }
-              }
+            "user_name": {
+              "type": "string"
             },
-            "required": {
-              "id": "required",
-              "type": "array",
-              "items": {
-                "id": "0",
-                "type": "string"
-              }
+            "_type": {
+              "type": "string"
+            },
+            "user_id": {
+              "type": "string"
+            },
+            "organization_id": {
+              "type": "string"
+            },
+            "lead_id": {
+              "type": "string"
             }
-          }
+          },
+          "type": "object"
         },
         "myaccounts": {
           "id": "myaccounts",
@@ -2785,7 +2484,7 @@
       },
       "required": [
         "myaccounts",
-        "Account"
+        "accountsNotes"
       ]
     },
     "swagger": {
