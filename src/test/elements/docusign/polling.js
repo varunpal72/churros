@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 const createPayload = require('./assets/envelopes.create.json');
 let path = __dirname + '/assets/MrRobotPdf.pdf';

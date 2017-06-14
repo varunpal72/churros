@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const updatePayload = require('./assets/productsUpdate');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const payload = tools.requirePayload(`${__dirname}/assets/products.json`)
+const payload = tools.requirePayload(`${__dirname}/assets/products.json`);
 
 const inventoryUpdate = () => ({
   "qty": 1,
