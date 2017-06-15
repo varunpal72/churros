@@ -8,4 +8,3 @@ suite.forElement('helpdesk', 'brands', options, (test) => {
   test.should.supportCruds();
 
 });
-// });
