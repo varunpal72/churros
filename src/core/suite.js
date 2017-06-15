@@ -116,6 +116,9 @@ const itPagination = (name, api, options, validationCb, unique) => {
     .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize, nextPage: nextPage, page: page+1 }} : options2, result2))
     .then(nextPage => getWithOptions(nextPage ? { qs: { pageSize: pageSize * 2}} : options3, result3))
     .then(() => {
+      console.log('result 1:', result1.body);
+      console.log('result 2:', result2.body);
+      console.log('result 3:', result3.body);
       if (unique) {
         result3.body = tools.getKey(result3.body, unique);
         result2.body = tools.getKey(result2.body, unique);
