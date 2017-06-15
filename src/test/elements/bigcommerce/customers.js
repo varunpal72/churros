@@ -58,7 +58,7 @@ suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
   });
   it('should allow CRUDS for customer/groups and then GET customer/groups/count', () => {
     let groupId = -1;
-    const createGroup = groupCreate()
+    const createGroup = groupCreate();
     return cloud.post(`${test.api}/groups`, createGroup)
       .then(r => groupId = r.body.id)
       .then(r => cloud.get(`${test.api}/groups`))

@@ -3,7 +3,6 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const moment = require('moment');
 const filesPath = `${__dirname}/assets/file.txt`;
 const rootFolder = '/My Files & Folders';
 

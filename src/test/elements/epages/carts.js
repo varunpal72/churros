@@ -15,7 +15,7 @@ suite.forElement('ecommerce', 'carts', { payload: payload }, (test) => {
     .then(r => {
       for (let i = 0; i < r.body.length; i ++) {
         if (r.body[i].availability === 'OnStock') {
-          return r.body[i]
+          return r.body[i];
         }
       }
     })
