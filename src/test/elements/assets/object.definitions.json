@@ -432,6 +432,10 @@
       {
         "path": "result",
         "type": "string"
+      },
+      {
+        "path": "modified_date",
+        "type": "string"
       }
     ]
   },
