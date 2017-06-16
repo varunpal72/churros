@@ -29,6 +29,7 @@ describe('suite', () => {
       baseUrl: baseUrl,
       headers: { Authorization: auth }
     });
+    props.set('element', 'myelement');
     props.set('eventCallbackUrl', 'https://knappkeith.pythonanywhere.com/request/churrosTest/');
   });
 
