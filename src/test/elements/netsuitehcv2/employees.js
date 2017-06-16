@@ -20,6 +20,6 @@ suite.forElement('humancapital', 'employees', { payload: employeesPayload }, (te
   test.withOptions({ qs: { page: 1,
                            pageSize: 5,
                            where : "savedSearchId = '712'"
-                         } }).should.supportPagination();
+                         } }).should.supportPagination('id');
 
 });
