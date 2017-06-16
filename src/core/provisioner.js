@@ -225,8 +225,6 @@ const oauth1 = (element, args) => {
  * @return {Promise}         JS promise that resolves to the instance created
  */
 const orchestrateCreate = (element, args, baseApi, cb) => {
-  // Setting which element we are currently running on
-  props.set('element', element);
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
   config.element = element;

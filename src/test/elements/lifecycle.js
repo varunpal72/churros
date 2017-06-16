@@ -26,7 +26,8 @@ const terminate = error => {
 
 let element = argv.element;
 let instanceId;
-
+// Setting which element we are currently running on
+props.set('element', element);
 before(() => {
   tools.resetCleanup();
   logger.info('Running tests for element: %s', element);
