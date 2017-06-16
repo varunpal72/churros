@@ -24,8 +24,9 @@ var id;
   test.should.supportPagination();
   test.withOptions(options).should.supportCruds();
   before(() => cloud.post(test.api, updatePayload)
-    .then(r => id = r.body.id)); 
+    .then(r => id = r.body.id));
 
+test.withApi(`${test.api}/${id}/groups`).should.supportPagination();
 it(`should allow GET ${test.api}/groups`, () => {
    return cloud.get(`${test.api}/${id}/groups`);
 });
