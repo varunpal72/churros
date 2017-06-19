@@ -294,7 +294,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
   }, (argv.polling ? false : true) || (options ? options.skip : false));
 };
 
-const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoint) => {
+const itBulkDownload = (name, hub, metadata, options, opts, endpoint) => {
   const n = name || `should support bulk download with options`;
   let bulkId, bulkResults, jsonMeta, csvMeta;
   // gets metadata ready for testing csv and json responses
@@ -308,18 +308,18 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
   metadata = tools.updateMetadata(metadata);
   boomGoesTheDynamite(n, () => {
     // start bulk download
-    return cloud.withOptions(metadata).post(apiOverride ? `${apiOverride}` : `/hubs/${hub}/bulk/query`)
+    return cloud.withOptions(metadata).post(`/hubs/${hub}/bulk/query`)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
       // gets regular call to later check the validity of the bulk job
       .then(r => cloud.withOptions(metadata)
-        .get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`, r => {
+        .get(`/hubs/${hub}/${endpoint}`, r => {
           bulkResults = r.body;
         }))
       // get bulk download status
-      .then(r => tools.wait.upTo(30000).for(() => cloud.get(apiOverride ? `${apiOverride}/status` : `/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
         return r;
       })))
@@ -329,21 +329,20 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
       })
       // get bulk query results in JSON
       .then(r => getJson ? cloud.withOptions(jsonMeta)
-        .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-          console.log(r.body);
-          let bulkDownloadResults = tools.getKey(r.body.split('\n').map(obj => { try{ return JSON.parse(obj) } catch(e) { return ''}}), 'id');
+        .get(`/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+          let bulkDownloadResults = tools.getKey(r.body.split('\n').map(obj => { try { return JSON.parse(obj); } catch(e) { return ''; } }), 'id');
           expect(bulkDownloadResults).to.deep.equal(tools.getKey(bulkResults, 'id'));
         }) : Promise.resolve(null))
       // get bulk query results in CSV
       .then(r => getCsv ? cloud.withOptions(csvMeta)
-        .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
+        .get(`/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
           let bulkDownloadResults = tools.getKey(tools.csvParse(r.body), 'id');
           expect(bulkDownloadResults).to.deep.equal(tools.getKey(bulkResults, 'id'));
         }) : Promise.resolve(null));
   }, options ? options.skip : false);
 };
 
-const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverride, where) => {
+const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, where) => {
   const n = name || `should support bulk upload with options`;
   let bulkId;
   boomGoesTheDynamite(n, () => {
@@ -353,13 +352,13 @@ const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverr
     expect(file).to.exist;
     logger.info('Running bulk process, may take upto 2 minutes');
     // start bulk upload
-    return cloud.withOptions(metadata).postFile(apiOverride ? `${apiOverride}` : `/hubs/${hub}/bulk/${endpoint}`, filePath)
+    return cloud.withOptions(metadata).postFile(`/hubs/${hub}/bulk/${endpoint}`, filePath)
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
       })
       // get bulk upload status
-      .then(r => tools.wait.upTo(120000).for(() => cloud.get(apiOverride ? `${apiOverride}/status` : `/hubs/${hub}/bulk/${bulkId}/status`, r => {
+      .then(r => tools.wait.upTo(120000).for(() => cloud.get(`/hubs/${hub}/bulk/${bulkId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
         return r;
       })))
@@ -369,16 +368,13 @@ const itBulkUpload = (name, hub, endpoint, metadata, filePath, options, apiOverr
       })
       .then((r) => {
         const deleteIds = (where) => {
-          return cloud.withOptions({ qs: { where: where } }).get(apiOverride ? `${apiOverride}/${endpoint}` : `/hubs/${hub}/${endpoint}`)
+          return cloud.withOptions({ qs: { where: where } }).get(`/hubs/${hub}/${endpoint}`)
             .then(r => {
               return r.body.filter(obj => obj.id).map(obj => obj.id);
             })
-            .then(ids => ids.map(id => cloud.delete(apiOverride ? `${apiOverride}/${id}` : `/hubs/${hub}/${endpoint}/${id}`)));
+            .then(ids => ids.map(id => cloud.delete(`/hubs/${hub}/${endpoint}/${id}`)));
         };
-        return where ? deleteIds(where) : Promise.all(file.map(obj => {
-          where = tools.createExpression(obj);
-          return deleteIds(where);
-        }));
+        return where ? deleteIds(where) : Promise.all(file.map(obj => deleteIds(tools.createExpression(obj))));
       });
   }, options ? options.skip : false);
 };
@@ -443,7 +439,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      * @param {string} object -> object we are calling: contacts, accounts, etc..
      * @memberof module:core/suite.test.should
      */
-    supportBulkDownload: (metadata, opts, object, apiOverride) => itBulkDownload(name, hub, metadata, options, apiOverride, opts, object),
+    supportBulkDownload: (metadata, opts, object) => itBulkDownload(name, hub, metadata, options, opts, object),
     /**
      * Uploads bulk with options to specific object and verifies it completes and that none fail. Deletes records after completion
      * @param {object} metadata -> headers, query string etc...
@@ -454,7 +450,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      *     EXAMPLE: Json-> "{"firstName": "Austin", "lastName": "Mahan"}" | Where -> firstName = 'Austin' AND lastName = 'Mahan'
      * @memberof module:core/suite.test.should
      */
-    supportBulkUpload: (metadata, filePath, object, where, apiOverride) => itBulkUpload(name, hub, object, metadata, filePath, options, apiOverride, where),
+    supportBulkUpload: (metadata, filePath, object, where) => itBulkUpload(name, hub, object, metadata, filePath, options, where),
     /**
      * Validates that the given API `page` and `pageSize` pagination.  In order to test this, we create a few objects and then paginate
      * through the results before cleaning up any resources that were created.

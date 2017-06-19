@@ -38,6 +38,8 @@ describe('suite', () => {
   /* Not passing in any suite options */
   suite.forElement('fakehub', 'resource', (test) => {
     it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
+    test.should.supportBulkUpload(null, `${__dirname}/assets/testBulk.json`, 'endpoint', 'id = 123');
+    test.should.supportBulkDownload(null, {json: true, csv: true}, 'endpoint');
   });
 
   /* Not passing in any suite options */
@@ -131,8 +133,6 @@ describe('suite', () => {
     test.should.supportCs();
     test.should.supportCeqlSearch('id');
     test.should.supportCeqlSearchForMultipleRecords('id');
-    test.should.supportBulkUpload(null, `${__dirname}/assets/testBulk.json`, 'endpoint', null, '/bulk');
-    test.should.supportBulkDownload(null, {json: true, csv: true}, 'endpoint', '/bulk');
 
     /* overriding the default API that was passed in as the default in the `suite.forPlatform` */
     test

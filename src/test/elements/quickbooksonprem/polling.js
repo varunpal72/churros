@@ -13,7 +13,7 @@ const productsPayload = tools.requirePayload(`${__dirname}/assets/products.json`
 const purchaseOrdersPayload = require('./assets/purchase-orders');
 const salesOrdersPayload = require('./assets/sales-orders');
 const salesReceiptsPayload = require('./assets/sales-receipts');
-const vendorPayload = tools.requirePayload(`${__dirname}/assets/vendor.json`);
+const vendorPayload = tools.requirePayload(`${__dirname}/assets/vendors.json`);
 
 suite.forElement('finance', 'polling', null, (test) => {
   test.withApi('/hubs/finance/credit-memos').should.supportPolling(creditMemosPayload, 'credit-memos');
