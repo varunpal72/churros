@@ -7,7 +7,6 @@ const payload = tools.requirePayload(`${__dirname}/assets/segments.json`);
 
 suite.forElement('marketing', 'segments', {}, (test) => {
   let accountId;
-
   beforeEach(() => {
     return cloud.get('/hubs/marketing/accounts')
       .then(r => {
@@ -25,9 +24,13 @@ suite.forElement('marketing', 'segments', {}, (test) => {
       });
   });
 
+  it(`should allow paginating with page and pageSize for ${test.api}`, () => {
+    return cloud.withOptions({ qs: { page: 1, pageSize: 1, where: `id = '${accountId}'` } }).get(test.api)
+      .then(r => expect(r.body.length).to.be.below(2));
+  });
+
   it(`should allow CRUDS for ${test.api}`, () => {
     let segmentId;
-
     return cloud.post(`hubs/marketing/segments`, payload)
       .then(r => segmentId = r.body.id)
       .then(r => cloud.get(`hubs/marketing/segments/${segmentId}`))

@@ -6,9 +6,7 @@ const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 
 suite.forElement('marketing', 'lists', (test) => {
-
   let accountId;
-
   beforeEach(() => {
     return cloud.get('/hubs/marketing/accounts')
       .then(r => {
@@ -16,6 +14,11 @@ suite.forElement('marketing', 'lists', (test) => {
         accountId = r.body[0].ClientID;
         payload.ClientID = accountId;
       });
+  });
+
+  it(`should allow paginating with page and pageSize for ${test.api}`, () => {
+    return cloud.withOptions({ qs: { page: 1, pageSize: 1, where: `id = '${accountId}'` } }).get(test.api)
+      .then(r => expect(r.body.length).to.be.below(2));
   });
 
   it(`should allow CRUDs for ${test.api}`, () => {

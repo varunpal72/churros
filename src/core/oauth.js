@@ -86,25 +86,19 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('consent_accept')).click();
       return browser.getCurrentUrl();
     case 'campaignmonitor':
-      browser.manage().window().setSize(1920, 1080);
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.xpath('//*[@id="login-form"]/form/button')).click();
-      return browser.wait(() => {
-
-        return browser.isElementPresent(webdriver.By.xpath('//*[@id="approve-access"]/form/button')); //slow load time for accept screen
-      }, 5000).then(r => {
-
-
-
-        browser.sleep(3000);
-        browser.findElement(webdriver.By.xpath('//*[@id="approve-access"]/form/button')).click();
-
-        return browser.getCurrentUrl();
-
-      });
-
+      browser.sleep(2000);
+      browser.switchTo().defaultContent();
+      browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('//*[@id="multiple-accounts"]/option[2]')), 7000);
+      browser.findElement(webdriver.By.xpath('//*[@id="multiple-accounts"]/option[2]')).click();
+      browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('//*[@id="select-account"]/form/button')), 7000);
+      browser.findElement(webdriver.By.xpath('//*[@id="select-account"]/form/button')).click();
+      browser.wait(webdriver.until.elementLocated(webdriver.By.xpath('//*[@id="approve-access"]/form/button')), 7000);
+      browser.findElement(webdriver.By.xpath('//*[@id="approve-access"]/form/button')).click();
+      return browser.getCurrentUrl();
     case 'sharefile':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.id('credentials-email')), 3000);
