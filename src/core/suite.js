@@ -238,7 +238,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
   payload = payload ? payload : pay;
   let response;
   boomGoesTheDynamite(name, () => {
-    const baseUrl = faker.fake(props.get('eventCallbackUrl'));
+    const baseUrl = faker.fake(props.get('event.callback.url'));
 
     const url = baseUrl + '?returnQueue';
     const addResource = (r) => addMethod ? addMethod(r) : cloud.withOptions(options).post(api, r);
@@ -247,6 +247,8 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
       expect(res.count).to.be.above(0);
       let objCalls = res.data.filter(call => {
         let datas = JSON.parse(call.data);
+        logger.debug(`Resource returned: ${datas.message.raw.objectType}`);
+        logger.debug(`Resource expecting: ${resource}`);
         return datas.message.raw.objectType === resource;
       });
 
@@ -434,7 +436,7 @@ const runTests = (api, payload, validationCb, tests, hub) => {
     return200OnGet: () => itGet(name, api, options, validationCb),
     /**
     * @param {object || Function} pay: The payload used to create a new object
-    * @param {Function} validate A validate funtion with `expects` to test response
+    * @param {String} res Resource polling on
     * @param {Function} addMethod A method to create or update a reasource. Ex: cloud.postFile('/path')
     * @memberof module:core/suite.test.should
     */

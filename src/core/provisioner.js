@@ -79,7 +79,7 @@ const getPollerConfig = (element, instance) => {
       else instanceCopy.configuration['event.poller.urls'] = elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.urls' ? conf.defaultValue : acc ,null);
     }
     instanceCopy.configuration['event.vendor.type'] = 'polling';
-    instanceCopy.configuration['event.notification.callback.url'] = 'https://knappkeith.pythonanywhere.com/request/churros/';
+    instanceCopy.configuration['event.notification.callback.url'] = 'https://httpbin.org/get';
     instanceCopy.configuration['event.notification.enabled'] = 'true';
     instanceCopy.configuration['event.poller.refresh_interval'] = '1';
     return instanceCopy;
