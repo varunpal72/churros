@@ -276,12 +276,6 @@
       "type": "string"
     }]
   },
-  "expense-group-configurations": {
-    "fields": [{
-      "path": "id",
-      "type": "string"
-    }]
-  },
   "incidents": {
     "fields": [{
       "path": "id",
@@ -1090,13 +1084,12 @@
       "type": "string"
     }]
   },
- "policies": {
-   "fields": [{
-     "path": "id",
-     "type": "string"
-   }]
- },
  "price-rules": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+ },
  "products-attribute-sets-groups": {
  "fields": [{
    "path": "id",
@@ -1109,11 +1102,16 @@
      "type": "string"
    }]
  },
+ "sampleBulkCustomObject_c" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "productsCategories": {
    "fields": [{
      "path": "id",
      "type": "string"
    }]
-   }
  }
 }

@@ -11,11 +11,11 @@ const pathUpdate = () => ({
   "path": pathUpdateString
 });
 
-suite.forElement('documents', 'files', {skip: true}, (test) => {
+suite.forElement('documents', 'files', (test) => {
   let query = { path: `/churros/CloudElements-${tools.random()}.png` };
   let path = __dirname + '/assets/CE_logo.png';
 
-  it('should allow crud cycle by id', () => {
+  it('should allow CRUD cycle by id', () => {
     let fileId = -1;
     return cloud.withOptions({ qs: query }).postFile(test.api, path)
       .then(r => fileId = r.body.id)
@@ -26,7 +26,7 @@ suite.forElement('documents', 'files', {skip: true}, (test) => {
       .then(r => cloud.delete(`${test.api}/${fileId}`));
   });
 
-  it('should allow crud cycle by path', () => {
+  it('should allow CRUD cycle by path', () => {
     let fileId = -1;
     return cloud.withOptions({ qs: query }).postFile(test.api, path)
       .then(r => fileId = r.body.id)
@@ -35,5 +35,17 @@ suite.forElement('documents', 'files', {skip: true}, (test) => {
       .then(r => cloud.withOptions({ qs: query }).get(test.api, (r) => expect(r).to.have.statusCode(200)))
       .then(r => cloud.withOptions({ qs: query }).patch(`${test.api}/metadata`, pathUpdate()))
       .then(r => cloud.withOptions({ qs: { path: `/churros${pathUpdateString}` } }).delete(test.api));
+  });
+
+  it('should allow GET /files/:id/links for a root file', () => {
+    let fileId;
+    return cloud.withOptions({ qs: { path: '/rootChurro.png' } }).postFile(test.api, path)
+      .then(r => fileId = r.body.id)
+      .then(r => cloud.get(`${test.api}/${fileId}/links`))
+      .then(r => {
+        expect(r.body).to.not.be.empty;
+        expect(r.body.cloudElementsLink).to.not.be.empty;
+      })
+      .then(r => cloud.delete(`${test.api}/${fileId}`));
   });
 });
