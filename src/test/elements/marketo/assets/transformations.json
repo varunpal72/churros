@@ -35,7 +35,13 @@
       "vendorPath": "id"
     }]
   },
-
+  "sampleBulkCustomObject_c" : {
+    "vendorName": "sampleBulkCustomObject_c",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "marketoGUID"
+    }]
+  },
   "lists": {
     "vendorName": "lists",
     "fields": [{
