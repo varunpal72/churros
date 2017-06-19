@@ -327,21 +327,18 @@ const itBulkDownload = (name, hub, metadata, options, apiOverride, opts, endpoin
         expect(r.body.recordsFailedCount).to.equal(0);
         expect(r.body.recordsCount).to.equal(bulkResults.length);
       })
-      // Checks results match the where statement
-      .then(r => cloud
-        .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-          let bulkDownloadResults = r.body.split('\n').slice(0, -1).map(el => JSON.parse(el));
-          expect(bulkDownloadResults).to.deep.equal(bulkResults);
-        }))
       // get bulk query results in JSON
       .then(r => getJson ? cloud.withOptions(jsonMeta)
         .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-          expect(r.body, 'json').to.not.be.empty;
+          console.log(r.body);
+          let bulkDownloadResults = tools.getKey(r.body.split('\n').map(obj => { try{ return JSON.parse(obj) } catch(e) { return ''}}), 'id');
+          expect(bulkDownloadResults).to.deep.equal(tools.getKey(bulkResults, 'id'));
         }) : Promise.resolve(null))
       // get bulk query results in CSV
       .then(r => getCsv ? cloud.withOptions(csvMeta)
         .get(apiOverride ? `${apiOverride}/${bulkId}/${endpoint}` : `/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-          expect(r.body, 'csv').to.not.be.empty;
+          let bulkDownloadResults = tools.getKey(tools.csvParse(r.body), 'id');
+          expect(bulkDownloadResults).to.deep.equal(tools.getKey(bulkResults, 'id'));
         }) : Promise.resolve(null));
   }, options ? options.skip : false);
 };
