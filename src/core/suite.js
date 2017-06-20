@@ -643,7 +643,9 @@ const run = (api, resource, options, defaultValidation, tests, hub) => {
 
   options = options || {};
   const name = options.name || resource;
-  if (options.skip) {
+  let propsSkip = false;
+  try { propsSkip = props.getOptionalForKey(props.get('element'), 'skip'); } catch (e) {}
+  if (options.skip || propsSkip) {
     describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   } else {
     describe(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
