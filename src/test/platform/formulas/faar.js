@@ -54,7 +54,7 @@ suite.forPlatform('formulas', { name: 'FaaRs' }, test => {
       });
   };
 
-  it('should allow exposing a formula instance as a synchronous POST API resource', () => {
+  it('should allow exposing a formula as a synchronous POST API resource', () => {
     const run = (formula, formulaInstance) => {
       const opts = { headers: { 'Elements-Formula-Instance-Id': formulaInstance.id } };
       return cloud.withOptions(opts).post(manualFormula.uri, { foo: 'bar' }).then(r => {
@@ -84,5 +84,24 @@ suite.forPlatform('formulas', { name: 'FaaRs' }, test => {
       .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: 'GET missing-a-slash' } }, v))
       .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: 'GET /accounts' } }, v))
       .then(() => cloud.post(`/formulas/${formula.id}/instances`, { name: 'bad', settings: { api: 'GET /formulas/instances' } }, v));
+  });
+
+  it('should have API docs for a formula that is exposed as an API', () => {
+    const run = (formula, formulaInstance) => {
+      const v = ({body}) => {
+        expect(body.paths).to.be.an('object');
+        expect(Object.keys(body.paths)).to.have.length(1);
+        // validate uri
+        const uri = Object.keys(body.paths)[0];
+        expect(uri).to.equal(manualFormula.uri);
+        // validate HTTP method
+        expect(Object.keys(body.paths[uri])).to.have.length(1);
+        const method = Object.keys(body.paths[uri])[0];
+        expect(method.toLowerCase()).to.equal(manualFormula.method.toLowerCase());
+      };
+      return cloud.get(`/formulas/${formula.id}/docs`, v);
+    };
+
+    return runFaarSetup(run);
   });
 });
