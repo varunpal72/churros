@@ -33,6 +33,10 @@ src/core/assets/cleanup.json
 .idea
 *.iml
 
+# Eclipse
+.settings/
+.project
+
 build/
 dist/
 
