@@ -48,7 +48,7 @@ suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
       .then(r => accountId = r.body.id)
       .then(r => cloud.withOptions({ qs: query }).get(test.api))
       .then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.null &&
-        expect(r.body).to.be.a('array') && expect(r.body).to.have.length(1) &&
+        expect(r.body).to.be.a('array') && expect(r.body).to.have.length.above(0) &&
         expect(r.body[0]).to.contain.key('Name') &&
         expect(r.body[0].Name).to.equal("Churro's Test Account"))
       .then(r => cloud.delete(`${test.api}/${accountId}`));

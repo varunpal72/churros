@@ -91,7 +91,7 @@ suite.forElement('ecommerce', 'coupons', (test) => {
     return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups)
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r => ruleId = r.body.id)
+      .then(r => ruleId = r.body.id || r.body.rule_id)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-generate`, couponGenerate(ruleId)))
       .then(r => couponCodes = r.body)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-delete-by-codes`, deleteByCodes(couponCodes)))
@@ -101,10 +101,10 @@ suite.forElement('ecommerce', 'coupons', (test) => {
 
   it(`should allow CRUDS for ${test.api}`, () => {
     let autoGen = false;
-    return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups)
+    return cloud.post(`/hubs/ecommerce/customer-groups`, tools.requirePayload(`${__dirname}/assets/customerGroup.json`))
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r => ruleId = r.body.id)
+      .then(r => ruleId = r.body.id || r.body.rule_id)
       .then(r => cloud.cruds(test.api, couponPost(ruleId)))
       .then(r => cloud.delete(`/hubs/ecommerce/sales-rules/${ruleId}`))
       .then(r => cloud.delete(`/hubs/ecommerce/customer-groups/${customerGroupId}`));
@@ -120,10 +120,10 @@ suite.forElement('ecommerce', 'coupons', (test) => {
 
   it(`should allow POST for /hubs/ecommerce/coupons/deleteByIds`, () => {
     let couponId, autoGen = false;
-    return cloud.post(`/hubs/ecommerce/customer-groups`, customerGroups)
+    return cloud.post(`/hubs/ecommerce/customer-groups`, tools.requirePayload(`${__dirname}/assets/customerGroup.json`))
       .then(r => customerGroupId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/sales-rules`, salesRulePost(customerGroupId, autoGen)))
-      .then(r => ruleId = r.body.id)
+      .then(r => ruleId = r.body.id || r.body.rule_id)
       .then(r => cloud.post(`${test.api}`, couponPost(ruleId)))
       .then(r => couponId = r.body.id)
       .then(r => cloud.post(`/hubs/ecommerce/coupons-delete-by-ids`, deleteByIds(couponId)))
