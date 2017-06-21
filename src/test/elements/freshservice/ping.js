@@ -2,6 +2,6 @@
 
 const suite = require('core/suite');
 
-suite.forElement('helpdesk', 'ping', null, (test) => {
+suite.forElement('helpdesk', 'ping', (test) => {
   test.should.return200OnGet();
 });

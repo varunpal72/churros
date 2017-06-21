@@ -2,25 +2,13 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/incidents');
+const payload = require('./assets/problems');
 const taskPayload = require('./assets/task');
 const expect = require('chakram').expect;
-const commentPayload = require('./assets/comments');
 
-suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
-  test.should.supportCrds();  //update is getting an 500 error from vendor
+suite.forElement('helpdesk', 'problems', { payload: payload }, (test) => {
+  test.should.supportCruds();
   test.should.supportPagination();
-
-  it(`should allow C for ${test.api}/:id/comments`, () => {
-    let id;
-    return cloud.get(test.api)
-      .then(r => {
-        expect(r.body).to.not.be.empty;
-        expect(r.body.length).to.be.above(1);
-        id = r.body[0].id;
-      })
-      .then(r => cloud.post(`${test.api}/${id}/comments`, commentPayload));
-  });
 
   it(`should allow CRUDS for ${test.api}/:id/tasks`, () => {
     let id;
@@ -51,5 +39,4 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId2}`))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
-
 });

@@ -280,6 +280,10 @@
     "fields": [{
       "path": "id",
       "type": "string"
+    },
+    {
+      "path": "junk",
+      "type": "string"
     }]
   },
   "incident-types": {
@@ -1111,6 +1115,26 @@
  "productsCategories": {
    "fields": [{
      "path": "id",
+     "type": "string"
+   }]
+ },
+ "changes": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   },
+   {
+     "path": "junk",
+     "type": "string"
+   }]
+ },
+ "problems": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   },
+   {
+     "path": "junk",
      "type": "string"
    }]
  }
