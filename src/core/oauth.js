@@ -71,6 +71,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('oauth_user_name')).sendKeys(username);
       browser.findElement(webdriver.By.id('oauth_user_password')).sendKeys(password);
       browser.findElement(webdriver.By.id('loginBtn')).click();
+      browser.sleep(1000);
       return browser.getCurrentUrl();
     case 'actessentialsoauth':
       browser.get(r.body.oauthUrl);
