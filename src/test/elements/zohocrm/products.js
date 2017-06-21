@@ -35,7 +35,7 @@ it(`should update product related to account`, () => {
   .then(r => productId= r.body[0].id)
   .then(r => cloud.get('/hubs/crm/accounts'))
   .then(r => accountId = r.body[0].id)
-  .then(r =>cloud.patch(`${test.api}/accounts/${accountId}`, objectRelatedPayload(productId)))
+  .then(r =>cloud.patch(`${test.api}/accounts/${accountId}`, objectRelatedPayload(productId)));
   });
 });
 
