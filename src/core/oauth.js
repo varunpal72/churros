@@ -385,7 +385,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 10000);
       return browser.getCurrentUrl();
-
+    case 'paypalv2--sandbox':
     case 'paypalv2':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('email')).sendKeys(username);
@@ -396,6 +396,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.id('agreeConsent'))
         .then((element) => element.click(), (err) => {}); // ignore this
+      browser.sleep(2000);  //Paypal takes some time to confirm creds
       return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
