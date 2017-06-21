@@ -24,5 +24,5 @@ suite.forElement('ecommerce', 'price-rules', (test) => {
       .then(r => cloud.delete(`${test.api}/${priceRuleId}`));
   });
   test.should.supportPagination();
-  test.should.supportCeqlSearch('id');
+  test.withOptions({ qs: { where: `id ='1'` } }).should.return200OnGet();
 });
