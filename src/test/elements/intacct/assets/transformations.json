@@ -116,15 +116,6 @@
       }
     ]
   },
-  "terms": {
-    "vendorName": "",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "termid"
-      }
-    ]
-  },
   "vendors": {
     "vendorName": "",
     "fields": [

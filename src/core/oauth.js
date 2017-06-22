@@ -388,6 +388,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
     case 'paypalv2--sandbox':
     case 'paypalv2':
       browser.get(r.body.oauthUrl);
+      browser.waitForElement(webdriver.By.id('email'), 5000);
       browser.findElement(webdriver.By.id('email')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.sleep(2000);
@@ -414,6 +415,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.getCurrentUrl();
     case 'servicenowoauth':
       browser.get(r.body.oauthUrl);
+      browser.waitForElement(webdriver.By.id('user_name'), 5000);
       browser.findElement(webdriver.By.id('user_name')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.id('sysverb_login')).click();
@@ -577,6 +579,10 @@ const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, p
   const browser = new webdriver.Builder()
     .forBrowser(b)
     .build();
+  browser.waitForElement = (locator, timeout) => {
+    timeout = timeout || 3000;
+    return browser.wait(browser.isElementPresent(locator), timeout);
+  };
   return browser.call(() => manipulateDom(element, browser, r, username, password, config))
     .then(url => {
       browser.close();
