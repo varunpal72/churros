@@ -568,6 +568,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.xpath('.//*[@id="auth0-lock-container-1"]/div/div[2]/form/div/div/button')).click();
       browser.sleep(5000);
       return browser.getCurrentUrl();
+    case 'launchbi':
+        browser.get(r.body.oauthUrl);
+        browser.findElement(webdriver.By.id('username')).sendKeys(username);
+        browser.findElement(webdriver.By.id('password')).sendKeys(password);
+        browser.findElement(webdriver.By.xpath('//*[@type="submit"]')).click();
+        browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//*[contains(@title, "LaunchBI Approval Page")] ')), 5000);
+        browser.findElement(webdriver.By.xpath('//*[@type="submit" and text()="Allow"]')).click();
     default:
       throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }
