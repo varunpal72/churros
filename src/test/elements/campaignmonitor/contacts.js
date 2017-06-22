@@ -6,10 +6,9 @@ const expect = require('chakram').expect;
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
-
-suite.forElement('marketing', 'contacts', {skip: true}, (test) => {
+//created contacts are created through a queue instead of immediately in CM. This makes following up a test with reads and updates fail sporadically
+suite.forElement('marketing', 'lists/{id}/contacts', (test) => {
   let listId, accountId;
-
   beforeEach(() => {
     return cloud.get('/hubs/marketing/accounts')
       .then(r => {
@@ -36,10 +35,16 @@ suite.forElement('marketing', 'contacts', {skip: true}, (test) => {
       .then(r => cloud.get(`hubs/marketing/lists/${listId}/contacts/${email}`))
       .then(r => cloud.patch(`hubs/marketing/lists/${listId}/contacts/${email}`, payload))
       .then(r => cloud.delete(`hubs/marketing/lists/${listId}/contacts/${email}`));
-
   });
 
-  it(`Should allow where clause with status = active ${test.api}`, () => {
+  it(`should allow paginating with page and pageSize for ${test.api}`, () => {
+    return cloud.withOptions({ qs: { page: 1, pageSize: 10, where: `status = 'active'` } }).get(`/lists/${listId}/contacts`)
+      .then(r => expect(r.body.length).to.be.below(10))
+      .then(r => cloud.withOptions({ qs: { page: 2, pageSize: 10, where: `status = 'active'` } }).get(`/lists/${listId}/contacts`))
+      .then(r => expect(r.body.length).to.be.below(10));
+  });
+
+  it(`should allow where clause with status = active ${test.api}`, () => {
 
 
     return cloud.withOptions({
@@ -54,7 +59,7 @@ suite.forElement('marketing', 'contacts', {skip: true}, (test) => {
       });
   });
 
-  it(`Should allow where clause with status = unconfirmed for ${test.api}`, () => {
+  it(`should allow where clause with status = unconfirmed for ${test.api}`, () => {
     return cloud.withOptions({
         qs: {
           where: "status = 'unconfirmed'"
@@ -66,7 +71,7 @@ suite.forElement('marketing', 'contacts', {skip: true}, (test) => {
         expect(r.body).to.not.be.null;
       });
   });
-  it(`Should allow where clause with status =  unsubscribed for ${test.api}`, () => {
+  it(`should allow where clause with status = unsubscribed for ${test.api}`, () => {
     cloud.withOptions({
         qs: {
           where: "status = 'unsubscribed'"
@@ -78,7 +83,7 @@ suite.forElement('marketing', 'contacts', {skip: true}, (test) => {
         expect(r.body).to.not.be.null;
       });
   });
-  it(`Should allow where clause with status = bounced for ${test.api}`, () => {
+  it(`should allow where clause with status = bounced for ${test.api}`, () => {
     cloud.withOptions({
         qs: {
           where: "status = 'bounced'"
@@ -90,7 +95,7 @@ suite.forElement('marketing', 'contacts', {skip: true}, (test) => {
         expect(r.body).to.not.be.null;
       });
   });
-  it(`Should allow where clause with status = deleted for ${test.api}`, () => {
+  it(`should allow where clause with status = deleted for ${test.api}`, () => {
     cloud.withOptions({
         qs: {
           where: "status = 'deleted'"

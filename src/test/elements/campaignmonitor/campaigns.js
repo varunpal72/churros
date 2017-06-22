@@ -7,8 +7,7 @@ const payload = tools.requirePayload(`${__dirname}/assets/campaigns.json`);
 
 suite.forElement('marketing', 'campaigns', (test) => {
   let accountId;
-
-  beforeEach(() => {
+  before(() => {
     return cloud.get('/hubs/marketing/accounts')
       .then(r => {
         expect(r.body).to.not.be.empty;
@@ -28,16 +27,18 @@ suite.forElement('marketing', 'campaigns', (test) => {
 
   it(`should allow CRDS for ${test.api}`, () => {
     let campaingID;
-
     return cloud.post('hubs/marketing/campaigns', payload)
       .then(r => campaingID = r.body.id)
       .then(r => cloud.get(`hubs/marketing/campaigns/${campaingID}`))
       .then(r => cloud.delete(`hubs/marketing/campaigns/${campaingID}`));
   });
 
-  it(`Should allow where clause with status = sent for ${test.api}`, () => {
+  it(`should allow paginating with page and pageSize for ${test.api}`, () => {
+    return cloud.withOptions({ qs: { page: 1, pageSize: 1, where: `id = '${accountId}' and status = 'draft'` } }).get(test.api)
+      .then(r => expect(r.body.length).to.be.below(2));
+  });
 
-
+  it(`should allow where clause with status = sent for ${test.api}`, () => {
     return cloud.withOptions(({
         qs: {
           where: `id = '${accountId}' and status = 'sent'`
@@ -49,7 +50,8 @@ suite.forElement('marketing', 'campaigns', (test) => {
         expect(r.body).to.not.be.null;
       });
   });
-  it(`Should allow where clause with status = scheduled for ${test.api}`, () => {
+
+  it(`should allow where clause with status = scheduled for ${test.api}`, () => {
     return cloud.withOptions(({
         qs: {
           where: `id = '${accountId}' and status = 'scheduled'`
@@ -61,7 +63,8 @@ suite.forElement('marketing', 'campaigns', (test) => {
         expect(r.body).to.not.be.null;
       });
   });
-  it(`Should allow where clause with status = draft for ${test.api}`, () => {
+
+  it(`should allow where clause with status = draft for ${test.api}`, () => {
     return cloud.withOptions(({
         qs: {
           where: `id = '${accountId}' and status = 'draft'`
