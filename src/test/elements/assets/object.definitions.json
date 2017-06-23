@@ -280,6 +280,10 @@
     "fields": [{
       "path": "id",
       "type": "string"
+    },
+    {
+      "path": "junk",
+      "type": "string"
     }]
   },
   "incident-types": {
@@ -425,6 +429,10 @@
       },
       {
         "path": "result",
+        "type": "string"
+      },
+      {
+        "path": "modified_date",
         "type": "string"
       }
     ]
@@ -1111,6 +1119,26 @@
  "productsCategories": {
    "fields": [{
      "path": "id",
+     "type": "string"
+   }]
+ },
+ "changes": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   },
+   {
+     "path": "junk",
+     "type": "string"
+   }]
+ },
+ "problems": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   },
+   {
+     "path": "junk",
      "type": "string"
    }]
  }
