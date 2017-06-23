@@ -2,9 +2,7 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = require('./assets/lists');
-
-payload.name += tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10);
+const payload = tools.requirePayload(`${__dirname}/assets/lists.json`);
 
 suite.forElement('crm', 'lists', { payload: payload }, (test) => {
   test.should.supportCrds();
