@@ -7,7 +7,7 @@ const payload = require('./assets/price-rules.json');
 const tools = require('core/tools');
 const discountPayload = tools.requirePayload(`${__dirname}/assets/discount-codes.json`);
 
-suite.forElement('ecommerce', 'price-rules', (test) => {
+suite.forElement('ecommerce', 'price-rules', { payload: payload }, (test) => {
   it(`should allow CRDS for ${test.api} and ${test.api}/:id/discount-codes`, () => {
     let priceRuleId, discountCodeId;
     return cloud.post(test.api, payload)
@@ -24,5 +24,5 @@ suite.forElement('ecommerce', 'price-rules', (test) => {
       .then(r => cloud.delete(`${test.api}/${priceRuleId}`));
   });
   test.should.supportPagination();
-  test.withOptions({ qs: { where: `id ='1'` } }).should.return200OnGet();
+  test.should.supportCeqlSearch('id');
 });
