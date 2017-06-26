@@ -10,6 +10,7 @@ const instancesSchema = require('./assets/element.instances.schema');
 const transformationPayload = require('./assets/accountTransformation');
 const objDefPayload = require('./assets/accountObjectDefinition');
 const sfdcSwaggerSchema = require('./assets/closeioSwagger.schema');
+const defaults = require('core/defaults');
 const logger = require('winston');
 
 const genInstance = (element, o) => ({
@@ -55,10 +56,21 @@ const updateInstanceWithReprovision = (baseUrl, schema) => {
         expect(r.body.configuration.username).to.equal(props.getForKey('closeio', 'username'));
         expect(r.body).to.not.have.key('providerData');
       }))
+    .then(code =>
+      cloud.put(`${baseUrl}`, genInstance('closeio', { name: 'updated-instance', providerData: { code: code } }), r => {
+        expect(r.body.configuration).to.not.be.empty;
+        expect(r.body.configuration.username).to.equal(props.getForKey('closeio', 'username'));
+        expect(r.body).to.not.have.key('providerData');
+      }))
     .then(r => cloud.get(`/hubs/crm/accounts`))
     .then(r => expect(r.body).to.be.instanceof(Array))
     .then(r => provisioner.partialOauth('closeio'))
     .then(code => cloud.patch(`${baseUrl}/${id}`, { name: 'updated-instance', providerData: { code: code } }, r => {
+      expect(r.body.configuration).to.not.be.empty;
+      expect(r.body.configuration.username).to.equal(props.getForKey('closeio', 'username'));
+      expect(r.body).to.not.have.key('providerData');
+    }))
+    .then(code => cloud.patch(`${baseUrl}`, { name: 'updated-instance', providerData: { code: code } }, r => {
       expect(r.body.configuration).to.not.be.empty;
       expect(r.body.configuration.username).to.equal(props.getForKey('closeio', 'username'));
       expect(r.body).to.not.have.key('providerData');
@@ -75,10 +87,13 @@ const updateInstanceWithReprovision = (baseUrl, schema) => {
 const opts = { schema: instanceSchema };
 
 suite.forPlatform('elements/instances', opts, (test) => {
-  let closeioId;
+  let closeioId, closeioInstance;
   before(() => {
     return provisioner.create('closeio')
-      .then(r => closeioId = r.body.id);
+      .then(r => {
+        closeioInstance = r.body;
+        closeioId = r.body.id;
+      });
   });
 
   after(() => {
@@ -92,7 +107,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
     };
 
     const validateNullsPresent = (shouldHaveNulls) => {
-      return cloud.get('hubs/crm/contacts?pageSize=1')
+      return cloud.get('hubs/crm/accounts?pageSize=1')
         .then(r => {
           let keys = Object.keys(r.body[0]);
           return keys.filter(key => r.body[0][key] === null);
@@ -106,13 +121,17 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => sfdcId = r.body.id)
       .then(() => cloud.get(`/instances/${sfdcId}/configuration`))
       .then(r => validate(r))
+      .then(() => cloud.get(`/instances/configuration`))
+      .then(r => validate(r))
       .then(r => {
         configuration = r;
         expect(configuration.propertyValue).to.equal('true');
       })
       .then(r => validateNullsPresent(false))
       .then(r => cloud.patch(`/instances/${sfdcId}/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'false' })))
+      .then(r => cloud.patch(`/instances/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'false' })))
       .then(r => cloud.get(`/instances/${sfdcId}/configuration/${r.body.id}`))
+      .then(r => cloud.get(`/instances/configuration/${r.body.id}`))
       .then(r => expect(r.body.propertyValue).to.equal('false'))
       .then(r => validateNullsPresent(true));
   });
@@ -139,7 +158,16 @@ suite.forPlatform('elements/instances', opts, (test) => {
   it('should support get instance specific docs', () => {
     return cloud.post(`instances/${closeioId}/objects/myaccounts/definitions`, objDefPayload)
       .then(r => cloud.post(`instances/${closeioId}/transformations/myaccounts`, transformationPayload))
-      .then(r => cloud.get(`instances/${closeioId}/docs`, sfdcSwaggerSchema));
+      .then(r => cloud.get(`instances/${closeioId}/docs`, sfdcSwaggerSchema))
+      .then(r => cloud.delete(`instances/${closeioId}/transformations/myaccounts`))
+      .then(r => cloud.delete(`instances/${closeioId}/objects/myaccounts/definitions`));
+  });
+
+  it('should support get instance specific docs with out instance id', () => {
+    defaults.token(closeioInstance.token);
+    return cloud.post(`instances/objects/myaccounts/definitions`, objDefPayload)
+      .then(r => cloud.post(`instances/transformations/myaccounts`, transformationPayload))
+      .then(r => cloud.get(`instances/docs`, sfdcSwaggerSchema));
   });
 
   it('should support updating the configuration for an element instance', () => {
@@ -155,6 +183,20 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => expect(r.body.propertyValue).to.equal('true'));
   });
 
+
+  it('should support updating the configuration for an element instance with out instance id', () => {
+    const validate = (r) => {
+      expect(r.body.length).to.be.above(0);
+      return r.body.filter(config => config.key === 'event.notification.enabled')[0];
+    };
+
+    return cloud.get(`/instances/configuration`)
+      .then(r => validate(r))
+      .then(configuration => cloud.patch(`/instances/configuration/${configuration.id}`, Object.assign({}, configuration, { propertyValue: 'true' })))
+      .then(r => cloud.get(`/instances/configuration/${r.body.id}`))
+      .then(r => expect(r.body.propertyValue).to.equal('true'));
+  });
+
   it('should support updating the tags for an element instance', () => {
     const validateTags = (id, tags) => {
       expect(tags.length).to.equal(1) && expect(tags[0]).to.equal('churros-testing');
@@ -164,6 +206,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
     return provisioner.create('closeio', { name: 'churros-test' })
       .then(r => id = r.body.id)
       .then(r => cloud.patch(`/instances/${id}`, { id: id, tags: ['churros-testing'] }))
+      .then(r => cloud.patch(`/instances`, { id: id, tags: ['churros-testing'] }))
       .then(r => cloud.get(`/instances/${id}`, validateTags(id, r.body.tags)))
       .then(r => provisioner.delete(id));
   });
@@ -201,6 +244,8 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => expect(r.body.name).to.equal('churros-xss'))
       .then(() => cloud.patch(`/instances/${id}`, { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xss-updated</a>' }))
       .then(r => expect(r.body.name).to.equal('churros-xss-updated'))
+      .then(() => cloud.patch(`/instances`, { name: '<a href="#" onClick="javascript:alert(\'xss\');return false;">churros-xsss-updated</a>' }))
+      .then(r => expect(r.body.name).to.equal('churros-xsss-updated'))
       .then(() => provisioner.delete(id))
       .catch(e => {
         if (id) provisioner.delete(id);
@@ -233,18 +278,20 @@ suite.forPlatform('elements/instances', opts, (test) => {
 
   it('should ignore any provided hub', () => {
     let withCorrectHub;
-    return cloud.get('hubs/crm/account?pageSize=1')
+    defaults.token(closeioInstance.token);
+    return cloud.get('hubs/crm/accounts?pageSize=1')
       .then(r => withCorrectHub = r.body)
-      .then(() => cloud.get('hubs/documents/account?pageSize=1'))
+      .then(() => cloud.get('hubs/documents/accounts?pageSize=1'))
       .then(r => expect(r.body).to.deep.equal(withCorrectHub))
-      .then(() => cloud.get('hubs/crap/account?pageSize=1'))
+      .then(() => cloud.get('hubs/crap/accounts?pageSize=1'))
       .then(r => expect(r.body).to.deep.equal(withCorrectHub))
-      .then(() => cloud.get('account?pageSize=1'))
+      .then(() => cloud.get('accounts?pageSize=1'))
       .then(r => expect(r.body).to.deep.equal(withCorrectHub));
   });
 
   it('should allow disabling and enabling  an instance', () => {
     let instanceId;
+    defaults.token(closeioInstance.token);
     return provisioner.create('jira')
       .then(r => instanceId = r.body.id)
       .then(() => cloud.delete(`instances/${instanceId}/enabled`))
