@@ -48,7 +48,7 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
 
   it('should support bulk usage retrieve and search', () => {
     return cloud.get('usage/bulk', usageSchema)
-      .then(r => cloud.withOptions({ qs: { from: yestermonth, to: futureToday} }).get('usage/bulk', usageSchema))
+      .then(r => cloud.withOptions({ qs: { from: yestermonth, to: futureToday} }).get('usage/bulk', usageSchema));
   });
 
 
