@@ -25,6 +25,11 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
         return cloud.get('usage')
           .then(r => expect(r.body).is.not.empty);
       }))
+      .then(() => cloud.withOptions({qs:{q : "select * from accounts"}}).post('hubs/crm/bulk/query'))
+      .then(() => tools.wait.upTo(5000).for(() => {
+        return cloud.get('usage/bulk')
+          .then(r => expect(r.body).is.not.empty);
+      }))
       .then(() => done())
       .catch(() => done());
   });
@@ -40,6 +45,12 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
       .then(r => cloud.withOptions({ qs: { from: yestermonth, to: futureToday, hub: 'crm', 'keys[]': 'closeio', 'tags[]': 'churros-instance', status: 'success', searchText: 'AccountId' } }).get('usage', usageSchema))
       .then(r => cloud.get(`usage/${trafficId}`));
   });
+
+  it('should support bulk usage retrieve and search', () => {
+    return cloud.get('usage/bulk', usageSchema)
+      .then(r => cloud.withOptions({ qs: { from: yestermonth, to: futureToday} }).get('usage/bulk', usageSchema))
+  });
+
 
   it('should support offset pagination', () => {
     return cloud.withOptions({ qs: { pageSize: 1 } }).get('usage', usageSchema)
