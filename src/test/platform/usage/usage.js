@@ -10,7 +10,7 @@ const usageSchema = require('./assets/usage.schema');
 const analyticsSchema = require('./assets/analytics.schema');
 
 suite.forPlatform('usage', { schema: usageSchema }, (test) => {
-  let yestermonth, today, futureToday, futureTomorrow, trafficId, instanceId;
+  let yestermonth, today, futureToday, futureTomorrow, instanceId, requestId;
   before(done => {
     // create closeio instance and make API call to populate usage, just in case
     today = moment().format('YYYY[-]MM[-]DD');
@@ -21,8 +21,9 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
     provisioner.create('closeio')
       .then(r => instanceId = r.body.id)
       .then(() => cloud.withOptions({ qs: { pageSize: 1 } }).get('/hubs/crm/accounts'))
-      .then(() => tools.wait.upTo(5000).for(() => {
-        return cloud.get('usage')
+      .then(r => requestId = r.response.headers['elements-request-id'])
+      .then(() => tools.wait.upTo(10000).for(() => {
+        return cloud.get(`usage/${requestId}`)
           .then(r => expect(r.body).is.not.empty);
       }))
       .then(() => done())
@@ -34,7 +35,12 @@ suite.forPlatform('usage', { schema: usageSchema }, (test) => {
       .then(r => done());
   });
 
+  it('should support usage retrieve', () => {
+    return cloud.get(`usage/${requestId}`);
+  });
+
   it('should support usage retrieve and search', () => {
+    let trafficId;
     return cloud.get('usage', usageSchema)
       .then(r => trafficId = r.body[ 0 ].traffic_id)
       .then(r => cloud.withOptions({ qs: { from: yestermonth, to: futureToday, hub: 'crm', 'keys[]': 'closeio', 'tags[]': 'churros-instance', status: 'success', searchText: 'AccountId' } }).get('usage', usageSchema))
