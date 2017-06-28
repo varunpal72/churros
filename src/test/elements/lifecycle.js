@@ -41,6 +41,7 @@ before(() => {
   .then(() => {
     const getInstance = argv.instance ? cloud.get(`/instances/${argv.instance}`)
       .then(r => {
+        props.setForKey(element, 'elementId', r.body.element.id);
         defaults.token(r.body.token);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         return r;

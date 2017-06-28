@@ -256,7 +256,7 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
     };
     if(!baseUrl) logger.error('No callback url found. Are you sure this element supports polling?');
     expect(baseUrl).to.exist;
-    const instanceId = global.instanceId;
+    const instanceId = global.instanceId || argv.instance;
     const updatePayload = { configuration: { "event.notification.callback.url": baseUrl } };
 
     //updates the instance with new callback url to get a unique bin each for each poller
