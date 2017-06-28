@@ -3,7 +3,7 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
+const faker = require('faker');
 
 const lock = () => ({
   "is_download_prevented": false,
@@ -17,7 +17,7 @@ suite.forElement('documents', 'files', null, (test) => {
   it('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${tools.random()}.jpg` };
+    let query = { path: `/brady-${faker.random.number()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
       .then(r => cloud.put('/hubs/documents/files/' + fileId + '/lock', null, null, lock))
@@ -28,7 +28,7 @@ suite.forElement('documents', 'files', null, (test) => {
   it('should support links for files/:id/links without raw payload', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${tools.random()}.jpg` };
+    let query = { path: `/brady-${faker.random.number()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
       .then(r => cloud.get("/hubs/documents/files/" + fileId + "/links"))
@@ -40,7 +40,7 @@ suite.forElement('documents', 'files', null, (test) => {
     let fileId;
     let filePath;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${tools.random()}.jpg` };
+    let query = { path: `/brady-${faker.random.number()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => { fileId = r.body.id;
         filePath = r.body.path; })
@@ -50,15 +50,10 @@ suite.forElement('documents', 'files', null, (test) => {
   });
 
   it('should fail when copying file with existing file name', () => {
-    let fileId1;
-    let fileId2;
-    let filePath1;
-    let filePath2;
+    let fileId1, fileId2, filePath1, filePath2;
     let path = __dirname + '/../assets/brady.jpg';
-    let fileSuffix1 = tools.random();
-    let fileSuffix2 = tools.random();
-    let query1 = { path: `/brady-${fileSuffix1}.jpg` };
-    let query2 = { path: `/brady-${fileSuffix2}.jpg` };
+    let query1 = { path: `/brady-${faker.random.number()}.jpg` };
+    let query2 = { path: `/brady-${faker.random.number()}.jpg` };
 
     return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => { fileId1 = r.body.id;
