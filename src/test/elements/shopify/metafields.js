@@ -5,8 +5,8 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 const payload = () => ({
-  "namespace": tools.random(),
-  "key": tools.random(),
+  "namespace": tools.randomStr("aAeEiIoOuU", 8),
+  "key": tools.randomStr("aAeEidsfdsoOuU", 4),
   "value": tools.randomInt(),
   "value_type": "integer"
 });
@@ -21,7 +21,7 @@ const order = () => ({
     price: tools.randomInt()
   }]
 });
-suite.forElement('ecommerce', 'metafields', { payload: payload, skip: true }, (test) => {
+suite.forElement('ecommerce', 'metafields', { payload: payload, skip: false }, (test) => {
   const objectName = 'orders';
   let orderId;
   before(() => cloud.post(`/hubs/ecommerce/orders`, order())
