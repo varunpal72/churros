@@ -116,7 +116,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       if (typeof validator === 'function') validator(executions);
     };
 
-    if (!triggerCb) { triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, numEvents, eventFileName); }
+    if (!triggerCb) {
+      triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, numEvents, eventFileName);
+    }
     numSes = numSes || f.steps.length + 1; // defaults to steps + trigger but for loop cases, that won't work
     return testWrapper(triggerCb, f, fi, numEvents, numSes, numSevs, validatorWrapper, executionStatus);
   };
@@ -718,7 +720,63 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     var f = cancelManualTriggerTest('formula-waitForIt-selfContained', null, { foo: 'bar' }, 2, common.defaultValidator, 'success');
-    console.log("manual trigger state", f);
     return f;
+  });
+
+  it('should allow retrieving formula instance executions by the event ID and the events object ID that triggered that execution', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        e.stepExecutions.map(se => {
+          if (se.stepName === 'trigger') {
+            const flat = flattenStepExecutionValues(se.stepExecutionValues);
+            expect(flat['trigger.type']).to.equal('event');
+
+            const triggerEventString = flat['trigger.event'];
+            expect(triggerEventString).to.be.a('string');
+            const triggerEvent = JSON.parse(triggerEventString);
+            const objectId = triggerEvent.objectId;
+            expect(objectId).to.be.a('string');
+
+            // should be able to lookup this single execution by its event ID
+            const eventId = flat['trigger.eventId'];
+            const eventOpts = {qs: {eventId}};
+            const v = r => expect(r.body).to.have.length(1);
+            let executionFromEventId;
+            return cloud.withOptions(eventOpts).get(`/formulas/instances/executions`, v)
+              .then(r => {
+                executionFromEventId = r.body;
+                const objectOpts = {qs: {objectId}};
+                return cloud.withOptions(objectOpts).get(`/formulas/instances/executions`, v);
+              })
+              .then(r => {
+                // should be the same execution as the one we retrieved by its event
+                expect(r.body).to.deep.equal(executionFromEventId);
+              });
+          }
+        });
+      });
+    };
+    return eventTriggerTest('simple-successful-formula', 1, 2, validator);
+  });
+
+  it('should not allow searching formula instance executions by objectId and eventId', () => {
+    const v = r => expect(r).to.have.statusCode(400);
+    const opts = {qs: {eventId: '123', objectId: '456'}};
+    return cloud.withOptions(opts).get(`/formulas/instances/executions`, v);
+  });
+
+  it('should return an empty array when searching formula instance executions by fake objectId or eventId', () => {
+    const eventOpts = {qs: {eventId: 'NotARealEventId'}};
+    const v = r => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body).to.be.empty;
+      return r;
+    };
+
+    return cloud.withOptions(eventOpts).get(`/formulas/instances/executions`, v)
+      .then(r => {
+        const objectOpts = {qs: {objectId: 'NotARealObjectId'}};
+        return cloud.withOptions(objectOpts).get(`/formulas/instances/executions`, v);
+      });
   });
 });
