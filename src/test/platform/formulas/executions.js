@@ -113,7 +113,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
           }
         });
       });
-      if (typeof validator === 'function') validator(executions);
+      if (typeof validator === 'function') {
+        return validator(executions);
+      }
+      return Promise.resolve();
     };
 
     if (!triggerCb) {
@@ -725,34 +728,36 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
   it('should allow retrieving formula instance executions by the event ID and the events object ID that triggered that execution', () => {
     const validator = (executions) => {
-      executions.map(e => {
-        e.stepExecutions.map(se => {
-          if (se.stepName === 'trigger') {
-            const flat = flattenStepExecutionValues(se.stepExecutionValues);
-            expect(flat['trigger.type']).to.equal('event');
+      return new Promise((res, rej) => {
+        return executions.map(e => {
+          const formulaInstanceId = e.formulaInstanceId;
+          return e.stepExecutions.map(se => {
+            if (se.stepName === 'trigger') {
+              const flat = flattenStepExecutionValues(se.stepExecutionValues);
+              expect(flat['trigger.type']).to.equal('event');
 
-            const triggerEventString = flat['trigger.event'];
-            expect(triggerEventString).to.be.a('string');
-            const triggerEvent = JSON.parse(triggerEventString);
-            const objectId = triggerEvent.objectId;
-            expect(objectId).to.be.a('string');
+              const triggerEventString = flat['trigger.event'];
+              expect(triggerEventString).to.be.a('string');
+              const triggerEvent = JSON.parse(triggerEventString);
+              const objectId = triggerEvent.objectId;
+              expect(objectId).to.be.a('string');
 
-            // should be able to lookup this single execution by its event ID
-            const eventId = flat['trigger.eventId'];
-            const eventOpts = {qs: {eventId}};
-            const v = r => expect(r.body).to.have.length(1);
-            let executionFromEventId;
-            return cloud.withOptions(eventOpts).get(`/formulas/instances/executions`, v)
-              .then(r => {
-                executionFromEventId = r.body;
-                const objectOpts = {qs: {objectId}};
-                return cloud.withOptions(objectOpts).get(`/formulas/instances/executions`, v);
-              })
-              .then(r => {
-                // should be the same execution as the one we retrieved by its event
-                expect(r.body).to.deep.equal(executionFromEventId);
-              });
-          }
+              // should be able to lookup this single execution by its event ID
+              const eventId = flat['trigger.eventId'];
+              const v = r => expect(r.body).to.have.length(1);
+              let executionFromEventId;
+              return cloud.withOptions({qs: {eventId}}).get(`/formulas/instances/${formulaInstanceId}/executions`, v)
+                .then(r => {
+                  executionFromEventId = r.body;
+                  return cloud.withOptions({qs: {objectId}}).get(`/formulas/instances/${formulaInstanceId}/executions`, v);
+                })
+                .then(r => {
+                  // should be the same execution as the one we retrieved by its event
+                  expect(r.body).to.deep.equal(executionFromEventId);
+                  return res({});
+                });
+            }
+          });
         });
       });
     };
@@ -760,23 +765,12 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should not allow searching formula instance executions by objectId and eventId', () => {
-    const v = r => expect(r).to.have.statusCode(400);
-    const opts = {qs: {eventId: '123', objectId: '456'}};
-    return cloud.withOptions(opts).get(`/formulas/instances/executions`, v);
-  });
-
-  it('should return an empty array when searching formula instance executions by fake objectId or eventId', () => {
-    const eventOpts = {qs: {eventId: 'NotARealEventId'}};
-    const v = r => {
-      expect(r).to.have.statusCode(200);
-      expect(r.body).to.be.empty;
-      return r;
+    const validator = executions => {
+      const formulaInstanceId = executions[0].formulaInstanceId;
+      const v = r => expect(r).to.have.statusCode(400);
+      const opts = {qs: {eventId: '123', objectId: '456'}};
+      return cloud.withOptions(opts).get(`/formulas/instances/${formulaInstanceId}/executions`, v);
     };
-
-    return cloud.withOptions(eventOpts).get(`/formulas/instances/executions`, v)
-      .then(r => {
-        const objectOpts = {qs: {objectId: 'NotARealObjectId'}};
-        return cloud.withOptions(objectOpts).get(`/formulas/instances/executions`, v);
-      });
+    return eventTriggerTest('simple-successful-formula', 1, 2, validator);
   });
 });
