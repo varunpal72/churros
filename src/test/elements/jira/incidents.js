@@ -56,13 +56,16 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
   });
 
-  it('should allow PUT for /incidents/:id/properties/:id', () => {
+  it('should allow cruds for /incidents/:id/properties', () => {
     let incidentPropertyId = incidentProperties.value.keys[0].key;
     let incidentId;
 
     return cloud.post('/hubs/helpdesk/incidents', payload)
       .then(r => incidentId = r.body.id)
       .then(r => cloud.put(`/hubs/helpdesk/incidents/${incidentId}/properties/${incidentPropertyId}`, incidentProperties))
+      .then(r => cloud.get(`/hubs/helpdesk/incidents/${incidentId}/properties`))
+      .then(r => cloud.get(`/hubs/helpdesk/incidents/${incidentId}/properties/${incidentPropertyId}`))
+      .then(r => cloud.delete(`/hubs/helpdesk/incidents/${incidentId}/properties/${incidentPropertyId}`))
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
   });
 });
