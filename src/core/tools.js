@@ -271,7 +271,7 @@ exports.addCleanUp = (obj) => {
     datas = require(`${__dirname}/cleanup`);
   }
   datas.push(obj);
-  return fs.writeFile(`${__dirname}/cleanup.json`, JSON.stringify(datas));
+  return fs.writeFile(`${__dirname}/cleanup.txt`, JSON.stringify(datas));
 };
 exports.getCleanup = () => require(`${__dirname}/cleanup`);
-exports.resetCleanup = () => fs.writeFileSync(`${__dirname}/cleanup.json`, '[]');
+exports.resetCleanup = () => fs.writeFileSync(`${__dirname}/cleanup.txt`, '[]');
