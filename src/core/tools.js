@@ -270,6 +270,8 @@ exports.addCleanUp = (obj) => {
   } catch (e) {
     datas = require(`${__dirname}/cleanup.json`);
   }
+  console.log('data', datas);
+  console.log('obj', obj);
   datas.push(obj);
   return fs.writeFile(`${__dirname}/cleanup.json`, JSON.stringify(datas));
 };
