@@ -185,7 +185,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('login')).click();
       try {
         browser.findElement(webdriver.By.name('reauthorize')).click();
-      } catch (e) {
+      }
+      catch (e) {
         browser.findElement(webdriver.By.name('authorize')).click();
       }
       return browser.getCurrentUrl();
