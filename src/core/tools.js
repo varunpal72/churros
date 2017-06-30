@@ -266,12 +266,12 @@ exports.addCleanUp = (obj) => {
   if (!obj.hasOwnProperty('url') || !obj.hasOwnProperty('method') || !obj.hasOwnProperty('secrets')) throw new Error();
   let datas;
   try {
-    datas = JSON.parse(require('core/cleanup'));
+    datas = JSON.parse(require('core/cleanup.json'));
   } catch (e) {
-    datas = require(`${__dirname}/cleanup`);
+    datas = require(`${__dirname}/cleanup.json`);
   }
   datas.push(obj);
-  return fs.writeFile(`${__dirname}/cleanup.txt`, JSON.stringify(datas));
+  return fs.writeFile(`${__dirname}/cleanup.json`, JSON.stringify(datas));
 };
-exports.getCleanup = () => require(`${__dirname}/cleanup`);
-exports.resetCleanup = () => fs.writeFileSync(`${__dirname}/cleanup.txt`, '[]');
+exports.getCleanup = () => require(`${__dirname}/cleanup.json`);
+exports.resetCleanup = () => fs.writeFileSync(`${__dirname}/cleanup.json`, '[]');
