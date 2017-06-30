@@ -330,8 +330,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then((element) => element.click(),
             (err) => {
               if (err.state && err.state === 'no such element') { // ignore this
-              } 
-          else {
+              }
+              else {
                 webdriver.promise.rejected(err);
               }
             });
@@ -385,7 +385,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then((element) => element.click(),
             (err) => {
               if (err.state && err.state === 'no such element') { // ignore this
-              } else {
+              }
+              else {
                 webdriver.promise.rejected(err);
               }
             });
@@ -594,7 +595,7 @@ const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, p
         logger.debug("OAuth exchange failed (%s) on attempt %s, retrying.", e.message, attempt);
         return attemptOAuthExchange(++attempt, manipulateDom, element, b, r, username, password, config);
       }
-    else {
+      else {
         browser.close();
         logger.error("OAuth exchange failed (%s) after %s attempts", e.message, attempt);
         throw e;
