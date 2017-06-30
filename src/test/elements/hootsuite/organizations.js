@@ -8,7 +8,7 @@ const addMemberPayload = require('./assets/addmember');
 
 suite.forElement('social', 'organizations', (test) => {
   let organizationId, memberId, socialProfileId, teamId;
-  it.skip(`should allow GET for `, () => {
+  it.skip(`should allow operations for oraganizations, teams, social-profiles and members`, () => {
     return cloud.get(`/hubs/social/me/organizations`)
       .then(r => organizationId = r.body[0].id)
       .then(r => cloud.get(`/hubs/social/me/social-profiles`))
