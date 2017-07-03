@@ -1,9 +1,11 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/incidents');
-const commentsPayload = require('./assets/comments');
+const tools = require('core/tools');
 const cloud = require('core/cloud');
+const payload = require('./assets/incidents');
+const nestedTestPayload = tools.requirePayload(`${__dirname}/assets/nested-incident.json`);
+const commentsPayload = require('./assets/comments');
 const expect = require('chakram').expect;
 
 let options = {
@@ -31,15 +33,27 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.withOptions(options).cruds(`${test.api}/${id}/comments`, commentsPayload));
   });
 
+  it(`should allow nested Ceql search for ${test.api}`, () => {
+    let id;
+    return cloud.post(test.api, nestedTestPayload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.withOptions({ qs: { where: `Name.content = '${nestedTestPayload.Name.content}'` } }).get(test.api))
+      .then(r => {
+        expect(r.body).to.not.be.empty;
+        expect(r.body[0].id).to.equal(id);
+      })
+      .then(r => cloud.delete(`${test.api}/${id}`));
+  });
+
   it(`should allow paginating for ${test.api}/:id/comments`, () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => id = r.body.id)
       .then(r => cloud.post(`${test.api}/${id}/comments`, commentsPayload))
-      .then(r => cloud.withOptions({ qs: { pageSize: 1 }}).get(`${test.api}/${id}/comments`))
+      .then(r => cloud.withOptions({ qs: { pageSize: 1 } }).get(`${test.api}/${id}/comments`))
       .then(r => expect(r.body.length).to.equal(1))
       .then(r => cloud.post(`${test.api}/${id}/comments`, commentsPayload))
-      .then(r => cloud.withOptions({ qs: { pageSize: 2 }}).get(`${test.api}/${id}/comments`))
+      .then(r => cloud.withOptions({ qs: { pageSize: 2 } }).get(`${test.api}/${id}/comments`))
       .then(r => expect(r.body.length).to.equal(2))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
@@ -62,7 +76,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => attachmentId = r.body.id)
       .then(r => cloud.get(`${test.api}/${incidentId}/attachments/${attachmentId}`))
       .then(r => cloud.get(`${test.api}/${incidentId}/attachments`))
-      .then(r => cloud.withOptions({ qs: { pageSize: 1 }}).get(`${test.api}/${incidentId}/attachments`))
+      .then(r => cloud.withOptions({ qs: { pageSize: 1 } }).get(`${test.api}/${incidentId}/attachments`))
       .then(r => expect(r.body.length).to.equal(1))
       .then(r => cloud.delete(`${test.api}/${incidentId}/attachments/${attachmentId}`))
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
