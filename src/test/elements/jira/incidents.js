@@ -56,7 +56,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
   });
 
-  it('should allow cruds for /incidents/:id/properties', () => {
+  it('should allow CRUDS for /incidents/:id/properties', () => {
     let incidentPropertyId = incidentProperties.value.keys[0].key;
     let incidentId;
 
