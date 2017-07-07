@@ -142,7 +142,9 @@ const defaultValidator = (executions, numEs, numSes, executionStatus) => {
 
 const execValidatorWrapper = execValidator => (executions, numEs, numSes, executionStatus, fId, fiId) => {
   defaultValidator(executions, numEs, numSes, executionStatus);
-  if (typeof execValidator === 'function') { return execValidator(executions, fId, fiId); }
+  if (typeof execValidator === 'function') {
+    return execValidator(executions, fId, fiId);
+  }
   return executions;
 };
 
