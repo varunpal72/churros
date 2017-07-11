@@ -18,7 +18,7 @@ suite.forElement('helpdesk', 'contacts', {payload:payload}, (test) => {
       .then(r => cloud.delete(`${test.api}/${contactId}`));
    });
 
-   it(`should allow CRUDS for ${test.api} with special characters Ceql search`, () => {
+   it(`should allow CRUDS for ${test.api} with special characters & Ceql search`, () => {
      let contactId;
      return cloud.post(test.api, specialCharPayload)
        .then(r => contactId = r.body.key)
