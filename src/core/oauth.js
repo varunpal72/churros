@@ -574,7 +574,9 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         browser.findElement(webdriver.By.id('password')).sendKeys(password);
         browser.findElement(webdriver.By.xpath('//*[@type="submit"]')).click();
         browser.wait(() => {
-             return browser.isElementPresent(webdriver.By.xpath('//*[contains(@title, "LaunchBI Approval Page")]'));
+             return webdriver.getTitle().then(function (title) {
+                  return title === "LaunchBI Approval Page";
+             });
         }, 5000);
         browser.findElement(webdriver.By.xpath('//*[@type="submit" and text()="Allow"]')).click();
     default:
