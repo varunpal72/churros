@@ -13,11 +13,10 @@ suite.forElement('helpdesk', 'contacts', {payload:payload}, (test) => {
     return cloud.post(test.api, payload)
       .then(r => contactId = r.body.key)
       .then(r => cloud.get(`${test.api}/${contactId}`))
-      .then(r => cloud.withOptions({ qs: { where: `username='test'`}}).get(test.api))
+      .then(r => cloud.withOptions({ qs: { where: `username='${payload.displayName}'`}}).get(test.api))
+      .then(r => expect(r.body.length).to.be.equal(1))
       .then(r => cloud.delete(`${test.api}/${contactId}`));
    });
-
-   test.withOptions({ qs: { where: `username='test'` }}).should.supportPagination();
 
    it(`should allow CRUDS for ${test.api} with special characters Ceql search`, () => {
      let contactId;
@@ -28,4 +27,5 @@ suite.forElement('helpdesk', 'contacts', {payload:payload}, (test) => {
        .then(r => cloud.delete(`${test.api}/${contactId}`));
     });
 
+    test.withOptions({ qs: { where: `username='test'` }}).should.supportPagination();
  });
