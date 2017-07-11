@@ -58,7 +58,7 @@ suite.forElement('documents', 'files', null, (test) => {
     return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => { fileId1 = r.body.id;
         filePath1 = r.body.path; })
-      .then(r => cloud.withOptions({ qs: query2 }).postFile('hubs/documents/files', path))
+      .then(r => cloud.withOptions({ qs: query2 }).postFile('/hubs/documents/files', path))
       .then(r => { fileId2 = r.body.id;
         filePath2 = r.body.path; })
       .then(r => cloud.withOptions({ qs: { path: filePath1, overwrite: false } }).post('/hubs/documents/files/copy', { path: filePath2 }, r => { expect(r).to.have.statusCode(409); }))
