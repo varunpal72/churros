@@ -264,6 +264,24 @@
       "type": "string"
     }]
   },
+  "classifications": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "departments": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "locations": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "expenses": {
     "fields": [{
       "path": "id",
