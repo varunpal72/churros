@@ -110,6 +110,15 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         return browser.getTitle().then((title) => !title);
       }, 20000);
       return browser.getCurrentUrl();
+    case 'egnyte':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('loginUsername')).sendKeys(username);
+      browser.findElement(webdriver.By.className('btn btn-primary set-username-btn')).click();
+      browser.sleep(3000);
+      browser.findElement(webdriver.By.xpath('.//*[@placeholder="Enter password"]')).sendKeys(password);
+      browser.findElement(webdriver.By.xpath('.//*[@id="loginBtn"]')).click();
+      browser.findElement(webdriver.By.className('allow_button btn btn-primary')).click();
+      return browser.getCurrentUrl();
     case 'shopify':
       browser.get(r.body.oauthUrl);
       browser.wait(webdriver.until.elementLocated(webdriver.By.name('login')), 1000);
@@ -185,8 +194,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('login')).click();
       try {
         browser.findElement(webdriver.By.name('reauthorize')).click();
-      }
-      catch (e) {
+      } catch (e) {
         browser.findElement(webdriver.By.name('authorize')).click();
       }
       return browser.getCurrentUrl();
@@ -323,8 +331,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then((element) => element.click(),
             (err) => {
               if (err.state && err.state === 'no such element') { // ignore this
-              }
-              else {
+              } else {
                 webdriver.promise.rejected(err);
               }
             });
@@ -378,8 +385,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
           .then((element) => element.click(),
             (err) => {
               if (err.state && err.state === 'no such element') { // ignore this
-              }
-              else {
+              } else {
                 webdriver.promise.rejected(err);
               }
             });
@@ -397,7 +403,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.id('agreeConsent'))
         .then((element) => element.click(), (err) => {}); // ignore this
-      browser.sleep(2000);  //Paypal takes some time to confirm creds
+      browser.sleep(2000); //Paypal takes some time to confirm creds
       return browser.getCurrentUrl();
     case 'quickbooks':
       browser.get(r.body.oauthUrl);
@@ -587,8 +593,7 @@ const attemptOAuthExchange = (attempt, manipulateDom, element, b, r, username, p
       if (attempt < 3) {
         logger.debug("OAuth exchange failed (%s) on attempt %s, retrying.", e.message, attempt);
         return attemptOAuthExchange(++attempt, manipulateDom, element, b, r, username, password, config);
-      }
-      else {
+      } else {
         browser.close();
         logger.error("OAuth exchange failed (%s) after %s attempts", e.message, attempt);
         throw e;
