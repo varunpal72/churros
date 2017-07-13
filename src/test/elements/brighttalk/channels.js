@@ -19,7 +19,7 @@ suite.forElement('marketing', 'channels', null, (test) => {
       .then(r => id = r.body[0].id)
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${channelId}/activities`))
       .then(r => cloud.withOptions({ qs: { where: `id='${id}'` } }).get(`${test.api}/${channelId}/activities`))
-      .then(r => expect(r.body[0]).to.have.any.keys('activityUrl', 'activityType', 'totalViewingDurationMinutes'));
+      .then(r => expect(r.body[0]).to.include.all.keys('activityUrl', 'activityType', 'totalViewingDurationMinutes'));
   });
 
   it('should support GET, pagination and Ceql search for /hubs/marketing/channels/:channelId/contacts', () => {
