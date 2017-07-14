@@ -8,8 +8,8 @@ const documentId = "0150H00000FRylLQAT";
 const newObject = {};
 
 suite.forElement('crm', 'Document', (test) => {
-  it('retrieves an id from GET /{objectName} with Document', () => {
-    return cloud.get(test.api + '/' + documentId + '/data')
+  it('should allow GET /{objectName}/{objectId}/data for a Document object', () => {
+    return cloud.get(`${test.api}/${documentId}/data`)
     .then(r => expect(r.body).to.not.be.empty);
   });
 });
