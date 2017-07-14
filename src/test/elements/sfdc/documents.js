@@ -12,7 +12,7 @@ suite.forElement('crm', 'documents', (test) => {
     return cloud.get(test.api + '/' + documentId + '/data')
     .then(r => {
       newObject.body = r.body;
-      expect(newObject == true);
-    })
+      expect(newObject === true);
+    });
   });
 });
