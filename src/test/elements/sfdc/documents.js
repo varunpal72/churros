@@ -7,7 +7,7 @@ const expect = require('chakram').expect;
 const documentId = "0150H00000FRylLQAT";
 const newObject = {};
 
-suite.forElement('crm', 'documents', (test) => {
+suite.forElement('crm', 'Document', (test) => {
   it('retrieves an id from GET /{objectName} with Document', () => {
     return cloud.get(test.api + '/' + documentId + '/data')
     .then(r => {
