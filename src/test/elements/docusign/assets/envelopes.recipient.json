@@ -7,7 +7,7 @@
     "emailRecipientPostSigningURL": "https://www.example.com/signer",
     "name": "ABC XYZ",
     "note": "Sample Note",
-    "recipientId": "5",
+    "recipientId": "1",
     "routingOrder": "5",
     "templateLocked": "true",
     "templateRequired": "true",
