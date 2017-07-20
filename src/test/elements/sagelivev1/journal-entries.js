@@ -6,7 +6,7 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const payload = tools.requirePayload(`${__dirname}/assets/journal-entries.json`);
 
-suite.forElement('finance', 'journal-entries', { payload: payload, skip: true }, (test) => {
+suite.forElement('finance', 'journal-entries', { payload: payload }, (test) => {
   before(() => cloud.get(`/hubs/finance/companies`)
     .then(r => payload.Items.JournalCompany.Id = r.body.id)
     .then(r => cloud.get(`/hubs/finance/journal-types`))

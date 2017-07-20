@@ -401,6 +401,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.getCurrentUrl();
     case 'servicemax':
     case 'sagelive':
+    case 'sagelivev1':
     case 'sfdc':
     case 'sfdcservicecloud':
     case 'sfdcmarketingcloud':
@@ -414,6 +415,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('password')).clear();
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('Login')).click();
+      browser.sleep(5000);
       browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 10000)
         .thenCatch(r => true); // ignore
 
