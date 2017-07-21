@@ -114,9 +114,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('loginUsername')).sendKeys(username);
       browser.findElement(webdriver.By.className('btn btn-primary set-username-btn')).click();
-      browser.sleep(3000);
-      browser.findElement(webdriver.By.xpath('.//*[@placeholder="Enter password"]')).sendKeys(password);
-      browser.findElement(webdriver.By.xpath('.//*[@id="loginBtn"]')).click();
+      browser.wait(webdriver.until.elementLocated(webdriver.By.className('tabContent content-login active')), 1000);
+      browser.findElement(webdriver.By.id('j_password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('loginBtn')).click();
+      browser.wait(webdriver.until.elementLocated(webdriver.By.className('allow_button btn btn-primary')), 3000);
       browser.findElement(webdriver.By.className('allow_button btn btn-primary')).click();
       return browser.getCurrentUrl();
     case 'shopify':
