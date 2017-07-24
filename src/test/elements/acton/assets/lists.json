@@ -1,24 +1,14 @@
 {
   "headings": "y",
   "fieldseparator": "COMMA",
+  "listname": "<<random.word>>",
   "quotecharacter": "NONE",
-  "listname": "<<name.title>>",
-  "uploadspecs": [{
+  "uploadspecs": [
+    {
       "columnHeading": "Email",
       "ignoreColumn": "N",
       "columnType": "EMAIL",
-      "columnIndex": 0
-    }, {
-      "columnHeading": "First Name",
-      "ignoreColumn": "N",
-      "columnType": "FIRSTNAME",
-      "columnIndex": 1
-    },
-    {
-      "columnHeading": "Last Name",
-      "ignoreColumn": "N",
-      "columnType": "LASTNAME",
-      "columnIndex": 2
+      "columnIndex": "0"
     }
   ]
 }
