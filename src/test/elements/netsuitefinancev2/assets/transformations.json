@@ -209,6 +209,27 @@
       "vendorPath": "internalId"
     }]
   },
+  "classifications": {
+    "vendorName": "Classification",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "departments": {
+    "vendorName": "Department",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "locations": {
+    "vendorName": "Location",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
   "contacts": {
     "vendorName": "Contact",
     "fields": [{

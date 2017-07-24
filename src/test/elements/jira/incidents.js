@@ -2,8 +2,10 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const tools = require('core/tools');
 const payload = require('./assets/incidents');
 const commentPayload = require('./assets/incidentComments');
+const incidentProperties = tools.requirePayload(`${__dirname}/assets/incidentProperties.json`);
 const notifyPayload = require('./assets/notification');
 
 suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
@@ -51,6 +53,19 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
     return cloud.post('/hubs/helpdesk/incidents', payload)
       .then(r => incidentId = r.body.id)
       .then(r => cloud.post(`hubs/helpdesk/incidents/${incidentId}/notifications`, notifyPayload))
+      .then(r => cloud.delete(`${test.api}/${incidentId}`));
+  });
+
+  it('should allow CRUDS for /incidents/:id/properties', () => {
+    let incidentPropertyId = incidentProperties.value.keys[0].key;
+    let incidentId;
+
+    return cloud.post('/hubs/helpdesk/incidents', payload)
+      .then(r => incidentId = r.body.id)
+      .then(r => cloud.put(`/hubs/helpdesk/incidents/${incidentId}/properties/${incidentPropertyId}`, incidentProperties))
+      .then(r => cloud.get(`/hubs/helpdesk/incidents/${incidentId}/properties`))
+      .then(r => cloud.get(`/hubs/helpdesk/incidents/${incidentId}/properties/${incidentPropertyId}`))
+      .then(r => cloud.delete(`/hubs/helpdesk/incidents/${incidentId}/properties/${incidentPropertyId}`))
       .then(r => cloud.delete(`${test.api}/${incidentId}`));
   });
 });
