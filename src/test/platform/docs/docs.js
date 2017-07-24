@@ -36,7 +36,7 @@ suite.forPlatform('docs', {}, () => {
   });
 
   it('should return proper swagger json for elements', () => {
-    let failures = []
+    let failures = [];
       return Promise.all(Array.from(elementIds).map(elementId => {
         return cloud.get(`/elements/${elementId}/docs`)
         .then(r => r.body)
@@ -49,7 +49,7 @@ suite.forPlatform('docs', {}, () => {
                 resolve();
               });
             });
-        }).catch((err) => failures.push({ id: elementId, error: err}));
+        }).catch((err) => failures.push({ id: elementId, error: err }));
       })).then(() => expect(failures).to.deep.equal([]));
   });
 
