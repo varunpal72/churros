@@ -24,7 +24,7 @@ suite.forElement('general', 'campaigns', { payload: payload, skip: true }, (test
       .then(r => campaignId = r.body.campaignId)
       .then(r => cloud.get(`${test.api}`))
       .then(r => cloud.get(`${test.api}/${campaignId}`))
-      .then(r => cloud.put(`${test.api}/${campaignId}`, updateCampaign))
+      .then(r => cloud.put(`${test.api}/${campaignId}`, updateCampaign));
   });
   test.should.supportPagination();
 });

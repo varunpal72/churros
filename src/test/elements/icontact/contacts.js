@@ -19,7 +19,7 @@ suite.forElement('general', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.withOptions({ qs: { status: 'total' } }).get(`${test.api}`))
       .then(r => cloud.get(`${test.api}/${contactId}`))
       .then(r => cloud.put(`${test.api}/${contactId}`, updateContact))
-      .then(r => cloud.delete(`${test.api}/${contactId}`))
+      .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
   test.should.supportPagination();
   test.should.supportCeqlSearch('email');

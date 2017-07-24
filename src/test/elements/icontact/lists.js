@@ -17,7 +17,7 @@ suite.forElement('general', 'lists', { payload: payload }, (test) => {
       .then(r => cloud.get(`${test.api}`))
       .then(r => cloud.get(`${test.api}/${listId}`))
       .then(r => cloud.put(`${test.api}/${listId}`, updateList))
-      .then(r => cloud.delete(`${test.api}/${listId}`))
+      .then(r => cloud.delete(`${test.api}/${listId}`));
   });
   test.should.supportPagination();
   test.should.supportCeqlSearch('name');

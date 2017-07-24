@@ -2,13 +2,11 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
-const payload = tools.requirePayload(`${__dirname}/assets/messages.json`);
 
 suite.forElement('general', 'messages', (test) => {
 
   it('should allow GET for hubs/general/messages/{id}/unsubscribes', () => {
-    let messageId=null, campaignId;
+    let messageId=null;
     return cloud.get('hubs/general/messages')
       .then(r => {
         if (r.body && r.body.length > 0) {
@@ -17,7 +15,7 @@ suite.forElement('general', 'messages', (test) => {
       })
       .then(r => {
         if(messageId)
-        cloud.get(`${test.api}/${messageId}/unsubscribes`)
+        cloud.get(`${test.api}/${messageId}/unsubscribes`);
     });
   });
   test.should.supportPagination();

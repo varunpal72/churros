@@ -63,14 +63,15 @@ suite.forElement('general', 'multiple', (test) => {
 
   it.skip('should allow CU for hubs/general/multiple/messages', () => {
     let messageIds = [];
+    let campaignId;
     let campaignPayload = tools.requirePayload(`${__dirname}/assets/campaigns.json`);
 
-    for (let j = 0; j < messages.length; j++) {
-      return cloud.post('hubs/general/campaigns', campaignPayload)
-        .then(r => messages.campaignId = r.body.campaignId);
-    }
-
-    return cloud.post(`${test.api}/messages`, messages)
+    return cloud.post('hubs/general/campaigns', campaignPayload)
+      .then(r => campaignId = r.body.campaignId)
+      .then(r => messages.forEach(function(entry) {
+        entry.campaignId = campaignId;
+      }))
+      .then(r => cloud.post(`${test.api}/messages`, messages))
       .then(r => r.body.forEach(function(entry) {
         if (entry.messageId)
           messageIds.push(entry.messageId);
