@@ -61,7 +61,7 @@ suite.forElement('general', 'multiple', (test) => {
       .then(r => cloud.put(`${test.api}/campaigns`, campaigns));
   });
 
-  it('should allow CU for hubs/general/multiple/messages', () => {
+  it.skip('should allow CU for hubs/general/multiple/messages', () => {
     let messageIds = [];
     let campaignId;
     let campaignPayload = tools.requirePayload(`${__dirname}/assets/campaigns.json`);
