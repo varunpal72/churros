@@ -1,82 +1,55 @@
 'use strict';
 
 const suite = require('core/suite');
+const cloud = require('core/cloud');
 const payload = require('./assets/incidents');
 const taskPayload = require('./assets/task');
-const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 const commentPayload = require('./assets/comments');
 
 suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
-  test.should.return200OnGet();
+  test.should.supportCrds();  //update is getting an 500 error from vendor
+  test.should.supportPagination();
 
-  it('it should support POST', () => {
-    return cloud.post('/hubs/helpdesk/incidents', payload);
+  it(`should allow C for ${test.api}/:id/comments`, () => {
+    let id;
+    return cloud.get(test.api)
+      .then(r => {
+        expect(r.body).to.not.be.empty;
+        expect(r.body.length).to.be.above(1);
+        id = r.body[0].id;
+      })
+      .then(r => cloud.post(`${test.api}/${id}/comments`, commentPayload));
   });
 
-  it('it should support GET by id', () => {
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(filteredIncidents => cloud.get(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}`));
+  it(`should allow CRUDS for ${test.api}/:id/tasks`, () => {
+    let id;
+    return cloud.post(test.api, payload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.cruds(`${test.api}/${id}/tasks`, taskPayload));
   });
 
-  it.skip('it should support PATCH', () => {
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(filteredIncidents => cloud.patch(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}`, payload));
-  });
-
-  it('it should support DELETE', () => {
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(filteredIncidents => cloud.delete(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}`, payload));
-  });
-
-  it('it should support POST a comment inside an incident', () => {
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(filteredIncidents => cloud.post(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/comments`, commentPayload));
-  });
-
-  it('it should support GET all tasks inside an incident', () => {
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(filteredIncidents => cloud.get(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/tasks`));
-  });
-
-  it('it should support POST a task inside an incident', () => {
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(filteredIncidents => cloud.post(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/tasks`, taskPayload));
-  });
-
-  it('it should support GET a task inside an incident', () => {
-    let filteredIncidents;
-
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(fi => filteredIncidents = fi)
-      .then(() => cloud.post(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/tasks`, taskPayload))
-      .then(tasks => cloud.get(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/tasks/${tasks.body.id}`));
-  });
-
-  it('it should support PATCH a task inside an incident', () => {
-    let filteredIncidents;
-
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(fi => filteredIncidents = fi)
-      .then(() => cloud.post(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/tasks`, taskPayload))
-      .then(tasks => cloud.patch(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/tasks/${tasks.body.id}`, taskPayload));
-  });
-
-  it('it should support DELETE a task inside an incident', () => {
-    let filteredIncidents;
-
-    return cloud.get('/hubs/helpdesk/incidents')
-      .then(r => r.body.filter(r => r.display_id))
-      .then(fi => filteredIncidents = fi)
-      .then(() => cloud.post(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/tasks`, taskPayload))
-      .then(tasks => cloud.delete(`/hubs/helpdesk/incidents/${filteredIncidents[0].display_id}/tasks/${tasks.body.id}`));
+  it(`should allow pagination with page and pageSize for ${test.api}/:id/tasks`, () => {
+    let id, taskId1, taskId2;
+    return cloud.post(test.api, payload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.post(`${test.api}/${id}/tasks`, taskPayload))
+      .then(r => taskId1 = r.body.id)
+      .then(r => cloud.post(`${test.api}/${id}/tasks`, taskPayload))
+      .then(r => taskId2 = r.body.id)
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${id}/tasks`))
+      .then(r => {
+        expect(r.body).to.not.be.empty;
+        expect(r.body.length).to.be.below(2);
+      })
+      .then(r => cloud.withOptions({ qs: { page: 2, pageSize: 1 } }).get(`${test.api}/${id}/tasks`))
+      .then(r => {
+        expect(r.body).to.not.be.empty;
+        expect(r.body.length).to.be.below(2);
+      })
+      .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId1}`))
+      .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId2}`))
+      .then(r => cloud.delete(`${test.api}/${id}`));
   });
 
 });

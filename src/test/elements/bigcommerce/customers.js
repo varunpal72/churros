@@ -5,6 +5,7 @@ const addressPayload = require('./assets/address');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
+const faker = require('faker');
 
 const customerUpdate = () => ({
   "last_name": "elements",
@@ -22,7 +23,7 @@ const addressUpdate = () => ({
 });
 
 const groupCreate = () => ({
-  "name": "CE Discounts",
+  "name": faker.random.word(),
   "discount_rules": [{
     "type": "all",
     "method": "percent",
@@ -57,11 +58,12 @@ suite.forElement('ecommerce', 'customers', { payload: payload }, (test) => {
   });
   it('should allow CRUDS for customer/groups and then GET customer/groups/count', () => {
     let groupId = -1;
-    return cloud.post(`${test.api}/groups`, groupCreate())
+    const createGroup = groupCreate();
+    return cloud.post(`${test.api}/groups`, createGroup)
       .then(r => groupId = r.body.id)
       .then(r => cloud.get(`${test.api}/groups`))
       .then(r => cloud.get(`${test.api}/groups/${groupId}`))
-      .then(r => cloud.withOptions({ qs: { where: 'name=\'CE Discounts\'' } }).get(`${test.api}/groups`))
+      .then(r => cloud.withOptions({ qs: { where: `name='${createGroup.name}'` } }).get(`${test.api}/groups`))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/groups`))
       .then(r => cloud.patch(`${test.api}/groups/${groupId}`, groupUpdate()))
       .then(r => cloud.get(`${test.api}/groups/${groupId}`))

@@ -3,14 +3,12 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const payload = require('./assets/contact');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const contactsPayload = build({ name: tools.random(),email: tools.randomEmail(),displayName:tools.random()});
+const payload = tools.requirePayload(`${__dirname}/assets/contact.json`);
 
-suite.forElement('helpdesk', 'contacts', {payload:contactsPayload}, (test) => {
+suite.forElement('helpdesk', 'contacts', {payload:payload}, (test) => {
   it(`should allow CRUDS for ${test.api}`, () => {
     let contactId;
-    return cloud.post(test.api, contactsPayload)
+    return cloud.post(test.api, payload)
       .then(r => contactId = r.body.key)
       .then(r => cloud.get(`${test.api}/${contactId}`))
       .then(r => cloud.withOptions({ qs: { where:`username='test'`}}).get(test.api))

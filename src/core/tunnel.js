@@ -25,3 +25,5 @@ exports.start = (port) => {
     });
   });
 };
+
+exports.stop = (port) => ngrok.kill(() => logger.debug('Killed  ngrok'));

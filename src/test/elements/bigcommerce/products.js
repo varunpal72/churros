@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = require('./assets/products');
+const payload = tools.requirePayload(`${__dirname}/assets/products.json`);
 const brandsPayload = require('./assets/brands');
 const categoriesPayload = tools.requirePayload(`${__dirname}/assets/categories.json`);
 const fieldsPayload = require('./assets/fields');
@@ -10,7 +10,7 @@ const imagesPayload = require('./assets/images');
 const skusPayload = require('./assets/skus');
 const cloud = require('core/cloud');
 
-const name = tools.randomStr();
+const name = tools.random();
 const productsUpdate = () => ({
   "name": "Cloud Elements"
 });

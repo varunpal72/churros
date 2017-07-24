@@ -5,7 +5,7 @@
   "type": "regular",
   "settings": {
     "subject_line": "Churros",
-    "reply_to": "churros@example.com",
+    "reply_to": "<<internet.email>>",
     "from_name": "Senor Churro"
   }
 }

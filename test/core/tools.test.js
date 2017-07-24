@@ -102,7 +102,7 @@ describe('tools', () => {
     res.map(r => expect(r).to.equal('foo'));
   });
   it('should run a script file', () => {
-    tools.runFile('foo', './assets/testScript.js', 'bar')
+    return tools.runFile('foo', `${__dirname}/assets/testScripts.js`, 'bar')
     .then(r => expect(r).to.equal('foo:bar'))
     .then(r => tools.runFile('foo', './fake/file/path', 'bar'))
     .then(r => expect(r).to.equal(null));
@@ -154,5 +154,14 @@ Josh,Wyse,2
   it('should throw error with bad path', () => {
     const fn = () => tools.requirePayload(`${__dirname}/assets/BadPath.json`);
     expect(fn).to.throw(Error);
+  });
+  it('should reset and get cleanup file', () => {
+    tools.resetCleanup();
+    setTimeout(() => expect(tools.getCleanup()).to.equal([]), 1000);
+  });
+  it('should add to cleanup file', () => {
+    tools.resetCleanup();
+    tools.addCleanUp({url:'http://google.com', method: 'get', secrets: {}});
+    setTimeout(() => expect(tools.getCleanup()).to.deep.equal([{url:'http://google.com', method: 'get', secrets: {}}]), 1000);
   });
 });

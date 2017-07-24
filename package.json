@@ -9,7 +9,7 @@
     "url": "git://github.com/cloud-elements/churros.git"
   },
   "scripts": {
-    "postinstall": "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}});\"",
+    "postinstall": "node -e \"var srcpath='../src/core'; var dstpath='node_modules/core';var fs=require('fs'); fs.exists(dstpath,function(exists){if(!exists){fs.symlinkSync(srcpath, dstpath,'dir');}}); fs.writeFileSync('src/core/cleanup.json', '[]')\"",
     "lintsrc": "./node_modules/.bin/jshint --config .jshintrc src/.",
     "linttest": "./node_modules/.bin/jshint --config .jshintrc test/.",
     "lintall": "npm run lintsrc && npm run linttest",
@@ -49,6 +49,7 @@
     "shelljs": "^0.5.3",
     "sleep": "^3.0.1",
     "swagger-parser": "^3.4.1",
+    "sync-request": "^4.0.3",
     "tv4": "^1.2.7",
     "winston": "^2.1.1"
   },

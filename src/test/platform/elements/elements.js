@@ -9,6 +9,7 @@ const keysSchema = require('./assets/keys.schema.json');
 const schema = require('./assets/element.schema.json');
 const listSchema = require('./assets/elements.schema.json');
 const logger = require('winston');
+const faker = require('faker');
 
 const getElementId = (key) => {
   return cloud.get(`elements/${key}`)
@@ -23,7 +24,11 @@ const crudElement = (idField, payload, updatedPayload, schema) => {
     .then(r => id = element[idField])
     .then(r => cloud.get(`elements/${id}`, schema))
     .then(r => cloud.put(`elements/${id}`, updatedPayload, schema))
-    .then(r => cloud.delete(`elements/${id}`));
+    .then(r => cloud.delete(`elements/${id}`))
+    .catch(e => {
+      if (id) cloud.delete(`elements/${id}`);
+      throw new Error(e);
+    });
 };
 
 const testElementActivation = (idField, schema) => {
@@ -35,7 +40,14 @@ const testElementActivation = (idField, schema) => {
     .then(r => cloud.get(`elements/${element[idField]}`, (r) => expect(r.body.active).to.equal(true)))
     .then(r => cloud.delete(`elements/${element[idField]}/active`))
     .then(r => cloud.get(`elements/${element[idField]}`, (r) => expect(r.body.active).to.equal(false)))
-    .then(r => cloud.delete(`elements/${element[idField]}`));
+    .then(r => cloud.delete(`elements/${element[idField]}`))
+    .catch(e => {
+      if (element) {
+        cloud.delete(`elements/${element[idField]}/active`);
+        cloud.delete(`elements/${element[idField]}`);
+      }
+      throw new Error(e);
+    });
 };
 
 const testOAuthUrl = (idOrKey) => {
@@ -61,8 +73,14 @@ suite.forPlatform('elements', opts, (test) => {
   it('should support search', () => cloud.get('elements', listSchema));
   it('should support get keys', () => cloud.get('elements/keys', keysSchema));
 
-  it('should support CRUD by key', () => crudElement('key', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
-  it('should support CRUD by ID', () => crudElement('id', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
+  it('should support CRUD by key', () => {
+    const name = 'Churros DB element ' + faker.random.number();
+    return crudElement('key', common.genElement({name}), common.genElement({ description: "An updated Churros element", name }), schema);
+  });
+  it('should support CRUD by ID', () => {
+    const name = 'Churros DB element ' + faker.random.number();
+    return crudElement('id', common.genElement({name}), common.genElement({ description: "An updated Churros element", name }), schema);
+  });
   it('should support CRUD by ID with objects', () => crudElement('id', common.genElementWithObjects({}), common.genElementWithObjects({ description: "An updated Churros element" }), schema));
 
   it('should support JDBC element CRUD by key', () => crudElement('key', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
@@ -82,7 +100,11 @@ suite.forPlatform('elements', opts, (test) => {
     let clone;
     return cloud.post('elements/freshdesk/clone', schema)
       .then(r => clone = r.body)
-      .then(r => cloud.delete('elements/' + clone.key));
+      .then(r => cloud.delete('elements/' + clone.key))
+      .catch(e => {
+        if (clone) cloud.delete('elements/' + clone.key);
+        throw new Error(e);
+      });
   });
 
   it('should support clone by ID', () => {
@@ -94,7 +116,11 @@ suite.forPlatform('elements', opts, (test) => {
     return getElementId('freshdesk')
       .then(id => cloud.post(`elements/${id}/clone`, schema))
       .then(r => clone = r.body)
-      .then(r => cloud.delete('elements/' + clone.id));
+      .then(r => cloud.delete('elements/' + clone.id))
+      .catch(e => {
+        if (clone) cloud.delete('elements/' + clone.id);
+        throw new Error(e);
+      });
   });
 
   it('should support activate/deactivate by key', () => testElementActivation('key', schema));

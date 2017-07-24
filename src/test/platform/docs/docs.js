@@ -6,7 +6,7 @@ const swaggerParser = require('swagger-parser');
 const expect = require('chakram').expect;
 
 const elementKeys = ['hubspot', 'hubspotcrm', 'dynamicscrmadfs', 'quickbooks',
-'quickbooksonprem', 'netsuitecrmv2', 'netsuiteerpv2', 'netsuitefinancev2', 'marketo', 'zendesk'];
+'quickbooksonprem', 'netsuitecrmv2', 'netsuiteerpv2', 'netsuitefinancev2', 'marketo', 'zendesk', 'sfdc'];
 
 suite.forPlatform('docs', {}, () => {
   let hubs, elementIds;
@@ -39,9 +39,16 @@ suite.forPlatform('docs', {}, () => {
       return Promise.all(Array.from(elementIds).map(elementId => {
         return cloud.get(`/elements/${elementId}/docs`)
         .then(r => r.body)
-        .then(s => swaggerParser.validate(s, (err, api) => {
-            if(err) { throw new Error(`Docs for element '${elementId}' are invalid Swagger: ${err}`); }
-          }));
+        .then(s => {
+          return new Promise(function(resolve, reject) {
+            swaggerParser.validate(s, (err, api) => {
+              if (err) {
+                reject(err);
+              }
+              resolve();
+            });
+          });
+        });
       }));
   });
 
@@ -50,6 +57,8 @@ suite.forPlatform('docs', {}, () => {
     .then(r => {
         expect(r.body).to.not.be.empty;
         expect(r.body.paths['/accounts'].get.parameters[1].name).to.equal('x-api-key');
+        expect(r.body.host).to.equal('aws-api.cloud-elements.com');
+        expect(r.body.basePath).to.not.have.string('/elements/api-v2');
     });
   });
 });
