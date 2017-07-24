@@ -1,0 +1,16 @@
+{
+  "lists": {
+    "vendorName": "lists",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "listId"
+    }]
+  },
+  "contacts": {
+    "vendorName": "contacts",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "contactId"
+    }]
+  }
+}
