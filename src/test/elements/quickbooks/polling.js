@@ -37,5 +37,5 @@ suite.forElement('finance', 'polling', null, (test) => {
   test.withApi('/hubs/finance/sales-receipts').should.supportPolling(salesReceiptsPayload, 'sales-receipts');
   test.withApi('/hubs/finance/time-activities').should.supportPolling(timeActivitiesPayload, 'time-activities');
   test.withApi('/hubs/finance/vendor-credits').should.supportPolling(vendorCreditsPayload, 'vendor-credits');
-  test.withApi('/hubs/finance/vendor').should.supportPolling(vendorPayload, 'vendor');
+  test.withApi('/hubs/finance/vendor').should.supportPolling(vendorPayload, 'vendors');
 });
