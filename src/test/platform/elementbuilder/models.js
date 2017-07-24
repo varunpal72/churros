@@ -15,6 +15,16 @@ suite.forPlatform('element-model', {}, (test) => {
       .then(r => provisioner.create('onemodel', undefined, 'elements/onemodel/instances'))
       .then(r => oneModelInstance = r.body));
 
+
+  it('should support calling combined/merged objectnames for instance', () => {
+      return cloud.get(`/hubs/general/objects`, (r) => {
+          expect(r.body).to.not.be.empty;
+          expect(r.body).to.be.array;
+          expect(r.body).to.have.length(1);
+          expect(r.body[0]).to.equal('contacts');
+      });
+  });
+
   it('should support calling combined/merged metadata for instance', () => {
       return cloud.get(`/hubs/general/objects/contacts/metadata`, (r) => {
           expect(r.body).to.not.be.empty;
