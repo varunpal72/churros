@@ -285,7 +285,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('loginBtn')).click();
-      return browser.sleep(2000)
+      return browser.waitForElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]/td[1]/small`), 30000)
       .then(() => Array(5).fill(0).map((e, i) => i+1).reduce((acc, cur) => {
         return acc.then(() => {
           return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[1]/small`))
