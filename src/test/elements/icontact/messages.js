@@ -8,7 +8,7 @@ const payload = tools.requirePayload(`${__dirname}/assets/messages.json`);
 suite.forElement('general', 'messages', { payload: payload, skip: true }, (test) => {
 
   it('should allow CRUD for hubs/general/messages', () => {
-    let updateMessage = { "subject": "Bonjour!" }
+    let updateMessage = { "subject": "Bonjour!" };
     let messageId, campaignId;
     return cloud.get('hubs/general/campaigns')
       .then(r => {
