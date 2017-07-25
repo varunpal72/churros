@@ -3,10 +3,10 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 
-suite.forElement('general', 'messages', (test) => {
+suite.forElement('general', 'unsubscribes', (test) => {
+  let messageId = null;
 
   it('should allow GET for hubs/general/messages/{id}/unsubscribes', () => {
-    let messageId=null;
     return cloud.get('hubs/general/messages')
       .then(r => {
         if (r.body && r.body.length > 0) {
@@ -14,9 +14,11 @@ suite.forElement('general', 'messages', (test) => {
         }
       })
       .then(r => {
-        if(messageId)
-        cloud.get(`${test.api}/${messageId}/unsubscribes`);
-    });
+        if (messageId)
+          cloud.get(`hubs/general/messages/${messageId}/unsubscribes`);
+      });
   });
-  test.should.supportPagination();
+
+// messageId value is  being sent as 'null' here 
+//  test.withApi(`/hubs/general/messages/${messageId}/unsubscribes`).should.supportPagination();
 });

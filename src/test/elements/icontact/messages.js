@@ -8,6 +8,7 @@ const payload = tools.requirePayload(`${__dirname}/assets/messages.json`);
 suite.forElement('general', 'messages', { payload: payload, skip: true }, (test) => {
 
   it('should allow CRUD for hubs/general/messages', () => {
+    let updateMessage = { "subject": "Bonjour!" }
     let messageId, campaignId;
     return cloud.get('hubs/general/campaigns')
       .then(r => {
@@ -23,7 +24,8 @@ suite.forElement('general', 'messages', { payload: payload, skip: true }, (test)
       .then(r => cloud.post(`${test.api}`, payload))
       .then(r => messageId = r.body.messageId)
       .then(r => cloud.get(`${test.api}`))
-      .then(r => cloud.get(`${test.api}/${messageId}`));
+      .then(r => cloud.get(`${test.api}/${messageId}`))
+      .then(r => cloud.put(`${test.api}/${messageId}`, updateMessage));
   });
   test.should.supportPagination();
 });
