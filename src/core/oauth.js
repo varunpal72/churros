@@ -226,10 +226,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
       browser.findElement(webdriver.By.id('identifierNext')).click();
-      waitForElement(webdriver.By.name('password'))
+      waitForElement(webdriver.By.name('password'));
       browser.findElement(webdriver.By.name('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('passwordNext')).click();
-      waitForElement(webdriver.By.id('submit_approve_access'))
+      waitForElement(webdriver.By.id('submit_approve_access'));
       browser.findElement(webdriver.By.id('submit_approve_access'))
         .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000);
@@ -238,10 +238,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
       browser.findElement(webdriver.By.id('identifierNext')).click();
-      waitForElement(webdriver.By.name('password'))
+      waitForElement(webdriver.By.name('password'));
       browser.findElement(webdriver.By.name('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('passwordNext')).click();
-      waitForElement(webdriver.By.id('submit_approve_access'))
+      waitForElement(webdriver.By.id('submit_approve_access'));
       browser.findElement(webdriver.By.id('submit_approve_access'))
         .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000);
@@ -367,7 +367,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       waitForElement(webdriver.By.id('idSIButton9'));
       browser.findElement(webdriver.By.id('idSIButton9')).click();
       waitForElement(webdriver.By.id('idBtn_Accept')).thenCatch(r => true); // ignore
-      browser.findElement(webdriver.By.id('idBtn_Accept'));
+      browser.findElement(webdriver.By.id('idBtn_Accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
       return browser.getCurrentUrl();
     case 'onedrivebusiness':
@@ -394,9 +394,9 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       waitForElement(webdriver.By.id('email'), 5000);
       browser.findElement(webdriver.By.id('email')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
-      waitForElement(webdriver.By.id('btnLogin'))
+      waitForElement(webdriver.By.id('btnLogin'));
       browser.findElement(webdriver.By.id('btnLogin')).click();
-      waitForElement(webdriver.By.id('agreeConsent')).thenCatch(r => true)
+      waitForElement(webdriver.By.id('agreeConsent')).thenCatch(r => true);
       browser.findElement(webdriver.By.id('agreeConsent'))
         .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000); //Paypal takes some time to confirm creds
