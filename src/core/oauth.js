@@ -249,9 +249,9 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.getCurrentUrl();
     case 'hootsuite':
       browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.xpath('html/body/div/div[2]/div/div[1]/div/form/div[1]/input')).sendKeys(username);
-      browser.findElement(webdriver.By.xpath('html/body/div/div[2]/div/div[1]/div/form/div[2]/input')).sendKeys(password);
-      browser.findElement(webdriver.By.xpath('html/body/div/div[2]/div/div[1]/div/form/div[4]/div/button[1]')).click();
+      browser.findElement(webdriver.By.xpath('//div[1]/input')).sendKeys(username);
+      browser.findElement(webdriver.By.xpath('//div[2]/input')).sendKeys(password);
+      browser.findElement(webdriver.By.xpath('//div/button[1]')).click();
       browser.sleep(5000);
       return browser.getCurrentUrl();
     case 'hubspot':
