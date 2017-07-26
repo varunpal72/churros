@@ -4,8 +4,8 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'bill-payment-checks', null, (test) => {
-  let id, refno;
-  it('should support SR and pagination for /hubs/finance/bill-payment-checks', () => {
+  it('should support SR for /hubs/finance/bill-payment-checks', () => {
+    let id, refno;
     return cloud.get(test.api)
       .then(r => {
         id = r.body[0].TxnID;
