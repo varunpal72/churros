@@ -4,11 +4,7 @@
 const webdriver = require('selenium-webdriver');
 const logger = require('winston');
 const props = require('core/props');
-// let waitForElement = (browser, locator, timeout) => () => {
-//   timeout = timeout || 3000;
-//   console.log('start');
-//   return browser.wait(() => browser.isElementPresent(locator), timeout);
-// };
+
 /* jshint unused:false */
 const wait = (browser, ms) => browser.wait(() => false, ms);
 
