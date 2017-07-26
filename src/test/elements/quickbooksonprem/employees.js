@@ -7,7 +7,7 @@ const payload = tools.requirePayload(`${__dirname}/assets/employees.json`);
 const updatePayload = { "FirstName": tools.random() };
 
 suite.forElement('finance', 'employees', { payload: payload }, (test) => {
-  it('should support CRUDS , pagination and Ceql searching for /hubs/finance/employees', () => {
+  it('should support CRUDS and Ceql searching for /hubs/finance/employees', () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => {
@@ -21,4 +21,5 @@ suite.forElement('finance', 'employees', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
+  test.should.supportPagination();
 });

@@ -9,7 +9,6 @@ suite.forElement('finance', 'ledger-accounts', null, (test) => {
     let id;
     return cloud.get(test.api)
       .then(r => id = r.body[0].ListID)
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 2 } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${id}`));
   });
   test
@@ -20,4 +19,5 @@ suite.forElement('finance', 'ledger-accounts', null, (test) => {
       const validValues = r.body.filter(obj => obj.Name === `Checking`);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
+  test.should.supportPagination();
 });

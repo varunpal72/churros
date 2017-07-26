@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const expect = require('chakram').expect;
 
-suite.forElement('finance', 'credit-terms', null, (test) => {
+suite.forElement('finance', 'credit-terms', (test) => {
   test.should.supportSr();
   test
     .withName(`should support searching ${test.api} by Name`)

@@ -5,14 +5,14 @@ const cloud = require('core/cloud');
 
 suite.forElement('finance', 'bill-payment-cards', null, (test) => {
   let id;
-  it.skip('should support SRD and pagination for /hubs/finance/bill-payment-cards', () => {
+  it.skip('should support SRD for /hubs/finance/bill-payment-cards', () => {
+    let id;
     return cloud.get(test.api)
       .then(r => {
-        if (r.body.length > 0) {
-          id = r.body[0].TxnID;
-          cloud.get(`${test.api}/${id}`);
-          cloud.delete(`${test.api}/${id}`);
-        }
+        expect(r.body).to.not.be.empty;
+        id = r.body[0].TxnID;
+        .then(r => cloud.get(`${test.api}/${id}`));
+        .then(r => cloud.delete(`${test.api}/${id}`));
       });
   });
   test.should.supportPagination();

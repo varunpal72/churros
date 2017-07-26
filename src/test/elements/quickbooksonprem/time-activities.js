@@ -16,8 +16,8 @@ const updatePayload = (editseq) => ({
 });
 
 suite.forElement('finance', 'time-activities', { payload: payload }, (test) => {
-  let id, editseq;
   it('should support CRUDS for /hubs/finance/time-activities', () => {
+    let id, editseq;
     return cloud.post(test.api, payload)
       .then(r => {
         id = r.body.TxnID;

@@ -8,8 +8,8 @@ suite.forElement('finance', 'tax-codes', null, (test) => {
     let id;
     return cloud.get(test.api)
       .then(r => id = r.body[0].ListID)
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
       .then(r => cloud.withOptions({ qs: { where: `ListID='${id}'` } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${id}`));
   });
+  test.should.supportPagination();
 });

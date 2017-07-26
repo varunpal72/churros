@@ -10,8 +10,8 @@ const update = (editseq) => ({
 });
 
 suite.forElement('finance', 'credit-memos', { payload: payload }, (test) => {
-  let id, editseq, refno;
   it(`should support CRUDS and Ceql searching for ${test.api}`, () => {
+    let id, editseq, refno;
     return cloud.post(test.api, payload)
       .then(r => {
         editseq = r.body.EditSequence;

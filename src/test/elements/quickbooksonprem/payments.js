@@ -6,9 +6,9 @@ const cloud = require('core/cloud');
 const payload = tools.requirePayload(`${__dirname}/assets/payments.json`);
 const updatePayload = { "Memo": tools.random(), "TotalAmount": "136.00" };
 
-suite.forElement('finance', 'payments', null, (test) => {
-  let id;
+suite.forElement('finance', 'payments', (test) => {
   it('should support CRUDS and Ceql searching for /hubs/finance/payments', () => {
+    let id;
     return cloud.post(test.api, payload)
       .then(r => {
         id = r.body.id;

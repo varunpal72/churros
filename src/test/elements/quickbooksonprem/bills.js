@@ -11,8 +11,9 @@ const update = (editseq, isPaid) => ({
 });
 
 suite.forElement('finance', 'bills', { payload: payload }, (test) => {
-  let id, editseq, isPaid, refno;
+
   it(`should support CRUDS and Ceql searching for ${test.api}`, () => {
+    let id, editseq, isPaid, refno;
     return cloud.post(test.api, payload)
       .then(r => {
         editseq = r.body.EditSequence;

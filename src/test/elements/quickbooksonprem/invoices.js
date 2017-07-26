@@ -7,8 +7,8 @@ const payload = tools.requirePayload(`${__dirname}/assets/invoices.json`);
 const updatePayload = { "Memo": tools.random() };
 
 suite.forElement('finance', 'invoices', { payload: payload }, (test) => {
-  let id;
   it('should support CRUDS and Ceql searching for /hubs/finance/invoices', () => {
+    let id;
     return cloud.post(test.api, payload)
       .then(r => {
         id = r.body.id;

@@ -8,12 +8,11 @@ const payload = tools.requirePayload(`${__dirname}/assets/vendors.json`);
 const updatePayload = { "Name": tools.random() };
 
 suite.forElement('finance', 'vendors', { payload: payload }, (test) => {
-  it('should support CRUDS, pagination for /hubs/finance/vendors', () => {
+  it('should support CRUDS for /hubs/finance/vendors', () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => id = r.body.ListID)
       .then(r => cloud.get(test.api))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => updatePayload.EditSequence = r.body.EditSequence)
       .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
@@ -27,4 +26,5 @@ suite.forElement('finance', 'vendors', { payload: payload }, (test) => {
       const validValues = r.body.filter(obj => obj.Name === `TEST`);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
+  test.should.supportPagination();
 });
