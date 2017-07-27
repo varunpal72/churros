@@ -1,8 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/agents');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/users.json`);
 
 suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
-  test.should.supportSr();
+  test.should.supportCruds();
+  test.should.supportPagination();
 });

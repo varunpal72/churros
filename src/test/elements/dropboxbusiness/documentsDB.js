@@ -1,9 +1,11 @@
 'use strict';
+
+const expect = require('chakram').expect;
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const suite = require('core/suite');
 const folderPayload = require('./assets/folders');
-const memberId = "dbmid:AADF9iuHCaTWNgr-r9QiLVWTcFD2QbcbwH8";
+const memberId = "dbmid:AACFP-SOix67cparXiV_EkV-dwqL1zPORi8";
 exports.all = () => {
   exports.files();
   exports.folders();
@@ -41,10 +43,14 @@ exports.files = () => {
         .then(r => cloud.withOptions({ qs: { path: file.path }, headers: { "Elements-As-Team-Member": memberId } }).delete('/hubs/documents/files'));
     });
 
-    it('should allow GET /files/links and /files/:id/links', () => {
+    it('should allow GET /files/links and /files/:id/links with correct download and view URLs', () => {
       const cb = (file) => {
         return cloud.withOptions({ headers: { "Elements-As-Team-Member": memberId } }).get(`/hubs/documents/files/${file.id}/links`)
-          .then(() => cloud.withOptions({ qs: { path: file.path }, headers: { "Elements-As-Team-Member": memberId } }).get('/hubs/documents/files/links'));
+          .then(() => cloud.withOptions({ qs: { path: file.path }, headers: { "Elements-As-Team-Member": memberId } }).get('/hubs/documents/files/links').then(r => {
+            expect(r.body).to.not.contain.key('raw');
+            expect(r.body.providerLink).to.contain('dl=1');
+            expect(r.body.providerViewLink).to.contain('dl=0');
+        }));
       };
 
       return fileWrap(cb);

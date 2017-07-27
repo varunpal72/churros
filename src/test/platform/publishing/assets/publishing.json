@@ -498,7 +498,6 @@
   "name": "Petstore",
   "trialAccount": false,
   "hooks": [],
-  "parameters": [],
   "key": "publishing",
   "authentication": {
     "type": "custom"

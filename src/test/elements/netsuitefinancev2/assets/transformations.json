@@ -6,6 +6,20 @@
       "vendorPath": "internalId"
     }]
   },
+  "projects": {
+    "vendorName": "Job",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "bills": {
+    "vendorName": "Bill",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
   "vendors": {
     "vendorName": "Vendor",
     "fields": [{
@@ -190,6 +204,27 @@
   },
   "estimates": {
     "vendorName": "Estimate",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "classifications": {
+    "vendorName": "Classification",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "departments": {
+    "vendorName": "Department",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "locations": {
+    "vendorName": "Location",
     "fields": [{
       "path": "id",
       "vendorPath": "internalId"

@@ -1,4 +1,5 @@
 {
-  "name": "RobotTestAccount",
-  "description": "TestDescription"
+  "name": "<<random.word>>",
+  "description": "<<random.words>>",
+  "Website": "mywebsite.com"
 }

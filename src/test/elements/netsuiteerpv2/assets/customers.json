@@ -1,12 +1,21 @@
 {
-  "lastName": "El Chappo",
+  "customForm": {
+    "internalId": "16",
+    "name": "Ramsey Default Customer Form"
+  },
+  "currency": {
+    "internalId": "1",
+    "name": "USA"
+  },
+  "phone": "650-555-4205",
+  "lastName": "<<name.lastName>>",
   "companyName": "Churros Company",
   "isPerson": true,
   "subsidiary": {
     "internalId": "1",
     "name": "Honeycomb Mfg."
   },
-  "firstName": "Churros Test",
+  "firstName": "<<name.firstName>>",
   "entityStatus": {
     "internalId": "13",
     "name": "CUSTOMER-Closed Won"

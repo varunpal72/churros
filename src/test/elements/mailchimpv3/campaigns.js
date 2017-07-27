@@ -1,7 +1,7 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/campaigns');
+const payload = require('core/tools').requirePayload(`${__dirname}/assets/campaigns.json`);
 const cloud = require('core/cloud');
 
 const updatePayload = () => ({
@@ -11,7 +11,7 @@ const updatePayload = () => ({
   "type": "regular",
   "settings": {
     "subject_line": "Churros Update",
-    "reply_to": "churros@example.com",
+    "reply_to": "churros@cloud-elements.com",
     "from_name": "Senor Churro"
   }
 });
@@ -31,7 +31,7 @@ const options = {
 };
 
 suite.forElement('marketing', 'campaigns', { payload: payload }, (test) => {
-  test.should.supportPagination();
+  test.should.supportPagination('id');
   test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { where: 'since_create_time=\'2016-01-23T17:55:00+00:00\'' } }).should.return200OnGet();
 

@@ -1,0 +1,9 @@
+{
+  "pages": {
+    "vendorName": "pages",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
+  }
+}

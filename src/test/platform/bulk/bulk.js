@@ -39,10 +39,12 @@ suite.forPlatform('bulk', (test) => {
       // get bulk query results in JSON
       .then(r => cloud.withOptions({ headers: { accept: "application/json" }, qs: {json: '{ "convertToNativeType": "false" }' }}).get(`/hubs/crm/bulk/${bulkId}/accounts`, r => {
         expect(r.body).to.not.be.empty;
+        expect(r.response.headers['content-type']).to.equal('application/json');
       }))
       // get bulk query results in CSV
       .then(r => cloud.withOptions({ headers: { accept: "text/csv" } }).get(`/hubs/crm/bulk/${bulkId}/accounts`, r => {
         expect(r.body).to.not.be.empty;
+        expect(r.response.headers['content-type']).to.equal('text/csv');
       }));
   });
 
@@ -89,6 +91,55 @@ suite.forPlatform('bulk', (test) => {
       .then(r => tools.wait.upTo(200000).for(() => cloud.withOptions({ qs: { jobId: jobId } }).get('/bulkloader', r => {
         expect(r.body[ 0 ].status).to.equal('COMPLETED');
       })));
+  });
+
+  it('should support paged error retrieval', () => {
+      let bulkId;
+      // start bulk upload
+      const options = { qs: { pageSize: 30 } };
+      return cloud.postFile('/hubs/crm/bulk/bad', __dirname + `/assets/${element}.bad.csv`)
+          .then(r => {
+              expect(r.body.status).to.equal('CREATED');
+              bulkId = r.body.id;
+          })
+          // get bulk upload status
+          .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkId}/status`, r => {
+              expect(r.body.status).to.equal('COMPLETED');
+          })))
+          // get bulk upload errors
+          .then(r => cloud.withOptions(options).get(`/hubs/crm/bulk/${bulkId}/errors`))
+          .then(r => {
+              expect(r.response.headers['elements-returned-count']).to.equal('30');
+              expect(r.body.length).to.equal(30);
+              options.qs.nextPage = r.response.headers['elements-next-page-token'];
+          })
+          .then(r => cloud.withOptions(options).get(`/hubs/crm/bulk/${bulkId}/errors`))
+          .then(r => {
+              expect(r).to.not.have.header('elements-next-page-token');
+              expect(r.response.headers['elements-returned-count']).to.equal('7');
+              expect(r.body.length).to.equal(7);
+          });
+  });
+  it('should support cancellation of jobs', () => {
+    let instanceId, jobId;
+    // sfdc does this
+    return provisioner.create('pipedrive')
+      .then(r => {
+        instanceId = r.body.id;
+      })
+      .then(r => cloud.withOptions({ qs: { q: 'select * from accounts' } }).post('/hubs/crm/bulk/query'))
+      .then(r => {
+                  expect(r.body.status).to.equal('CREATED');
+                  jobId = r.body.id;
+                })
+      .then(r => cloud.put('hubs/crm/bulk/' + jobId + '/cancel'))
+
+      .then(r => expect(r.response.statusCode).to.equal(200))
+      .then(r => tools.wait.upTo(3000).for(() => cloud.get(`/hubs/crm/bulk/${jobId}/status`, r => {
+        expect(r.body.status).to.equal('CANCELLED');
+      })))
+      .then(r => provisioner.delete(instanceId));
+
   });
 
 });

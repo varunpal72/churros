@@ -2,9 +2,11 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
-const propertiesPayload = require('./assets/contactsProperties');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
+const propertiesPayload = tools.requirePayload(`${__dirname}/assets/contactsProperties.json`);
+propertiesPayload.name = propertiesPayload.name.toLowerCase();
+
 const options = {
   churros: {
     updatePayload: {
@@ -13,9 +15,10 @@ const options = {
     }
   }
 };
+
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
-  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
   it('should allow CRUD for hubs/marketing/contacts/properties', () => {
     let id;
     const fieldsUpdate = {
@@ -30,7 +33,7 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       "formField": false,
       "displayMode": "current_value",
       "groupName": "conversioninformation",
-      "name": "chuors_temp_1",
+      "name": "a"+tools.random().toLowerCase(),
       "options": [],
       "fieldType": "text",
       "calculated": false,
@@ -49,12 +52,12 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
     const propertygroups = {
       "displayName": "test_churros_1",
       "displayOrder": 0,
-      "name": "test12"
+      "name": tools.random()
     };
     const updatePropertygroups = {
       "displayName": "test_churros1",
       "displayOrder": 0,
-      "name": "test12"
+      "name": tools.random()
     };
     return cloud.post(`${test.api}/propertygroups`, propertygroups)
       .then(r => id = r.body.name)
@@ -63,4 +66,8 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/propertygroups/${id}`, updatePropertygroups))
       .then(r => cloud.delete(`${test.api}/propertygroups/${id}`));
   });
+  const metaData = { useBatchUpload: true };
+  const opts = { formData: { metaData: JSON.stringify(metaData) } };
+  test.should.supportBulkUpload(opts, `${__dirname}/assets/contacts.csv`, 'contacts', `email='test123@churros.com'`);
+
 });

@@ -43,9 +43,6 @@
     "credentialsNonExpired": {
       "type": "boolean"
     },
-    "credentialsNonExpired": {
-      "type": "boolean"
-    },
     "accountNonLocked": {
       "type": "boolean"
     },

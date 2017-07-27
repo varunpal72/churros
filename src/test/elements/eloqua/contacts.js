@@ -3,9 +3,7 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const payload = require('./assets/contacts');
-
-payload.emailAddress = tools.randomEmail();
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   const opts = {
@@ -20,6 +18,20 @@ suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
   test.withOptions(opts).should.supportCruds();
   test.should.supportPagination();
   test.should.supportCeqlSearch('id');
+  test.withOptions({
+    qs: {
+      page: 1,
+      pageSize: 5,
+      where: "lastUpdatedAt > 1417556990"
+    }
+  }).should.return200OnGet();
+  test.withOptions({
+    qs: {
+      page: 1,
+      pageSize: 5,
+      where: "lastUpdatedAt > '2017-01-01'"
+    }
+  }).should.return200OnGet();
 
   it('should allow GET hubs/marketing/contacts/{contactId}/activities', () => {
     let contactId;

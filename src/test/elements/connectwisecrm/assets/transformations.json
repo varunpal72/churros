@@ -16,5 +16,14 @@
         "vendorPath": "id"
       }
     ]
+  },
+  "incidents": {
+    "vendorName": "incidents",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "id"
+      }
+    ]
   }
 }

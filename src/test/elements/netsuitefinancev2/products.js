@@ -1,10 +1,12 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/products');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/products.json`);
+
 
 suite.forElement('finance', 'products', { payload: payload }, (test) => {
   	test.should.supportCruds();
-	test.withOptions({ qs: { page: 1, pageSize: 5}}).should.return200OnGet();
+	  test.withOptions({ qs: { page: 1, pageSize: 5}}).should.return200OnGet();
   	test.should.supportCeqlSearch('id');
 });

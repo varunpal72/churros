@@ -1,14 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/opportunities');
-const payload2 = require('./assets/notes');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const build2 = (overrides) => Object.assign({}, payload2, overrides);
-const opportunitiesPayload = build({ name: tools.random(), description: tools.random() });
-const notesPayload = build2({ Title: tools.random() });
+const opportunitiesPayload = tools.requirePayload(`${__dirname}/assets/opportunities.json`);
+const notesPayload = tools.requirePayload(`${__dirname}/assets/notes.json`);
 
 suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (test) => {
   const options = {
@@ -21,6 +17,7 @@ suite.forElement('crm', 'opportunities', { payload: opportunitiesPayload }, (tes
   };
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
+  test.should.supportCeqlSearchForMultipleRecords('name');
 
   it('should allow CRUDS for leads/{id}/notes', () => {
     let opportunityId = -1;

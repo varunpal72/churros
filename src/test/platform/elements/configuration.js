@@ -12,7 +12,11 @@ const crudConfig = (idOrKey, payload, updatePayload, schema, listSchema) => {
     .then(r => config = r.body)
     .then(r => cloud.get('elements/' + idOrKey + '/configuration', listSchema))
     .then(r => cloud.put('elements/' + idOrKey + '/configuration/' + config.key, updatePayload))
-    .then(r => cloud.delete('elements/' + idOrKey + '/configuration/' + config.key));
+    .then(r => cloud.delete('elements/' + idOrKey + '/configuration/' + config.key))
+    .catch(e => {
+      if (config) cloud.delete('elements/' + idOrKey + '/configuration/' + config.key);
+      throw new Error(e);
+    });
 };
 
 const opts = { payload: common.genConfig({}), schema: schema };

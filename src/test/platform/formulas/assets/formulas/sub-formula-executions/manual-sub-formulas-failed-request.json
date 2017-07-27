@@ -61,7 +61,7 @@
     "onSuccess": ["B-retrieve-resource"],
     "type": "script",
     "properties": {
-      "body": "done({resource: trigger.args.resource, id: steps['B-create-resource'].response.body.Id});"
+      "body": "done({resource: trigger.args.resource, id: steps['B-create-resource'].response.body.id});"
     }
   }, {
     "name": "B-retrieve-resource",

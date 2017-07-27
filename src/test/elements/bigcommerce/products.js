@@ -1,14 +1,16 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/products');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/products.json`);
 const brandsPayload = require('./assets/brands');
-const categoriesPayload = require('./assets/categories');
+const categoriesPayload = tools.requirePayload(`${__dirname}/assets/categories.json`);
 const fieldsPayload = require('./assets/fields');
 const imagesPayload = require('./assets/images');
 const skusPayload = require('./assets/skus');
 const cloud = require('core/cloud');
 
+const name = tools.random();
 const productsUpdate = () => ({
   "name": "Cloud Elements"
 });
@@ -24,7 +26,7 @@ const brandsUpdate = () => ({
 });
 
 const categoriesUpdate = () => ({
-  "name": "X-Men toys"
+  "name": name
 });
 
 const fieldsUpdate = () => ({
@@ -40,7 +42,9 @@ const skusUpdate = () => ({
   "upc": "Updated"
 });
 
-suite.forElement('ecommerce', 'products', { payload: payload, skip: true }, (test) => {
+brandsPayload.name = tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10);
+
+suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   test.withApi(`${test.api}/count`).should.return200OnGet();
   test.withApi(`${test.api}/options`).should.return200OnGet();
@@ -70,7 +74,7 @@ suite.forElement('ecommerce', 'products', { payload: payload, skip: true }, (tes
       .then(r => categoryId = r.body.id)
       .then(r => cloud.get(`${test.api}/categories`))
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/categories`))
-      .then(r => cloud.withOptions({ qs: { where: 'name=\'Xmen toys\'' } }).get(`${test.api}/categories`))
+      .then(r => cloud.withOptions({ qs: { where: `name='${name}'` } }).get(`${test.api}/categories`))
       .then(r => cloud.get(`${test.api}/categories/${categoryId}`))
       .then(r => cloud.patch(`${test.api}/categories/${categoryId}`, categoriesUpdate()))
       .then(r => cloud.delete(`${test.api}/categories/${categoryId}`));
@@ -95,7 +99,7 @@ suite.forElement('ecommerce', 'products', { payload: payload, skip: true }, (tes
       .then(r => cloud.patch(`${test.api}/${productId}/images/${imageId}`, imagesUpdate()))
       .then(r => cloud.delete(`${test.api}/${productId}/images/${imageId}`));
   });
-  it('should support CRUDS for products/skus', () => {
+  it.skip('should support CRUDS for products/skus', () => {
     let skuId = -1;
     return cloud.post(`${test.api}/${productId}/skus`, skusPayload)
       .then(r => skuId = r.body.id)

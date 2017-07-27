@@ -10,7 +10,7 @@ const updateProduct = (productName) => ({
 });
 
 suite.forElement('payment', 'products', (test) => {
-  test.should.return200OnGet();
+  test.withOptions({ qs: { where: 'direction=\'desc\''}}).should.return200OnGet();
   it(`should allow RU for ${test.api}`, () => {
     let productId;
     let productName;

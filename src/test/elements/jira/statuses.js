@@ -7,7 +7,7 @@ const uri = '/hubs/helpdesk/statuses';
 suite.forElement('helpdesk', 'statuses', (test) => {
 let statusId;
   it('should allow CRUDS for /statuses', () => {
-    cloud.get(uri)
+    return cloud.get(uri)
     .then(r => statusId = r.body[0].id)
     .then(r => cloud.get(uri + '/' + statusId));
   });

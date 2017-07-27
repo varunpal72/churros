@@ -22,15 +22,14 @@ const plan = () => ({
 suite.forElement('payment', 'subscriptions', (test) => {
   let customerId, planId;
 
+  test.should.supportNextPagePagination(2);
+  test.should.supportSr();
+
   before(() => cloud.post(`/hubs/payment/customers`, customer)
     .then(r => customerId = r.body.id)
     .then(r => cloud.post(`/hubs/payment/plans`, plan()))
     .then(r => planId = r.body.id)
   );
-
-  it(`should allow GET for /hubs/payment/customers/{customerId}/subscriptions`, () => {
-    return cloud.get(`/hubs/payment/customers/${customerId}/subscriptions`);
-  });
 
   it(`should allow CRUD for /hubs/payment/customers/{customerId}/subscriptions/{subscriptionId}`, () => {
     let subscriptionId;

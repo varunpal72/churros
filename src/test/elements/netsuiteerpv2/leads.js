@@ -1,7 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/leads');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/leads.json`);
 
 suite.forElement('erp', 'leads', { payload: payload }, (test) => {
   test.should.supportCruds();

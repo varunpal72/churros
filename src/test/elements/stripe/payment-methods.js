@@ -12,11 +12,12 @@ const updatePaymentMethod = () => ({
 
 suite.forElement('payment', 'payment-methods', (test) => {
   let customerId;
-  before(() => cloud.post(`/hubs/payment/customers`,customer)
+  before(() => cloud.post(`/hubs/payment/customers`, customer)
     .then(r => customerId = r.body.id)
   );
   it(`should allow GET for /hubs/payment/customers/{customerId}/payment-methods`, () => {
-    return cloud.get(`/hubs/payment/customers/${customerId}/payment-methods`);
+    return cloud.get(`/hubs/payment/customers/${customerId}/payment-methods`)
+      .then(r => cloud.withOptions({ qs: { pageSize: 1 } }).get(`/hubs/payment/customers/${customerId}/payment-methods`));
   });
   it(`should allow CRUD for /hubs/payment/customers/{customerId}/payment-methods/{paymentId}`, () => {
     let paymentId;

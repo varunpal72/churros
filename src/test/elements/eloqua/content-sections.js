@@ -7,6 +7,6 @@ const payload = { name: tools.randomStr('abcdefghijklmnopqrstuvwxyz11234567890',
 
 suite.forElement('marketing', 'content-sections', { payload: payload }, (test) => {
   test.should.supportCruds();
-  test.should.supportPagination();
+  test.withOptions({ qs: { pageSize: 10 }}).should.supportPagination('id');
   test.should.supportCeqlSearchForMultipleRecords('name');
 });

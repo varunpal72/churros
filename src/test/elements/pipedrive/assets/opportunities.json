@@ -1,5 +1,5 @@
 {
-  "title": "Demo Deal NEW",
-  "value": 10,
+  "title": "<<random.word##2>>",
+  "value": "<<random.number>>",
   "currency": "USD"
 }

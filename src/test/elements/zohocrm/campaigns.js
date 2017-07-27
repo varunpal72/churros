@@ -1,12 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/campaigns');
 const tools = require('core/tools');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const contactsPayload = build({ Description: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/campaigns.json`);
 
-suite.forElement('crm', 'campaigns', { payload: contactsPayload }, (test) => {
+suite.forElement('crm', 'campaigns', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
@@ -17,4 +15,5 @@ suite.forElement('crm', 'campaigns', { payload: contactsPayload }, (test) => {
   };
   test.withOptions(options).should.supportCruds();
   test.should.supportPagination();
+  test.should.supportCeqlSearchForMultipleRecords('Description');
 });

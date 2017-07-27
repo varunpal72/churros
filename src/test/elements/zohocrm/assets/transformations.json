@@ -172,6 +172,17 @@
         "vendorPath": "Subject"
       }
     ]
+  },
+  "products": {
+    "vendorName": "Products",
+    "fields": [{
+        "path": "id",
+        "vendorPath": "PRODUCTID"
+      },
+      {
+        "path": "modified_date",
+        "vendorPath": "Modified Time"
+      }
+    ]
   }
-
 }

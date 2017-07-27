@@ -39,7 +39,7 @@ const options = {
 };
 
 suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
-  test.should.supportPagination();
+  test.should.supportPagination('id');
   test.withOptions(options).should.supportCruds();
   test.withOptions({ qs: { where: 'since_date_created=\'2016-01-23T17:55:00+00:00\'' } }).should.return200OnGet();
 
@@ -48,7 +48,8 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     return cloud.get(test.api)
       .then(r => listId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${listId}/activities`))
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/activities`));
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/activities`))
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${listId}/listsActivities`));
   });
 
   it('should allow CRUDS for lists/{id}/contacts and  GET lists/{id}/contacts/{contactId}/activities', () => {
