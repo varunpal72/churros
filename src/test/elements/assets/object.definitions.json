@@ -1150,6 +1150,18 @@
      "type": "string"
    }]
  },
+ "inventory-sites": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "inventory-adjustments": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "problems": {
    "fields": [{
      "path": "id",
