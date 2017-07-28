@@ -9,5 +9,4 @@ suite.forElement('social', 'comments', {skip: true}, (test) => {
       .withApi(`/hubs/social/companies/16238355/updates/comments?updateKey=UPDATE-c16238355-6283339617404096512`)
       .withOptions({ qs: { page: 1, pageSize: 1 } });
   });
-  //test.should.supportPagination();
 });
