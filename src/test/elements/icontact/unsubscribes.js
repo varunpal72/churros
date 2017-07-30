@@ -10,7 +10,7 @@ suite.forElement('general', 'unsubscribes', (test) => {
     return cloud.get('hubs/general/messages')
       .then(r => {
         if (r.body && r.body.length > 0) {
-          messageId = r.body[0].messageId;
+          messageId = r.body[0].id;
         }
       })
       .then(r => {
@@ -19,6 +19,6 @@ suite.forElement('general', 'unsubscribes', (test) => {
       });
   });
 
-// messageId value is  being sent as 'null' here 
+// messageId value is being sent as 'null' here
 //  test.withApi(`/hubs/general/messages/${messageId}/unsubscribes`).should.supportPagination();
 });

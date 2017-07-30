@@ -12,5 +12,12 @@
       "path": "id",
       "vendorPath": "contactId"
     }]
+  },
+  "campaigns": {
+    "vendorName": "campaigns",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "campaignId"
+    }]
   }
 }
