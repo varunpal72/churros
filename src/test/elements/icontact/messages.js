@@ -3,11 +3,16 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const chakram = require('chakram');
 const payload = tools.requirePayload(`${__dirname}/assets/messages.json`);
 
 suite.forElement('general', 'messages', { payload: payload, skip: true }, (test) => {
-
-  it('should allow CRUD for hubs/general/messages', () => {
+  const options = {
+    churros: {
+      updatePayload: { "subject": "Bonjour!" }
+    }
+  };
+  it('should allow CR for hubs/general/campaigns', () => {
     let updateMessage = { "subject": "Bonjour!" };
     let messageId, campaignId;
     return cloud.get('hubs/general/campaigns')
@@ -20,12 +25,8 @@ suite.forElement('general', 'messages', { payload: payload, skip: true }, (test)
           campaignId = r.body.id;
         }
         payload.campaignId = campaignId;
-      })
-      .then(r => cloud.post(`${test.api}`, payload))
-      .then(r => messageId = r.body.messageId)
-      .then(r => cloud.get(`${test.api}`))
-      .then(r => cloud.get(`${test.api}/${messageId}`))
-      .then(r => cloud.put(`${test.api}/${messageId}`, updateMessage));
+      });
   });
+  test.withOptions(options).should.supportCrus(chakram.put);
   test.should.supportPagination();
 });

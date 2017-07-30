@@ -1,4 +1,11 @@
 {
+"messages": {
+  "vendorName": "messages",
+  "fields": [{
+    "path": "id",
+    "vendorPath": "messageId"
+  }]
+},
   "lists": {
     "vendorName": "lists",
     "fields": [{
