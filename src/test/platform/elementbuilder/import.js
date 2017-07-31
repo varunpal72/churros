@@ -3,10 +3,7 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const props = require('core/props');
 const schema = require('./assets/element.schema.json');
-const logger = require('winston');
-const faker = require('faker');
 
 const deleteElementByKey = (key) => cloud.delete(`/elements/${key}`, () => {});
 
