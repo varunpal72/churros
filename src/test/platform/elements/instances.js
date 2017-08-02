@@ -124,7 +124,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
 
     return provisioner.create('sfdc')
       .then(r => {
-        sfdcId = r.body.id
+        sfdcId = r.body.id;
         expect(r.body.configuration['oauth.api.key']).to.be.equal('********');
         expect(r.body.configuration['oauth.api.secret']).to.be.equal('********');
       })
