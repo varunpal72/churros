@@ -106,6 +106,11 @@ suite.forPlatform('elements/instances', opts, (test) => {
       return r.body.filter(config => config.key === 'filter.response.nulls')[0];
     };
 
+    const getOauthKey = (r, oauthKey) => {
+      expect(r.body.length).to.be.above(0);
+      return r.body.filter(config => config.key === oauthKey)[0];
+    };
+
     const validateNullsPresent = (shouldHaveNulls) => {
       return cloud.get('hubs/crm/accounts?pageSize=1')
         .then(r => {
@@ -118,13 +123,20 @@ suite.forPlatform('elements/instances', opts, (test) => {
     let configuration, sfdcId;
 
     return provisioner.create('sfdc')
-      .then(r => sfdcId = r.body.id)
+      .then(r => {
+        sfdcId = r.body.id
+        expect(r.body.configuration['oauth.api.key']).to.be.equal('********');
+        expect(r.body.configuration['oauth.api.secret']).to.be.equal('********');
+      })
       .then(() => cloud.get(`/instances/${sfdcId}/configuration`))
       .then(r => validate(r))
       .then(() => cloud.get(`/instances/configuration`))
-      .then(r => validate(r))
       .then(r => {
-        configuration = r;
+        //Validate if the oauth.api.key value is returned
+        let apiKeyConfig = getOauthKey(r, 'oauth.api.key');
+        expect(apiKeyConfig.propertyValue).to.be.equal('********');
+        expect(getOauthKey(r, 'oauth.api.secret').propertyValue).to.be.equal('********');
+        configuration = validate(r);
         expect(configuration.propertyValue).to.equal('true');
       })
       .then(r => validateNullsPresent(false))
