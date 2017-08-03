@@ -113,9 +113,19 @@ suite.forPlatform('elements', opts, (test) => {
       return;
     }
     let clone;
-    return getElementId('freshdesk')
+    return getElementId('sfdc')
       .then(id => cloud.post(`elements/${id}/clone`, schema))
-      .then(r => clone = r.body)
+      .then(r => {
+        clone = r.body;
+        expect(clone).to.not.be.empty;
+        expect(clone.configuration).to.not.be.empty;
+        //Loop through the configuration to make sure there is no default value for oauth.api.key
+        clone.configuration.forEach(c => {
+            if(c.key === 'oauth.api.key') {
+              expect(c.defaultValue).to.be.empty;
+            }
+        });
+      })
       .then(r => cloud.delete('elements/' + clone.id))
       .catch(e => {
         if (clone) cloud.delete('elements/' + clone.id);
