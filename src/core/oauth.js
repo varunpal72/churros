@@ -162,6 +162,12 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
 
       return browser.getCurrentUrl();
+    case 'bullhorn':	  
+      browser.get(r.body.oauthUrl); 
+      browser.findElement(webdriver.By.id('un')).sendKeys(username); 
+      browser.findElement(webdriver.By.id('pw')).sendKeys(password);
+      browser.findElement(webdriver.By.id('btn')).click();         
+      return browser.getCurrentUrl();
     case 'facebookleadads':
     case 'facebooksocial':
       browser.get(r.body.oauthUrl);
@@ -255,6 +261,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.name('allow'))
         .then((element) => element.click(), (err) => {}); // ignore this
+      return browser.getCurrentUrl();
+    case 'hootsuite':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.xpath('//div[1]/input')).sendKeys(username);
+      browser.findElement(webdriver.By.xpath('//div[2]/input')).sendKeys(password);
+      browser.findElement(webdriver.By.xpath('//div/button[1]')).click();
+      browser.sleep(5000);
       return browser.getCurrentUrl();
     case 'hubspot':
       browser.get(r.body.oauthUrl);
