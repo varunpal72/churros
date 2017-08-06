@@ -13,8 +13,7 @@ suite.forElement('general', 'messages', { payload: payload, skip: true }, (test)
     }
   };
   it('should allow CR for hubs/general/campaigns', () => {
-    let updateMessage = { "subject": "Bonjour!" };
-    let messageId, campaignId;
+    let campaignId;
     return cloud.get('hubs/general/campaigns')
       .then(r => {
         if (r.body && r.body.length > 0) {
