@@ -1,8 +1,4 @@
 {
-  "taxSchedule": {
-    "internalId": "1",
-    "name": "S1"
-  },
   "assetAccount": {
     "internalId": "120",
     "name": "Inventory Asset"
