@@ -1,0 +1,9 @@
+{
+    "name":"<<random.words>>",
+    "description":"Underarmour moisture wicking material",
+    "price":32.0,
+    "per_registrant_limit": 2,
+    "show_quantity_available": false,
+    "default_quantity_total": 300
+
+}

@@ -1,0 +1,9 @@
+{
+    "code_type": "DISCOUNT",
+    "code_name": "<<random.word>>",
+    "quantity_total": -1,
+    "is_paused": false,
+    "discount_amount":15,  
+    "discount_scope": "ORDER_TOTAL"
+
+}

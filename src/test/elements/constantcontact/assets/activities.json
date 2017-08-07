@@ -1,0 +1,26 @@
+{
+    "name":"<<random.words>>",
+    "title":"My Brand New Event",
+    "location":"The Atrium on the Wharf",
+    "type":"CLASSES_WORKSHOPS",
+    "address":{
+        "city":"Anytown",
+        "state":"Massachusetts",
+        "country":"United States",
+        "line1":"123 Maple Road",
+        "line2":"",
+        "state_code":"MA",
+        "country_code":"us",
+        "postal_code":"11111"
+        },
+    "description":"Take your skills to the next level by attending these focused workshops.",
+    "contact":{
+        "name":"Knowshon Moreno",
+        "phone_number":"555-555-5555",
+        "organization_name":"The Event Organization"
+    },
+    "start_date":"2018-02-03T14:00:00.000Z",
+    "end_date":"2018-05-05T21:00:00.000Z",
+    "time_zone_id":"US/Eastern"
+ 
+}

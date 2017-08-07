@@ -1,0 +1,8 @@
+{
+    "label":"<<random.words>>",
+    "fee":60.00,
+    "fee_scope":"BOTH",
+    "early_fee":54.00,
+    "late_fee":66.00,
+    "has_restricted_access":true
+}
