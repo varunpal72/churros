@@ -2,9 +2,7 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/inventory-adjustments');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
-const updatePayload = { "Name": tools.random()};
 
 suite.forElement('finance', 'inventory-adjustments', { payload: payload }, (test) => {
   it('should support CRUDS, pagination for /hubs/finance/inventory-adjustments', () => {
