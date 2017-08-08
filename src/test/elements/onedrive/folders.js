@@ -25,6 +25,7 @@ suite.forElement('documents', 'folders', (test) => {
       .then(r => cloud.withOptions({ qs: { path: folder1.path } }).delete('/hubs/documents/folders'));
   });
 
+
   it('should allow C /folders and DELETE /folders/:id', () => {
     let folder2;
     return cloud.post('/hubs/documents/folders', folderPayload)
@@ -74,6 +75,15 @@ suite.forElement('documents', 'folders', (test) => {
     };
 
     return folderWrap(cb);
+  });
+
+  it('should allow CD /folders with special characters', () => {
+    let folder1;
+    folderPayload.name += 'åbc≈¥Ω';
+    folderPayload.path += 'åbc≈¥Ω';
+    return cloud.post('/hubs/documents/folders', folderPayload)
+      .then(r => folder1 = r.body)
+      .then(r => cloud.withOptions({ qs: { path: folder1.path } }).delete('/hubs/documents/folders'));
   });
 
 });
