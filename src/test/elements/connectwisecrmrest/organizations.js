@@ -16,7 +16,7 @@ const organizationUpdate = {
 };
 
 suite.forElement('crm', 'organizations', { payload: whereOrgPayload }, (test) => {
-  test.should.supportPagination();
+  test.should.supportPagination('id');
   test.should.supportCeqlSearch('id');
   it(`should support CRUDS for ${test.api}`, () => {
     let organizationId;
