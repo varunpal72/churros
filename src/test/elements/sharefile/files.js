@@ -42,11 +42,16 @@ suite.forElement('documents', 'files', (test) => {
 
   it('should patch file metadata by id/path', () => {
     let path = __dirname + '/assets/file.txt';
-    return cloud.postFile('/hubs/documents/files', path, { qs: query })
-      .then(r => { fileId = r.body.id, filePath = r.body.path; })
+    let query1 = { path: `${rootFolder}/file-${faker.random.number()}.txt`, overwrite: true };
+    return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
+      .then(r => { filePath = r.body.path; })
       .then(r => cloud.withOptions({ qs: { path: filePath } }).patch('hubs/documents/files/metadata', metadataPatch))
-      .then(r => cloud.patch('hubs/documents/files/' + fileId + '/metadata', metadataPatch))
-      .then(r => cloud.withOptions({ qs: metadataPatch }).delete('/hubs/documents/files'));
+      .then(r => { fileId = r.body.id; })
+      .then(r => cloud.delete(`${test.api}/${fileId}`))
+      .then(r => cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path))
+      .then(r => { fileId = r.body.id; })
+      .then(r => cloud.patch(`${test.api}/${fileId}/metadata`, metadataPatch))
+      .then(r => cloud.delete(`${test.api}/${fileId}`));
   });
 
   it('should copy file by id/path', () => {
@@ -107,53 +112,61 @@ suite.forElement('documents', 'files', (test) => {
 
   it('should upload file by id/path', () => {
     let path = __dirname + '/assets/file.txt';
-    return cloud.postFile('/hubs/documents/files', path, { qs: query })
+    let query1 = { path: `${rootFolder}/file-${faker.random.number()}.txt`, overwrite: true };
+    return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
-      .then(r => cloud.delete('/hubs/documents/files/' + fileId))
-      .then(r => cloud.postFile('/hubs/documents/files', path, { qs: query }))
+      .then(r => cloud.delete(`${test.api}/${fileId}`))
+      .then(r => cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path))
       .then(r => cloud.withOptions({ qs: { path: r.body.path } }).delete('/hubs/documents/files'));
   });
 
   it('should get file link by id/path', () => {
     let path = __dirname + '/assets/file.txt';
-    return cloud.postFile('/hubs/documents/files', path, { qs: query })
+    let query1 = { path: `${rootFolder}/file-${faker.random.number()}.txt`, overwrite: true };
+    return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => { fileId = r.body.id, filePath = r.body.path; })
-      .then(r => cloud.get("/hubs/documents/files/" + fileId + "/links"))
+      .then(r => cloud.get(`${test.api}/${fileId}/links`))
       .then(r => expect(r).to.have.statusCode(200) && expect(r.body.providerViewLink).to.not.be.null && expect(r.body).to.not.contain.key('raw'))
-      .then(r => cloud.delete('/hubs/documents/files/' + fileId));
+      .then(r => cloud.delete(`${test.api}/${fileId}`));
   });
 
   it('should support links for files/links with raw payload', () => {
     let path = __dirname + '/assets/file.txt';
     let filePath;
-    return cloud.postFile('/hubs/documents/files', path, { qs: query })
-      .then(r => { fileId = r.body.id;
-        filePath = r.body.path; })
-      .then(r => cloud.withOptions({ qs: { path: filePath, raw: true } }).get("/hubs/documents/files/links"))
+    let query1 = { path: `${rootFolder}/file-${faker.random.number()}.txt`, overwrite: true };
+    return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
+      .then(r => {
+        fileId = r.body.id;
+        filePath = r.body.path;
+      })
+      .then(r => cloud.withOptions({ qs: { path: filePath, raw: true } }).get('/hubs/documents/files/links'))
       .then(r => expect(r).to.have.statusCode(200) && expect(r.body.providerViewLink).to.not.be.null && expect(r.body).to.contain.key('raw'))
-      .then(r => cloud.delete('/hubs/documents/files/' + fileId));
+      .then(r => cloud.delete(`${test.api}/${fileId}`));
   });
 
   it('should validate unicode file download', () => {
     let path = __dirname + '/assets/unicode-file.txt';
     let fileSize;
     let downloadedSize;
-    return cloud.postFile('/hubs/documents/files', path, { qs: query })
+    let query1 = { path: `${rootFolder}/file-${faker.random.number()}.txt`, overwrite: true };
+    return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => { fileId = r.body.id, filePath = r.body.path; })
-      .then(r => cloud.get('/hubs/documents/files/' + fileId + '/metadata'))
+      .then(r => cloud.get(`${test.api}/${fileId}/metadata`))
       .then(r => fileSize = r.body.size)
-      .then(r => cloud.get('/hubs/documents/files/' + fileId))
+      .then(r => cloud.get(`${test.api}/${fileId}`))
       .then(r => downloadedSize = Buffer.byteLength(r.body, "UTF-8"))
       .then(r => checkSize(fileSize, downloadedSize))
       .then(r => expect(r).to.be.true)
-      .then(r => cloud.delete('/hubs/documents/files/' + fileId));
+      .then(r => cloud.delete(`${test.api}/${fileId}`));
   });
 
   it('should return 404 for files/metadata when file does not exist', () => {
     let path = __dirname + '/assets/file.txt';
-    return cloud.postFile('/hubs/documents/files', path, { qs: query })
+    let query1 = { path: `${rootFolder}/file-${faker.random.number()}.txt`, overwrite: true };
+    return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => { fileId = r.body.id, filePath = r.body.path; })
-      .then(r => cloud.delete('/hubs/documents/files/' + fileId))
+      .then(r => cloud.delete(`${test.api}/${fileId}`))
       .then(r => cloud.withOptions({ qs: { path: filePath } }).get('/hubs/documents/files/metadata', (r) => expect(r).to.have.statusCode(404)));
   });
+
 });
