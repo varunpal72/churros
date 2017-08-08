@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/vendor-credit');
-const tools = require('core/tools');
 const cloud = require('core/cloud');
 const updatePayload = { "Memo": "Updated"};
 
