@@ -35,20 +35,21 @@ suite.forPlatform('docs', {}, () => {
   });
 
   it('should return proper swagger json for elements', () => {
+    let failures = [];
       return Promise.all(Array.from(elementIds).map(elementId => {
         return cloud.get(`/elements/${elementId}/docs`)
         .then(r => r.body)
         .then(s => {
-          return new Promise(function(resolve, reject) {
-            swaggerParser.validate(s, (err, api) => {
-              if (err) {
-                reject(err);
-              }
-              resolve();
+            return new Promise(function(resolve, reject) {
+              swaggerParser.validate(s, (err, api) => {
+                if (err) {
+                  reject(err);
+                }
+                resolve();
+              });
             });
-          });
-        });
-      }));
+        }).catch((err) => failures.push({ id: elementId, error: err }));
+      })).then(() => expect(failures).to.deep.equal([]));
   });
 
   it('should return proper swagger json for AWS provider', () => {
