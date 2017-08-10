@@ -39,13 +39,13 @@ suite.forElement('social', 'comments', { skip: true }, (test) => {
   });
 
   it(`should allow GET ${test.api}/{id}/updates/likes`, () => {
-    return cloud.withOptions({ qs: { updateKey: `${updateId}` } }).get(`${test.api}/${companyId}/updates/likes`);
+    return cloud.withOptions({ qs: { updateKey: `${updateId}` } }).get(`/hubs/social/companies/${companyId}/updates/likes`);
   });
 
   it(`should allow paginating with page and pageSize for ${test.api}/{id}/likes`, () => {
-    return cloud.withOptions({ qs: { updateKey: `${updateId}` } }).get(`${test.api}/${companyId}/updates/likes`)
+    return cloud.withOptions({ qs: { updateKey: `${updateId}` } }).get(`/hubs/social/companies//${companyId}/updates/likes`)
       .then(r => expect(r.body.length).to.be.below(4))
-      .then(r => cloud.withOptions({ qs: { updateKey: `${updateId}` } }).get(`${test.api}/${companyId}/updates/likes`))
+      .then(r => cloud.withOptions({ qs: { updateKey: `${updateId}` } }).get(`/hubs/social/companies/${companyId}/updates/likes`))
       .then(r => expect(r.body.length).to.be.below(3));
   });
 });
