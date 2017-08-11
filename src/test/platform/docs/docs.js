@@ -6,7 +6,7 @@ const swaggerParser = require('swagger-parser');
 const expect = require('chakram').expect;
 
 const elementKeys = ['hubspot', 'hubspotcrm', 'dynamicscrmadfs', 'quickbooks',
-  'quickbooksonprem', 'netsuitecrmv2', 'netsuiteerpv2', 'netsuitefinancev2', 'marketo', 'zendesk', 'sfdc', 'egnyte'
+  'quickbooksonprem', 'netsuitecrmv2', 'netsuiteerpv2', 'netsuitefinancev2', 'marketo', 'zendesk', 'sfdc', 'sfdcservicecloud', 'egnyte'
 ];
 
 suite.forPlatform('docs', {}, () => {
@@ -37,6 +37,7 @@ suite.forPlatform('docs', {}, () => {
   });
 
   it('should return proper swagger json for elements', () => {
+    let failures = [];
     return Promise.all(Array.from(elementIds).map(elementId => {
       return cloud.get(`/elements/${elementId}/docs`)
         .then(r => r.body)
@@ -49,8 +50,8 @@ suite.forPlatform('docs', {}, () => {
               resolve();
             });
           });
-        });
-    }));
+        }).catch((err) => failures.push({ id: elementId, error: err }));
+    })).then(() => expect(failures).to.deep.equal([]));
   });
 
   it('should return proper swagger json for AWS provider', () => {
