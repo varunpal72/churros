@@ -7,4 +7,5 @@ payload.name = tools.random();
 
 suite.forElement('helpdesk', 'departments', { payload: payload }, (test) => {
   test.should.supportCruds();
+  test.should.supportPagination();
 });

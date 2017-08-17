@@ -10,7 +10,7 @@ const imagesPayload = require('./assets/images');
 const skusPayload = require('./assets/skus');
 const cloud = require('core/cloud');
 
-const name = tools.randomStr();
+const name = tools.random();
 const productsUpdate = () => ({
   "name": "Cloud Elements"
 });

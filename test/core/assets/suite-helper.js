@@ -1,7 +1,6 @@
 'use strict';
 
 const nock = require('nock');
-const request = require('request');
 const props = require('core/props');
 
 var exports = module.exports = {};
@@ -48,7 +47,14 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(404, (uri, requestBody) => {
       return { message: 'No resource found at /foo/bad/file' };
     })
-    .post('/bulk')
+    .post('/hubs/fakehub/bulk/endpoint')
+    .reply(200, (uri, requestBody) => {
+      var out = {};
+      out.status = 'CREATED';
+      out.id = 123;
+      return out;
+    })
+    .post('/hubs/fakehub/bulk/query')
     .reply(200, (uri, requestBody) => {
       var out = {};
       out.status = 'CREATED';
@@ -86,12 +92,10 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .get('/foo/search')
     .query({ foo: 'bar' })
     .reply(200, () => [genPayload({ id: 123 })])
-    .get('/bulk/endpoint')
+    .get('/hubs/fakehub/endpoint')
     .query({where: 'id = 123'})
-    .reply(200, () => new Array(10).fill({id:123}))
-    .get('/bulk/endpoint')
-    .reply(200, () => new Array(10).fill({id:123}))
-    .get('/bulk/status')
+    .reply(200, () => new Array(10).fill({id:'123'}))
+    .get('/hubs/fakehub/bulk/123/status')
     .reply(200, (uri, requestBody) => {
       var out = {};
       out.status = 'COMPLETED';
@@ -101,8 +105,6 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     })
     .get('/bulk/errors')
     .reply(200, () => {})
-    .get('/bulk/123/endpoint')
-    .reply(200, () => new Array(10).fill(JSON.stringify({id:123})).join('\n') + '\n')
     .get('/elements/123/metadata')
     .reply(200, () => {
       return {
@@ -114,11 +116,11 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     });
 
     nock(baseUrl, { reqheaders: { accept: "application/json" } })
-    .get('/bulk/123/endpoint')
-    .reply(200, () => JSON.stringify(new Array(10).fill({id:123})));
+    .get('/hubs/fakehub/bulk/123/endpoint')
+    .reply(200, () => new Array(10).fill(JSON.stringify({"id":'123'})).join('\n'));
     nock(baseUrl, { reqheaders: { accept: "text/csv" } })
-    .get('/bulk/123/endpoint')
-    .reply(200, () => JSON.stringify(new Array(10).fill({id:123})));
+    .get('/hubs/fakehub/bulk/123/endpoint')
+    .reply(200, () => ["id"].concat(new Array(10).fill('123')).join('\n').concat('\n'));
 
 
   /** PATCH && PUT **/
@@ -174,14 +176,6 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(200, (uri, requestBody) => genPayload({ id: 123 }))
     .post('/foo/polling')
     .reply(200, (uri, requestBody) => {
-      setInterval(() => {
-        const opts = {
-          method: 'POST',
-          uri: props.get('eventCallbackUrl'),
-          body: '{"message": {"raw": {"objectType": "tests"}}}'
-        };
-        request(opts, (err, res, body) => {});
-      }, 1000);
       return genPayload({ id: 123 });
     });
 
@@ -237,11 +231,27 @@ exports.mock = (baseUrl, headers, eventHeaders) => {
     .reply(200, (uri, requestBody) => ({}))
     .delete('/foo/456')
     .reply(404, (uri, requestBody) => ({ message: 'No foo found with the given ID' }))
-    .delete('/bulk/123')
+    .delete('/hubs/fakehub/endpoint/123')
     .reply(200, (uri, requestBody) => ({}))
     .delete('/foo/pagination/123')
     .reply(200, (uri, requestBody) => ({}))
     .delete('/foo/polling/123')
     .reply(200, (uri, requestBody) => ({}));
 
+  nock('https://callback.com', {})
+    .get('/churrosTest?returnQueue')
+    .reply(200, (uri, requestBody) => {
+      const output = {
+        count: 1,
+        data: [{
+        url: "https://httpbin.org/get",
+        headers: "Fake Head",
+        data: '{"message": {"raw": {"objectType": "tests"}}}',
+        method: "GET",
+        timestamp: "2017-06-05 22:30:29.766811"
+        }],
+        session_id: "churrosTest"
+      };
+      return output;
+    });
 };

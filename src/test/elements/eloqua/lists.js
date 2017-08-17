@@ -19,7 +19,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     }
   };
   test.withOptions(opts).should.supportCruds();
-  test.should.supportPagination();
+  test.withOptions({ qs: { pageSize: 10 }}).should.supportPagination('id');
   test.should.supportCeqlSearch('id');
 
   it('should allow CRUDS for lists/{id}/contacts ', () => {

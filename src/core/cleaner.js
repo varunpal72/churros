@@ -6,6 +6,7 @@
 
 const cloud = require('core/cloud');
 const logger = require('winston');
+const moment = require('moment');
 
 var exports = module.exports = {};
 
@@ -55,6 +56,15 @@ const cleanElements = (field, values) => {
     .then(rs => filter(rs, field, values))
     .then(rs => deleteAll('instances', rs.map(r => r.id)));
 };
+
+const cleanElementsBefore = () => {
+  return cloud.get('/instances')
+  .then(r => filter(r, 'name', ['churros-instance']))
+  // only delete if hour old
+  .then(r => r.filter(obj => moment.utc().valueOf() - Date.parse(obj.createdDate) - 3.6e+6 > 0))
+  .then(r => deleteAll('instances', r.map(r => r.id))).catch(() => logger.debug('failed to clean up before'));
+};
+exports.cleanElementsBefore = () => cleanElementsBefore();
 
 const cleanIntegrations = (field, values) => {
   logger.debug(`Cleaning integrations where ${field} is set to one of ${values}`);

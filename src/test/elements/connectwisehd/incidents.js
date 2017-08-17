@@ -9,7 +9,7 @@ const cloud = require('core/cloud');
 suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.withOptions({ qs: { where: 'summary=\'Sample API Posted Issue From Churros\'' } }).should.return200OnGet();
-  test.should.supportPagination();
+  test.should.supportPagination('id');
 
   it('should allow CRU for /hubs/helpdesk/incidents/{id}/comments', () => {
     let incidentId = -1;

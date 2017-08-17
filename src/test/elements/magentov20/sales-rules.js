@@ -19,7 +19,7 @@ suite.forElement('ecommerce', 'sales-rules', { payload: salesRulePost }, (test) 
       .then(r => cloud.post(test.api, salesRulePost))
       .then(r => {
         name = r.body.name;
-        ruleId = r.body.id;
+        ruleId = r.body.id || r.body.rule_id;
       })
       .then(r => cloud.get(`${test.api}/${ruleId}`))
       .then(r => cloud.patch(`${test.api}/${ruleId}`, salesRulePost))

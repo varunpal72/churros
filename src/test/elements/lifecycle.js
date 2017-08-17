@@ -6,6 +6,7 @@ const util = require('util');
 const provisioner = require('core/provisioner');
 const tools = require('core/tools');
 const defaults = require('core/defaults');
+const cleaner = require('core/cleaner');
 const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
@@ -26,7 +27,8 @@ const terminate = error => {
 
 let element = argv.element;
 let instanceId;
-
+// Setting which element we are currently running on
+props.set('element', element);
 before(() => {
   tools.resetCleanup();
   logger.info('Running tests for element: %s', element);
@@ -35,9 +37,11 @@ before(() => {
     return {};
   }
   return tools.runFile(element, `${__dirname}/${element}/assets/scripts.js`, 'before')
+  .then(() => !argv.save ? cleaner.cleanElementsBefore() : null)
   .then(() => {
     const getInstance = argv.instance ? cloud.get(`/instances/${argv.instance}`)
       .then(r => {
+        props.setForKey(element, 'elementId', r.body.element.id);
         defaults.token(r.body.token);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         return r;
@@ -90,7 +94,7 @@ before(() => {
         }
       })
       .catch(r => {
-        return instanceId && !argv.instance ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
+        return instanceId && !(argv.instance || argv.save) ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
       });
     });
 });
@@ -131,7 +135,8 @@ it.skip('should not allow provisioning with bad credentials', () => {
      });
 });
 after(done => {
-  instanceId && !argv.instance ? provisioner
+  tools.resetCleanup();
+  instanceId && !(argv.instance || argv.save) ? provisioner
         .delete(instanceId)
         .then(() => done())
         .catch(r => logger.error('Failed to delete element instance: %s', r))

@@ -9,6 +9,7 @@ const keysSchema = require('./assets/keys.schema.json');
 const schema = require('./assets/element.schema.json');
 const listSchema = require('./assets/elements.schema.json');
 const logger = require('winston');
+const faker = require('faker');
 
 const getElementId = (key) => {
   return cloud.get(`elements/${key}`)
@@ -72,8 +73,14 @@ suite.forPlatform('elements', opts, (test) => {
   it('should support search', () => cloud.get('elements', listSchema));
   it('should support get keys', () => cloud.get('elements/keys', keysSchema));
 
-  it('should support CRUD by key', () => crudElement('key', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
-  it('should support CRUD by ID', () => crudElement('id', common.genElement({}), common.genElement({ description: "An updated Churros element" }), schema));
+  it('should support CRUD by key', () => {
+    const name = 'Churros DB element ' + faker.random.number();
+    return crudElement('key', common.genElement({name}), common.genElement({ description: "An updated Churros element", name }), schema);
+  });
+  it('should support CRUD by ID', () => {
+    const name = 'Churros DB element ' + faker.random.number();
+    return crudElement('id', common.genElement({name}), common.genElement({ description: "An updated Churros element", name }), schema);
+  });
   it('should support CRUD by ID with objects', () => crudElement('id', common.genElementWithObjects({}), common.genElementWithObjects({ description: "An updated Churros element" }), schema));
 
   it('should support JDBC element CRUD by key', () => crudElement('key', common.genDBElement({}), common.genDBElement({ description: "An updated Churros DB element" }), schema));
@@ -106,9 +113,19 @@ suite.forPlatform('elements', opts, (test) => {
       return;
     }
     let clone;
-    return getElementId('freshdesk')
+    return getElementId('sfdc')
       .then(id => cloud.post(`elements/${id}/clone`, schema))
-      .then(r => clone = r.body)
+      .then(r => {
+        clone = r.body;
+        expect(clone).to.not.be.empty;
+        expect(clone.configuration).to.not.be.empty;
+        //Loop through the configuration to make sure there is no default value for oauth.api.key
+        clone.configuration.forEach(c => {
+            if(c.key === 'oauth.api.key') {
+              expect(c.defaultValue).to.be.empty;
+            }
+        });
+      })
       .then(r => cloud.delete('elements/' + clone.id))
       .catch(e => {
         if (clone) cloud.delete('elements/' + clone.id);
@@ -137,17 +154,4 @@ suite.forPlatform('elements', opts, (test) => {
       .then(id => cloud.get(`elements/${id}/transformations`));
   });
 
-  it('should support converting and creating a SOAP element', () => {
-    let atElement;
-    // Call elements/convert to convert wsdl to element
-    return cloud.postFile('/elements/convert?type=soap', __dirname + `/assets/atws.wsdl`)
-      .then(r => {
-        expect(r.body).to.not.be.empty;
-        expect(r.body.name).to.equal('http://autotask.net/ATWS/v1_5/');
-        atElement = r.body;
-      })
-      // Create the element
-      .then(r => crudElement('key', atElement, atElement, schema));
-
-  });
 });

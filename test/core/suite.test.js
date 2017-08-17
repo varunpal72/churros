@@ -29,7 +29,8 @@ describe('suite', () => {
       baseUrl: baseUrl,
       headers: { Authorization: auth }
     });
-    props.set('eventCallbackUrl', 'https://knappkeith.pythonanywhere.com/request/churrosTest/');
+    props.set('element', 'myelement');
+    props.set('event.callback.url', 'https://callback.com/churrosTest');
   });
 
   /** Before each, reset the nock endpoints...have to do it beforeEach because: https://github.com/pgte/nock#specifying-hostname */
@@ -38,6 +39,8 @@ describe('suite', () => {
   /* Not passing in any suite options */
   suite.forElement('fakehub', 'resource', (test) => {
     it('should support suite for element', () => expect(test.api).to.equal('/hubs/fakehub/resource'));
+    test.should.supportBulkUpload(null, `${__dirname}/assets/testBulk.json`, 'endpoint', 'id = 123');
+    test.should.supportBulkDownload(null, {json: true, csv: true}, 'endpoint');
   });
 
   /* Not passing in any suite options */
@@ -131,8 +134,6 @@ describe('suite', () => {
     test.should.supportCs();
     test.should.supportCeqlSearch('id');
     test.should.supportCeqlSearchForMultipleRecords('id');
-    test.should.supportBulkUpload(null, `${__dirname}/assets/testBulk.json`, 'endpoint', null, '/bulk');
-    test.should.supportBulkDownload(null, {json: true, csv: true}, 'endpoint', '/bulk');
 
     /* overriding the default API that was passed in as the default in the `suite.forPlatform` */
     test

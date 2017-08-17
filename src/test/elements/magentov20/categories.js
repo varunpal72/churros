@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
-const payload = require(`./assets/categories`);
+const payload = tools.requirePayload(`${__dirname}/assets/categories.json`);
 
 const categoryProduct = (categoryId, position, sku) => ({
   "productLink": {

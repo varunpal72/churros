@@ -72,8 +72,8 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
         "email": email
       }
     };
-    return cloud.post('/organizations/objects/churrosTestObject/definitions', resources.churrosTestObject, null)
-      .then(r => cloud.post('/organizations/elements/hubspotcrm/transformations/churrosTestObject', resources.churrosTestObjectXform, null))
+    return cloud.post('/organizations/objects/churrosTestObject/definitions', resources.churrosTestObject, () => {})
+      .then(r => cloud.post('/organizations/elements/hubspotcrm/transformations/churrosTestObject', resources.churrosTestObjectXform, () => {}))
       .then(r => cloud.post(test.api, createPayload))
       .then(r => id = r.body.id)
       .then(r => cloud.get('/hubs/crm/churrosTestObject/' + id))

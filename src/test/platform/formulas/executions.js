@@ -6,7 +6,6 @@ const logger = require('winston');
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
-const moment = require('moment');
 const tools = require('core/tools');
 const fs = require('fs');
 const props = require('core/props');
@@ -59,7 +58,7 @@ const validateLoopSuccessfulEmailStepExecution = se => {
 };
 
 const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
-  fileName = fileName || 'single-event-sfdc';
+  fileName = fileName || 'single-event-closeio';
   const payload = require(`./assets/events/${fileName}`);
   return Promise.all(Array(x).fill().reduce((p, c) => {
     p.push(common.generateSfdcPollingEvent(instanceId, payload));
@@ -69,31 +68,30 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
-  let sfdcId, dropboxId;
+  let closeioId, dropboxId;
   before(() => {
     return provisioner.create('dropbox')
       .then(r => dropboxId = r.body.id)
-      .then(r => provisioner.create('sfdc', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
-      .then(r => sfdcId = r.body.id)
+      .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
+      .then(r => closeioId = r.body.id)
       .catch(e => {
         console.log(`Failed to finish before()...${e}`);
         process.exit(1);
       });
   });
 
-  after(done => {
-    if (!sfdcId) done();
-    return provisioner.delete(sfdcId)
+  after((done) => {
+    if (!closeioId) done();
+    provisioner.delete(closeioId)
       .then(r => provisioner.delete(dropboxId))
-      .then(() => done())
       .catch(e => {
         console.log(`Failed to finish after()...${e}`);
-        done();
-      });
+      })
+      .then(() => done());
   });
 
   const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
+    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = closeioId;
     return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
   };
 
@@ -115,10 +113,15 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
           }
         });
       });
-      if (typeof validator === 'function') validator(executions);
+      if (typeof validator === 'function') {
+        return validator(executions);
+      }
+      return Promise.resolve();
     };
 
-    if (!triggerCb) { triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(sfdcId, numEvents, eventFileName); }
+    if (!triggerCb) {
+      triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, numEvents, eventFileName);
+    }
     numSes = numSes || f.steps.length + 1; // defaults to steps + trigger but for loop cases, that won't work
     return testWrapper(triggerCb, f, fi, numEvents, numSes, numSevs, validatorWrapper, executionStatus);
   };
@@ -205,13 +208,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const triggerCb = () => logger.debug('No trigger CB for scheduled formulas');
 
     const setupCron = (r) => {
-      const currentDt = r.body.dateTime;
-      const dt = moment.parseZone(currentDt);
-      dt.add(1, 'minute');
       return {
         name: 'churros-formula-instance',
         configuration: {
-          cron: `${dt.seconds()} ${dt.minutes()} ${dt.hours()} ${dt.date()} ${dt.month() + 1} ? ${dt.year()}`
+          cron: `0 0/1 * 1/1 * ? *`
         }
       };
     };
@@ -375,7 +375,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const configuration = {
-      "http.request.url": props.get('url') + "/elements/api-v2/elements/sfdc"
+      "http.request.url": props.get('url') + "/elements/api-v2/elements/closeio"
     };
 
     return manualTriggerTest('http-request-successful-formula', configuration, { foo: 'bar' }, 3, validator);
@@ -397,13 +397,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const validator = (executions) => {
       executions.map(e => {
         const consolidated = consolidateStepExecutionValues(e.stepExecutions);
-        expect(consolidated['delete-contact.response.code']).to.equal('200');
+        expect(consolidated['delete-accounts.response.code']).to.equal('200');
       });
     };
 
     const configuration = {
-      "trigger-instance": sfdcId,
-      "resource.name": "contacts"
+      "trigger-instance": closeioId,
+      "resource.name": "accounts"
     };
 
     return manualTriggerTest('element-request-with-configured-api-successful-formula', configuration, { foo: 'bar' }, 7, validator);
@@ -417,7 +417,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         ses.filter(se => se.stepName !== 'trigger').map(validateSuccessfulStepExecution);
 
         expect(consolidated['simple-script.prop100']).to.exist;
-        expect(consolidated['end.triggerobjectid']).to.equal('001i000001hB60bAAC1');
+        expect(consolidated['end.triggerobjectid']).to.equal('lead_BW9v0Uf82ZZyJh2Jhi7YcDEYhGQw6naCg8KhYA7Ffus');
         expect(consolidated['end.prop100']).to.equal(JSON.parse(consolidated['simple-script.prop100']).a);
         expect(consolidated['end.done']).to.equal('true');
       });
@@ -504,16 +504,16 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   it('should have a unique formula context for a single-threaded formula that has multiple polling events trigger multiple executions at once', () => {
     const validator = (executions) => {
       // validate that each objectId exists once somewhere in the step execution values
-      const events = require('./assets/events/triple-event-sfdc');
+      const events = require('./assets/events/triple-event-closeio');
       const all = [];
       executions.forEach(e => {
         const debugStep = e.stepExecutions.filter((se) => se.stepName === 'debug')[0];
         all.push(debugStep.stepExecutionValues.filter((sev) => sev.key === 'debug.objectId')[0].value);
       });
-      events.accounts.forEach(account => expect(all.indexOf(account.Id)).to.be.above(-1));
+      events.accounts.forEach(account => expect(all.indexOf(account.id)).to.be.above(-1));
     };
 
-    const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(sfdcId, 1, 'triple-event-sfdc');
+    const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, 1, 'triple-event-closeio');
     const f = require('./assets/formulas/single-threaded-formula');
     const fi = require('./assets/formulas/basic-formula-instance');
     return testWrapper(triggerCb, f, fi, 3, 2, 2, validator);
@@ -543,10 +543,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully execute a simple event trigger formula triggered manually', () => {
-    let event = require('./assets/events/single-event-sfdc.json');
+    let event = require('./assets/events/single-event-closeio.json');
     const eventBody = {
       message: {
-        instance_id: sfdcId,
+        instance_id: closeioId,
         events: [event]
       }
     };
@@ -557,7 +557,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
 
   it('should successfully stream a bulk file using an elementRequestStream step in a formula', () => {
-    const configuration = { source: sfdcId, target: sfdcId, 'object.name': 'contacts' };
+    const configuration = { source: closeioId, target: closeioId, 'object.name': 'accounts' };
     let bulkUploadId;
     const validator = (executions) => {
       const bulkTransferStepExecutions = executions[0].stepExecutions.filter(se => se.stepName === 'bulkTransfer');
@@ -583,11 +583,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
     };
 
-    let bulkId, contactId;
-
-    return cloud.post('/hubs/crm/contacts', { LastName: 'Churros' })
-      .then(r => contactId = r.body.Id)
-      .then(r => cloud.withOptions({ qs: { q: `select FirstName, LastName, Id from contacts where Id = '${contactId}'` } }).post('/hubs/crm/bulk/query'))
+    let bulkId, accountId;
+    return cloud.post('/hubs/crm/accounts', { name: 'RANDOMCHURROSTHINGY' })
+      .then(r => accountId = r.body.id)
+      .then(r => cloud.withOptions({ qs: { q: `select display_name from accounts where display_name = "RANDOMCHURROSTHINGY"` } }).post('/hubs/crm/bulk/query'))
       .then(r => {
         expect(r.body.status).to.equal('CREATED');
         bulkId = r.body.id;
@@ -596,14 +595,18 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         expect(r.body.status).to.equal('COMPLETED');
       })))
       .then(r => manualTriggerTest('bulk-transfer', configuration, { id: bulkId }, 3, validator))
-      .then(r => tools.wait.upTo(20000).for(() => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/status`, r => {
+      .then(r => tools.wait.upTo(30000).for(() => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/status`, r => {
         expect(r.body.status).to.equal('COMPLETED');
       })))
       .then(r => cloud.get(`/hubs/crm/bulk/${bulkUploadId}/errors`))
       .then(r => {
         expect(r.body.length).to.equal(0);
       })
-      .then(r => cloud.delete(`/hubs/crm/contacts/${contactId}`));
+      .then(r => cloud.delete(`/hubs/crm/accounts/${accountId}`))
+      .catch(e => {
+        if (accountId) cloud.delete(`/hubs/crm/accounts/${accountId}`);
+        throw new Error(e);
+      });
   });
 
   it('should successfully stream a file via the documents hub APIs using an elementRequestStream step in a formula', () => {
@@ -674,7 +677,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
             return new Promise(function(resolve, reject) {
               setTimeout(() => {
                 resolve();
-              }, 1000); 
+              }, 1000);
             });
           })
           // cancel again, expect 400 (can't cancel already completed formula)
@@ -690,7 +693,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const cancelTestWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = sfdcId;
+    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = closeioId;
     return cancelTestCustomTestWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
     };
 
@@ -720,7 +723,54 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     var f = cancelManualTriggerTest('formula-waitForIt-selfContained', null, { foo: 'bar' }, 2, common.defaultValidator, 'success');
-    console.log("manual trigger state", f);
     return f;
+  });
+
+  it('should allow retrieving formula instance executions by the event ID and the events object ID that triggered that execution', () => {
+    const validator = (executions) => {
+      return new Promise((res, rej) => {
+        return executions.map(e => {
+          const formulaInstanceId = e.formulaInstanceId;
+          return e.stepExecutions.map(se => {
+            if (se.stepName === 'trigger') {
+              const flat = flattenStepExecutionValues(se.stepExecutionValues);
+              expect(flat['trigger.type']).to.equal('event');
+
+              const triggerEventString = flat['trigger.event'];
+              expect(triggerEventString).to.be.a('string');
+              const triggerEvent = JSON.parse(triggerEventString);
+              const objectId = triggerEvent.objectId;
+              expect(objectId).to.be.a('string');
+
+              // should be able to lookup this single execution by its event ID
+              const eventId = flat['trigger.eventId'];
+              const v = r => expect(r.body).to.have.length(1);
+              let executionFromEventId;
+              return cloud.withOptions({qs: {eventId}}).get(`/formulas/instances/${formulaInstanceId}/executions`, v)
+                .then(r => {
+                  executionFromEventId = r.body;
+                  return cloud.withOptions({qs: {objectId}}).get(`/formulas/instances/${formulaInstanceId}/executions`, v);
+                })
+                .then(r => {
+                  // should be the same execution as the one we retrieved by its event
+                  expect(r.body).to.deep.equal(executionFromEventId);
+                  return res({});
+                });
+            }
+          });
+        });
+      });
+    };
+    return eventTriggerTest('simple-successful-formula', 1, 2, validator);
+  });
+
+  it('should not allow searching formula instance executions by objectId and eventId', () => {
+    const validator = executions => {
+      const formulaInstanceId = executions[0].formulaInstanceId;
+      const v = r => expect(r).to.have.statusCode(400);
+      const opts = {qs: {eventId: '123', objectId: '456'}};
+      return cloud.withOptions(opts).get(`/formulas/instances/${formulaInstanceId}/executions`, v);
+    };
+    return eventTriggerTest('simple-successful-formula', 1, 2, validator);
   });
 });

@@ -1,7 +1,7 @@
 {
-  "name":"Super Man",
-  "email":"",
-  "department_users_attributes":{
+  "name": "Super Man",
+  "email": "<<internet.email>>",
+  "department_users_attributes": {
     "department_id": "2,3"
   }
 }

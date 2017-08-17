@@ -1,0 +1,10 @@
+{
+  "ServicePriorityCode": "2",
+  "Name": {
+    "content": "Creating urgent Churros ticket"
+  },
+  "ServiceRequestDescription": [{
+    "Text": "Need sauce - Type: Incident Description",
+    "TypeCode": "10004"
+  }]
+}
