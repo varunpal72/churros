@@ -17,23 +17,6 @@ suite.forPlatform('element-jdbc', {}, (test) => {
     .then(r => provisioner.create('elementjdbc', undefined, 'elements/elementjdbc/instances'))
     .then(r => jdbcInstance = r.body));
 
-  it(`it should retrieve ${maxRows} rows`, () => {
-    //upload 50 contacts
-    return cloud.post(`/hubs/general/Contacts/multiple?rows=${maxRows}`)
-      .then(r => {
-        expect(r.body.count).to.equal(maxRows);
-        expect(r).to.have.statusCode(200);
-      })
-      .then( r => cloud.get('/hubs/general/Contacts', r => {
-        expect(r.body.length).to.be.equal(maxRows);
-        expect(r).to.have.statusCode(200);
-      }))
-      .then(r => cloud.delete('/hubs/general/Contacts', r => {
-        expect(r.body.count).to.equal(maxRows);
-        expect(r).to.have.statusCode(200);
-      }));
-  });
-
   it(`it should fail to retrieve more than ${maxRows} rows`, () => {
     //upload 70 contacts
     return cloud.post(`/hubs/general/Contacts/multiple?rows=${extraRows}`)
@@ -41,16 +24,18 @@ suite.forPlatform('element-jdbc', {}, (test) => {
         expect(r.body.count).to.equal(extraRows);
       })
       .then( r => cloud.get('/hubs/general/Contacts', r => {
-        expect(r).to.have.statusCode(400);
+        expect(r).to.have.statusCode(200);
+        expect(r.body.length).to.be.equal(maxRows);
+      }))
+      .then( r => cloud.get('/hubs/general/Contacts/count', r => {
+        expect(r).to.have.statusCode(200);
+        expect(r.body[0].total_rows).to.be.equal(extraRows);
       }))
       .then( r => cloud.delete('/hubs/general/Contacts', r => {
         expect(r.body.count).to.equal(extraRows);
         expect(r).to.have.statusCode(200);
       }));
   });
-
-
-
 
   after(() => {
     return provisioner.delete(jdbcInstance.id, 'elements/elementjdbc/instances')
