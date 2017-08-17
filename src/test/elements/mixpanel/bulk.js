@@ -29,7 +29,6 @@ suite.forElement('general', 'bulk', null, (test) => {
 
   it('should support bulk download of users', () => {
     let bulkId;
-    var priorDate = new Date().setDate(new Date().getDate()-30);
     const opts = { qs: { q: 'select * from users where query = \'(properties["$created"]  > "2011-03-14T09:53:54")\''} };
 
     // start bulk download
