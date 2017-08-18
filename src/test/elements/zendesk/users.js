@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = require('./assets/users');
+const payload = tools.requirePayload(`${__dirname}/assets/users.json`);
 const cloud = require('core/cloud');
 const options = {
   churros: {
