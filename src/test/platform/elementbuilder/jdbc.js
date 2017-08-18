@@ -23,15 +23,15 @@ suite.forPlatform('element-jdbc', {}, (test) => {
       .then(r => {
         expect(r.body.count).to.equal(extraRows);
       })
-      .then( r => cloud.get('/hubs/general/Contacts', r => {
+      .then(r => cloud.get('/hubs/general/Contacts', r => {
         expect(r).to.have.statusCode(200);
         expect(r.body.length).to.be.equal(maxRows);
       }))
-      .then( r => cloud.get('/hubs/general/Contacts/count', r => {
+      .then(r => cloud.get('/hubs/general/Contacts/count', r => {
         expect(r).to.have.statusCode(200);
         expect(r.body[0].total_rows).to.be.equal(extraRows);
       }))
-      .then( r => cloud.delete('/hubs/general/Contacts', r => {
+      .then(r => cloud.delete('/hubs/general/Contacts', r => {
         expect(r.body.count).to.equal(extraRows);
         expect(r).to.have.statusCode(200);
       }));
