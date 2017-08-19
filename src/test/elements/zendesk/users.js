@@ -35,6 +35,6 @@ suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
   it(`should allow GET ${test.api}/${id}/groups`, () => {
     return cloud.get(`${test.api}/${id}/groups`)
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } })
-        .get(test.api + '/' + id + '/groups'))
+        .get(test.api + '/' + id + '/groups'));
   });
 });
