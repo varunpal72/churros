@@ -5,10 +5,27 @@ const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/lists.json`);
 const contactPayload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 const contactUpdatePayload = tools.requirePayload(`${__dirname}/assets/contactsUpdate.json`);
+const fs = require('fs');
 const cloud = require('core/cloud');
 
 suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
-  test.should.supportCrds();
+
+  it('it should support CRUD lists', () => {
+    let listId;
+    let opts;
+    let documentPath = __dirname + '/assets/updateList.csv';
+    let listUpdate = tools.requirePayload(`${__dirname}/assets/listUpdate.json`);
+    return cloud.post('/hubs/marketing/lists', payload)
+      .then(r => {
+        listId = r.body.id;
+        listUpdate.mergespecs[0].dstListId = listId;
+        opts = { formData: { list: JSON.stringify(listUpdate), file: fs.createReadStream(documentPath) } };
+      })
+      .then(r => cloud.get('/hubs/marketing/lists'))
+      .then(r => cloud.get(`${test.api}/${listId}`))
+      .then(r => cloud.withOptions(opts).patch(`${test.api}/${listId}`, undefined))
+      .then(r => cloud.delete(`${test.api}/${listId}`));
+  });
 
   it('it should support GET all contacts inside a list', () => {
     return cloud.get('/hubs/marketing/lists')
@@ -55,4 +72,5 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
   it('should sleep for 60 seconds to avoid rate limits', () => {
     return tools.sleep(60);
   });
+
 });
