@@ -1150,6 +1150,12 @@
      "type": "string"
    }]
  },
+ "drafts" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "problems": {
    "fields": [{
      "path": "id",
