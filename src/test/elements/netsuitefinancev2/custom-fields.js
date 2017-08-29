@@ -6,3 +6,6 @@ suite.forElement('finance', 'custom-fields', (test) => {
   test.should.return200OnGet();
   test.should.supportNextPagePagination(3,false);
 });
+suite.forElement('finance', 'custom/fields', (test) => {
+  test.should.return200OnGet();
+});
