@@ -8,5 +8,4 @@ suite.forElement('erp', 'customers', { payload: payload}, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
   test.should.supportCeqlSearch('CardName');
-  // test.withOptions({ qs: { where: 'CardName = \'Atul Customer2\'' } }).should.return200OnGet();
 });
