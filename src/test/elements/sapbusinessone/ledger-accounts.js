@@ -1,7 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
 
 suite.forElement('erp', 'ledger-accounts', (test) => {
   test.should.supportPagination();
