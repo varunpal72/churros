@@ -5,8 +5,8 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 
 suite.forElement('documents', 'files', (test) => {
-  let path = __dirname + '/assets/brady.jpg';
-  let query = { path: `/brady-${tools.random()}.jpg` };
+  let path = __dirname + '/'+ tools.randomStr() +'/assets/brady.jpg';
+  let query = { path: `/${tools.random()}/brady-${tools.random()}.jpg` };
 
   const fileWrap = (cb) => {
     let file;
@@ -34,7 +34,7 @@ suite.forElement('documents', 'files', (test) => {
     const cb = (file) => {
       let updatedFile;
       let fileTemp = {
-        path: `/a-${file.name}`
+        path: `/b-${tools.random()}/a-${file.name}`
       };
       return cloud.withOptions({ qs: { path: file.path } }).get('/hubs/documents/files/metadata')
         .then(r => cloud.withOptions({ qs: { path: file.path } }).patch('/hubs/documents/folders/metadata', fileTemp))
@@ -55,8 +55,8 @@ suite.forElement('documents', 'files', (test) => {
   });
 
   it('should allow POST /files/copy and POST /files/:id/copy', () => {
-    const copy1 = { path: '/churrosCopy' + tools.randomStr("abcdeiouABCDEIOU", 6) };
-    const copy2 = { path: '/churrosCopy' + tools.randomStr("abcdeiouABCDEIOU", 6) };
+    const copy1 = { path: '/'+tools.randomStr()+ '/churrosCopy' + tools.randomStr("abcdeiouABCDEIOU", 6) };
+    const copy2 = { path: '/'+tools.randomStr()+ '/churrosCopy' + tools.randomStr("abcdeiouABCDEIOU", 6) };
 
     const cb = (file) => {
       let fileCopy1, fileCopy2;
