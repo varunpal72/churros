@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 
-suite.forElement('crm', 'custom-fields', (test) => {
+suite.forElement('erp', 'custom-fields', (test) => {
   test.should.return200OnGet();
   test.should.supportNextPagePagination(3,false);
 });
