@@ -12,10 +12,10 @@ suite.forElement('social', 'companies', (test) => {
   test.should.return200OnGet();
   test.should.supportPagination();
 
-  it(`should allow to get followers-count for ${test.api}/{id}/followers`, () => {
+  it(`should allow to get followers count for ${test.api}/{id}/followers-count`, () => {
     return cloud.get('/hubs/social/companies')
       .then(r => companyId = r.body[0].id)
-      .then(r => cloud.get(`${test.api}/${companyId}/followers`));
+      .then(r => cloud.get(`${test.api}/${companyId}/followers-count`));
   });
 
   it(`should allow GET ${test.api}/{id}/followers-statistics`, () => {
