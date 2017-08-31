@@ -15,19 +15,19 @@ suite.forPlatform('docs', {}, () => {
   before(() => cloud.get('/elements')
     .then(r => {
       elementIds = r.body.reduce((p, c) => {
-        if (c.active && elementKeys.indexOf(c.key) > -1) { p.add(c.id); }
+        if (c.active) { p.push(c.id); }
         return p;
-      }, new Set());
+      }, []);
 
       hubs = r.body.reduce((p, c) => {
-        if (c.active) { p.add(c.hub); }
+        if (c.active) { p.push(c.hub); }
         return p;
-      }, new Set());
+      }, []);
     }));
 
   // Skipping this test as the hubs swagger is not validated { skip: true }
   it.skip('should return proper swagger json for hubs', () => {
-    return Promise.all(Array.from(hubs).map(h => {
+    return Promise.all(hubs.map(h => {
       return cloud.get(`/docs/${h}`)
         .then(r => r.body)
         .then(s => swaggerParser.validate(s, (err, api) => {
@@ -38,7 +38,8 @@ suite.forPlatform('docs', {}, () => {
 
   it('should return proper swagger json for elements', () => {
     let failures = [];
-    return Promise.all(Array.from(elementIds).map(elementId => {
+    return Promise.all(elementIds.map(elementId => {
+      console.log(elementId);
       return cloud.get(`/elements/${elementId}/docs`)
         .then(r => r.body)
         .then(s => {
