@@ -21,9 +21,26 @@ const crudElement = (idField, payload, updatedPayload, schema) => {
   return common.deleteElementByKey('churrosdbelement')
     .then(r => cloud.post('elements', payload, schema))
     .then(r => element = r.body)
+    .then(r => {
+      expect(element.configuration).to.not.be.empty;
+      const match = element.configuration.filter(c => c.key  === 'base.url');
+      expect(match.length).to.equal(1);
+      if(match[0].key === 'base.url') {
+        expect(match[0].defaultValue).to.not.be.empty;
+      }
+    })
     .then(r => id = element[idField])
     .then(r => cloud.get(`elements/${id}`, schema))
     .then(r => cloud.put(`elements/${id}`, updatedPayload, schema))
+    .then(r => {
+      const updatedElement = r.body;
+      expect(updatedElement.configuration).to.not.be.empty;
+      const match = updatedElement.configuration.filter(c => c.key  === 'base.url');
+      expect(match.length).to.equal(1);
+      if(match[0].key === 'base.url') {
+        expect(match[0].defaultValue).to.not.be.empty;
+      }
+    })
     .then(r => cloud.delete(`elements/${id}`))
     .catch(e => {
       if (id) cloud.delete(`elements/${id}`);

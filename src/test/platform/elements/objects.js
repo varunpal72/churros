@@ -15,7 +15,7 @@ const crudsObject = (url, schema, payload, updatePayload) => {
 };
 
 const genObject = (opts) => {
-  const newPayload = payload || {};
+  const newPayload = payload[0] || {};
   newPayload.createdDateName = (opts.createdDateName || 'created_dt');
   return newPayload;
 };
