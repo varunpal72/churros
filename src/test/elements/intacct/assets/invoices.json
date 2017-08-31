@@ -15,8 +15,8 @@
     "month": "10",
     "day": "10"
   },
-  "action": "Draft",
-  "invoiceno": "<<random.word>>",
+  "action": "Submit",
+  "invoiceno": "<<random.number>>",
   "ponumber": "2480877",
   "description": "Invoice",
   "currency": "USD",

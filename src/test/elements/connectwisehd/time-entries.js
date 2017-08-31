@@ -13,5 +13,5 @@ suite.forElement('helpdesk', 'time-entries', { payload: payload }, (test) => {
   const validValues = r.body.filter(obj => obj.workType='Regular');
   expect(validValues.length).to.equal(r.body.length);
   }).should.return200OnGet();
-  test.should.supportPagination();
+  test.should.supportPagination('id');
 });

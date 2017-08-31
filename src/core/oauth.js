@@ -598,6 +598,19 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.xpath('.//*[@id="auth0-lock-container-1"]/div/div[2]/form/div/div/button')).click();
       browser.sleep(5000);
       return browser.getCurrentUrl();
+    case 'linkedin':
+        browser.get(r.body.oauthUrl);
+        browser.findElement(webdriver.By.name('session_key')).sendKeys(username);
+        browser.findElement(webdriver.By.name('session_password')).sendKeys(password);
+        browser.findElement(webdriver.By.name('signin')).click();
+
+        //Only needed first time
+        browser.wait(() => browser.isElementPresent(webdriver.By.id('action')), 10000)
+          .thenCatch(r => true); // ignore
+
+        browser.findElement(webdriver.By.id('action'))
+          .then((element) => element.click(), (err) => {}); // ignore this
+         return browser.getCurrentUrl();
     default:
       throw 'No OAuth function found for element ' + element + '.  Please implement function in core/oauth so ' + element + ' can be provisioned';
   }

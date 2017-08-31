@@ -1140,6 +1140,12 @@
      "type": "string"
    }]
  },
+ "vendor-credits": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "changes": {
    "fields": [{
      "path": "id",
@@ -1147,6 +1153,12 @@
    },
    {
      "path": "junk",
+     "type": "string"
+   }]
+ },
+ "drafts" : {
+   "fields": [{
+     "path": "id",
      "type": "string"
    }]
  },
