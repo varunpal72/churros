@@ -18,7 +18,7 @@ const getElementId = (key) => {
 
 const crudElement = (idField, payload, updatedPayload, schema) => {
   let element, id;
-  return common.deleteElementByKey('churros')
+  return common.deleteElementByKey('churrosdbelement')
     .then(r => cloud.post('elements', payload, schema))
     .then(r => element = r.body)
     .then(r => id = element[idField])
@@ -113,7 +113,7 @@ suite.forPlatform('elements', opts, (test) => {
       return;
     }
     let clone;
-    return getElementId('sfdc')
+    return getElementId('freshdesk')
       .then(id => cloud.post(`elements/${id}/clone`, schema))
       .then(r => {
         clone = r.body;
