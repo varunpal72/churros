@@ -10,12 +10,14 @@ const elementKeys = ['hubspot', 'hubspotcrm', 'dynamicscrmadfs', 'quickbooks',
 ];
 
 suite.forPlatform('docs', {}, () => {
-  let hubs, elementIds;
+  let hubs, elements;
 
   before(() => cloud.get('/elements')
     .then(r => {
-      elementIds = r.body.reduce((p, c) => {
-        if (c.active) { p.push(c.id); }
+      elements = r.body.reduce((p, c) => {
+        if (c.active) {
+          p.push({id: c.id, key: c.key});
+        }
         return p;
       }, []);
 
@@ -38,9 +40,8 @@ suite.forPlatform('docs', {}, () => {
 
   it('should return proper swagger json for elements', () => {
     let failures = [];
-    return Promise.all(elementIds.map(elementId => {
-      console.log(elementId);
-      return cloud.get(`/elements/${elementId}/docs`)
+    return Promise.all(elements.map(element => {
+      return cloud.get(`/elements/${element.id}/docs`)
         .then(r => r.body)
         .then(s => {
           return new Promise(function(resolve, reject) {
@@ -51,7 +52,8 @@ suite.forPlatform('docs', {}, () => {
               resolve();
             });
           });
-        }).catch((err) => failures.push({ id: elementId, error: err }));
+        })
+        .catch((err) => failures.push({ id: element.id, error: err, key: element.key}));
     })).then(() => expect(failures).to.deep.equal([]));
   });
 
