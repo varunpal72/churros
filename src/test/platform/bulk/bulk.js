@@ -17,10 +17,12 @@ suite.forPlatform('bulk', (test) => {
       instanceId = r.body.id;
       workflow[ 0 ].targetConfiguration.token = r.body.token;
     })
-    .then(r => done()));
+    .then(r => done())
+    .catch(err => done(err));
 
   after(done => provisioner.delete(instanceId)
-    .then(r => done()));
+    .then(r => done())
+    .catch(err => done(err));
 
   it('should support bulk download', () => {
     let bulkId;
