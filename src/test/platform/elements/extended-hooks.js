@@ -55,7 +55,24 @@ suite.forPlatform('extended element hook scripts for existing endpoints ', (test
       .then(r => Promise.all(r.body.map(hook => cloud.delete(`/elements/box/hooks/${hook.id}`))))
       .then(() => cloud.post('/elements/box/hooks', {
         type: 'postRequest',
-        body: 'done({response_status_code: response_status_code+1});'}))
-      .then(() => cloud.withOptions({ qs: { pageSize: '1', path: '/' } }).get('/hubs/documents/folders/contents', r => expect(r).to.have.statusCode(201)));
+        body: 'done({response_status_code: response_status_code+1, response_body: {replace: true}});'}))
+      .then(() => cloud.withOptions({ qs: { pageSize: '1', path: '/' } }).get('/hubs/documents/folders/contents', r => expect(r).to.have.statusCode(201)))
+      .then(r => expect(r.body).to.deep.equal({replace: true}));
+  });
+
+  it ('should not run hooks for standard endpoints', () => {
+    if (props.get('user') === 'system') {
+      return;
+    }
+    return cloud.get('/elements/box/hooks')
+      .then(r => Promise.all(r.body.map(hook => cloud.delete(`/elements/box/hooks/${hook.id}`))))
+      .then(() => cloud.post('/elements/box/hooks', {
+        type: 'preRequest',
+        body: 'done({continue:false, response_status_code: 432, response_body: {surprise: false}});'}))
+      .then(() => cloud.post('/elements/box/hooks', {
+        type: 'postRequest',
+        body: 'done({response_status_code: response_status_code+1, response_body: {replace: true}});'}))
+      .then(() => cloud.get('/hubs/documents/ping', r => expect(r).to.have.statusCode(200)))
+      .then(r => expect(r.body.endpoint).to.equal('box'));
   });
 });
