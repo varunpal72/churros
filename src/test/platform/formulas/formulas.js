@@ -180,6 +180,28 @@ suite.forPlatform('formulas', opts, (test) => {
       });
   });
 
+  it('should allow setting the engine flag to use bodenstein on a formula', () => {
+    const f = common.genFormula({});
+    const patchBody = {
+      engine: 'bodenstein',
+    };
+
+    const validator = (formula) => {
+      expect(formula.engine).to.equal(patchBody.engine);
+    };
+
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.patch(`${test.api}/${formulaId}`, patchBody))
+      .then(r => validator(r.body))
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
+  });
+
   test
     .withApi(test.api + '/-1/export')
     .should.return404OnGet();
