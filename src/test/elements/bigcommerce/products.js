@@ -9,10 +9,11 @@ const fieldsPayload = require('./assets/fields');
 const imagesPayload = require('./assets/images');
 const skusPayload = require('./assets/skus');
 const cloud = require('core/cloud');
+const faker = require('faker');
 
-const name = tools.random();
+const name = faker.random.word();
 const productsUpdate = () => ({
-  "name": "Cloud Elements"
+  "name": faker.random.word(),
 });
 
 const options = {
@@ -45,6 +46,7 @@ const skusUpdate = () => ({
 brandsPayload.name = tools.randomStr('abcdefghijklmnopqrstuvwxyz', 10);
 
 suite.forElement('ecommerce', 'products', { payload: payload }, (test) => {
+  let name ;
   test.withOptions(options).should.supportCruds();
   test.withApi(`${test.api}/count`).should.return200OnGet();
   test.withApi(`${test.api}/options`).should.return200OnGet();
