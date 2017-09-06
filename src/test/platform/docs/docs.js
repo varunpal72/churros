@@ -5,29 +5,27 @@ const cloud = require('core/cloud');
 const swaggerParser = require('swagger-parser');
 const expect = require('chakram').expect;
 
-const elementKeys = ['hubspot', 'hubspotcrm', 'dynamicscrmadfs', 'quickbooks',
-  'quickbooksonprem', 'netsuitecrmv2', 'netsuiteerpv2', 'netsuitefinancev2', 'marketo', 'zendesk', 'sfdc', 'sfdcservicecloud', 'egnyte'
-];
-
 suite.forPlatform('docs', {}, () => {
-  let hubs, elementIds;
+  let hubs, elements;
 
   before(() => cloud.get('/elements')
     .then(r => {
-      elementIds = r.body.reduce((p, c) => {
-        if (c.active && elementKeys.indexOf(c.key) > -1) { p.add(c.id); }
+      elements = r.body.reduce((p, c) => {
+        if (c.active) {
+          p.push({id: c.id, key: c.key});
+        }
         return p;
-      }, new Set());
+      }, []);
 
       hubs = r.body.reduce((p, c) => {
-        if (c.active) { p.add(c.hub); }
+        if (c.active) { p.push(c.hub); }
         return p;
-      }, new Set());
+      }, []);
     }));
 
   // Skipping this test as the hubs swagger is not validated { skip: true }
   it.skip('should return proper swagger json for hubs', () => {
-    return Promise.all(Array.from(hubs).map(h => {
+    return Promise.all(hubs.map(h => {
       return cloud.get(`/docs/${h}`)
         .then(r => r.body)
         .then(s => swaggerParser.validate(s, (err, api) => {
@@ -38,8 +36,8 @@ suite.forPlatform('docs', {}, () => {
 
   it('should return proper swagger json for elements', () => {
     let failures = [];
-    return Promise.all(Array.from(elementIds).map(elementId => {
-      return cloud.get(`/elements/${elementId}/docs`)
+    return Promise.all(elements.map(element => {
+      return cloud.get(`/elements/${element.id}/docs`)
         .then(r => r.body)
         .then(s => {
           return new Promise(function(resolve, reject) {
@@ -50,7 +48,8 @@ suite.forPlatform('docs', {}, () => {
               resolve();
             });
           });
-        }).catch((err) => failures.push({ id: elementId, error: err }));
+        })
+        .catch((err) => failures.push({ id: element.id, error: err, key: element.key}));
     })).then(() => expect(failures).to.deep.equal([]));
   });
 
