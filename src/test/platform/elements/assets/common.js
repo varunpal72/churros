@@ -24,7 +24,7 @@ exports.genElementWithObjects = (opts) => ({
   description: (opts.description || "A Churros element"),
   authentication: (opts.authentication) || { type: 'basic' },
   configuration: (opts.configuration) || [exports.genBaseUrlConfig({})],
-  objects: objectPayload
+  objects: [objectPayload]
 });
 
 exports.genDBElement = (opts) => ({
