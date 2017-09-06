@@ -5,10 +5,6 @@ const cloud = require('core/cloud');
 const swaggerParser = require('swagger-parser');
 const expect = require('chakram').expect;
 
-const elementKeys = ['hubspot', 'hubspotcrm', 'dynamicscrmadfs', 'quickbooks',
-  'quickbooksonprem', 'netsuitecrmv2', 'netsuiteerpv2', 'netsuitefinancev2', 'marketo', 'zendesk', 'sfdc', 'sfdcservicecloud', 'egnyte'
-];
-
 suite.forPlatform('docs', {}, () => {
   let hubs, elements;
 
