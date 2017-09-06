@@ -51,6 +51,9 @@ const parseProps = (element) => {
       }
     }
   };
+  if (props.getOptionalForKey(element, 'extra.oauth.params')) {
+    args.options.qs = Object.assign({}, args.options.qs, props.getOptionalForKey(element, 'extra.oauth.params'))
+  }
   return new Promise((res, rej) => res(args));
 };
 
