@@ -1,10 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/lists');
 const contactsPayload = require('./assets/contacts');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/lists.json`);
 const build = (overrides) => Object.assign({}, contactsPayload, overrides);
 const contactUpdatePayload = build({ lastName: tools.random(), firstName: tools.random(), emailAddress: tools.randomEmail() });
 
