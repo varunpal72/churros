@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/companies.json`);
 
-suite.forElement('db', 'companies', { payload: payload }, (test) => {
+suite.forElement('db','companies',{ payload: payload },(test) => {
   const options = {
     churros: {
       updatePayload: {
