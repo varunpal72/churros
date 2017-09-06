@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
 suite.forElement('helpdesk', 'contacts', (test) => {
   const updatePayload = {
