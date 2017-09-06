@@ -450,7 +450,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.wait(() => browser.isElementPresent(webdriver.By.className('btn btn-primary')), 10000)
         .thenCatch(r => true);
       browser.findElement(webdriver.By.className('btn btn-primary')).click();
-      browser.sleep(2000)
+      browser.sleep(2000);
       return browser.getCurrentUrl();
     case 'servicemax':
     case 'sagelive':
