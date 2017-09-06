@@ -180,7 +180,7 @@ suite.forPlatform('formulas', opts, (test) => {
       });
   });
 
-  it('should allow setting the engine flag to use bodenstein on a formula', () => {
+  it('should allow setting the engine flag to use bodenstein to execute a formula', () => {
     const f = common.genFormula({});
     const patchBody = {
       engine: 'bodenstein',
