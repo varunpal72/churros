@@ -52,4 +52,24 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
 
+  it(`should allow pagination with page and 1000 pageSize for ${test.api}/:id/tasks`, () => {
+    let id, taskId1, taskId2;
+    return cloud.post(test.api, payload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.post(`${test.api}/${id}/tasks`, taskPayload))
+      .then(r => taskId1 = r.body.id)
+      .then(r => cloud.post(`${test.api}/${id}/tasks`, taskPayload))
+      .then(r => taskId2 = r.body.id)
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1000 } }).get(`${test.api}/${id}/tasks`))
+      .then(r => {
+        expect(r.body).to.not.be.empty;
+        expect(r.body.length).to.equal(2);
+      })
+      .then(r => cloud.withOptions({ qs: { page: 2, pageSize: 1000 } }).get(`${test.api}/${id}/tasks`))
+      .then(r => expect(r.body).to.be.empty)
+      .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId1}`))
+      .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId2}`))
+      .then(r => cloud.delete(`${test.api}/${id}`));
+  });
+
 });
