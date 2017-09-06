@@ -415,7 +415,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.getCurrentUrl();
     case 'paypalv2--sandbox':
       //Sandbox version has slightly different url.
-      r.body.oauthUrl = `https://www.sandbox${r.body.oauthUrl.split('https://www')[1]}`
+      r.body.oauthUrl = `https://www.sandbox${r.body.oauthUrl.split('https://www')[1]}`; // jshint ignore:line
     case 'paypalv2':
       browser.get(r.body.oauthUrl);
       browser.waitForElement(webdriver.By.id('email'), 5000);
