@@ -414,7 +414,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 10000);
       return browser.getCurrentUrl();
     case 'paypalv2--sandbox':
-      //Sandbox version has slightly different url.
+      //Sandbox version has slightly different url. Will fall into regular flow after changing url
       r.body.oauthUrl = `https://www.sandbox${r.body.oauthUrl.split('https://www')[1]}`; // jshint ignore:line
     case 'paypalv2':
       browser.get(r.body.oauthUrl);
