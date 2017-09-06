@@ -3,13 +3,11 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
-
-suite.forElement('helpdesk', 'contacts', (test) => {
-  const updatePayload = {
-    "login": tools.random()
-  };
-
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
+const updatePayload = {
+  "login": tools.random()
+};
+suite.forElement('helpdesk', 'contacts',{payload : payload}, (test) => {
   it('should allow CRUDS for contacts', () => {
     let contactID;
     return cloud.get(test.api)
