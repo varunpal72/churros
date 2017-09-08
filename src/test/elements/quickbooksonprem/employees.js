@@ -1,8 +1,8 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/employees');
 const cloud = require('core/cloud');
+const payload = require('core/tools').requirePayload(`${__dirname}/assets/employees.json`);
 const updatePayload = { "FirstName": "shortName" };
 
 suite.forElement('finance', 'employees', { payload: payload }, (test) => {

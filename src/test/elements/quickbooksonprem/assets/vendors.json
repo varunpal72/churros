@@ -4,7 +4,7 @@
   "Email": "r@cloud-elements.com",
   "VendorTaxIdent": "01-2345678",
   "FirstName": "Robot",
-  "Name": "RR Inc",
+  "Name": "<<random.word>>",
   "Contact": "RRR",
   "AccountNumber": "103940",
   "CompanyName": "RRR Inc",

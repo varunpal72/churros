@@ -1,9 +1,9 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/vendors');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
+const payload = tools.requirePayload(`${__dirname}/assets/vendors.json`);
 const updatePayload = { "FirstName": tools.random(), "LastName": tools.random() };
 
 suite.forElement('finance', 'vendors', { payload: payload }, (test) => {
