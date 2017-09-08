@@ -1,4 +1,4 @@
-[{
+{
   "name": "churrosContacts",
   "primaryKeyName": "id",
   "createdDateName": "created_dt",
@@ -13,4 +13,4 @@
       "or"
     ]
   }
-}]
+}

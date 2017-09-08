@@ -17,7 +17,7 @@ const crudsObject = (url, schema, payload, updatePayload) => {
 };
 
 const genObject = (opts) => {
-  const newPayload = payload[0] || {};
+  const newPayload = payload || {};
   newPayload.createdDateName = (opts.createdDateName || 'created_dt');
   return newPayload;
 };
@@ -30,6 +30,6 @@ suite.forPlatform('elements/objects', opts, (test) => {
     .then(r => idUrl = `elements/${element.id}/objects`));
 
   it('should support CRUD by key', () => crudsObject(keyUrl, schema, genObject({}), genObject({ createdDateName: "created_date" })));
-  it('should support CRUD by key', () => crudsObject(idUrl, schema, genObject({}), genObject({ createdDateName: "created_date" })));
+  it('should support CRUD by id', () => crudsObject(idUrl, schema, genObject({}), genObject({ createdDateName: "created_date" })));
 
 });

@@ -773,4 +773,16 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
     return eventTriggerTest('simple-successful-formula', 1, 2, validator);
   });
+
+  it('should allow a script step to use the moment package', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        expect(e.status).to.equal('success');
+        expect(e.stepExecutions[0].status).to.equal('success');
+        expect(e.stepExecutions[0].stepExecutionValues[0].key).to.equal('useMomentPackage.time');
+      });
+    };
+    return manualTriggerTest('use-moment-package', null, {}, 2, validator);
+  });
+
 });
