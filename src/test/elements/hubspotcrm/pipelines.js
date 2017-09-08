@@ -7,16 +7,12 @@ const payload = tools.requirePayload(`${__dirname}/assets/pipelines.json`);
 
 suite.forElement('crm', 'pipelines', { payload: payload }, (test) => {
 
-
   it(`should allow CRUDS for ${test.api}`, () => {
     const updatePayload = {
-      "pipelineId": "",
-      "label": "Temp",
+      "label": "test123Pipe",
       "displayOrder": 10,
       "stages": [{
-        "label": "temp",
-        "displayOrder": 12,
-        "probability": 0.1
+        "label": "test123Pipe"
       }]
     };
     let pipelineId;
@@ -28,7 +24,7 @@ suite.forElement('crm', 'pipelines', { payload: payload }, (test) => {
         updatePayload.pipelineId = pipelineId;
       })
       .then(r => cloud.get(`${test.api}/${pipelineId}`))
-      .then(r => cloud.patch(`${test.api}/${pipelineId}`, updatePayload))
+      .then(r => cloud.put(`${test.api}/${pipelineId}`, updatePayload))
       .then(r => cloud.delete(`${test.api}/${pipelineId}`));
   });
   test.should.supportPagination();
