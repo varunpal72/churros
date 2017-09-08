@@ -31,5 +31,4 @@ suite.forPlatform('elements/objects', opts, (test) => {
 
   it('should support CRUD by key', () => crudsObject(keyUrl, schema, genObject({}), genObject({ createdDateName: "created_date" })));
   it('should support CRUD by id', () => crudsObject(idUrl, schema, genObject({}), genObject({ createdDateName: "created_date" })));
-
 });
