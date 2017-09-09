@@ -28,7 +28,7 @@
             ],
             "properties": {
                 "method": "GET",
-                "url": "config.http.request.url"
+                "url": "${config.http.request.url}"
             },
             "type": "httpRequest"
         }
