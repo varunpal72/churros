@@ -34,6 +34,7 @@ const validateErrorStepExecution = se =>
 
 const validateLoopSuccessfulLoopStepExecution = se => {
   const flat = flattenStepExecutionValues(se.stepExecutionValues);
+
   expect(flat['loop.index']).to.not.be.empty;
   const index = parseInt(flat['loop.index']);
 
@@ -44,7 +45,8 @@ const validateLoopSuccessfulLoopStepExecution = se => {
   }
 
   validateSuccessfulStepExecution(se);
-  expect(flat['loop.entry']).to.contain('{"val":0.');
+  expect(flat['loop.entry']).to.contain('"val"');
+  expect(flat['loop.entry']).to.contain(':');
 };
 
 const validateLoopSuccessfulEmailStepExecution = se => {
