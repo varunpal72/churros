@@ -14,7 +14,7 @@
       "type": "loop",
       "properties": {
         "retry": "false",
-        "list": "${create-list.list}"
+        "list": "${steps.create-list.list}"
       }
     },
     {
