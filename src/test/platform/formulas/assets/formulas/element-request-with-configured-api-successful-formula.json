@@ -23,10 +23,9 @@
             "onSuccess": [],
             "properties": {
                 "acceptableStatusCodes": "200",
-                "api": "/hubs/crm/${config.resource.name}/{id}",
+                "api": "/hubs/crm/${config.resource.name}/${steps.delete-accounts-path.id}",
                 "elementInstanceId": "${trigger-instance}",
                 "method": "DELETE",
-                "path": "${delete-accounts-path}",
                 "retry": "true",
                 "retryAttempts": "3",
                 "retryDelay": "200",

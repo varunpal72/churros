@@ -25,7 +25,7 @@
       "type": "loop",
       "onSuccess": ["silly-script-1"],
       "properties": {
-        "list": "${create-list.list}"
+        "list": "${steps.create-list.list}"
       }
     },
     {
@@ -42,7 +42,7 @@
       "onSuccess": ["silly-script-2"],
       "onFailure": ["loop-1"],
       "properties": {
-        "list": "${create-list.list}"
+        "list": "${steps.create-list.list}"
       }
     },
     {

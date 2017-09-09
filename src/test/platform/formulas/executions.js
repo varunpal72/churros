@@ -69,7 +69,15 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 };
 
 const engine = process.env.CHURROS_FORMULAS_ENGINE;
-//const isBodenstein = engine === 'bodenstein';
+const isBodenstein = engine === 'bodenstein';
+const isSkippedForBode = () => {
+  if (isBodenstein) {
+    logger.warn('This formula is not supported when using the bodenstein engine. Skipping.');
+    return true;
+  } else {
+    return false;
+  }
+}
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let closeioId, dropboxId;
@@ -234,10 +242,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       .then(fi => testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus));
   };
 
+//pass
   it('should successfully execute a simple formula triggered by a single event', () => eventTriggerTest('simple-successful-formula', 1, 2));
 
+//pass
   it('should successfully execute a simple formula triggered by a triple event', () => eventTriggerTest('simple-successful-formula', 3, 2));
 
+//pass
   it('should successfully execute a formula and properly handle context between steps', () => {
     const validator = (executions) => {
       executions.map(e => {
@@ -255,7 +266,13 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('script-context-successful-formula', 1, 4, validator);
   });
 
-  it('should successfully execute a single threaded formula triggered by an event with three objects', () => eventTriggerTest('simple-successful-formula-single-threaded', 3, 2));
+//skip
+  it('should successfully execute a single threaded formula triggered by an event with three objects', () => {
+    // single threaded formulas not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
+    return eventTriggerTest('simple-successful-formula-single-threaded', 3, 2);
+  });
 
   it('should properly handle a formula with a step that times out', () => {
     const validator = (executions) => {
@@ -270,7 +287,11 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('simple-timeout-formula', 1, 2, validator, 'failed');
   });
 
+//skip
   it('should properly handle a formula with a v1 step that returns no values', () => {
+    // v1 steps not support with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -310,6 +331,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should properly handle a formula with a v1 step that contains invalid json', () => {
+    // v1 steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -336,6 +360,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should properly handle a single threaded formula with a step that contains invalid json, triggered by an event with three objects', () => {
+    // single threaded formulas not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -440,6 +467,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   it('should successfully execute one simple formula instance x number of times for x events', () => eventTriggerTest('simple-successful-formula', 10, 2));
 
   it('should successfully execute one complex formula instance x number of times for x events', () => {
+    // notification steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -514,6 +544,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should have a unique formula context for a single-threaded formula that has multiple polling events trigger multiple executions at once', () => {
+    // single threaded formulas not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       // validate that each objectId exists once somewhere in the step execution values
       const events = require('./assets/events/triple-event-closeio');
@@ -569,6 +602,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
 
   it('should successfully stream a bulk file using an elementRequestStream step in a formula', () => {
+    // elementRequestStream steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const configuration = { source: closeioId, target: closeioId, 'object.name': 'accounts' };
     let bulkUploadId;
     const validator = (executions) => {
@@ -622,6 +658,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully stream a file via the documents hub APIs using an elementRequestStream step in a formula', () => {
+    // elementRequestStream steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const configuration = { 'dropbox.instance': dropboxId };
 
     const validator = (executions) => {
@@ -644,6 +683,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should cancel a running formula instance execution and not attempt to cancel an already cancelled/finished execution', () => {
+    // cancelling is not supported with bodenstein
+    if (isSkippedForBode()) { return; }
 
     const cancelTestCustomTestWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
 
