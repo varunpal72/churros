@@ -69,7 +69,7 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 };
 
 const engine = process.env.CHURROS_FORMULAS_ENGINE;
-const isBodenstein = engine === 'bodenstein';
+//const isBodenstein = engine === 'bodenstein';
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let closeioId, dropboxId;
