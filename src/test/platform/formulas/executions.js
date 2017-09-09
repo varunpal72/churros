@@ -66,6 +66,8 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
   }, []));
 };
 
+const engine = process.env.CHURROS_FORMULAS_ENGINE;
+const isBodenstein = engine === 'bodenstein';
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let closeioId, dropboxId;
@@ -103,6 +105,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     let fi = require(`./assets/formulas/basic-formula-instance`);
     if (fs.existsSync(`./assets/formulas/${fName}-instance`)) fi = require(`./assets/formulas/${fName}-instance`);
 
+    f.engine = engine;
+
     const validatorWrapper = (executions) => {
       executions.map(e => {
         e.stepExecutions.map(se => {
@@ -133,6 +137,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const f = require(`./assets/formulas/${fName}`);
     let fi = require(`./assets/formulas/basic-formula-instance`);
     if (fs.existsSync(`./assets/formulas/${fName}-instance`)) fi = require(`./assets/formulas/${fName}-instance`);
+
+    f.engine = engine;
 
     const validatorWrapper = (executions) => {
       executions.map(e => {
@@ -168,6 +174,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const f = require(`./assets/formulas/${fName}`);
     let fi = { name: 'churros-manual-formula-instance' };
 
+    f.engine = engine;
+
     if (configuration) {
       fi.configuration = configuration;
     }
@@ -194,6 +202,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
    */
   const scheduleTriggerTest = (fName, numSevs, validator, executionStatus) => {
     const f = require(`./assets/formulas/${fName}`);
+
+    f.engine = engine;
 
     const validatorWrapper = (executions) => {
       executions.map(e => {
