@@ -77,7 +77,7 @@ const isSkippedForBode = () => {
   } else {
     return false;
   }
-}
+};
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let closeioId, dropboxId;
