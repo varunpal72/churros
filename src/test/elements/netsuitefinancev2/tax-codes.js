@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('finance', 'tax-codes', (test) => {
-  it('should shupport GET /tax-codes and GET /tax-codes/:id', () => {
+  it('should support GET /tax-codes and GET /tax-codes/:id', () => {
     let taxId;
     return cloud.get(test.api)
       .then(r => taxId = r.body[0].internalId)
