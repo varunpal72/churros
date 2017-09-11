@@ -16,7 +16,7 @@ const lock = () => ({
 
 suite.forElement('documents', 'files', null, (test) => {
 
-  it.skip('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
+  it('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
     let query = { path: `/brady-${faker.random.number()}.jpg` };
@@ -27,7 +27,7 @@ suite.forElement('documents', 'files', null, (test) => {
       .then(r => cloud.delete(test.api + '/' + fileId));
   });
 
-  it.skip('should support links for files/:id/links without raw payload', () => {
+  it('should support links for files/:id/links without raw payload', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
     let query = { path: `/brady-${faker.random.number()}.jpg` };
@@ -38,7 +38,7 @@ suite.forElement('documents', 'files', null, (test) => {
       .then(r => cloud.delete('/hubs/documents/files/' + fileId));
   });
 
-  it.skip('should support links for files/links with raw payload', () => {
+  it('should support links for files/links with raw payload', () => {
     let fileId;
     let filePath;
     let path = __dirname + '/../assets/brady.jpg';
@@ -53,7 +53,7 @@ suite.forElement('documents', 'files', null, (test) => {
       .then(r => cloud.delete('/hubs/documents/files/' + fileId));
   });
 
-  it.skip('should fail when copying file with existing file name', () => {
+  it('should fail when copying file with existing file name', () => {
     let fileId1, fileId2, filePath1, filePath2;
     let path = __dirname + '/../assets/brady.jpg';
     let query1 = { path: `/brady-${faker.random.number()}.jpg` };
@@ -105,3 +105,4 @@ suite.forElement('documents', 'files', null, (test) => {
   });
 
 });
+
