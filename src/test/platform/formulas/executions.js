@@ -35,6 +35,11 @@ const validateErrorStepExecution = se =>
 const validateLoopSuccessfulLoopStepExecution = se => {
   const flat = flattenStepExecutionValues(se.stepExecutionValues);
 
+  // for bode on the last (failed) loop execution there is no index
+  if (!flat['loop.index']) {
+    return validateErrorStepExecution(se);
+  }
+
   expect(flat['loop.index']).to.not.be.empty;
   const index = parseInt(flat['loop.index']);
 
@@ -389,7 +394,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('loop-successful-formula', 1, 103, validator, 'success', 103);
   });
 
-// TODO - failed --  retry stuff
+// TODO - failed - retry stuff
   it('should successfully execute a simple element request formula triggered by a single event', () => {
     const validator = (executions) => {
       executions.map(e => {
@@ -434,7 +439,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return manualTriggerTest('simple-retry-execution-formula', null, {}, 2, validator, 'retry');
   });
 
-// TODO - failed -- retry stuff
+// TODO - failed - retry stuff
   it('should successfully execute an element request formula with a configured api field', () => {
     const validator = (executions) => {
       executions.map(e => {
@@ -467,7 +472,6 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('large-payload-successful-formula', 1, 3, validator);
   });
 
-// TODO - failed - no idea
   it('should successfully execute one simple formula instance x number of times for x events', () => eventTriggerTest('simple-successful-formula', 10, 2));
 
   it('should successfully execute one complex formula instance x number of times for x events', () => {
@@ -492,7 +496,6 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('complex-successful-formula', 3, 30, validator, 'success', 30);
   });
 
-// TODO - failed - also fails for soba - wtf is up with this test, it all looks good
   it('should support an on failure for a script step', () => {
     const validator = (executions) => {
       executions.map(e => {
@@ -504,7 +507,6 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
   });
 
-// TODO - failed:bug - this one actually fails, no console
   it('should return any console.log statements on a script step that fails', () => {
     const validator = (executions) => {
       executions.map(e => {
@@ -537,7 +539,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return manualTriggerTest('manual-trigger', null, { foo: 'bar' }, 2, validator);
   });
 
-// TODO - failed -retry stuff
+// TODO - failed - retry stuff
   it('should retry a request step when the retry property is set to true', () => {
     const validator = (executions) => {
       executions.map(e => {
@@ -581,7 +583,6 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('simple-filter-formula', 1, 2, validator);
   });
 
-// TODO - failed:bug - the second time it hits the nested loop it goes to "onFailure" immediately (need to reset the index)
   it('should support formulas with nested loop steps', () => {
     const validator = (executions) => {
       const e = executions[0];
