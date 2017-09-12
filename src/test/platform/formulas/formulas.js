@@ -202,6 +202,22 @@ suite.forPlatform('formulas', opts, (test) => {
       });
   });
 
+  it('should not allow upgrading a formula to bodenstein with unsupported steps', () => {
+    const f = common.genFormula({});
+    f.steps = [{
+      "name": "unsupported-by-bode",
+      "type": "java",
+      "properties": {
+      }
+    }];
+    f.engine = 'bodenstein';
+
+    return cloud.post(test.api, f, (r) => {
+      expect(r).to.have.statusCode(400);
+      expect(r.body.message).to.contain('Invalid formula for bodenstein engine');
+    });
+  });
+
   test
     .withApi(test.api + '/-1/export')
     .should.return404OnGet();
