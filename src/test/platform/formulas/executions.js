@@ -74,7 +74,7 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 };
 
 const engine = process.env.CHURROS_FORMULAS_ENGINE;
-const isBodenstein = engine === 'bodenstein';
+const isBodenstein = engine === 'v2';
 const isSkippedForBode = () => {
   if (isBodenstein) {
     logger.warn('This formula is not supported when using the bodenstein engine. Skipping.');
@@ -87,9 +87,7 @@ const isSkippedForBode = () => {
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let closeioId, dropboxId;
   before(() => {
-    return provisioner.create('dropbox')
-      .then(r => dropboxId = r.body.id)
-      .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
+    return provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 })
       .then(r => closeioId = r.body.id)
       .catch(e => {
         console.log(`Failed to finish before()...${e}`);
@@ -100,7 +98,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   after((done) => {
     if (!closeioId) done();
     provisioner.delete(closeioId)
-      .then(r => provisioner.delete(dropboxId))
+      // .then(r => provisioner.delete(dropboxId))
       .catch(e => {
         console.log(`Failed to finish after()...${e}`);
       })
