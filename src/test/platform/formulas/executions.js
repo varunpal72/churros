@@ -74,7 +74,7 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
 };
 
 const engine = process.env.CHURROS_FORMULAS_ENGINE;
-const isBodenstein = engine === 'v2';
+const isBodenstein = engine === 'v3';
 const isSkippedForBode = () => {
   if (isBodenstein) {
     logger.warn('This formula is not supported when using the bodenstein engine. Skipping.');
