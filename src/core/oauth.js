@@ -593,7 +593,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         browser.get(r.body.oauthUrl);
         browser.findElement(webdriver.By.name('session_key')).sendKeys(username);
         browser.findElement(webdriver.By.name('session_password')).sendKeys(password);
-        browser.findElement(webdriver.By.name('signin')).click();
+        browser.findElement(webdriver.By.name('authorize')).click();
 
         //Only needed first time
         browser.wait(() => browser.isElementPresent(webdriver.By.id('action')), 10000)
