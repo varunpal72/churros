@@ -87,9 +87,10 @@ const isSkippedForBode = () => {
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let closeioId, dropboxId;
   before(() => {
-    return provisioner.create('dropbox')
-      .then(r => dropboxId = r.body.id)
-      .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
+    return provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 })
+    // provisioner.create('dropbox')
+    //   .then(r => dropboxId = r.body.id)
+    //   .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
       .then(r => closeioId = r.body.id)
       .catch(e => {
         console.log(`Failed to finish before()...${e}`);
@@ -100,7 +101,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   after((done) => {
     if (!closeioId) done();
     provisioner.delete(closeioId)
-      .then(r => provisioner.delete(dropboxId))
+      // .then(r => provisioner.delete(dropboxId))
       .catch(e => {
         console.log(`Failed to finish after()...${e}`);
       })
@@ -394,10 +395,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('loop-successful-formula', 1, 103, validator, 'success', 103);
   });
 
-// TODO - failed - retry stuff
   it('should successfully execute a simple element request formula triggered by a single event', () => {
-    // skipped for now
-    if (isSkippedForBode()) { return; }
 
     const validator = (executions) => {
       executions.map(e => {
@@ -442,10 +440,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return manualTriggerTest('simple-retry-execution-formula', null, {}, 2, validator, 'retry');
   });
 
-// TODO - failed - retry stuff
   it('should successfully execute an element request formula with a configured api field', () => {
-    // skipped for now
-    if (isSkippedForBode()) { return; }
 
     const validator = (executions) => {
       executions.map(e => {
@@ -551,10 +546,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return manualTriggerTest('manual-trigger', null, { foo: 'bar' }, 2, validator);
   });
 
-// TODO - failed - retry stuff
   it('should retry a request step when the retry property is set to true', () => {
-    // skipped for now
-    if (isSkippedForBode()) { return; }
 
     const validator = (executions) => {
       executions.map(e => {
@@ -598,10 +590,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('simple-filter-formula', 1, 2, validator);
   });
 
-// TODO - failed - dont know why
   it('should support formulas with nested loop steps', () => {
-    // skipped for now
-    if (isSkippedForBode()) { return; }
 
     const validator = (executions) => {
       const e = executions[0];
