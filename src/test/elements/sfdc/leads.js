@@ -12,6 +12,8 @@ suite.forElement('crm', 'leads', { payload: payload }, (test) => {
   test.should.supportCeqlSearch('id');
   test.should.supportCruds();
   test.should.return404OnGet('0');
+  test.withOptions({ qs: { where: "email=''" } }).should.return200OnGet();
+
   it('should allow CRUDS for /hubs/crm/leads/:id/activites', () => {
     let leadId;
     return cloud.post(test.api, payload)
