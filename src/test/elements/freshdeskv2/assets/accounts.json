@@ -1,4 +1,5 @@
 {
-    "name": "sampleChurros",
-    "description": "random description"
+  "customer": {
+      "name": "qwertylkb"
+  }
 }
