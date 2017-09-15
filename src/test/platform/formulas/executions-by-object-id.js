@@ -3,7 +3,6 @@
 const expect = require('chakram').expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const logger = require('winston');
 const provisioner = require('core/provisioner');
 const suite = require('core/suite');
 const formula = require('./assets/formulas/simple-successful-formula');
