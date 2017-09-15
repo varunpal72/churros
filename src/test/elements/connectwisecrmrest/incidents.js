@@ -5,6 +5,7 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 const payload = require('./assets/incidents');
+const timeEntryPayload = require('./assets/time-entries');
 const oPayload = require('./assets/organizations');
 const build = (overrides) => Object.assign({}, oPayload, overrides);
 
@@ -69,10 +70,25 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
     });
 
     it(`should support retrieval of related time-entries via ${test.api}/{id}/time-entries`, () => {
-        let indicentId;
+        let incidentId, timeEntryId;
         return cloud.post(test.api, payload)
-            .then(r => indicentId = r.body.id)
-            .then(() => cloud.get(`${test.api}/${indicentId}/time-entries`))
-            .then(r => cloud.delete(`${test.api}/${indicentId}`));
+            .then(r => incidentId = r.body.id)
+            .then(() => {
+                timeEntryPayload['chargeToId'] = incidentId;
+                timeEntryPayload['company'] = {id: organizationId};
+                timeEntryPayload['timeStart'] = '2017-08-23T13:15:00Z';
+            })
+            .then(() => cloud.post(`/hubs/crm/time-entries`, timeEntryPayload))
+            .then(r => timeEntryId = r.body.id)
+            .then(() => cloud.get(`${test.api}/${incidentId}/time-entries`))
+            .then(r => expect(r).to.have.statusCode(200))
+            .then(() => cloud.withOptions({ qs: {where: `notes='Test Internal Entry' AND enteredBy='Admin1'`}}).get(`${test.api}/${incidentId}/time-entries`))
+            .then(r => expect(r.body).to.have.lengthOf(1))
+            .then(() => cloud.withOptions({ qs: {where: `notes='Test Internal Entry'`}}).get(`${test.api}/${incidentId}/time-entries`))
+            .then(r => expect(r.body).to.have.lengthOf(1))
+            .then(() => cloud.withOptions({ qs: {where: `timeStart>='2017-08-23T00:01:00Z'`}}).get(`${test.api}/${incidentId}/time-entries`))
+            .then(r => expect(r.body).to.have.lengthOf(1))
+            .then(() => cloud.delete(`/hubs/crm/time-entries/${timeEntryId}`))
+            .then(r => cloud.delete(`${test.api}/${incidentId}`));
     });
 });
