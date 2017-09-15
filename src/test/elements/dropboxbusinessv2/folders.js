@@ -24,7 +24,7 @@ suite.forElement('documents', 'folders', (test) => {
       });
     });
 
-  it('should allow GET /folders/{id}/metadata for root folder', () => {
+  it('should allow GET /folders/:id/metadata for root folder', () => {
     let folderId = rootId;
     return cloud.withOptions({headers: { "Elements-As-Team-Member": memberId }}).get(`/hubs/documents/folders/${folderId}/metadata`)
       .then(r => {
@@ -65,7 +65,7 @@ suite.forElement('documents', 'folders', (test) => {
      return folderWrap(cb);
    });
 
-   it('RU /folders/:refId/metadata', () => {
+   it('should allow RU /folders/:refId/metadata', () => {
      const cb = (folder) => {
        let tempFolder = {
          path: `/a-${folder.name}`

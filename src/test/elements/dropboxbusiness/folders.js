@@ -65,7 +65,7 @@ suite.forElement('documents', 'folders', (test) => {
      return folderWrap(cb);
    });
 
-   it('RU /folders/:refId/metadata', () => {
+   it('should allow RU /folders/:refId/metadata', () => {
      const cb = (folder) => {
        let tempFolder = {
          path: `/a-${folder.name}`
