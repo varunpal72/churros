@@ -23,12 +23,12 @@ suite.forElement('crm', 'comments', () => {
         return cloud.post(`/hubs/crm/organizations`, orgPayload)
             .then(r => {
                 organizationId = r.body.id;
-                incident['company'] = {id : organizationId};
+                incident.company = {id : organizationId};
             })
             .then(() => cloud.post(`/hubs/crm/incidents`, incident))
             .then(r => incidentId = r.body.id)
             .then(() => {
-                comment['ticketId'] = incidentId;
+                comment.ticketId = incidentId;
             });
     });
 

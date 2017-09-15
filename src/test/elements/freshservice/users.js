@@ -13,7 +13,7 @@ suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
 
   it(`should support searching ${test.api} by field email`, () => {
       let id, value;
-      payload['email'] = email;
+      payload.email = email;
       return cloud.post(test.api, payload)
           .then(r => {
               id = r.body.id;

@@ -25,7 +25,7 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
         return cloud.post(`/hubs/crm/organizations`, orgPayload)
             .then(r => {
                 organizationId = r.body.id;
-                payload['company'] = {id : organizationId};
+                payload.company = {id : organizationId};
             });
     });
 
@@ -44,11 +44,11 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
         return cloud.post(test.api, payload)
             .then(r => {
                 id = r.body.id;
-                value = r.body['company'].id;
+                value = r.body.company.id;
                 const myOptions = {qs: {where: `company.id=${organizationId}`}};
                 return cloud.withOptions(myOptions).get(test.api, (r) => {
                     expect(r).to.have.statusCode(200);
-                    expect(r.body.filter(obj => obj['company'].id === value).length).to.equal(r.body.length);
+                    expect(r.body.filter(obj => obj.company.id === value).length).to.equal(r.body.length);
                 });
             })
             .then(r => cloud.delete(test.api + '/' + id));
@@ -59,11 +59,11 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
         return cloud.post(test.api, payload)
             .then(r => {
                 id = r.body.id;
-                value = r.body['lastUpdated'];
+                value = r.body.lastUpdated;
                 const myOptions = {qs: {where: "lastUpdated>'2016-08-20T18:04:26Z'"}};
                 return cloud.withOptions(myOptions).get(test.api, (r) => {
                     expect(r).to.have.statusCode(200);
-                    expect(r.body.filter(obj => obj['lastUpdated'] === value).length).to.equal(r.body.length);
+                    expect(r.body.filter(obj => obj.lastUpdated === value).length).to.equal(r.body.length);
                 });
             })
             .then(r => cloud.delete(test.api + '/' + id));
@@ -74,9 +74,9 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
         return cloud.post(test.api, payload)
             .then(r => incidentId = r.body.id)
             .then(() => {
-                timeEntryPayload['chargeToId'] = incidentId;
-                timeEntryPayload['company'] = {id: organizationId};
-                timeEntryPayload['timeStart'] = '2017-08-23T13:15:00Z';
+                timeEntryPayload.chargeToId = incidentId;
+                timeEntryPayload.company = {id: organizationId};
+                timeEntryPayload.timeStart = '2017-08-23T13:15:00Z';
             })
             .then(() => cloud.post(`/hubs/crm/time-entries`, timeEntryPayload))
             .then(r => timeEntryId = r.body.id)
