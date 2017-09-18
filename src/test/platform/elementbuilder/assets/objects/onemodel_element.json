@@ -120,6 +120,7 @@
       ],
       "object": {
         "name": "contacts",
+        "type": "array",
         "fields": [
           {
             "name": "id",
