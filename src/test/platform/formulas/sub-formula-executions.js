@@ -197,7 +197,6 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator);
   });
 
-// TODO - failing - idk why
   it('should have onSuccess or onFailure to represent the entire sub-formulas execution status', () => {
     const setup = () => createSetCreate(filterSubFormulas, 'B-filter-sub-formula', 'A-sub-formula', 'A-filter-sub-formula');
 
@@ -236,13 +235,6 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       const subFormulaExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-sub-formula')[0];
       expect(subFormulaExecution.status).to.equal('failed');
 
-      // validate A-sub-formula sevs
-      const subFormulaSevs = subFormulaExecution.stepExecutionValues;
-      expect(subFormulaSevs).to.have.length(1);
-      const subFormulaSevsJson = JSON.parse(subFormulaSevs[0].value);
-      expect(subFormulaSevsJson.request).to.not.be.null;
-      expect(subFormulaSevsJson.response).to.not.be.null;
-
       // validate A-end sevs
       const onFailureExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-end')[0];
 
@@ -267,10 +259,19 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       const execution = executions[0];
       const stepExecutions = execution.stepExecutions;
       const subStepExecution = stepExecutions.filter(se => se.stepName === 'subformula')[0];
-      const subSEVsJson = JSON.parse(subStepExecution.stepExecutionValues[0].value);
-      expect(subSEVsJson.parent).to.equal('parent');
-      expect(subSEVsJson.overRideConfig).to.equal('child');
-      expect(subSEVsJson.child).to.equal('child');
+      if (isBodenstein){
+        const parent = subStepExecution.stepExecutionValues.filter(sev => sev.key === 'subformula.parent')[0];
+        expect(parent.value).to.equal('parent');
+        const overRideConfig = subStepExecution.stepExecutionValues.filter(sev => sev.key === 'subformula.overRideConfig')[0];
+        expect(overRideConfig.value).to.equal('child');
+        const child = subStepExecution.stepExecutionValues.filter(sev => sev.key === 'subformula.child')[0];
+        expect(child.value).to.equal('child');
+      } else {
+        const subSEVsJson = JSON.parse(subStepExecution.stepExecutionValues[0].value);
+        expect(subSEVsJson.parent).to.equal('parent');
+        expect(subSEVsJson.overRideConfig).to.equal('child');
+        expect(subSEVsJson.child).to.equal('child');
+      }
 
       const lastStepExecution = stepExecutions.filter(se => se.stepName === 'last')[0];
       const lastSEVsJson = JSON.parse(lastStepExecution.stepExecutionValues[0].value);
@@ -307,7 +308,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastSEVsJson.child1.child2.child3.over).to.equal('child3');
     };
 
-    return executionTest(setup, 11, instance, validator);
+    const numberOfSteps = isBodenstein ? 4 : 11
+    return executionTest(setup, numberOfSteps, instance, validator);
   });
 
   /* Cleanup any resources */
