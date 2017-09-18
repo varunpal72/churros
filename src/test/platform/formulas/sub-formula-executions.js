@@ -35,14 +35,6 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   const engine = process.env.CHURROS_FORMULAS_ENGINE;
   const isBodenstein = engine === 'v3';
-  const isSkippedForBode = () => {
-    if (isBodenstein) {
-      logger.warn('This formula is not supported when using the bodenstein engine. Skipping.');
-      return true;
-    } else {
-      return false;
-    }
-  };
 
   /* Create SFDC element with events enabled */
   let closeioId;
@@ -178,7 +170,6 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
-// TODO - failing - 'build' not defined
   it('should support a formula with a sub-formula that has a manual trigger type', () => {
     const setup = () => createSetCreate(manualSubFormulas, 'B-manual-formula-create-resource', 'A-sub-formula', 'A-manual-formula');
 
