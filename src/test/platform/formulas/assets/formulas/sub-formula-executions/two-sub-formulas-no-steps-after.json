@@ -9,7 +9,7 @@
       "type": "event",
       "onSuccess": ["A-filter"],
       "properties": {
-        "elementInstanceId": "${crm.instance}"
+        "elementInstanceId": "${config.crm.instance}"
       }
     }],
     "steps": [{
@@ -46,7 +46,7 @@
       "type": "event",
       "onSuccess": ["B-request"],
       "properties": {
-        "elementInstanceId": "${crm.instance}"
+        "elementInstanceId": "${config.crm.instance}"
       }
     }],
     "steps": [{
@@ -54,7 +54,7 @@
       "type": "elementRequest",
       "onSuccess": ["B-sub-formula"],
       "properties": {
-        "elementInstanceId": "${crm.instance}",
+        "elementInstanceId": "${config.crm.instance}",
         "api": "/hubs/crm/contacts",
         "method": "GET"
       }
@@ -76,7 +76,7 @@
       "type": "event",
       "onSuccess": ["C-end"],
       "properties": {
-        "elementInstanceId": "${crm.instance}"
+        "elementInstanceId": "${config.crm.instance}"
       }
     }],
     "steps": [{

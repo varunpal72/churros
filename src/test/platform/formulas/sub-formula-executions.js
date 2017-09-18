@@ -33,6 +33,17 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     return cleaner.formulas.withName(names);
   };
 
+  const engine = process.env.CHURROS_FORMULAS_ENGINE;
+  const isBodenstein = engine === 'v3';
+  const isSkippedForBode = () => {
+    if (isBodenstein) {
+      logger.warn('This formula is not supported when using the bodenstein engine. Skipping.');
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   /* Create SFDC element with events enabled */
   let closeioId;
   before(() => {
@@ -63,6 +74,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   const single = (formulaList, name) => {
     const formula = formulaList.filter(formula => formula.name === name)[0];
+    formula.engine = engine;
     if (!formula) throw Error(`No formula found with name: ${name}`);
     return formula;
   };
@@ -126,12 +138,14 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   it('should support a formula that contains a sub-formula', () => {
     const setup = () => createSetCreate(simpleFormulas, 'B-simple-formula', 'A-sub-formula', 'A-simple-formula');
-    return executionTest(setup, 4, buildConfig(closeioId));
+    const numberOfSteps = isBodenstein ? 3 : 4
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
   it('should support a formula having a sub-formula with a duplicate stepName in the parent and sub-formula', () => {
     const setup = () => createSetCreate(duplicateStepFormulas, 'B-duplicate-step-sub', 'formula-b-step', 'A-duplicate-step-parent');
-    return executionTest(setup, 4, buildConfig(closeioId));
+    const numberOfSteps = isBodenstein ? 3 : 4
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
   it('should support a formula having multiple sub-formulas', () => {
@@ -149,7 +163,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastStepExecution.stepExecutionValues[0].value).to.equal('{"b":"iamb","c":"iamc"}');
     };
 
-    return executionTest(setup, 17, buildConfig(closeioId), validator);
+    const numberOfSteps = isBodenstein ? 5 : 17
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator);
   });
 
   it('should support a formula having multiple sub-formulas and no after steps', () => {
@@ -159,9 +174,11 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
         .then(() => cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'A-sub-formula-no-steps-after')));
     };
 
-    return executionTest(setup, 7, buildConfig(closeioId));
+    const numberOfSteps = isBodenstein ? 4 : 7
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
+// TODO - failing - 'build' not defined
   it('should support a formula with a sub-formula that has a manual trigger type', () => {
     const setup = () => createSetCreate(manualSubFormulas, 'B-manual-formula-create-resource', 'A-sub-formula', 'A-manual-formula');
 
@@ -176,9 +193,11 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(value.value).to.be.a('string');
     };
 
-    return executionTest(setup, 8, buildConfig(closeioId), validator);
+    const numberOfSteps = isBodenstein ? 4 : 8
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator);
   });
 
+// TODO - failing - idk why
   it('should have onSuccess or onFailure to represent the entire sub-formulas execution status', () => {
     const setup = () => createSetCreate(filterSubFormulas, 'B-filter-sub-formula', 'A-sub-formula', 'A-filter-sub-formula');
 
@@ -189,7 +208,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       stepExecutions.filter(se => se.stepName === 'A-end')[0].status === 'success';
     };
 
-    return executionTest(setup, 5, buildConfig(closeioId), validator, true);
+    const numberOfSteps = isBodenstein ? 4 : 5
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
   it('should propagate errors from sub-formulas properly', () => {
@@ -199,10 +219,14 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       const subFormulaExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-sub-formula')[0];
       expect(subFormulaExecution.status).to.equal('failed');
       expect(subFormulaExecution.stepExecutionValues).to.have.length(1);
-      expect(subFormulaExecution.stepExecutionValues[0].value).to.contain('error');
+
+      const subFormulaExecutionEnd = executions[0].stepExecutions.filter(se => se.stepName === 'A-end')[0];
+      expect(subFormulaExecutionEnd.stepExecutionValues).to.have.length(1);
+      expect(subFormulaExecutionEnd.stepExecutionValues[0].value).to.contain('error');
     };
 
-    return executionTest(setup, 4, buildConfig(closeioId), validator, true);
+    const numberOfSteps = isBodenstein ? 3 : 4
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
   it('should propagate values from a sub-formula that failed but not with an error', () => {
@@ -230,7 +254,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(endSevsJson.body).to.not.be.null;
     };
 
-    return executionTest(setup, 5, buildConfig(closeioId), validator, true);
+    const numberOfSteps = isBodenstein ? 4 : 5
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
   it('should support passing configs to a sub-formula with different keys than parent configs', () => {
@@ -253,7 +278,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastSEVsJson.overRideConfig).to.equal('parent');
     };
 
-    return executionTest(setup, 5, instance, validator);
+    const numberOfSteps = isBodenstein ? 4 : 5
+    return executionTest(setup, numberOfSteps, instance, validator);
   });
 
   it('should support passing configs to a sub-formula with same keys as parent and not override', () => {

@@ -9,7 +9,7 @@
     "type": "event",
     "onSuccess": ["A-build-args"],
     "properties": {
-      "elementInstanceId": "${crm.instance}"
+      "elementInstanceId": "${config.crm.instance}"
     }
   }],
   "steps": [{
@@ -50,7 +50,7 @@
     "type": "elementRequest",
     "onSuccess": ["B-aggregate-fields"],
     "properties": {
-      "elementInstanceId": "${crm.instance}",
+      "elementInstanceId": "${config.crm.instance}",
       "api": "/hubs/crm/{resource}",
       "method": "POST",
       "path": "${trigger.args}",
@@ -68,7 +68,7 @@
     "type": "elementRequest",
     "onSuccess": ["B-end"],
     "properties": {
-      "elementInstanceId": "${crm.instance}",
+      "elementInstanceId": "${config.crm.instance}",
       "api": "/hubs/crm/{resource}/{id}",
       "method": "GET",
       "path": "${steps.B-aggregate-fields}"
