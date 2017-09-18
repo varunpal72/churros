@@ -425,14 +425,12 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully execute a simple retry execution formula triggered manually', () => {
-    // formula retry steps are not supported with bodenstein
-    if (isSkippedForBode()) { return; }
 
     const validator = (executions) => {
       executions.map(e => {
-        expect(e.status).to.equal('retry');
+        if (!isBodenstein) { expect(e.status).to.equal('retry'); }
         e.stepExecutions.filter(se => se.stepName === 'retry-execution').map(validateSuccessfulStepExecution);
-        cloud.delete(`/formulas/instances/executions/${e.id}/retries`);
+        if (!isBodenstein){ cloud.delete(`/formulas/instances/executions/${e.id}/retries`); }
       });
     };
 
