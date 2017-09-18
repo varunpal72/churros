@@ -50,12 +50,7 @@ suite.forPlatform('element-objects', {}, (test) => {
           expect(postbodyParam.schema).to.not.be.empty;
           expect(postbodyParam.schema.properties).to.not.be.empty;
           expect(postbodyParam.schema['x-vendor-objectname']).to.not.be.empty;
-          swaggerParser.validate(r.body, (err, api) => {
-            if (err) {
-              reject(err);
-            }
-            resolve();
-          });
+          swaggerParser.validate(r.body);
       });
   });
 
