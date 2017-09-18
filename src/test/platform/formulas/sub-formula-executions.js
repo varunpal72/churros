@@ -130,13 +130,13 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   it('should support a formula that contains a sub-formula', () => {
     const setup = () => createSetCreate(simpleFormulas, 'B-simple-formula', 'A-sub-formula', 'A-simple-formula');
-    const numberOfSteps = isBodenstein ? 3 : 4
+    const numberOfSteps = isBodenstein ? 3 : 4;
     return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
   it('should support a formula having a sub-formula with a duplicate stepName in the parent and sub-formula', () => {
     const setup = () => createSetCreate(duplicateStepFormulas, 'B-duplicate-step-sub', 'formula-b-step', 'A-duplicate-step-parent');
-    const numberOfSteps = isBodenstein ? 3 : 4
+    const numberOfSteps = isBodenstein ? 3 : 4;
     return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
@@ -155,7 +155,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastStepExecution.stepExecutionValues[0].value).to.equal('{"b":"iamb","c":"iamc"}');
     };
 
-    const numberOfSteps = isBodenstein ? 5 : 17
+    const numberOfSteps = isBodenstein ? 5 : 17;
     return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator);
   });
 
@@ -166,7 +166,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
         .then(() => cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'A-sub-formula-no-steps-after')));
     };
 
-    const numberOfSteps = isBodenstein ? 4 : 7
+    const numberOfSteps = isBodenstein ? 4 : 7;
     return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
@@ -184,7 +184,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(value.value).to.be.a('string');
     };
 
-    const numberOfSteps = isBodenstein ? 4 : 8
+    const numberOfSteps = isBodenstein ? 4 : 8;
     return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator);
   });
 
@@ -198,7 +198,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       stepExecutions.filter(se => se.stepName === 'A-end')[0].status === 'success';
     };
 
-    const numberOfSteps = isBodenstein ? 4 : 5
+    const numberOfSteps = isBodenstein ? 4 : 5;
     return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
@@ -215,7 +215,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(subFormulaExecutionEnd.stepExecutionValues[0].value).to.contain('error');
     };
 
-    const numberOfSteps = isBodenstein ? 3 : 4
+    const numberOfSteps = isBodenstein ? 3 : 4;
     return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
@@ -237,7 +237,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(endSevsJson.body).to.not.be.null;
     };
 
-    const numberOfSteps = isBodenstein ? 4 : 5
+    const numberOfSteps = isBodenstein ? 4 : 5;
     return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
@@ -270,7 +270,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastSEVsJson.overRideConfig).to.equal('parent');
     };
 
-    const numberOfSteps = isBodenstein ? 4 : 5
+    const numberOfSteps = isBodenstein ? 4 : 5;
     return executionTest(setup, numberOfSteps, instance, validator);
   });
 
@@ -299,7 +299,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastSEVsJson.child1.child2.child3.over).to.equal('child3');
     };
 
-    const numberOfSteps = isBodenstein ? 4 : 11
+    const numberOfSteps = isBodenstein ? 4 : 11;
     return executionTest(setup, numberOfSteps, instance, validator);
   });
 
