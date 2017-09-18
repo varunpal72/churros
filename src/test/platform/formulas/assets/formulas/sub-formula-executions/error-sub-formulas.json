@@ -9,7 +9,7 @@
     "type": "event",
     "onSuccess": ["A-sub-formula"],
     "properties": {
-      "elementInstanceId": "${crm.instance}"
+      "elementInstanceId": "${config.crm.instance}"
     }
   }],
   "steps": [{
@@ -23,7 +23,7 @@
     "name": "A-end",
     "type": "script",
     "properties": {
-      "body": "done({subFormulaValues:steps['A-sub-formula']});"
+      "body": "done({subFormulaValues: steps['A-sub-formula']});"
     }
   }]
 }, {

@@ -9,7 +9,7 @@
       "type": "event",
       "onSuccess": ["A-filter"],
       "properties": {
-        "elementInstanceId": "${crm.instance}"
+        "elementInstanceId": "${config.crm.instance}"
       }
     }],
     "steps": [{
@@ -52,7 +52,7 @@
       "type": "event",
       "onSuccess": ["B-build-query"],
       "properties": {
-        "elementInstanceId": "${crm.instance}"
+        "elementInstanceId": "${config.crm.instance}"
       }
     }],
     "steps": [{
@@ -67,7 +67,7 @@
       "type": "elementRequest",
       "onSuccess": ["B-script"],
       "properties": {
-        "elementInstanceId": "${crm.instance}",
+        "elementInstanceId": "${config.crm.instance}",
         "api": "/hubs/crm/contacts",
         "method": "GET",
         "query": "steps.B-build-query.query"
@@ -104,7 +104,7 @@
       "type": "event",
       "onSuccess": ["C-end"],
       "properties": {
-        "elementInstanceId": "${crm.instance}"
+        "elementInstanceId": "${config.crm.instance}"
       }
     }],
     "steps": [{
