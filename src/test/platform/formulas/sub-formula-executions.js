@@ -244,7 +244,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
   it('should support passing configs to a sub-formula with different keys than parent configs', () => {
     const setup = () => createSetCreate(simpleFormulas, 'child-accepts-configs', 'subformula', 'parent-passes-conifigs');
 
-    const instance = { name: 'parent instance', configuration: { 'crm.instance': closeioId, parent: 'parent', 'over.ride.test': 'parent' } };
+    const instance = { name: 'parent instance', configuration: { 'crm.instance': closeioId, parent: 'parent', 'overRideTest': 'parent' } };
 
     const validator = (executions) => {
       const execution = executions[0];
@@ -284,7 +284,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
         .then(() => cloud.post(`/formulas`, single(simpleFormulas, 'parent')));
     };
 
-    const instance = { name: 'parent instance', configuration: { 'crm.instance': closeioId, 'over.ride.test': 'parent' } };
+    const instance = { name: 'parent instance', configuration: { 'crm.instance': closeioId, 'overRideTest': 'parent' } };
 
     const validator = (executions) => {
       const execution = executions[0];
