@@ -223,17 +223,6 @@
       "hooks": [],
       "parameters": [
         {
-          "vendorType": "path",
-          "dataType": "string",
-          "name": "id",
-          "description": "The contacts ID",
-          "vendorDataType": "string",
-          "source": "request",
-          "type": "path",
-          "vendorName": "id",
-          "required": true
-        },
-        {
           "vendorType": "body",
           "dataType": "contacts",
           "name": "contacts",
