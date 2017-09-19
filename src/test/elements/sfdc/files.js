@@ -121,7 +121,7 @@ suite.forElement('crm', 'files', (test) => {
           expect(r).to.have.statusCode(400)))
         .then(() => cloud.withOptions({qs: {pageSize:2000}}).get(`/hubs/crm/${objectName}`))
         .then(r => expect(r.body.length).to.equal(numberOfFiles));
-    }
+    };
 
     return fileWrap(cb);
   });
@@ -144,7 +144,7 @@ suite.forElement('crm', 'files', (test) => {
         .then(r => version = r.body)
         .then(() => expect(version.Description).to.equal(desc))
         .then(r => expect(version.ReasonForChange).to.equal(reason));
-    }
+    };
 
     return fileWrap(cb);
   });
