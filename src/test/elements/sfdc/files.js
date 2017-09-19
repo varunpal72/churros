@@ -127,7 +127,7 @@ suite.forElement('crm', 'files', (test) => {
   });
 
   it('should support description for /files', () => {
-    let desc = "My file description";
+    let desc = "Patriots are cheaters";
     let file;
     return cloud.withOptions({ qs: {pathOnClient: pathOnClient, description: desc} }).postFile('/hubs/crm/files', path)
       .then(r => file = r.body)
@@ -136,8 +136,8 @@ suite.forElement('crm', 'files', (test) => {
   });
 
   it('should support description & reason for /files/:fileId/versions', () => {
-    let desc = "My file description";
-    let reason = "Needed a new version";
+    let desc = "Tom Brady likes dem Uggs";
+    let reason = "2x for dem Uggs";
     let version;
     const cb = (file) => {
       return cloud.withOptions({qs: {pathOnClient: pathOnClient, description: desc, reason: reason}}).postFile(`/hubs/crm/files/${file.Id}/versions`, path)
