@@ -22,6 +22,7 @@ const genInstance = (element, o) => ({
 const crudsInstance = (baseUrl) => {
   let id;
   return provisioner.create('jira', undefined, baseUrl)
+    .then(r => cloud.hasElementObjectId(r))
     .then(r => id = r.body.id)
     .then(r => cloud.get(`${baseUrl}/${id}`, (r) => {
       expect(r).to.have.schemaAnd200(instanceSchema);
@@ -42,6 +43,7 @@ const crudsInstance = (baseUrl) => {
 const updateInstanceWithReprovision = (baseUrl, schema) => {
   let id;
   return provisioner.create('closeio')
+    .then(r => cloud.hasElementObjectId(r))
     .then(r => id = r.body.id)
     .then(r => cloud.get(`${baseUrl}/${id}`, (r) => {
       expect(r).to.have.schemaAnd200(schema);
@@ -103,6 +105,7 @@ suite.forPlatform('elements/instances', opts, (test) => {
     let configuration, sfdcId;
 
     return provisioner.create('sfdc')
+      .then(r => cloud.hasElementObjectId(r))
       .then(r => sfdcId = r.body.id)
       .then(() => cloud.get(`/instances/${sfdcId}/configuration`))
       .then(r => validate(r))

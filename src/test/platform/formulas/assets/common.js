@@ -14,6 +14,7 @@ const fiSchema = require('./schemas/formula.instance.schema');
 const createFormula = (formula) => {
   return cleaner.formulas.withName(formula.name)
     .then(r => cloud.post('/formulas', formula, fSchema))
+    .then(r => cloud.hasElementObjectId(r))
     .then(r => r.body);
 };
 
@@ -26,6 +27,7 @@ createFormula.fromFile = createFormulaFromFile;
 
 const createFormulaInstance = (formulaId, formulaInstance) =>
   cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema)
+    .then(r => cloud.hasElementObjectId(r))
     .then(r => r.body);
 
 const createFormulaInstanceFromFile = (formulaId, file) => {

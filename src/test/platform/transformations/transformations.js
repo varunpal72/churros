@@ -111,6 +111,7 @@ const crudObjectDefsByName = (level, payload, updatePayload, schema) => {
 const crudTransformsByName = (level, elementKey, payload, updatePayload, schema) => {
   let objectName = 'churros-object-' + tools.random();
   return cloud.post(getObjectDefUrl(level, objectName), genDefaultObjectDef({}))
+    .then(r => cloud.hasElementObjectId(r))
     .then(r => crud(getTransformUrl(level, objectName, elementKey), payload, updatePayload, schema))
     .then(r => cloud.delete(getObjectDefUrl(level, objectName)))
     .catch(e => {
@@ -121,6 +122,7 @@ const crudTransformsByName = (level, elementKey, payload, updatePayload, schema)
 
 const testTransformationForInstance = (objectName, objDefUrl, transUrl) => {
   return cloud.post(objDefUrl, genDefaultObjectDef({}))
+    .then(r => cloud.hasElementObjectId(r))
     // test normal transformation
     .then(r => cloud.post(transUrl, genDefaultTrans({})))
     .then(r => cloud.get('hubs/crm/' + objectName, r => {

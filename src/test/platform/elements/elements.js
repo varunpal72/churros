@@ -20,6 +20,7 @@ const crudElement = (idField, payload, updatedPayload, schema) => {
   let element, id;
   return common.deleteElementByKey('churros')
     .then(r => cloud.post('elements', payload, schema))
+    .then(r => cloud.hasElementObjectId(r))
     .then(r => element = r.body)
     .then(r => id = element[idField])
     .then(r => cloud.get(`elements/${id}`, schema))
@@ -35,6 +36,7 @@ const testElementActivation = (idField, schema) => {
   let element;
   return common.deleteElementByKey('churros')
     .then(r => cloud.post('elements', common.genElement({}), schema))
+    .then(r => cloud.hasElementObjectId(r))
     .then(r => element = r.body)
     .then(r => cloud.put(`elements/${element[idField]}/active`))
     .then(r => cloud.get(`elements/${element[idField]}`, (r) => expect(r.body.active).to.equal(true)))
