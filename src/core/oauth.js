@@ -269,45 +269,29 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.xpath('//div/button[1]')).click();
       browser.sleep(5000);
       return browser.getCurrentUrl();
+    case 'hubspotcrm':
     case 'hubspot':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('loginBtn')).click();
-      return waitForElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]/td[1]/small`), 5000)
-      .then(() => Array(5).fill(0).map((e, i) => i+1).reduce((acc, cur) => {
-        return acc.then(() => {
-          return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[1]/small`))
-            .then((element) => element.getText().then(t => t.toLowerCase().includes('churros') ? element.click() : null), (err) => {}); // ignore this
-        });
-      }, Promise.resolve(null)))
-      .then(() => browser.sleep(3000))
-      .then(() => browser.getCurrentUrl());
-    case 'hubspotcrm':
-       browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('username')).sendKeys(username);
-      browser.findElement(webdriver.By.id('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('loginBtn')).click();
-      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('html/body/div[2]/div/div[2]/div/table/tbody/tr[1]/td[1]/span')), 5000)
-        .thenCatch(r => true); // ignore
-      browser.findElement(webdriver.By.xpath('html/body/div[2]/div/div[2]/div/table/tbody/tr[1]/td[1]/span'))
-        .then((element) => element.click(), (err) => {}) // ignore this
-        .then(() => browser.sleep(5000));
-      return browser.getCurrentUrl();
-    case 'hubspot--oauth2New':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('username')).sendKeys(username);
-      browser.findElement(webdriver.By.id('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('loginBtn')).click();
-      return waitForElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[1]/td[1]/small`), 5000)
-      .then(() => Array(5).fill(0).map((e, i) => i+1).reduce((acc, cur) => {
-        return acc.then(() => {
-          return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[1]/small`))
-            .then((element) => element.getText().then(t => t.toLowerCase().includes('churros') ? element.click() : null), (err) => {}); // ignore this
-        });
-      }, Promise.resolve(null)))
-      .then(() => browser.sleep(3000))
-      .then(() => browser.getCurrentUrl());
+      console.log(`Trying the portal ID: ${config.portalId}`);
+      return browser.wait(() => browser.isElementPresent(webdriver.By.className('uiLoading')).then(r => !r), 10000)
+        .then(() => browser.sleep(2000))
+        .then(() => Array(5).fill(0).map((e, i) => i + 1).reduce((acc, cur) => {
+          return acc.then(() => {
+            return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[1]/span`))
+              .then((el) => el.getText().then(t => t.toLowerCase().includes(`${config.portalId}`) ? el.click() : null), (err) => {}); // ignore this
+          });
+        }, Promise.resolve(null)))
+        .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.className('uiLoading')), 10000))
+        .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/button/i18n-string')), 5000)
+          .catch((err) => {}))
+        .then(() => browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/button/i18n-string'))
+          .then((element) => element.click(), (err) => {}))
+        .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.className('uiLoading')).then(r => !r), 10000).catch(() => {}))
+        .then(() => browser.sleep(2000))
+        .then(() => browser.getCurrentUrl());
     case 'instagram':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('id_username')).clear();
