@@ -47,7 +47,7 @@ suite.forElement('crm', 'files', (test) => {
     return fileWrap(cb);
   });
 
-  it('should support CRUS /files/:fileId/versions', () => {
+  it('should allow CRUS /files/:fileId/versions', () => {
     let version;
     const cb = (file) => {
       return cloud.withOptions({qs: {pathOnClient: pathOnClient}}).postFile(`/hubs/crm/files/${file.Id}/versions`, path)
@@ -61,7 +61,7 @@ suite.forElement('crm', 'files', (test) => {
     return fileWrap(cb);
   });
 
-  it('should support GET /files/:fileId/versions/latest-version', () => {
+  it('should allow GET /files/:fileId/versions/latest-version', () => {
     const cb = (file) => {
       return cloud.get(`/hubs/crm/files/${file.Id}/versions/latest-version`);
     };
@@ -69,7 +69,7 @@ suite.forElement('crm', 'files', (test) => {
     return fileWrap(cb);
   });
 
-  it('should support GET /files/:fileId/versions/latest-version/metadata', () => {
+  it('should allow GET /files/:fileId/versions/latest-version/metadata', () => {
     let latestVersion;
     const cb = (file) => {
       return cloud.get(`/hubs/crm/files/${file.Id}/versions/latest-version/metadata`)
@@ -80,7 +80,7 @@ suite.forElement('crm', 'files', (test) => {
     return fileWrap(cb);
   });
 
-  it('should support CS /:objectName/:objectId/files & GET /:objectName/:objectId/files/details', () => {
+  it('should allow CS /:objectName/:objectId/files & GET /:objectName/:objectId/files/details', () => {
     let sharedFile, objectId;
     let objectName = 'Account';
       return cloud.get(`/hubs/crm/${objectName}`)
@@ -94,7 +94,7 @@ suite.forElement('crm', 'files', (test) => {
         .then(() => cloud.delete(`/hubs/crm/files/${sharedFile.ContentDocumentId}`));
   });
 
-  it('should support CREATE /:objectName/:objectId/files/:fileId', () => {
+  it('should allow CREATE /:objectName/:objectId/files/:fileId', () => {
     let sharedFile, objectId;
     let objectName = 'Account';
     const cb = (file) => {
