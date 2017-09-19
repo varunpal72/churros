@@ -17,7 +17,7 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
       .then(r => contactId = r.body.changedEntityId)
       .then(r => cloud.get(test.api))
       .then(r => cloud.get(`${test.api}/${contactId}`))
-      .then(r => cloud.put(`${test.api}/${contactId}`, updatePayload))
+      .then(r => cloud.patch(`${test.api}/${contactId}`, updatePayload))
       .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });

@@ -15,7 +15,8 @@ suite.forElement('crm', 'notes', { payload: notesPayload }, (test) => {
   it('should create a note and then update', () => {
     let noteId;
     return cloud.post(test.api, payload)
-      .then(r => noteId = r.body.data.id)
-      .then(r => cloud.put(`${test.api}/${noteId}`, updatePayload));
+      .then(r => noteId = r.body.changedEntityId)
+      .then(r => cloud.get(`${test.api}/${noteId}`))
+      .then(r => cloud.patch(`${test.api}/${noteId}`, updatePayload));
   });
 });

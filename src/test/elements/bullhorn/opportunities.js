@@ -14,6 +14,6 @@ suite.forElement('crm', 'opportunities', { payload: payload }, (test) => {
     return cloud.post(test.api, payload)
       .then(r => opportunityId = r.body.changedEntityId)
       .then(r => cloud.get(`${test.api}/${opportunityId}`))
-      .then(r => cloud.put(`${test.api}/${opportunityId}`, updatePayload));
+      .then(r => cloud.patch(`${test.api}/${opportunityId}`, updatePayload));
   });
 });
