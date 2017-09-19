@@ -69,6 +69,8 @@ describe('cloud', () => {
       .reply(200, (uri, requestBody) => {
         requestBody.id = 123;
         return requestBody;
+      }, {
+        'Elements-Object-Id': "123"
       })
       .post('/foo/bad')
       .reply(400, (uri, requestBody) => {
@@ -166,6 +168,7 @@ describe('cloud', () => {
   });
 
   it('should support post', () => cloud.post('/foo', genPayload(), genSchema()));
+  it('should support post with hasElementObject id', () => cloud.post('/foo', {}, r => cloud.hasElementObjectId(r)));
   it('should support post with options', () => cloud.withOptions({ json: true }).post('/foo', genPayload(), genSchema()));
   it('should support post with custom validation', () => cloud.post('/foo/bad', {}, (r) => expect(r).to.have.statusCode(400)));
   it('should support post with no custom validation', () => cloud.post('/foo', genPayload()));
