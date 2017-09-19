@@ -55,7 +55,8 @@ const hasElementObjectId = r => {
     expect(r).to.have.header('Elements-Object-Id', "" + r.body.id); // Need to coerce id to string since the assertion uses ===
   }
   return r;
-}
+};
+
 /**
  * Checks if a response contains the appropriate object id header
  * @param {r} response  The response object
