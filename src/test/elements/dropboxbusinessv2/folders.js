@@ -6,7 +6,7 @@ const cloud = require('core/cloud');
 const props = require('core/props');
 
 suite.forElement('documents', 'folders', (test) => {
-  let rootId = "%2F";
+  let rootId = "%252F";
   let rootPath = "/";
   let memberId = props.getForKey('dropboxbusinessv2', 'username');
 
@@ -23,7 +23,7 @@ suite.forElement('documents', 'folders', (test) => {
     });
 
   it('should allow GET /folders/{id}/metadata for root folder', () => {
-    let folderId = encodeURIComponent(rootId);
+    let folderId = rootId;
     return cloud.withOptions({headers: { "Elements-As-Team-Member": memberId }}).get(`/hubs/documents/folders/${folderId}/metadata`)
       .then(r => {
         expect(r).to.have.statusCode(200);

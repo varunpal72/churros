@@ -7,7 +7,7 @@ const payload = require('./assets/price-rules.json');
 const tools = require('core/tools');
 const discountPayload = tools.requirePayload(`${__dirname}/assets/discount-codes.json`);
 
-suite.forElement('ecommerce', 'price-rules', (test) => {
+suite.forElement('ecommerce', 'price-rules', { payload: payload }, (test) => {
   it(`should allow CRDS for ${test.api} and ${test.api}/:id/discount-codes`, () => {
     let priceRuleId, discountCodeId;
     return cloud.post(test.api, payload)

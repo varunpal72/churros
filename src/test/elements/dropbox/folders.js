@@ -5,7 +5,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 
 suite.forElement('documents', 'folders', (test) => {
-  let rootId = "%2F";
+  let rootId = "%252F";
   let rootPath = "/";
 
   it('should allow GET /folders/metadata for root folder', () => {
@@ -20,7 +20,7 @@ suite.forElement('documents', 'folders', (test) => {
   });
 
   it('should allow GET /folders/{id}/metadata for root folder', () => {
-    let folderId = encodeURIComponent(rootId);
+    let folderId = rootId;
     return cloud.get(`/hubs/documents/folders/${folderId}/metadata`)
       .then(r => {
         expect(r).to.have.statusCode(200);

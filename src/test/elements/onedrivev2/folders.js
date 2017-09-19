@@ -4,8 +4,10 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const payload = require('./assets/folders');
+const specialFolderPayload = require('./assets/special-folders');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const folderPayload = build({ name: `churros-${tools.random()}`, path: `/${tools.random()}` });
+const expect = require('chakram').expect;
 
 suite.forElement('documents', 'folders', (test) => {
 
@@ -60,6 +62,19 @@ suite.forElement('documents', 'folders', (test) => {
     };
 
     return folderWrap(cb);
+  });
+
+  it(`should allow CD ${test.api} for special characters`, () => {
+    let id;
+    let nestedFolder = {
+      'path': `${specialFolderPayload.path}/œ-stuff`,
+      'name': `${specialFolderPayload.name}/œ-stuff`
+    };
+    return cloud.post(test.api, specialFolderPayload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.post(test.api, nestedFolder))
+      .then(r => expect(r.body.path).to.equal(nestedFolder.path)) //validates that we are decoding the path properly
+      .then(r => cloud.delete(`${test.api}/${id}`));
   });
 
 });

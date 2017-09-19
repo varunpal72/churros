@@ -279,7 +279,7 @@ exports.cs = cs;
 /*
  * Gives you access to adding HTTP request options to any of the HTTP-related APIs
  */
-exports.withOptions = (options) => {
+const withOptions = (options) => {
   return {
     post: (api, payload, validationCb) => post(api, payload, validationCb, options),
     postFile: (api, filePath) => postFile(api, filePath, options),
@@ -299,9 +299,11 @@ exports.withOptions = (options) => {
     sr: (api, validationCb) => sr(api, validationCb, options),
     crs: (api, payload, validationCb) => crs(api, payload, validationCb, options),
     cr: (api, payload, validationCb) => cr(api, payload, validationCb, options),
-    cs: (api, payload, validationCb) => cs(api, payload, validationCb, options)
+    cs: (api, payload, validationCb) => cs(api, payload, validationCb, options),
+    withOptions: (moreOptions) => withOptions(Object.assign(options, moreOptions))
   };
 };
+exports.withOptions = withOptions;
 
 exports.createEvents = (element, replacements, eventRequest, numEvents) => {
   numEvents = (numEvents || 1);

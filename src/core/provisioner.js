@@ -82,6 +82,7 @@ const getPollerConfig = (element, instance) => {
     instanceCopy.configuration['event.notification.callback.url'] = 'https://httpbin.org/get';
     instanceCopy.configuration['event.notification.enabled'] = 'true';
     instanceCopy.configuration['event.poller.refresh_interval'] = '1';
+    instanceCopy.configuration['event.notification.signature.key'] = '';
     return instanceCopy;
   })
   .catch(() => instance);

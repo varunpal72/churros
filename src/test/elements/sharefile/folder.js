@@ -6,7 +6,6 @@ const suite = require('core/suite');
 const payload = require('./assets/folder');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const faker = require('faker');
 const rootFolder = '/My Files & Folders';
 
 
@@ -36,15 +35,27 @@ suite.forElement('documents', 'folders', (test) => {
   test.withOptions({ qs: { path: '/' } }).withApi('/hubs/documents/folders/metadata').should.return200OnGet();
 
   it('should update folder', () => {
-    return cloud.withOptions({ qs: { path: '/My Files & Folders' } }).get('/hubs/documents/folders/contents')
-      .then(r => cloud.withOptions({ qs: { path: r.body[0].path } }).patch('/hubs/documents/folders/metadata', r.body[0]))
-      .then(r => cloud.patch('/hubs/documents/folders/' + r.body.id + '/metadata', Object.assign({}, r.body, {name: faker.random.words()})));
+    let folderId, folderPath;
+    let updateFolder = {
+      "path": "/My Files & Folders/Alan",
+      "name": "Alan"
+    };
+
+    return cloud.post('/hubs/documents/folders', payload)
+      .then(r => { folderPath = r.body.path; })
+      .then(r => cloud.withOptions({ qs: { path: folderPath } }).patch('/hubs/documents/folders/metadata', updateFolder))
+      .then(r => { folderId = r.body.id; })
+      .then(r => cloud.delete(`${test.api}/${folderId}`))
+      .then(r => cloud.post('/hubs/documents/folders', payload))
+      .then(r => { folderId = r.body.id; })
+      .then(r => cloud.patch(`${test.api}/${folderId}/metadata`, updateFolder))
+      .then(r => cloud.delete(`${test.api}/${folderId}`));
   });
 
   it('should disallow downloading a folder', () => {
     let folderId;
     return cloud.post('/hubs/documents/folders', payload).then(r => folderId = r.body.id).then(
-      r => cloud.withOptions({qs: {path: payload.path}}).get('/hubs/documents/files', (r) => {
+      r => cloud.withOptions({ qs: { path: payload.path } }).get('/hubs/documents/files', (r) => {
         expect(r).to.have.statusCode(400);
         cloud.delete('/hubs/documents/folders/' + folderId);
       }));
