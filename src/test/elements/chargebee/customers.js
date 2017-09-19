@@ -2,13 +2,8 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
 
-const payload = () => ({
-  "first_name": tools.random(),
-  "last_name": tools.random(),
-  "email": tools.randomEmail()
-});
-
-suite.forElement('payment', 'customers', {payload:payload()}, (test) => {
+suite.forElement('payment', 'customers', {payload:payload}, (test) => {
   test.should.supportCruds();
 });

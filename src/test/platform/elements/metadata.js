@@ -23,7 +23,7 @@ suite.forPlatform('elements/metadata', opts, (test) => {
   });
 
   it('should return element metadata for expand', () => {
-    return cloud.get('elements/sfdc')
+    return cloud.get('elements/closeio')
       .then(r => cloud.get(`/elements/${r.body.id}/metadata?expand=true`, metadataExpandedSchema));
   });
 

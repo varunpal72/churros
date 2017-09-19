@@ -1,8 +1,7 @@
 {
   "customers": {
     "vendorName": "customer",
-    "fields": [
-      {
+    "fields": [{
         "path": "firstName",
         "vendorPath": "first_name"
       },
@@ -14,56 +13,44 @@
   },
   "discounts": {
     "vendorName": "discount",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "orders": {
     "vendorName": "order",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "products": {
     "vendorName": "product",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "price-rules": {
     "vendorName": "price-rules",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "shops": {
     "vendorName": "shop",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   },
   "smart-collections": {
     "vendorName": "smart-collection",
-    "fields": [
-      {
-        "path": "id",
-        "vendorPath": "id"
-      }
-    ]
+    "fields": [{
+      "path": "id",
+      "vendorPath": "id"
+    }]
   }
 }

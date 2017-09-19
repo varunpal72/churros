@@ -264,6 +264,24 @@
       "type": "string"
     }]
   },
+  "classifications": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "departments": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
+  "locations": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "expenses": {
     "fields": [{
       "path": "id",
@@ -279,6 +297,10 @@
   "incidents": {
     "fields": [{
       "path": "id",
+      "type": "string"
+    },
+    {
+      "path": "junk",
       "type": "string"
     }]
   },
@@ -425,6 +447,10 @@
       },
       {
         "path": "result",
+        "type": "string"
+      },
+      {
+        "path": "modified_date",
         "type": "string"
       }
     ]
@@ -1111,6 +1137,38 @@
  "productsCategories": {
    "fields": [{
      "path": "id",
+     "type": "string"
+   }]
+ },
+ "vendor-credits": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "changes": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   },
+   {
+     "path": "junk",
+     "type": "string"
+   }]
+ },
+ "drafts" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "problems": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   },
+   {
+     "path": "junk",
      "type": "string"
    }]
  }

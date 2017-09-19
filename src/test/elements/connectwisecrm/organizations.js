@@ -12,5 +12,5 @@ const createOrganization = (payload) => {
 suite.forElement('crm', 'organizations', { payload: createOrganization(payload) }, (test) => {
   test.should.supportCruds();
   test.withOptions({ qs: { where: 'companyName=\'Churros Company\'' } }).should.return200OnGet();
-  test.should.supportPagination();
+  test.should.supportPagination('id');
 });

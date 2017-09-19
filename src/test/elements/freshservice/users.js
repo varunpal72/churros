@@ -2,14 +2,9 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = {
-  "name": "Super Man",
-  "email": tools.randomEmail(),
-  "department_users_attributes": {
-    "department_id": "2,3"
-  }
-};
+const payload = tools.requirePayload(`${__dirname}/assets/users.json`);
+
 suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
-  test.withOptions({ qs: { page: 1 } }).should.return200OnGet();
   test.should.supportCruds();
+  test.should.supportPagination();
 });

@@ -8,10 +8,12 @@ const payload = require('./assets/element.object.payload.json');
 const opts = { payload: payload, schema: schema };
 
 const crudsObject = (url, schema, payload, updatePayload) => {
+  let object;
   return cloud.post(url, payload, schema)
-    .then(r => cloud.get(url + '/' + payload.name))
-    .then(r => cloud.put(url + '/' + payload.name, updatePayload, schema))
-    .then(r => cloud.delete(url + '/' + payload.name));
+    .then(r => object = r.body)
+    .then(r => cloud.get(url + '/' + object.id))
+    .then(r => cloud.put(url + '/' + object.id, updatePayload, schema))
+    .then(r => cloud.delete(url + '/' + object.id));
 };
 
 const genObject = (opts) => {
@@ -28,6 +30,5 @@ suite.forPlatform('elements/objects', opts, (test) => {
     .then(r => idUrl = `elements/${element.id}/objects`));
 
   it('should support CRUD by key', () => crudsObject(keyUrl, schema, genObject({}), genObject({ createdDateName: "created_date" })));
-  it('should support CRUD by key', () => crudsObject(idUrl, schema, genObject({}), genObject({ createdDateName: "created_date" })));
-
+  it('should support CRUD by id', () => crudsObject(idUrl, schema, genObject({}), genObject({ createdDateName: "created_date" })));
 });
