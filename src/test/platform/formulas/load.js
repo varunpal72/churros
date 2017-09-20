@@ -89,7 +89,7 @@ const createXInstances = (x, formulaId, formulaInstance) => {
  */
 suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   let sfdcId;
-  before(() => cleaner.formulas.withName('complex-successful')
+  before(() => cleaner.formulas.withName('complex_successful')
     .then(r => common.provisionSfdcWithWebhook())
     .then(r => sfdcId = r.body.id));
 
@@ -100,8 +100,9 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
 
   it('should handle a very large event payload repeatedly', () => {
     const formula = require('./assets/formulas/complex-successful-formula');
+    formula.engine = process.env.CHURROS_FORMULAS_ENGINE;
     const formulaInstance = require('./assets/formulas/basic-formula-instance');
-    formulaInstance.configuration[ 'trigger-instance' ] = sfdcId;
+    formulaInstance.configuration[ 'trigger_instance' ] = sfdcId;
 
     const numFormulaInstances = 1;
     const numEvents = 1;

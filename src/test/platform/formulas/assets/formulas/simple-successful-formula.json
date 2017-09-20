@@ -1,15 +1,15 @@
 {
   "name": "simple-successful",
   "configuration": [{
-    "key": "trigger-instance",
-    "name": "trigger-instance",
+    "key": "trigger_instance",
+    "name": "trigger_instance",
     "type": "elementInstance"
   }],
   "triggers": [{
     "type": "event",
     "onSuccess": ["simple-script"],
     "properties": {
-      "elementInstanceId": "${config.trigger-instance}"
+      "elementInstanceId": "${config.trigger_instance}"
     }
   }],
   "steps": [{

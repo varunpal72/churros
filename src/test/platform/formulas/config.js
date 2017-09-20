@@ -48,11 +48,11 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
       return r;
     };
 
-    const validateCreate = (r) => v(r, 'trigger-instance');
+    const validateCreate = (r) => v(r, 'trigger_instance');
 
     const validateUpdate = (r) => v(r, 'sfdc.instance');
 
-    const parseConfig = (formula) => formula.configuration.filter((c) => c.key === 'trigger-instance')[0];
+    const parseConfig = (formula) => formula.configuration.filter((c) => c.key === 'trigger_instance')[0];
 
     const parseConfigId = (formula) => parseConfig(formula).id;
 
