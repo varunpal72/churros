@@ -1,0 +1,7 @@
+{
+    "name": "churrosfield",
+    "type" : "string",
+    "primaryKey": false,
+    "hidden": false,
+    "readOnly": false
+}

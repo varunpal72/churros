@@ -6,7 +6,7 @@ const cloud = require('core/cloud');
 
 suite.forElement('documents', 'files', (test) => {
   let path = __dirname + '/assets/brady.jpg';
-  let query = { path: `/brady-${tools.random()}.jpg` };
+  let query = { path: `/brady-${tools.random()}.jpg` ,"overwrite":true };
 
   const fileWrap = (cb) => {
     let file;

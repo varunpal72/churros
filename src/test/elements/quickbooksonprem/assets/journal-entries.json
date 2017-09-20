@@ -1,18 +1,30 @@
 {
-  "RefNumber": "Interest",
-  "IsAdjustment": "false",
   "JournalCreditLine": [{
-    "Amount": "2500.00",
-    "AccountRef": {
-      "ListID": "550000-994887129"
-    }
-  }],
-  "TxnNumber": "1307",
-  "JournalDebitLine": [{
-    "Amount": "2500.00",
-    "AccountRef": {
-      "ListID": "550000-994887129"
+    "TxnLineID": "298-1484947972",
+    "ClassRef": {
+      "FullName": "Overhead"
     },
-    "Memo": "Opening Balance"
+    "Amount": "1603.00",
+    "AccountRef": {
+      "FullName": "Sales Tax Payable"
+    },
+    "EntityRef": {
+      "FullName": "State Board of Equalization"
+    },
+    "Memo": "Opening Balance Adjustment - Net of Sales Tax on Open Invoices as of Start Date"
+  }],
+  "JournalDebitLine": [{
+    "TxnLineID": "297-1484947972",
+    "ClassRef": {
+      "FullName": "Overhead"
+    },
+    "Amount": "1603.00",
+    "AccountRef": {
+      "FullName": "Opening Bal Equity"
+    },
+    "EntityRef": {
+      "FullName": "Overhead"
+    },
+    "Memo": "Opening Balance Adjustment - Net of Sales Tax on Open Invoices as of Start Date"
   }]
 }

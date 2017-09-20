@@ -180,6 +180,44 @@ suite.forPlatform('formulas', opts, (test) => {
       });
   });
 
+  it('should allow setting the engine flag to use bodenstein to execute a formula', () => {
+    const f = common.genFormula({});
+    const patchBody = {
+      engine: 'bodenstein',
+    };
+
+    const validator = (formula) => {
+      expect(formula.engine).to.equal(patchBody.engine);
+    };
+
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.patch(`${test.api}/${formulaId}`, patchBody))
+      .then(r => validator(r.body))
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
+  });
+
+  it('should not allow upgrading a formula to bodenstein with unsupported steps', () => {
+    const f = common.genFormula({});
+    f.steps = [{
+      "name": "unsupported-by-bode",
+      "type": "java",
+      "properties": {
+      }
+    }];
+    f.engine = 'bodenstein';
+
+    return cloud.post(test.api, f, (r) => {
+      expect(r).to.have.statusCode(400);
+      expect(r.body.message).to.contain('Invalid formula for bodenstein engine');
+    });
+  });
+
   test
     .withApi(test.api + '/-1/export')
     .should.return404OnGet();

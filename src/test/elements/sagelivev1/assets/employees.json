@@ -1,0 +1,5 @@
+{
+  "Name": "<<name.firstName>>",
+  "EmployeeCode": "555006",
+  "LastName": "<<name.lastName>>"
+}

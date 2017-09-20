@@ -9,7 +9,7 @@
     "type": "event",
     "onSuccess": ["retry-element-request"],
     "properties": {
-      "elementInstanceId": "${trigger-instance}"
+      "elementInstanceId": "${config.trigger-instance}"
     }
   }],
   "steps": [{
@@ -21,7 +21,7 @@
       "retryAttempts": "3",
       "retryDelay": "100",
       "retryStatusCodes": "400",
-      "elementInstanceId": "${trigger-instance}",
+      "elementInstanceId": "${config.trigger-instance}",
       "method": "GET"
     }
   }]
