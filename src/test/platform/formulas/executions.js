@@ -185,7 +185,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   /**
    * Handles the basic formula execution test for a formula that has a manual trigger type
    */
-  const manualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus) => {
+  const manualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus, optionalNumSes) => {
     const f = require(`./assets/formulas/${fName}`);
     let fi = { name: 'churros-manual-formula-instance' };
 
@@ -208,7 +208,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
-    const numSes = f.steps.length + 1; // steps + trigger
+    const numSes = optionalNumSes != null ? optionalNumSes : f.steps.length + 1; // steps + trigger
     return testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
   };
 
@@ -428,13 +428,36 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     const validator = (executions) => {
       executions.map(e => {
-        if (!isBodenstein) { expect(e.status).to.equal('retry'); }
-        e.stepExecutions.filter(se => se.stepName === 'retry-execution').map(validateSuccessfulStepExecution);
-        if (!isBodenstein){ cloud.delete(`/formulas/instances/executions/${e.id}/retries`); }
+
+        if (isBodenstein) {
+          // should be 2 executions for 'retry-execution' with 1 success and 1 failure
+          e.stepExecutions.filter(se => se.stepName === 'retry-execution' && se.status === 'success').map(sev => {
+            expect(sev.stepExecutionValues).to.have.length(1);
+            const stepExecutionValue = sev.stepExecutionValues[0];
+            expect(stepExecutionValue.key).to.equal('retry-execution.attempt');
+            expect(stepExecutionValue.value).to.equal('1');
+          });
+
+          e.stepExecutions.filter(se => se.stepName === 'retry-execution' && se.status === 'failed').map(sev => {
+            expect(sev.stepExecutionValues).to.have.length(1);
+            const stepExecutionValue = sev.stepExecutionValues[0];
+            expect(stepExecutionValue.key).to.equal('retry-execution.attempt');
+            expect(stepExecutionValue.value).to.equal('1');
+          });
+
+          // the overall status of the execution should have failed because we hit the retry limit
+          expect(e.status).to.equal('failed');
+        } else {
+          e.stepExecutions.filter(se => se.stepName === 'retry-execution').map(validateSuccessfulStepExecution);
+          expect(e.status).to.equal('retry');
+          cloud.delete(`/formulas/instances/executions/${e.id}/retries`);
+        }
       });
     };
 
-    return manualTriggerTest('simple-retry-execution-formula', null, {}, 2, validator, 'retry');
+    const numberOfSteps = isBodenstein ? 5 : 3;
+    const status = isBodenstein ? 'failed' : 'retry';
+    return manualTriggerTest('simple-retry-execution-formula', null, {}, numberOfSteps, validator, status, numberOfSteps);
   });
 
   it('should successfully execute an element request formula with a configured api field', () => {
