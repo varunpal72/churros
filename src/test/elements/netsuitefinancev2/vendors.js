@@ -3,9 +3,9 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/vendors.json`);
-
-suite.forElement('finance', 'vendors', { skip: true, payload: payload }, (test) => {
+const payload1 = tools.requirePayload(`${__dirname}/assets/vendors.json`);
+suite.forElement('finance', 'vendors', {payload: payload }, (test) => {
   test.should.supportCruds();
 	test.withOptions({ qs: { page: 1, pageSize: 5}}).should.return200OnGet();
-  test.should.supportCeqlSearch('id');
+  test.should.supportCeqlSearch('id',payload1);
 });
