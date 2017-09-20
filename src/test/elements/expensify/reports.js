@@ -4,11 +4,12 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/reports');
 const expect = require('chakram').expect;
+const moment = require('moment');
 
+const yesterday = moment(new Date()).subtract(1, 'day').format('YYYY-MM-DD');
 const options = {
   qs: {
-    where: "startDate='2016-01-01'",
-    pageSize: 1
+    where: `startDate='${yesterday}'`
   }
 };
 
