@@ -108,7 +108,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-    if (fi.configuration && fi.configuration['trigger_instance'] === '<replace-me>') fi.configuration['trigger_instance'] = closeioId;
+    if (fi.configuration && fi.configuration.trigger_instance === '<replace-me>') fi.configuration.trigger_instance = closeioId;
     return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
   };
 
@@ -775,7 +775,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const cancelTestWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-    if (fi.configuration && fi.configuration['trigger_instance'] === '<replace-me>') fi.configuration['trigger_instance'] = closeioId;
+    if (fi.configuration && fi.configuration.trigger_instance === '<replace-me>') fi.configuration.trigger_instance = closeioId;
     return cancelTestCustomTestWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
     };
 

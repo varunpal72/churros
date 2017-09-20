@@ -102,7 +102,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
     const formula = require('./assets/formulas/complex-successful-formula');
     formula.engine = process.env.CHURROS_FORMULAS_ENGINE;
     const formulaInstance = require('./assets/formulas/basic-formula-instance');
-    formulaInstance.configuration[ 'trigger_instance' ] = sfdcId;
+    formulaInstance.configuration.trigger_instance = sfdcId;
 
     const numFormulaInstances = 1;
     const numEvents = 1;

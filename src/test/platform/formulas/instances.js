@@ -57,7 +57,7 @@ suite.forPlatform('formulas', opts, (test) => {
 
     it('should allow updating a formula instance', () => {
       const formulaInstance = require('./assets/formulas/basic-formula-instance');
-      formulaInstance.configuration['trigger_instance'] = elementInstanceId;
+      formulaInstance.configuration.trigger_instance = elementInstanceId;
       return cloud.put(`${test.api}/${formulaId}/instances/${formulaInstanceId}`, formulaInstance);
     });
 
@@ -69,7 +69,7 @@ suite.forPlatform('formulas', opts, (test) => {
       let fiId;
 
       formulaInstance.name = `<a href="#" onClick="javascript:alert(\'xss\');return false;">@${name}</a>`;
-      formulaInstance.configuration['trigger_instance'] = elementInstanceId;
+      formulaInstance.configuration.trigger_instance = elementInstanceId;
 
       return common.createFormulaInstance(formulaId, formulaInstance)
         .then(fi => {
@@ -91,7 +91,7 @@ suite.forPlatform('formulas', opts, (test) => {
 
     it('should allow CRUD a formula instance with notification settings', () => {
       const formulaInstance = require('./assets/formulas/basic-formula-instance');
-      formulaInstance.configuration['trigger_instance'] = elementInstanceId;
+      formulaInstance.configuration.trigger_instance = elementInstanceId;
       formulaInstance.settings = {
         'notification.email': 'churros+trash@cloud-elements.com',
         'notification.webhook.url': 'churrostrash.cloud-elements.com'
