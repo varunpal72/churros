@@ -1,0 +1,56 @@
+
+
+  docs
+    - should return proper swagger json for hubs
+    1) should return proper swagger json for elements
+    ✓ should return proper swagger json for AWS provider (2094ms)
+
+
+  1 passing (32s)
+  1 pending
+  1 failing
+
+  1) docs should return proper swagger json for elements:
+
+      AssertionError: expected [ Array(5) ] to deeply equal []
+      + expected - actual
+
+      -[
+      -  {
+      -    "error": "SyntaxError: Swagger schema validation failed. \n  Data does not match any schemas from 'anyOf' at #/definitions/Via/properties/source/type\n    No enum match for: sourceObject at #/definitions/Via/properties/source/type\n    Expected type array but found type string at #/definitions/Via/properties/source/type\n \nJSON_OBJECT_VALIDATION_FAILED"
+      -    "id": 41
+      -  }
+      -  {
+      -    "error": "SyntaxError: Swagger schema validation failed. \n  Data does not match any schemas from 'anyOf' at #/definitions/VendorBillItemList/properties/item/items\n    Data does not match any schemas from 'anyOf' at #/definitions/VendorBillItemList/properties/item/items/properties/expirationDate/type\n      No enum match for: date at #/properties/expirationDate/type\n      Expected type array but found type string at #/properties/expirationDate/type\n    Expected type array but found type object at #/definitions/VendorBillItemList/properties/item/items\n \nJSON_OBJECT_VALIDATION_FAILED"
+      -    "id": 167
+      -  }
+      -  {
+      -    "error": "SyntaxError: Validation failed. /paths/{objectName}/{objectId}/get has a path parameter named \"id\", but there is no corresponding {id} in the path string"
+      -    "id": 23
+      -  }
+      -  {
+      -    "error": "SyntaxError: Validation failed. /paths/{objectName}/{objectId}/get has a path parameter named \"id\", but there is no corresponding {id} in the path string"
+      -    "id": 331
+      -  }
+      -  {
+      -    "error": "SyntaxError: Swagger schema validation failed. \n  Additional properties not allowed: expense at #/definitions/BillPOST/properties/expenseList/properties/item\n \nJSON_OBJECT_VALIDATION_FAILED"
+      -    "id": 168
+      -  }
+      -]
+      +[]
+      
+      at assertEqual (node_modules/chai/lib/chai/core/assertions.js:485:19)
+      at ctx.(anonymous function) (node_modules/chai/lib/chai/utils/addMethod.js:41:25)
+      at doAsserterAsyncAndAddThen (node_modules/chai-as-promised/lib/chai-as-promised.js:296:33)
+      at .<anonymous> (node_modules/chai-as-promised/lib/chai-as-promised.js:255:21)
+      at ctx.(anonymous function) (node_modules/chai/lib/chai/utils/overwriteMethod.js:49:33)
+      at doAsserterAsyncAndAddThen (node_modules/chai-as-promised/lib/chai-as-promised.js:296:33)
+      at .<anonymous> (node_modules/chai-as-promised/lib/chai-as-promised.js:255:21)
+      at ctx.(anonymous function) [as equal] (node_modules/chai/lib/chai/utils/overwriteMethod.js:49:33)
+      at Promise.all.then (src/test/platform/docs/docs.js:54:45)
+      at runMicrotasksCallback (internal/process/next_tick.js:64:5)
+      at _combinedTickCallback (internal/process/next_tick.js:73:7)
+      at process._tickCallback (internal/process/next_tick.js:104:9)
+
+
+
