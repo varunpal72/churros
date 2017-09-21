@@ -501,7 +501,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       executions.map(e => {
         const ses = e.stepExecutions;
         ses.filter(se => se.stepName === 'looper' &&
-            flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] !== '10')
+            flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] !== '10' &&
+            flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] !== null &&
+            flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] !== undefined)
           .map(validateSuccessfulStepExecution);
         ses.filter(se => se.stepName === 'looper' &&
             flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] === '10')
