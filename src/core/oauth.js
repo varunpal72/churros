@@ -135,10 +135,10 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('password')).sendKeys(password);
       browser.findElement(webdriver.By.name('commit')).click();
 
-      browser.wait(() => browser.isElementPresent(webdriver.By.xpath('//div[@id="app-install"]/form/input[@type="submit"]')), 5000)
+      browser.wait(() => browser.isElementPresent(webdriver.By.name('commit')), 5000)
         .thenCatch(r => true); // ignore
 
-      browser.findElement(webdriver.By.xpath('//div[@id="app-install"]/form/input[@type="submit"]'))
+      browser.findElement(webdriver.By.name('commit'))
         .then((element) => element.click(), (err) => {}); // ignore this
 
       return browser.getCurrentUrl();
