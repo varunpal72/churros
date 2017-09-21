@@ -2,8 +2,8 @@
     "active": true,
     "configuration": [
         {
-            "key": "trigger-instance",
-            "name": "trigger-instance",
+            "key": "trigger_instance",
+            "name": "trigger_instance",
             "required": true,
             "type": "elementInstance"
         },
@@ -24,7 +24,7 @@
             "properties": {
                 "acceptableStatusCodes": "200",
                 "api": "/hubs/crm/${config.resource.name}/${steps.delete-accounts-path.id}",
-                "elementInstanceId": "${config.trigger-instance}",
+                "elementInstanceId": "${config.trigger_instance}",
                 "method": "DELETE",
                 "retry": "true",
                 "retryAttempts": "3",
@@ -53,7 +53,7 @@
             "properties": {
                 "acceptableStatusCodes": "200",
                 "api": "/hubs/crm/${config.resource.name}",
-                "elementInstanceId": "${config.trigger-instance}",
+                "elementInstanceId": "${config.trigger_instance}",
                 "method": "GET",
                 "query": "${steps.get-accounts-query.query}",
                 "retry": "true",
@@ -83,7 +83,7 @@
             "properties": {
                 "api": "/hubs/crm/${config.resource.name}",
                 "body": "${steps.post-accounts-payload.accounts}",
-                "elementInstanceId": "${config.trigger-instance}",
+                "elementInstanceId": "${config.trigger_instance}",
                 "method": "POST",
                 "retry": "true",
                 "retryAttempts": "3",
