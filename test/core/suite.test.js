@@ -90,6 +90,14 @@ describe('suite', () => {
       .withOptions({ qs: { page: 1, pageSize: 1 } })
       .should.return200OnGet();
 
+    test
+      .withApi('/foo/789')
+      .should.return403OnPut();
+
+    test
+      .withApi('/foo/987')
+      .should.return400OnPut();
+
     /* withApi overrides the default api that was passed in to the `suite.forPlatform` above */
     test
       .withApi(`${test.api}/456`)
