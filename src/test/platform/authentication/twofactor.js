@@ -23,13 +23,13 @@ suite.forPlatform('twofactor', (test) => {
 
   it('authenticates with created 2fa user', () => {
       return cloud.post('/authentication', user)
-      .then(r => 
+      .then(r =>
       {
         expect(r.body.twoFactor).to.be.true;
         expect(r.body.twoFactorType).to.equal('GOOGLE_AUTHENTICATOR');
         expect(r.body.registeredForTwoFactor).to.be.true;
         token = r.body.token;
-        gaSecretCode = r.body.googleAuthSecret;
+        gaSecretCode = r.body.googleAuthUri;
       });
     });
 
@@ -49,7 +49,7 @@ suite.forPlatform('twofactor', (test) => {
 
   it('authenticates with created 2fa user', () => {
       return cloud.post('/authentication', user)
-      .then(r => 
+      .then(r =>
       {
         expect(r.body.twoFactor).to.be.true;
         expect(r.body.twoFactorType).to.equal('SMS');
@@ -61,7 +61,7 @@ suite.forPlatform('twofactor', (test) => {
 
   xit('registers 2fa user via SMS', () => {
   return cloud.withOptions({headers:{Authorization: 'Bearer ' + token }}).post('authentication/two-factor/registration', registeringUser)
-  .then(r => 
+  .then(r =>
   {
     expect(r.body.twoFactor).to.be.true;
     expect(r.body.twoFactorType).to.equal('SMS');
@@ -71,7 +71,7 @@ suite.forPlatform('twofactor', (test) => {
 
  xit('authenticates with created 2fa user, expecting phone number on response', () => {
       return cloud.post('/authentication', user)
-      .then(r => 
+      .then(r =>
       {
         expect(r.body.twoFactor).to.be.true;
         expect(r.body.twoFactorType).to.equal('SMS');
