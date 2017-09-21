@@ -9,6 +9,13 @@ const chakram = require('chakram');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const userPayload = {
+  firstName: 'frank',
+  lastName: 'ricard',
+  email: 'frank@oldschool.com',
+  password: 'password'
+};
+
 
 suite.forPlatform('accounts', { payload: account, schema: accountSchema }, (test) => {
 
@@ -78,19 +85,6 @@ suite.forPlatform('accounts', { payload: account, schema: accountSchema }, (test
     test
       .withApi('/accounts/1/roles/foo')
       .should.return400OnPut();
-
-    it.skip('should support granting admin role by admin account', () => {
-      return cloud.get('/accounts')
-        .then(r => {
-          expect(r.body.length).to.be.at.least(1) &&
-            expect(r.body[0]).to.contain.key('defaultAccount') &&
-            expect(r.body[0].defaultAccount).to.equal(true);
-          accountId = r.body[0].id;
-        })
-        .then(r => cloud.post(`/accounts/${accountId}/roles`, payload)
-          .then(r => expect(r).to.have.statusCode(200))
-          .then(r => cloud.delete(`/accounts/${accountId}/roles/${roleKey}`)));
-    });
   });
 
   after(() =>
