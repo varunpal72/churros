@@ -10,7 +10,7 @@ const schema = require('./assets/schemas/formula.schema');
 const tools = require('core/tools');
 
 suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test) => {
-  before(() => cleaner.formulas.withName([invalid.name, 'complex-successful']));
+  before(() => cleaner.formulas.withName([invalid.name, 'complex_successful']));
 
   /* make sure config keys are being validated properly when creating a formula with config */
   test
@@ -43,8 +43,8 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
     const v = (r, key) => {
       expect(r).to.have.statusCode(200);
       expect(r.body).to.not.be.null;
-      expect(r.body.triggers[0].properties.elementInstanceId).to.equal(`\${${key}}`);
-      r.body.steps.filter((s) => s.properties.elementInstanceId !== undefined).forEach(rs => expect(rs.properties.elementInstanceId).to.equal(`\${${key}}`));
+      expect(r.body.triggers[0].properties.elementInstanceId).to.equal(`\${config.${key}}`);
+      r.body.steps.filter((s) => s.properties.elementInstanceId !== undefined).forEach(rs => expect(rs.properties.elementInstanceId).to.equal(`\${config.${key}}`));
       return r;
     };
 
