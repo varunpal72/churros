@@ -30,7 +30,6 @@ suite.forPlatform('accounts', { payload: account, schema: accountSchema }, (test
       return cloud.post(`/accounts/`, account)
         .then(r => {
           accountId = r.body.id;
-          console.log(`Account ID: ${accountId}`);
         });
     });
 
