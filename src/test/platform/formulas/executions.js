@@ -108,7 +108,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   const testWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = closeioId;
+    if (fi.configuration && fi.configuration.trigger_instance === '<replace-me>') fi.configuration.trigger_instance = closeioId;
     return common.testWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
   };
 
@@ -208,7 +208,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const triggerCb = (fId, fiId) => cloud.post(`/formulas/${fId}/instances/${fiId}/executions`, trigger);
-    const numSes = optionalNumSes !== null ? optionalNumSes : f.steps.length + 1; // steps + trigger
+    const numSes = (optionalNumSes !== null && optionalNumSes !== undefined) ? optionalNumSes : f.steps.length + 1; // steps + trigger
     return testWrapper(triggerCb, f, fi, 1, numSes, numSevs, validatorWrapper, executionStatus);
   };
 
@@ -470,7 +470,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const configuration = {
-      "trigger-instance": closeioId,
+      "trigger_instance": closeioId,
       "resource.name": "accounts"
     };
 
@@ -496,21 +496,17 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   it('should successfully execute one simple formula instance x number of times for x events', () => eventTriggerTest('simple-successful-formula', 10, 2));
 
   it('should successfully execute one complex formula instance x number of times for x events', () => {
-    // notification steps are not supported with bodenstein
-    if (isSkippedForBode()) { return; }
 
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
-        ses.filter(se => se.stepName === 'invalid-request-step')
-          .map(se => expect(se.status).to.equal('failed'));
         ses.filter(se => se.stepName === 'looper' &&
             flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] !== '10')
           .map(validateSuccessfulStepExecution);
         ses.filter(se => se.stepName === 'looper' &&
             flattenStepExecutionValues(se.stepExecutionValues)['looper.index'] === '10')
           .map(validateErrorStepExecution);
-        ses.filter(se => se.stepName !== 'invalid-request-step' && se.stepName !== 'looper')
+        ses.filter(se => se.stepName !== 'looper')
           .map(validateSuccessfulStepExecution);
       });
     };
@@ -518,8 +514,6 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should support an on failure for a script step', () => {
-    // skipped for now - fails for soba too
-    if (isSkippedForBode()) { return; }
 
     const validator = (executions) => {
       executions.map(e => {
@@ -528,12 +522,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         ses.filter(se => se.stepName === 'get-instances').map(validateSuccessfulStepExecution);
       });
     };
-    return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
+    return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator, 'failed');
   });
 
   it('should return any console.log statements on a script step that fails', () => {
-    // skipped for now - fails for soba too
-    if (isSkippedForBode()) { return; }
 
     const validator = (executions) => {
       executions.map(e => {
@@ -547,7 +539,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
     };
 
-    return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
+    return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator, 'failed');
   });
 
   it('should show a successful execution, even if the last step is a filter step that returns false', () => eventTriggerTest('filter-returns-false', 1, 2));
@@ -783,7 +775,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     const cancelTestWrapper = (kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, executionValidator, executionStatus) => {
-    if (fi.configuration && fi.configuration['trigger-instance'] === '<replace-me>') fi.configuration['trigger-instance'] = closeioId;
+    if (fi.configuration && fi.configuration.trigger_instance === '<replace-me>') fi.configuration.trigger_instance = closeioId;
     return cancelTestCustomTestWrapper(test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, common.execValidatorWrapper(executionValidator), null, executionStatus);
     };
 
