@@ -9,13 +9,6 @@ const chakram = require('chakram');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const userPayload = {
-  firstName: 'frank',
-  lastName: 'ricard',
-  email: 'frank@oldschool.com',
-  password: 'password'
-};
-
 
 suite.forPlatform('accounts', { payload: account, schema: accountSchema }, (test) => {
 
@@ -25,11 +18,6 @@ suite.forPlatform('accounts', { payload: account, schema: accountSchema }, (test
   test.should.return404OnDelete(-1);
   test.should.return404OnPatch(-1);
   test.should.return404OnGet(-1);
-
-  let roleKey = 'admin';
-  let payload = {
-    key: roleKey
-  };
 
   describe('account roles', () => {
     let accountId;
