@@ -9,11 +9,11 @@ const newResource = require('./assets/newResource.json');
 suite.forElement('helpdesk', 'extended-resource', {}, (test) => {
   let newResourceId;
   // Add resource to
-  before(() => cloud.post(`elements/helpdesk/resources`, newResource)
+  before(() => cloud.post(`elements/zendesk/resources`, newResource)
     .then(r => newResourceId = r.body.id));
 
   //delete new/overide resource should work fine
-  after(() => cloud.delete(`elements/helpdesk/resources/${newResourceId}`));
+  after(() => cloud.delete(`elements/zendesk/resources/${newResourceId}`));
 
   it('should test newly added account resource extended-resource', () => {
       return cloud.get(`extended-resource`)
