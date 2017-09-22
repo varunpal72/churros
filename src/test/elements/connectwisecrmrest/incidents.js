@@ -17,9 +17,8 @@ const options = {
     }
 };
 
-let organizationId;
-
 suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
+    let organizationId;
     before(() => {
         let orgPayload = build({ identifier: tools.randomStr('abcdefghijklmnopqrstuvwxyz0123456789', 10) });
         return cloud.post(`/hubs/crm/organizations`, orgPayload)
@@ -37,6 +36,7 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
     test.should.supportCeqlSearch('id');
     test.should.supportCeqlSearch("summary");
     test.withOptions({qs: {where: "contactPhoneNumber=\"555-5555\""}}).should.supportCeqlSearch('contactPhoneNumber');
+    test.withOptions({qs: {where: "approved='false'"}}).should.supportCeqlSearchForMultipleRecords('approved');
     test.should.supportPagination();
 
     it(`should support searching ${test.api} by field company.id`, () => {
@@ -51,7 +51,7 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
                     expect(r.body.filter(obj => obj.company.id === value).length).to.equal(r.body.length);
                 });
             })
-            .then(r => cloud.delete(test.api + '/' + id));
+            .then(r => cloud.delete(`${test.api}/${id}`));
     });
 
     it(`should support searching ${test.api} by field lastUpdated`, () => {
@@ -66,7 +66,7 @@ suite.forElement('crm', 'incidents', { payload: payload }, (test) => {
                     expect(r.body.filter(obj => obj.lastUpdated === value).length).to.equal(r.body.length);
                 });
             })
-            .then(r => cloud.delete(test.api + '/' + id));
+            .then(r => cloud.delete(`${test.api}/${id}`));
     });
 
     it(`should support retrieval of related time-entries via ${test.api}/{id}/time-entries`, () => {

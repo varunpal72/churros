@@ -25,6 +25,6 @@ suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
                   expect(r.body[0].user.email).to.equal(email);
               });
           })
-          .then(r => cloud.delete(test.api + '/' + id));
+          .then(r => cloud.delete(`${test.api}/${id}`));
   });
 });

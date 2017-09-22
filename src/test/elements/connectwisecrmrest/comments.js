@@ -6,7 +6,6 @@ const tools = require('core/tools');
 const incident = require('./assets/incidents');
 const oPayload = require('./assets/organizations');
 const build = (overrides) => Object.assign({}, oPayload, overrides);
-let organizationId, incidentId;
 
 const comment = {
     text: tools.random(),
@@ -18,6 +17,7 @@ const updateComment = {
 };
 
 suite.forElement('crm', 'comments', () => {
+    let organizationId, incidentId;
     before(() => {
         let orgPayload = build({ identifier: tools.randomStr('abcdefghijklmnopqrstuvwxyz0123456789', 10) });
         return cloud.post(`/hubs/crm/organizations`, orgPayload)
@@ -26,10 +26,7 @@ suite.forElement('crm', 'comments', () => {
                 incident.company = {id : organizationId};
             })
             .then(() => cloud.post(`/hubs/crm/incidents`, incident))
-            .then(r => incidentId = r.body.id)
-            .then(() => {
-                comment.ticketId = incidentId;
-            });
+            .then(r => comment.ticketId = incidentId = r.body.id);
     });
 
     after(() => {

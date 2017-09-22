@@ -11,7 +11,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.should.supportCrds();  //update is getting an 500 error from vendor
   test.should.supportPagination();
 
-  it(`should allow CR for ${test.api}/:id/comments`, () => {
+  it(`should allow CS for ${test.api}/:id/comments`, () => {
     let id;
     return cloud.get(test.api)
       .then(r => {
