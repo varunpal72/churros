@@ -7,8 +7,7 @@ const tools = require('core/tools');
 suite.forElement('marketing', 'files', null, (test) => {
   it('should allow CRUD for hubs/marketing/files', () => {
     const fieldsUpdate = () => ({
-      "name": "cloud_elements",
-      "folder_path": "test_CE"
+      "name": "cloud_elements"
     });
     let path = __dirname + `/assets/test.txt`;
     let id;
