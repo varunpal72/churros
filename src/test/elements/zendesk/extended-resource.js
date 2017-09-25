@@ -5,7 +5,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const newResource = require('./assets/newResource.json');
 
-// Test for extending hubspot crm and invoking the extended resource
+// Test for extending zendesk and invoking the extended resource
 suite.forElement('helpdesk', 'extended-resource', {}, (test) => {
   let newResourceId;
   // Add resource to
