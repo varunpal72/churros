@@ -37,7 +37,6 @@ const post = (api, payload, validationCb, options) => {
     .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to create or validate: %s', r, api));
 };
-
 /**
  * HTTP POST
  * @param  {apiString} api          The API to call
@@ -47,21 +46,6 @@ const post = (api, payload, validationCb, options) => {
  * @return {Promise}  A Promise that resolves to the HTTP response
  */
 exports.post = (api, payload, validationCb) => post(api, payload, validationCb, null);
-
-
-const hasElementObjectId = r => {
-  if (typeof r.body === 'object' && r.body.id) {
-    logger.debug(`Validating that the response id is returned in the headers. Response headers: ${tools.stringify(r.response.headers)}`);
-    expect(r).to.have.header('Elements-Object-Id', "" + r.body.id); // Need to coerce id to string since the assertion uses ===
-  }
-  return r;
-}
-/**
- * Checks if a response contains the appropriate object id header
- * @param {r} response  The response object
- * @return {r} the same response object
- */
-exports.hasElementObjectId = hasElementObjectId;
 
 const get = (api, validationCb, options) => {
   logger.debug('GET %s with options %s', api, JSON.stringify(options));
