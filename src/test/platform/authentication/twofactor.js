@@ -59,7 +59,7 @@ suite.forPlatform('twofactor', (test) => {
 
 // Can enable these last two tests once we get a valid phone number to use
 
-  xit('registers 2fa user via SMS', () => {
+  xit('registers 2fa user via SMS', () => { // jshint ignore:line
   return cloud.withOptions({headers:{Authorization: 'Bearer ' + token }}).post('authentication/two-factor/registration', registeringUser)
   .then(r =>
   {
@@ -69,7 +69,7 @@ suite.forPlatform('twofactor', (test) => {
   });
 });
 
- xit('authenticates with created 2fa user, expecting phone number on response', () => {
+ xit('authenticates with created 2fa user, expecting phone number on response', () => { // jshint ignore:line
       return cloud.post('/authentication', user)
       .then(r =>
       {
