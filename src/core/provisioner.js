@@ -12,6 +12,7 @@ const r = require('request');
 const defaults = require('core/defaults');
 const cloud = require('core/cloud');
 const argv = require('optimist').argv;
+const _ = require('lodash');
 
 var exports = module.exports = {};
 
@@ -303,3 +304,23 @@ exports.delete = (id, baseApi) => {
     })
     .catch(r => tools.logAndThrow('Failed to delete element instance with ID: %s', r, id));
 };
+
+exports.getBackup = (element) => {
+  return cloud.get('/instances?tags%5B%5D=churros-backup&hydrate=false')
+  .then(r => {
+    if (!_.isEmpty(r.body) || !_.isArray(r.body)) {
+      var instance = r.body.reduce((acc, cur) => acc = acc === null && cur.element.key === element ? cur : null, null);
+      if (instance !== null) {
+        props.setForKey(element, 'elementId', instance.element.id);
+        defaults.token(instance.token);
+        expect(instance.element.key).to.equal(tools.getBaseElement(element));
+        r.body = instance
+        return r
+      } else {
+        console.warn('No "churros-backup" instance available');
+      }
+    } else {
+      console.warn('Invalid response: ', JSON.stringify(r.body));
+    }
+  })
+}
