@@ -1,0 +1,27 @@
+{
+  "method": "GET",
+  "nextResource": "",
+  "description": "Get file metadata",
+  "type": "api",
+  "vendorPath": "/metadata/auto/{path}",
+  "nextPageKey": "",
+  "path": "/extended-resource",
+  "vendorMethod": "GET",
+  "response": {
+    "contentType": "application/json"
+  },
+  "ownerAccountId": 218,
+  "hooks": [],
+  "parameters": [{
+      "vendorType": "path",
+      "dataType": "string",
+      "name": "path",
+      "description": "path of file",
+      "vendorDataType": "string",
+      "source": "request",
+      "type": "query",
+      "vendorName": "path",
+      "required": false
+    }
+  ]
+}
