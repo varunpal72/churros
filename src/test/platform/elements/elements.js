@@ -18,12 +18,29 @@ const getElementId = (key) => {
 
 const crudElement = (idField, payload, updatedPayload, schema) => {
   let element, id;
-  return common.deleteElementByKey('churros')
+  return common.deleteElementByKey('churrosdbelement')
     .then(r => cloud.post('elements', payload, schema))
     .then(r => element = r.body)
+    .then(r => {
+      expect(element.configuration).to.not.be.empty;
+      const match = element.configuration.filter(c => c.key  === 'base.url');
+      expect(match.length).to.equal(1);
+      if(match[0].key === 'base.url') {
+        expect(match[0].defaultValue).to.not.be.empty;
+      }
+    })
     .then(r => id = element[idField])
     .then(r => cloud.get(`elements/${id}`, schema))
     .then(r => cloud.put(`elements/${id}`, updatedPayload, schema))
+    .then(r => {
+      const updatedElement = r.body;
+      expect(updatedElement.configuration).to.not.be.empty;
+      const match = updatedElement.configuration.filter(c => c.key  === 'base.url');
+      expect(match.length).to.equal(1);
+      if(match[0].key === 'base.url') {
+        expect(match[0].defaultValue).to.not.be.empty;
+      }
+    })
     .then(r => cloud.delete(`elements/${id}`))
     .catch(e => {
       if (id) cloud.delete(`elements/${id}`);
@@ -115,7 +132,17 @@ suite.forPlatform('elements', opts, (test) => {
     let clone;
     return getElementId('freshdesk')
       .then(id => cloud.post(`elements/${id}/clone`, schema))
-      .then(r => clone = r.body)
+      .then(r => {
+        clone = r.body;
+        expect(clone).to.not.be.empty;
+        expect(clone.configuration).to.not.be.empty;
+        //Loop through the configuration to make sure there is no default value for oauth.api.key
+        clone.configuration.forEach(c => {
+            if(c.key === 'oauth.api.key') {
+              expect(c.defaultValue).to.be.empty;
+            }
+        });
+      })
       .then(r => cloud.delete('elements/' + clone.id))
       .catch(e => {
         if (clone) cloud.delete('elements/' + clone.id);
@@ -144,17 +171,4 @@ suite.forPlatform('elements', opts, (test) => {
       .then(id => cloud.get(`elements/${id}/transformations`));
   });
 
-  it('should support converting and creating a SOAP element', () => {
-    let atElement;
-    // Call elements/convert to convert wsdl to element
-    return cloud.postFile('/elements/convert?type=soap', __dirname + `/assets/atws.wsdl`)
-      .then(r => {
-        expect(r.body).to.not.be.empty;
-        expect(r.body.name).to.equal('http://autotask.net/ATWS/v1_5/');
-        atElement = r.body;
-      })
-      // Create the element
-      .then(r => crudElement('key', atElement, atElement, schema));
-
-  });
 });

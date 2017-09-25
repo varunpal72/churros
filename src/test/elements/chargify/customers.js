@@ -3,13 +3,9 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 
-const payload = () => ({
-  "first_name": tools.random(),
-  "last_name": tools.random(),
-  "email": tools.randomEmail()
-});
+const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
 
-suite.forElement('payment', 'customers', { payload: payload() }, (test) => {
+suite.forElement('payment', 'customers', { payload: payload }, (test) => {
   test.should.supportCruds();
   test.should.supportPagination();
 });

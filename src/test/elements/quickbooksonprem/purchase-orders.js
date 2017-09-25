@@ -6,7 +6,7 @@ const cloud = require('core/cloud');
 const updatePayload = { "TotalAmount": "5000.00" };
 
 suite.forElement('finance', 'purchase-orders', { payload: payload }, (test) => {
-  it('should support CRUDS, pagination for /hubs/finance/purchase-orders', () => {
+  it('should support CRUDS, pagination and Ceql searching for /hubs/finance/purchase-orders', () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => id = r.body.TxnID)

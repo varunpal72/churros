@@ -137,14 +137,14 @@ exports.delete = (api, validationCb) => remove(api, validationCb, null);
  * @param  {Object} options    The HTTP request options
  * @return {Promise}           A Promise that resolves to the HTTP response
  */
-const postFile = (api, filePath, options) => {
+const postFile = (api, filePath, validationCb, options) => {
   options = (options || {});
   options.formData = (options.formData || {});
   options.formData.file = fs.createReadStream(filePath);
 
   logger.debug('POST %s with multipart/form-data file', api);
-  return chakram.post(api, undefined, options)
-    .then(r => validator(undefined)(r))
+  return chakram.post(api, validationCb, options)
+    .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
 exports.postFile = postFile;
@@ -279,10 +279,10 @@ exports.cs = cs;
 /*
  * Gives you access to adding HTTP request options to any of the HTTP-related APIs
  */
-exports.withOptions = (options) => {
+const withOptions = (options) => {
   return {
     post: (api, payload, validationCb) => post(api, payload, validationCb, options),
-    postFile: (api, filePath) => postFile(api, filePath, options),
+    postFile: (api, filePath, validationCb) => postFile(api, filePath, validationCb, options),
     patchFile: (api, filePath) => patchFile(api, filePath, options),
     putFile: (api, filePath) => putFile(api, filePath, options),
     put: (api, payload, validationCb) => put(api, payload, validationCb, options),
@@ -299,9 +299,11 @@ exports.withOptions = (options) => {
     sr: (api, validationCb) => sr(api, validationCb, options),
     crs: (api, payload, validationCb) => crs(api, payload, validationCb, options),
     cr: (api, payload, validationCb) => cr(api, payload, validationCb, options),
-    cs: (api, payload, validationCb) => cs(api, payload, validationCb, options)
+    cs: (api, payload, validationCb) => cs(api, payload, validationCb, options),
+    withOptions: (moreOptions) => withOptions(Object.assign(options, moreOptions))
   };
 };
+exports.withOptions = withOptions;
 
 exports.createEvents = (element, replacements, eventRequest, numEvents) => {
   numEvents = (numEvents || 1);

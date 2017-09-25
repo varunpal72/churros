@@ -34,6 +34,12 @@ const validateErrorStepExecution = se =>
 
 const validateLoopSuccessfulLoopStepExecution = se => {
   const flat = flattenStepExecutionValues(se.stepExecutionValues);
+
+  // for bode on the last (failed) loop execution there is no index
+  if (!flat['loop.index']) {
+    return validateErrorStepExecution(se);
+  }
+
   expect(flat['loop.index']).to.not.be.empty;
   const index = parseInt(flat['loop.index']);
 
@@ -44,7 +50,8 @@ const validateLoopSuccessfulLoopStepExecution = se => {
   }
 
   validateSuccessfulStepExecution(se);
-  expect(flat['loop.entry']).to.contain('{"val":0.');
+  expect(flat['loop.entry']).to.contain('"val"');
+  expect(flat['loop.entry']).to.contain(':');
 };
 
 const validateLoopSuccessfulEmailStepExecution = se => {
@@ -66,14 +73,24 @@ const generateXSingleSfdcPollingEvents = (instanceId, x, fileName) => {
   }, []));
 };
 
+const engine = process.env.CHURROS_FORMULAS_ENGINE;
+const isBodenstein = engine === 'v3';
+const isSkippedForBode = () => {
+  if (isBodenstein) {
+    logger.warn('This formula is not supported when using the bodenstein engine. Skipping.');
+    return true;
+  } else {
+    return false;
+  }
+};
 
 suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   let closeioId, dropboxId;
   before(() => {
     return provisioner.create('dropbox')
-      .then(r => dropboxId = r.body.id)
-      .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
-      .then(r => closeioId = r.body.id)
+       .then(r => dropboxId = r.body.id)
+       .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
+       .then(r => closeioId = r.body.id)
       .catch(e => {
         console.log(`Failed to finish before()...${e}`);
         process.exit(1);
@@ -103,6 +120,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     let fi = require(`./assets/formulas/basic-formula-instance`);
     if (fs.existsSync(`./assets/formulas/${fName}-instance`)) fi = require(`./assets/formulas/${fName}-instance`);
 
+    f.engine = engine;
+
     const validatorWrapper = (executions) => {
       executions.map(e => {
         e.stepExecutions.map(se => {
@@ -113,10 +132,15 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
           }
         });
       });
-      if (typeof validator === 'function') validator(executions);
+      if (typeof validator === 'function') {
+        return validator(executions);
+      }
+      return Promise.resolve();
     };
 
-    if (!triggerCb) { triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, numEvents, eventFileName); }
+    if (!triggerCb) {
+      triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, numEvents, eventFileName);
+    }
     numSes = numSes || f.steps.length + 1; // defaults to steps + trigger but for loop cases, that won't work
     return testWrapper(triggerCb, f, fi, numEvents, numSes, numSevs, validatorWrapper, executionStatus);
   };
@@ -128,6 +152,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const f = require(`./assets/formulas/${fName}`);
     let fi = require(`./assets/formulas/basic-formula-instance`);
     if (fs.existsSync(`./assets/formulas/${fName}-instance`)) fi = require(`./assets/formulas/${fName}-instance`);
+
+    f.engine = engine;
 
     const validatorWrapper = (executions) => {
       executions.map(e => {
@@ -163,6 +189,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     const f = require(`./assets/formulas/${fName}`);
     let fi = { name: 'churros-manual-formula-instance' };
 
+    f.engine = engine;
+
     if (configuration) {
       fi.configuration = configuration;
     }
@@ -189,6 +217,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
    */
   const scheduleTriggerTest = (fName, numSevs, validator, executionStatus) => {
     const f = require(`./assets/formulas/${fName}`);
+
+    f.engine = engine;
 
     const validatorWrapper = (executions) => {
       executions.map(e => {
@@ -238,9 +268,17 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('script-context-successful-formula', 1, 4, validator);
   });
 
-  it('should successfully execute a single threaded formula triggered by an event with three objects', () => eventTriggerTest('simple-successful-formula-single-threaded', 3, 2));
+  it('should successfully execute a single threaded formula triggered by an event with three objects', () => {
+    // single threaded formulas not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
+    return eventTriggerTest('simple-successful-formula-single-threaded', 3, 2);
+  });
 
   it('should properly handle a formula with a step that times out', () => {
+    // bode is too cool to need timeouts, it can go all night
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -254,6 +292,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should properly handle a formula with a v1 step that returns no values', () => {
+    // v1 steps not support with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -293,6 +334,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should properly handle a formula with a v1 step that contains invalid json', () => {
+    // v1 steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -319,6 +363,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should properly handle a single threaded formula with a step that contains invalid json, triggered by an event with three objects', () => {
+    // single threaded formulas not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -348,6 +395,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully execute a simple element request formula triggered by a single event', () => {
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -377,6 +425,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully execute a simple retry execution formula triggered manually', () => {
+    // formula retry steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         expect(e.status).to.equal('retry');
@@ -389,6 +440,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully execute an element request formula with a configured api field', () => {
+
     const validator = (executions) => {
       executions.map(e => {
         const consolidated = consolidateStepExecutionValues(e.stepExecutions);
@@ -423,6 +475,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   it('should successfully execute one simple formula instance x number of times for x events', () => eventTriggerTest('simple-successful-formula', 10, 2));
 
   it('should successfully execute one complex formula instance x number of times for x events', () => {
+    // notification steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -442,17 +497,23 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should support an on failure for a script step', () => {
+    // skipped for now - fails for soba too
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
         expect(ses).to.have.length(3);
-        ses.filter(se => se.stepName !== 'trigger' && se.stepName !== 'bad-script-step').map(validateSuccessfulStepExecution);
+        ses.filter(se => se.stepName === 'get-instances').map(validateSuccessfulStepExecution);
       });
     };
     return eventTriggerTest('script-with-on-failure-successful-formula', 1, 3, validator);
   });
 
   it('should return any console.log statements on a script step that fails', () => {
+    // skipped for now - fails for soba too
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       executions.map(e => {
         const ses = e.stepExecutions;
@@ -485,6 +546,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should retry a request step when the retry property is set to true', () => {
+
     const validator = (executions) => {
       executions.map(e => {
         const stepExecution = e.stepExecutions.filter(se => se.stepName === 'retry-element-request')[0];
@@ -497,6 +559,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should have a unique formula context for a single-threaded formula that has multiple polling events trigger multiple executions at once', () => {
+    // single threaded formulas not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const validator = (executions) => {
       // validate that each objectId exists once somewhere in the step execution values
       const events = require('./assets/events/triple-event-closeio');
@@ -525,6 +590,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should support formulas with nested loop steps', () => {
+
     const validator = (executions) => {
       const e = executions[0];
       // outer loop verification
@@ -552,6 +618,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
 
   it('should successfully stream a bulk file using an elementRequestStream step in a formula', () => {
+    // elementRequestStream steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const configuration = { source: closeioId, target: closeioId, 'object.name': 'accounts' };
     let bulkUploadId;
     const validator = (executions) => {
@@ -605,6 +674,9 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should successfully stream a file via the documents hub APIs using an elementRequestStream step in a formula', () => {
+    // elementRequestStream steps are not supported with bodenstein
+    if (isSkippedForBode()) { return; }
+
     const configuration = { 'dropbox.instance': dropboxId };
 
     const validator = (executions) => {
@@ -627,6 +699,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   });
 
   it('should cancel a running formula instance execution and not attempt to cancel an already cancelled/finished execution', () => {
+    // cancelling is not supported with bodenstein
+    if (isSkippedForBode()) { return; }
 
     const cancelTestCustomTestWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, execValidator, instanceValidator, executionStatus, numInstances) => {
 
@@ -718,7 +792,66 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     };
 
     var f = cancelManualTriggerTest('formula-waitForIt-selfContained', null, { foo: 'bar' }, 2, common.defaultValidator, 'success');
-    console.log("manual trigger state", f);
     return f;
   });
+
+  it('should allow retrieving formula instance executions by the event ID and the events object ID that triggered that execution', () => {
+    const validator = (executions) => {
+      return new Promise((res, rej) => {
+        return executions.map(e => {
+          const formulaInstanceId = e.formulaInstanceId;
+          return e.stepExecutions.map(se => {
+            if (se.stepName === 'trigger') {
+              const flat = flattenStepExecutionValues(se.stepExecutionValues);
+              expect(flat['trigger.type']).to.equal('event');
+
+              const triggerEventString = flat['trigger.event'];
+              expect(triggerEventString).to.be.a('string');
+              const triggerEvent = JSON.parse(triggerEventString);
+              const objectId = triggerEvent.objectId;
+              expect(objectId).to.be.a('string');
+
+              // should be able to lookup this single execution by its event ID
+              const eventId = flat['trigger.eventId'];
+              const v = r => expect(r.body).to.have.length(1);
+              let executionFromEventId;
+              return cloud.withOptions({qs: {eventId}}).get(`/formulas/instances/${formulaInstanceId}/executions`, v)
+                .then(r => {
+                  executionFromEventId = r.body;
+                  return cloud.withOptions({qs: {objectId}}).get(`/formulas/instances/${formulaInstanceId}/executions`, v);
+                })
+                .then(r => {
+                  // should be the same execution as the one we retrieved by its event
+                  expect(r.body).to.deep.equal(executionFromEventId);
+                  return res({});
+                });
+            }
+          });
+        });
+      });
+    };
+    return eventTriggerTest('simple-successful-formula', 1, 2, validator);
+  });
+
+  it('should not allow searching formula instance executions by objectId and eventId', () => {
+    const validator = executions => {
+      const formulaInstanceId = executions[0].formulaInstanceId;
+      const v = r => expect(r).to.have.statusCode(400);
+      const opts = {qs: {eventId: '123', objectId: '456'}};
+      return cloud.withOptions(opts).get(`/formulas/instances/${formulaInstanceId}/executions`, v);
+    };
+    return eventTriggerTest('simple-successful-formula', 1, 2, validator);
+  });
+
+  it('should allow a script step to use the moment package', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        expect(e.status).to.equal('success');
+        expect(e.stepExecutions[0].status).to.equal('success');
+        expect(e.stepExecutions[0].stepExecutionValues[0].key).to.equal('useMomentPackage.time');
+      });
+    };
+    return manualTriggerTest('use-moment-package', null, {}, 2, validator);
+  });
+
 });

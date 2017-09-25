@@ -8,7 +8,7 @@ const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
 const faker = require('faker');
 
 const customerUpdate = () => ({
-  "last_name": "elements",
+  "last_name": faker.random.word(),
   "email": tools.randomEmail().toString()
 });
 

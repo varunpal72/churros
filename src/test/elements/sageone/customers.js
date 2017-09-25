@@ -3,12 +3,10 @@
 const suite = require('core/suite');
 const expect = require('chakram').expect;
 const tools = require('core/tools');
-const payload = require('./assets/customers');
+const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
 const chakram = require('chakram');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const customersPayload = build({ name: "ce" + tools.randomInt(), reference: "re" + tools.randomInt(), notes: "notes" + tools.randomInt() });
 
-suite.forElement('finance', 'customers', { payload: customersPayload }, (test) => {
+suite.forElement('finance', 'customers', { payload: payload }, (test) => {
   test.should.supportCrus(chakram.put);
   test.should.supportPagination();
   test

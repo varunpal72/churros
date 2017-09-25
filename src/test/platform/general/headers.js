@@ -22,7 +22,7 @@ suite.forPlatform('general', {}, (test) => {
         .then(r => {
           return expect(r).to.have.header(
           'Access-Control-Expose-Headers', 
-          'Elements-Returned-Count, Elements-Total-Count,  Elements-Request-Id, Elements-Next-Page-Token'
+          'Elements-Returned-Count, Elements-Total-Count,  Elements-Request-Id, Elements-Next-Page-Token, Elements-Trace-Id'
           );
         })
       );

@@ -270,7 +270,7 @@
       "model": {
         "requestName": "contactsPost",
         "transform": false,
-        "name": "contacts",
+        "name": "contactsPostRes",
         "requestSwagger": {
           "data": {
             "id": "data",
@@ -632,7 +632,7 @@
       "model": {
         "requestName": "contactsPatch",
         "transform": false,
-        "name": "contacts",
+        "name": "contactsPatchResponse",
         "requestSwagger": {
           "contactsPatch": {
             "id": "contactsPatch",

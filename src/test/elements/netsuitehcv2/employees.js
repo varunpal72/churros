@@ -2,11 +2,9 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const payload = require('./assets/employees');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const employeesPayload = build({ firstName: tools.random(), lastName: tools.random() });
+const payload = tools.requirePayload(`${__dirname}/assets/employees.json`);
 
-suite.forElement('humancapital', 'employees', { payload: employeesPayload }, (test) => {
+suite.forElement('humancapital', 'employees', { payload: payload }, (test) => {
   const options = {
     churros: {
       updatePayload: {
