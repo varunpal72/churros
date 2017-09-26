@@ -51,19 +51,19 @@ suite.forPlatform('accounts', { payload: account, schema: accountSchema }, (test
       .withApi('/accounts/-1/roles/admin')
       .should.return404OnPut();
 
-    /* 401 on PUT where account does not belong in user's org
+    /* 403 on PUT where account does not belong in user's org
     NOTE: Don't run this test as the system user. */
     test
       .withApi('/accounts/1/roles/admin')
       .should.return403OnPut();
 
-    /* 401 on PUT where user does not have permissions to grant the role.
+    /* 403 on PUT where user does not have permissions to grant the role.
     NOTE: Don't run this test as the system user. */
     test
       .withApi('/accounts/1/roles/admin')
       .should.return403OnPut();
 
-    it('should return a 401 on PUT where user does not have permission to grant the role', () => {
+    it('should return a 403 on PUT where user does not have permission to grant the role', () => {
       cloud.put(`/accounts/${accountId}/roles/sys-admin`, null, r => {
         expect(r).to.have.statusCode(403);
       });
