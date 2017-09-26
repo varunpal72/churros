@@ -306,6 +306,7 @@ exports.delete = (id, baseApi) => {
 };
 
 exports.getBackup = (element) => {
+  logger.info('Attempting to use backup')
   return cloud.get('/instances?tags%5B%5D=churros-backup&hydrate=false')
   .then(r => {
     if (!_.isEmpty(r.body) || !_.isArray(r.body)) {
@@ -317,10 +318,10 @@ exports.getBackup = (element) => {
         r.body = instance
         return r
       } else {
-        console.warn('No "churros-backup" instance available');
+        logger.error('No "churros-backup" instance available');
       }
     } else {
-      console.warn('Invalid response: ', JSON.stringify(r.body));
+      logger.error('Invalid response: ', JSON.stringify(r.body));
     }
   })
 }
