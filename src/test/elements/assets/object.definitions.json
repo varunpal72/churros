@@ -1171,5 +1171,17 @@
      "path": "junk",
      "type": "string"
    }]
+ },
+ "checks" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "posting-periods" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
  }
 }
