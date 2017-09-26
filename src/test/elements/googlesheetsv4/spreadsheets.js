@@ -60,7 +60,7 @@ let rowId;
 
      it('should allow copy worksheet /spreadsheets/{spreadsheetId}/worksheets/{sheetId}:copyTo', () =>{
        return cloud.post(test.api, newspreadSheetPayload)
-       .then(r => {destsheetId = r.body.spreadsheetId});
+       .then(r => destsheetId = r.body.spreadsheetId)
        .then(r => cloud.post(`${test.api}/${spreadsheetId}/worksheets/${sheetId}/copy`,destSpreadsheetPayload));
         });
 
