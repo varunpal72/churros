@@ -49,20 +49,20 @@ before(() => {
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         deleteInstance = false;
         return r;
-      })
+      });
     } else if (argv.backup === 'only backup') {
       deleteInstance = false;
-      getInstance = provisioner.getBackup(element)
+      getInstance = provisioner.getBackup(element);
     } else {
       getInstance = provisioner.create(element)
       .catch(e => {
         if (argv.backup === 'use backup') { //if default flag
-          deleteInstance = false
-          return provisioner.getBackup(element)
+          deleteInstance = false;
+          return provisioner.getBackup(element);
         } else {
-          throw Error(e)
+          throw Error(e);
         }
-      })
+      });
     }
 
     return getInstance

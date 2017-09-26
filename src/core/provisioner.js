@@ -306,7 +306,7 @@ exports.delete = (id, baseApi) => {
 };
 
 exports.getBackup = (element) => {
-  logger.info('Attempting to use backup')
+  logger.info('Attempting to use backup');
   return cloud.get('/instances?tags%5B%5D=churros-backup&hydrate=false')
   .then(r => {
     if (!_.isEmpty(r.body) || !_.isArray(r.body)) {
@@ -315,13 +315,13 @@ exports.getBackup = (element) => {
         props.setForKey(element, 'elementId', instance.element.id);
         defaults.token(instance.token);
         expect(instance.element.key).to.equal(tools.getBaseElement(element));
-        r.body = instance
-        return r
+        r.body = instance;
+        return r;
       } else {
         logger.error('No "churros-backup" instance available');
       }
     } else {
       logger.error('Invalid response: ', JSON.stringify(r.body));
     }
-  })
-}
+  });
+};
