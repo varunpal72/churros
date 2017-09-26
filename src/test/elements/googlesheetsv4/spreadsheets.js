@@ -16,12 +16,7 @@ const rowUpdatePayload = tools.requirePayload(`${__dirname}/assets/rowupdate.jso
 
 
 suite.forElement('general', 'spreadsheets', (test) => {
-let spreadsheetId;
-let sheetId;
-let destsheetId;
-let worksheetName;
-let range;
-let rowId;
+let spreadsheetId, sheetId, destsheetId, worksheetName, range, rowId;
 
   test.should.supportPagination();
 
@@ -38,7 +33,6 @@ let rowId;
     .then(r => cloud.put(`${test.api}/${spreadsheetId}/worksheets/${sheetId}`,workSheetUpdatePayload ))
     .then(r => cloud.get(`${test.api}/${spreadsheetId}/worksheets/${sheetId}`))
     .then(r => worksheetName = r.body.title);
-    //.then(r => cloud.delete(`${test.api}/${spreadsheetId}/worksheets/${sheetId}`))
    });
 
 
@@ -63,5 +57,7 @@ let rowId;
        .then(r => destsheetId = r.body.spreadsheetId)
        .then(r => cloud.post(`${test.api}/${spreadsheetId}/worksheets/${sheetId}/copy`,destSpreadsheetPayload));
         });
+
+      after(() => cloud.delete(`${test.api}/${spreadsheetId}/worksheets/${sheetId}`));
 
 });
