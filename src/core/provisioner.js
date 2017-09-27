@@ -12,7 +12,7 @@ const r = require('request');
 const defaults = require('core/defaults');
 const cloud = require('core/cloud');
 const argv = require('optimist').argv;
-const _ = require('lodash');
+const _ = require('ramda');
 
 var exports = module.exports = {};
 
@@ -309,7 +309,7 @@ exports.getBackup = (element) => {
   logger.info('Attempting to use backup');
   return cloud.get('/instances?tags%5B%5D=churros-backup&hydrate=false')
   .then(r => {
-    if (!_.isEmpty(r.body) || !_.isArray(r.body)) {
+    if (!_.isEmpty(r.body) && _.type(r.body) === 'Array') {
       var instance = r.body.reduce((acc, cur) => acc = acc === null && cur.element.key === element ? cur : null, null);
       if (instance !== null) {
         props.setForKey(element, 'elementId', instance.element.id);
