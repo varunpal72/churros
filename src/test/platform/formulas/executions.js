@@ -394,6 +394,20 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return eventTriggerTest('loop-successful-formula', 1, 103, validator, 'success', 103);
   });
 
+  it('should fail the execution when the list property on a loop step does not point to a list', () => {
+    const validator = (executions) => {
+      expect(executions[0].status).to.equal('failed');
+      executions.map(e => {
+        e.stepExecutions.filter(se => se.stepName === 'loop').map(sev => {
+          expect(sev.stepExecutionValues).to.have.length(1);
+          const stepExecutionValue = sev.stepExecutionValues[0];
+          expect(stepExecutionValue.key).to.equal('loop.error');
+        });
+      });
+    };
+    return eventTriggerTest('loop-failure-formula', 1, 3, validator, 'failed', 3);
+  });
+
   it('should successfully execute a simple element request formula triggered by a single event', () => {
 
     const validator = (executions) => {
