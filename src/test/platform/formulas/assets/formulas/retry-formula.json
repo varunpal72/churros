@@ -9,7 +9,7 @@
     "type": "event",
     "onSuccess": ["retry-element-request"],
     "properties": {
-      "elementInstanceId": "${config.trigger_instance}"
+      "elementInstanceId": "${trigger_instance}"
     }
   }],
   "steps": [{

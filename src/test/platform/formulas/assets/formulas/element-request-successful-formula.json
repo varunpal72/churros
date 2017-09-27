@@ -98,7 +98,7 @@
             ],
             "onFailure": [],
             "properties": {
-                "elementInstanceId": "${config.trigger_instance}"
+                "elementInstanceId": "${trigger_instance}"
             }
         }
     ],
