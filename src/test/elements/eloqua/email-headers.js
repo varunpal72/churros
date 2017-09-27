@@ -10,6 +10,6 @@ const payload =  {
 
 suite.forElement('marketing', 'email-headers', { payload: payload }, (test) => {
   test.should.supportCruds();
-  test.should.supportPagination();
+  test.withOptions({ qs: { pageSize: 5 }}).should.supportPagination('id');
   test.should.supportCeqlSearchForMultipleRecords('name');
 });

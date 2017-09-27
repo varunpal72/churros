@@ -1,9 +1,6 @@
 {
   "streetName": "7931 Halprin2 Dr",
   "isBilling": false,
-  "customFields": {
-    "a4b4e75c9b804c0e8055df1639935dcd": "769"
-  },
   "name": "TestQAName",
   "locality": "DFW",
   "postcode": "235183005",
