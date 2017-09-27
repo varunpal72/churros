@@ -219,7 +219,7 @@ const createFAndFI = (element, config) => {
     .then(r => elementInstanceId = r.body.id)
     .then(r => {
       const formulaInstance = require('./formulas/basic-formula-instance');
-      formulaInstance.configuration['trigger-instance'] = elementInstanceId;
+      formulaInstance.configuration.trigger_instance = elementInstanceId;
       return cloud.post(`/formulas/${formulaId}/instances`, formulaInstance, fiSchema);
     })
     .then(r => formulaInstanceId = r.body.id)

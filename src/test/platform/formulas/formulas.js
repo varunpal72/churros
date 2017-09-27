@@ -180,7 +180,7 @@ suite.forPlatform('formulas', opts, (test) => {
   it('should allow setting the engine flag to use bodenstein to execute a formula', () => {
     const f = common.genFormula({});
     const patchBody = {
-      engine: 'bodenstein',
+      engine: 'v3',
     };
 
     const validator = (formula) => {
@@ -207,11 +207,11 @@ suite.forPlatform('formulas', opts, (test) => {
       "properties": {
       }
     }];
-    f.engine = 'bodenstein';
+    f.engine = 'v3';
 
     return cloud.post(test.api, f, (r) => {
       expect(r).to.have.statusCode(400);
-      expect(r.body.message).to.contain('Invalid formula for bodenstein engine');
+      expect(r.body.message).to.contain('Invalid formula for the v3 engine');
     });
   });
 

@@ -1,15 +1,15 @@
 {
   "name": "retry-formula",
   "configuration": [{
-    "name": "trigger-instance",
-    "key": "trigger-instance",
+    "name": "trigger_instance",
+    "key": "trigger_instance",
     "type": "elementInstance"
   }],
   "triggers": [{
     "type": "event",
     "onSuccess": ["retry-element-request"],
     "properties": {
-      "elementInstanceId": "${config.trigger-instance}"
+      "elementInstanceId": "${trigger_instance}"
     }
   }],
   "steps": [{
@@ -21,7 +21,7 @@
       "retryAttempts": "3",
       "retryDelay": "100",
       "retryStatusCodes": "400",
-      "elementInstanceId": "${config.trigger-instance}",
+      "elementInstanceId": "${config.trigger_instance}",
       "method": "GET"
     }
   }]

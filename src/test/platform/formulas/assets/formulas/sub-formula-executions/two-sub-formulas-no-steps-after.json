@@ -9,7 +9,7 @@
       "type": "event",
       "onSuccess": ["A-filter"],
       "properties": {
-        "elementInstanceId": "${config.crm.instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{
@@ -46,7 +46,7 @@
       "type": "event",
       "onSuccess": ["B-request"],
       "properties": {
-        "elementInstanceId": "${config.crm.instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{
@@ -76,7 +76,7 @@
       "type": "event",
       "onSuccess": ["C-end"],
       "properties": {
-        "elementInstanceId": "${config.crm.instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{

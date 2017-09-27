@@ -223,6 +223,9 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     const setup = () => createSetCreate(manualSubFormulasFailedRequest, 'B-manual-formula-create-resource-failed-request', 'A-sub-formula', 'A-manual-formula-failed-request');
 
     const validator = (executions) => {
+      // validate the overall execution is a failure
+      expect(executions[0].status).to.equal('failed');
+
       const subFormulaExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-sub-formula')[0];
       expect(subFormulaExecution.status).to.equal('failed');
 

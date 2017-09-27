@@ -9,7 +9,7 @@
     "type": "event",
     "onSuccess": ["A_build_args"],
     "properties": {
-      "elementInstanceId": "${config.crm.instance}"
+      "elementInstanceId": "${crm.instance}"
     }
   }],
   "steps": [{
