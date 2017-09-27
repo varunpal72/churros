@@ -37,7 +37,7 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
       .then(r => userId = r.body.id);
   });
 
-  after(() => { console.log('Cleaning Up'); cleanup(); });
+  after(() => cleanup());
 
   it('should support CRUDS for users', () => {
     const validate = (r, amount, firstName, lastName) => {
