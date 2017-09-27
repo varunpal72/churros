@@ -1,5 +1,5 @@
 {
-  "name": "loop-successful",
+  "name": "loop-failure",
   "steps": [{
       "onSuccess": ["loop"],
       "name": "create-non-list",
@@ -12,7 +12,7 @@
       "name": "loop",
       "type": "loop",
       "properties": {
-        "list": "${steps.create-non-list.dne}"
+        "list": "${steps.create-non-list.object}"
       }
     }
   ],
