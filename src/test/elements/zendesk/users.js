@@ -3,6 +3,7 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/users.json`);
+const updatePayload = tools.requirePayload(`${__dirname}/assets/usersUpdate.json`);
 const cloud = require('core/cloud');
 const options = {
   churros: {
@@ -12,12 +13,6 @@ const options = {
     }
   }
 };
-const updatePayload = {
-  "name": "Userguy2",
-  "email": tools.randomEmail()
-};
-
-payload.email = tools.randomEmail();
 
 suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
   var id;
