@@ -436,13 +436,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.get(r.body.oauthUrl);
       // wait for username to show up
       browser.wait(webdriver.until.elementLocated(webdriver.By.name('username')), 10000);
-      browser.findElement(webdriver.By.id('username')).clear();
+      browser.findElement(webdriver.By.id('username')).clear();//clear field before entering data
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
       browser.findElement(webdriver.By.id('password')).clear();
       browser.findElement(webdriver.By.id('password')).sendKeys(password);
       browser.findElement(webdriver.By.id('Login')).click();
-      browser.sleep(5000);
-      browser.wait(() => browser.isElementPresent(webdriver.By.id('oaapprove')), 10000)
+
+      browser.wait(webdriver.until.elementLocated(webdriver.By.id('oaapprove')), 10000)//wait for approve button to load
         .thenCatch(r => true); // ignore
 
       browser.findElement(webdriver.By.id('oaapprove'))

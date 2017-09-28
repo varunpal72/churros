@@ -1,7 +1,7 @@
 {
-    "email": "churrrros@example.com",
+    "email": "<<internet.email>>",
     "Username": "<<internet.email>>",
-    "LastName": "Sauce",
+    "LastName": "<<name.lastName>>",
     "Alias": "rb",
     "TimeZoneSidKey": "America/Denver",
     "LocaleSidKey": "en_US",
