@@ -34,7 +34,7 @@ suite.forElement('fsa', 'jobs', { payload: payload }, (test) => {
       return Promise.all([cloud.delete('/hubs/fsa/locations/' + locationId),
       cloud.delete('/hubs/fsa/customers/' + customerId)])
       .catch(() => console.log('failed ot delete location'))
-      .then(() => {throw Error(e)})
-    })
+      .then(() => {throw Error(e);});
+    });
   });
 });

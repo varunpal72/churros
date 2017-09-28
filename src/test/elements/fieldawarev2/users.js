@@ -22,6 +22,6 @@ suite.forElement('fsa', 'users', { payload: payload }, (test) => {
       expect(r).to.have.statusCode(200);
       expect(r.body.filter(obj => obj.id === id).length).to.equal(r.body.length);
     })
-    .then(r => cloud.delete(`${test.api}/${id}`))
+    .then(r => cloud.delete(`${test.api}/${id}`));
   });
 });
