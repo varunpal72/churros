@@ -2,6 +2,6 @@
 
 const suite = require('core/suite');
 
-suite.forElement('esignature', 'uris', {skip: true}, (test) => {
+suite.forElement('esignature', 'uris', {skip: false}, (test) => {
   test.should.return200OnGet();
 });
