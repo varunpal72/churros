@@ -244,9 +244,23 @@
       "vendorPath": "internalId"
     }]
   },
-"subsidiaries": {
-    "vendorName": "Subsidiary",
-    "fields": [{
+  "subsidiaries": {
+      "vendorName": "Subsidiary",
+      "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "posting-periods": {
+      "vendorName": "AccountingPeriod",
+      "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "checks": {
+      "vendorName": "Check",
+      "fields": [{
       "path": "id",
       "vendorPath": "internalId"
     }]
