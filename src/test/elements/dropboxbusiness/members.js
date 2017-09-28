@@ -4,12 +4,19 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/members');
 
-suite.forElement('documents', 'members', { payload: payload }, (test) => {
-  const memberId = 'dbmid:AADkTHIEUNMxlMLbejOdxXt8bZsciJP1sRE';
+suite.forElement('documents', 'members', { payload: payload,skip:true }, (test) => {
+  const memberId = 'dbmid:AACFP-SOix67cparXiV_EkV-dwqL1zPORi8';
   const email = 'devteammember@cloud-elements.com';
   const external_id = 'company_id:342432';
 
   test.should.return200OnGet();
+
+  it('should support CD for ${test.api}/members', () => {
+    let id;
+    return cloud.post(`${test.api}`,payload)
+            .then(r => id=r.body.complete[0].profile.team_member_id)
+            .then(r => cloud.delete(`${test.api}/${id}`));
+  });
 
   // member is unsuspended twice to make sure it's in a state where it can be tested next time.
   it('should support PATCH for ${test.api}/members/{id}/suspend/{wipe_data}', () => {

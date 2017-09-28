@@ -4,14 +4,27 @@ const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const metadataSchema = require('./assets/element.metadata.schema.json');
+const metadataExpandedSchema = require('./assets/element.metadata.expanedschema.json');
 
 const opts = { schema: metadataSchema };
 
 suite.forPlatform('elements/metadata', opts, (test) => {
 
+  it('should get all elements metadata', () => {
+    return cloud.get('elements/metadata', (r) => {
+      expect(r).to.have.statusCode(200);
+      expect(r.body).to.not.be.empty;
+    });
+  });
+
   it('should return element metadata', () => {
     return cloud.get('elements/sfdc')
       .then(r => cloud.get(`elements/${r.body.id}/metadata`, metadataSchema));
+  });
+
+  it('should return element metadata for expand', () => {
+    return cloud.get('elements/closeio')
+      .then(r => cloud.get(`/elements/${r.body.id}/metadata?expand=true`, metadataExpandedSchema));
   });
 
   it('should return 404 for invalid element ID', () => {

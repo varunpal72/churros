@@ -34,6 +34,13 @@
       "vendorPath": "internalId"
     }]
   },
+  "prospects": {
+    "vendorName": "Prospect",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
   "vendor-payments": {
     "vendorName": "Vendor-Payment",
     "fields": [{
@@ -134,6 +141,20 @@
   },
   "contacts": {
     "vendorName": "Contact",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "projects": {
+    "vendorName": "Job",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "bills": {
+    "vendorName": "Bill",
     "fields": [{
       "path": "id",
       "vendorPath": "internalId"

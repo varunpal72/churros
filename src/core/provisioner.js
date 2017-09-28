@@ -11,13 +11,29 @@ const o = require('core/oauth');
 const r = require('request');
 const defaults = require('core/defaults');
 const cloud = require('core/cloud');
+const argv = require('optimist').argv;
 
 var exports = module.exports = {};
 
+const genInstance = (config) =>
+  ({
+    name: config.name,
+    element: { key: config.element },
+    configuration: config.ec
+  });
+
 const genConfig = (props, args) => {
-  const config = props;
-  if (args) Object.keys(args).forEach(k => config[k] = args[k]);
-  return config;
+  const config = Object.assign({}, props, args);
+
+  const name = (args && args.name) ? args.name : 'churros-instance';
+  const tags = (args && args.tags) ? args.tags : undefined;
+  delete config.name;
+
+  return {
+    ec: config,
+    name: name,
+    tags: tags
+  };
 };
 
 const parseProps = (element) => {
@@ -38,21 +54,72 @@ const parseProps = (element) => {
   return new Promise((res, rej) => res(args));
 };
 
+const getPollerConfig = (element, instance) => {
+  if (!argv.polling) return Promise.resolve(instance);
+  let elementObj;
+  return cloud.get('/elements/' + element)
+  .then(r => elementObj = r.body)
+  .then(r => props.setForKey(element, 'elementId', elementObj.id))
+  .then(r => cloud.get(`elements/${elementObj.id}/metadata`))
+  .then(r => {
+    const pollsSupported = r.body.events.supported && r.body.events.methods.includes('polling');
+    if (!pollsSupported) logger.error('Polling is not supported for this element.');
+    return pollsSupported;
+  })
+  .then(r => r ? elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.configuration' ? conf.defaultValue : acc, 'NoConfig') : null)
+  .then(r => {
+    if (r === null) return instance;
+    let instanceCopy = JSON.parse(JSON.stringify(instance));
+    if (elementObj.configuration.map(conf => conf.key).includes('event.metadata')) {
+      instanceCopy.configuration['event.objects'] = Object.keys(JSON.parse(elementObj.configuration
+      .reduce((acc, conf) => acc = conf.key === 'event.metadata' ? conf.defaultValue : acc, {})).polling).filter(str => str !== '{objectName}').join(',');
+    } else {
+      if (r !== 'NoConfig') instanceCopy.configuration['event.poller.configuration'] = r.replace(/\\n/g, '').replace(/\n/g, '').replace(/\t/g, '').replace(/<PUT USERNAME HERE>/g, props.getOptionalForKey(element, 'username'));
+      if (instanceCopy.configuration['event.poller.configuration']) instanceCopy.configuration["event.poller.urls"] = Object.keys(JSON.parse(instanceCopy.configuration['event.poller.configuration'])).join('|');
+      else instanceCopy.configuration['event.poller.urls'] = elementObj.configuration.reduce((acc, conf) => acc = conf.key === 'event.poller.urls' ? conf.defaultValue : acc ,null);
+    }
+    instanceCopy.configuration['event.vendor.type'] = 'polling';
+    instanceCopy.configuration['event.notification.callback.url'] = 'https://httpbin.org/get';
+    instanceCopy.configuration['event.notification.enabled'] = 'true';
+    instanceCopy.configuration['event.poller.refresh_interval'] = '1';
+    instanceCopy.configuration['event.notification.signature.key'] = '';
+    return instanceCopy;
+  })
+  .catch(() => instance);
+};
+
+const addParams = (instance) => {
+  let instanceCopy = JSON.parse(JSON.stringify(instance));
+  if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+  return instanceCopy;
+};
+
+const addParamsToOptions = (argOptions) => {
+  let optionsCopy = JSON.parse(JSON.stringify(argOptions));
+  if (argv.params) optionsCopy.qs = Object.assign({}, optionsCopy.qs, JSON.parse(argv.params));
+  return optionsCopy;
+};
+
+const addDebugToParams = (args, params) => {
+  if (args && args.debug) params.debug = true;
+  return params;
+};
+
 const createInstance = (element, config, providerData, baseApi) => {
-  const instance = {
-    name: 'churros-instance',
-    element: { key: element },
-    configuration: config
-  };
+  config.element = tools.getBaseElement(element);
+  const instance = genInstance(config);
+
   baseApi = (baseApi) ? baseApi : '/instances';
 
   if (providerData) instance.providerData = providerData;
-
-  return cloud.post(baseApi, instance)
+  return getPollerConfig(tools.getBaseElement(element), instance)
+    .then(r => cloud.post(baseApi, addParams(r)))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       defaults.token(r.body.token);
+      global.instanceId = r.body.id;
+      tools.addCleanUp({url: `${props.get('url')}/elements/api-v2${baseApi}/${r.body.id}`, method: 'delete', secrets: defaults.secrets()});
       return r;
     })
     .catch(r => tools.logAndThrow('Failed to create an instance of %s', r, element));
@@ -69,6 +136,7 @@ const createExternalInstance = (element, config, providerData) => {
   if (!tokenUrl) {
     throw Error("Token URL must be present in the element props as 'tokenUrl'");
   }
+  let instanceElement = tools.getBaseElement(element);
 
   return new Promise((res, rej) => {
     r.post({
@@ -85,7 +153,7 @@ const createExternalInstance = (element, config, providerData) => {
       let refreshToken = body.refresh_token;
       instanceBody = {
         "element": {
-          "key": element
+          "key": instanceElement
         },
         "configuration": {
           "oauth.user.refresh_token": refreshToken,
@@ -104,9 +172,10 @@ const createExternalInstance = (element, config, providerData) => {
 };
 
 const oauth = (element, args, config) => {
-  const url = `/elements/${element}/oauth/url`;
-  logger.debug('GET %s with options %s', url, args.options);
-  return cloud.withOptions(args.options).get(url)
+  let urlElement = tools.getBaseElement(element);
+  const url = `/elements/${urlElement}/oauth/url`;
+  logger.debug('GET %s with options %s', url, JSON.stringify(addParamsToOptions(args.options)));
+  return cloud.withOptions(addParamsToOptions(args.options)).get(url)
     .then(r => {
       expect(r).to.have.statusCode(200);
       return o(element, r, args.username, args.password, config);
@@ -131,6 +200,9 @@ const oauth = (element, args, config) => {
         realmId: query.realmId,
         dataSource: query.dataSource
       };
+      if(args && args.debug) {
+        providerData.debug = true;
+      }
       return providerData;
     });
 };
@@ -157,19 +229,21 @@ const oauth1 = (element, args) => {
 const orchestrateCreate = (element, args, baseApi, cb) => {
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
+  config.element = element;
 
   logger.debug('Attempting to provision %s using the %s provisioning flow', element, type ? type : 'standard');
 
   switch (type) {
     case 'oauth1':
     case 'oauth2':
-      config['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
+      config.ec['oauth.callback.url'] = props.getOptionalForKey(element, 'oauth.callback.url') === null ?
         props.get('oauth.callback.url') :
         props.getForKey(element, 'oauth.callback.url');
-      logger.debug('Using callback URL: ' + config['oauth.callback.url']);
+      logger.debug('Using callback URL: ' + config.ec['oauth.callback.url']);
       return parseProps(element)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
-        .then(r => oauth(element, r, config))
+        .then(r => addDebugToParams(args, r))
+        .then(r => oauth(element, r, config.ec))
         .then(r => cb(type, config, r));
     case 'custom':
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
@@ -181,7 +255,7 @@ const orchestrateCreate = (element, args, baseApi, cb) => {
 
 /**
  * Provision an element using just the partial OAuth flow.
- * @param {tring} element The element key
+ * @param {string} element The element key
  * @param {Object} args Any other args to pass when provisioning the element
  * @param {string} baseApi The base API
  * @return {Promise}  A promise that will resolve to the response after the partial OAuth flow is complete
@@ -199,7 +273,7 @@ exports.create = (element, args, baseApi) => {
   const cb = (type, config, r) => {
     const external = props.getOptionalForKey(element, 'external');
 
-    if (external && type === 'oauth2') return createExternalInstance(element, config, r);
+    if (external && type === 'oauth2') return createExternalInstance(element, config.ec, r);
     if (external && type === 'oauth1') throw Error('External Authentication via churros is not yet implemented for OAuth1');
 
     return createInstance(element, config, r, baseApi);
@@ -218,7 +292,10 @@ exports.delete = (id, baseApi) => {
   if (!id) return;
 
   baseApi = (baseApi) ? baseApi : '/instances';
-  return cloud.delete(`${baseApi}/${id}`)
+  // when running the delete API, don't include the element token in the auth header
+  const { userSecret, orgSecret } = defaults.secrets();
+  const headers = { Authorization: `User ${userSecret}, Organization ${orgSecret}` };
+  return cloud.withOptions({ headers }).delete(`${baseApi}/${id}`)
     .then(r => {
       logger.debug(`Deleted element instance with ID: ${id}`);
       defaults.reset();

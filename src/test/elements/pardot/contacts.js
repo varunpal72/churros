@@ -2,11 +2,19 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/contacts');
+const tools = require('core/tools');
+const contactsPayload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
 
-suite.forElement('marketing', 'contacts', { payload: payload }, (test) => {
-  test.should.supportCruds();
-  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
+suite.forElement('marketing', 'contacts', { payload: contactsPayload }, (test) => {
+  const options = {
+    churros: {
+      updatePayload: {
+        "email": tools.randomEmail()
+      }
+    }
+  };
+  test.withOptions(options).should.supportCruds();
+  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.supportPagination();
   test.should.supportCeqlSearch('id');
 
   it('should allow GET for contacts/:id/activities,contacts/:id/activities/:id,contacts/:id/campaigns and contacts/:id/lists', () => {

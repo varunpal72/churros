@@ -1,10 +1,10 @@
 'use strict';
 
 const suite = require('core/suite');
-const payload = require('./assets/lists');
 const contactsPayload = require('./assets/contacts');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/lists.json`);
 const build = (overrides) => Object.assign({}, contactsPayload, overrides);
 const contactUpdatePayload = build({ lastName: tools.random(), firstName: tools.random(), emailAddress: tools.randomEmail() });
 
@@ -19,7 +19,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     }
   };
   test.withOptions(opts).should.supportCruds();
-  test.should.supportPagination();
+  test.withOptions({ qs: { pageSize: 10 }}).should.supportPagination('id');
   test.should.supportCeqlSearch('id');
 
   it('should allow CRUDS for lists/{id}/contacts ', () => {

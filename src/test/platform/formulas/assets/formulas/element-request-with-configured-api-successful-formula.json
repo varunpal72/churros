@@ -2,8 +2,8 @@
     "active": true,
     "configuration": [
         {
-            "key": "trigger-instance",
-            "name": "trigger-instance",
+            "key": "trigger_instance",
+            "name": "trigger_instance",
             "required": true,
             "type": "elementInstance"
         },
@@ -18,15 +18,14 @@
     "singleThreaded": false,
     "steps": [
         {
-            "name": "delete-contact",
+            "name": "delete-accounts",
             "onFailure": [],
             "onSuccess": [],
             "properties": {
                 "acceptableStatusCodes": "200",
-                "api": "/hubs/crm/${config.resource.name}/{id}",
-                "elementInstanceId": "${trigger-instance}",
+                "api": "/hubs/crm/${config.resource.name}/${steps.delete-accounts-path.id}",
+                "elementInstanceId": "${config.trigger_instance}",
                 "method": "DELETE",
-                "path": "${delete-contact-path}",
                 "retry": "true",
                 "retryAttempts": "3",
                 "retryDelay": "200",
@@ -35,28 +34,28 @@
             "type": "elementRequest"
         },
         {
-            "name": "delete-contact-path",
+            "name": "delete-accounts-path",
             "onFailure": [],
             "onSuccess": [
-                "delete-contact"
+                "delete-accounts"
             ],
             "properties": {
-                "body": "var path = { \"id\": steps['get-contact'].response.body[0].Id }\n\ndone(path);"
+                "body": "var path = { \"id\": steps['get-accounts'].response.body[0].id }\n\ndone(path);"
             },
             "type": "script"
         },
         {
-            "name": "get-contact",
+            "name": "get-accounts",
             "onFailure": [],
             "onSuccess": [
-                "delete-contact-path"
+                "delete-accounts-path"
             ],
             "properties": {
                 "acceptableStatusCodes": "200",
                 "api": "/hubs/crm/${config.resource.name}",
-                "elementInstanceId": "${trigger-instance}",
+                "elementInstanceId": "${config.trigger_instance}",
                 "method": "GET",
-                "query": "${get-contact-query.query}",
+                "query": "${steps.get-accounts-query.query}",
                 "retry": "true",
                 "retryAttempts": "3",
                 "retryDelay": "200",
@@ -65,26 +64,26 @@
             "type": "elementRequest"
         },
         {
-            "name": "get-contact-query",
+            "name": "get-accounts-query",
             "onFailure": [],
             "onSuccess": [
-                "get-contact"
+                "get-accounts"
             ],
             "properties": {
-                "body": "var contact = steps['post-contact'].response.body\n\nvar query = { \"query\": { \"where\": \"Id='\" + contact.Id + \"'\" } };\n\ndone(query);"
+                "body": "var accounts = steps['post-accounts'].response.body\n\nvar query = { \"query\": { \"where\": \"name='\" + accounts.name + \"'\" } };\n\ndone(query);"
             },
             "type": "script"
         },
         {
-            "name": "post-contact",
+            "name": "post-accounts",
             "onFailure": [],
             "onSuccess": [
-                "get-contact-query"
+                "get-accounts-query"
             ],
             "properties": {
                 "api": "/hubs/crm/${config.resource.name}",
-                "body": "${post-contact-payload.contact}",
-                "elementInstanceId": "${trigger-instance}",
+                "body": "${steps.post-accounts-payload.accounts}",
+                "elementInstanceId": "${config.trigger_instance}",
                 "method": "POST",
                 "retry": "true",
                 "retryAttempts": "3",
@@ -94,13 +93,13 @@
             "type": "elementRequest"
         },
         {
-            "name": "post-contact-payload",
+            "name": "post-accounts-payload",
             "onFailure": [],
             "onSuccess": [
-                "post-contact"
+                "post-accounts"
             ],
             "properties": {
-                "body": "var contact = { \"contact\": {\n  \"Phone\": \"123-456-7890\",\n  \"Email\": \"devnull@cloud-elements.com\",\n  \"FirstName\": \"Dev\",\n  \"LastName\": \"Null\",\n  \"MobilePhone\": \"987-654-3210\",\n  \"Title\": \"Colonel\",\n  \"Salutation\": \"Mr.\",\n  \"Birthdate\": \"1977-01-01\"\n}};\n\ndone(contact);\n\n"
+                "body": "var accounts = { \"accounts\": {\n  \"name\": \"formula-churros\"}};\n\ndone(accounts);\n\n"
             },
             "type": "script"
         }
@@ -111,7 +110,7 @@
             "name": "trigger",
             "onFailure": [],
             "onSuccess": [
-                "post-contact-payload"
+                "post-accounts-payload"
             ],
             "properties": {},
             "type": "manual"

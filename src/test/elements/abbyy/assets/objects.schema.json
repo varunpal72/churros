@@ -2,6 +2,6 @@
     "type": "array",
     "items": {
         "type": "string",
-        "enum": ["tasksTextfileds", "tasks", "info"]
+        "enum": ["tasksTextfields", "tasks", "info", "tasksFinished"]
     }
 }

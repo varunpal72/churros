@@ -40,5 +40,19 @@
       "path": "id",
       "vendorPath": "internalId"
     }]
+  },
+  "prospects": {
+    "vendorName": "Prospect",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "custom-records": {
+    "vendorName": "CustomRecord",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
   }
 }

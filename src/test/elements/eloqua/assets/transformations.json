@@ -26,5 +26,20 @@
       "path": "id",
       "vendorPath": "activities"
     }]
+  },
+  "eloquaCustomObject": {
+    "vendorName": "customTest",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "custom.111"
+    },
+    {
+      "path": "name",
+      "vendorPath": "custom.112"
+    },
+    {
+      "path": "email",
+      "vendorPath": "custom.114"
+    }]
   }
 }

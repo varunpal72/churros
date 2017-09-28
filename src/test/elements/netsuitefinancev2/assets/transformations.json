@@ -6,6 +6,20 @@
       "vendorPath": "internalId"
     }]
   },
+  "projects": {
+    "vendorName": "Job",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "bills": {
+    "vendorName": "Bill",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
   "vendors": {
     "vendorName": "Vendor",
     "fields": [{
@@ -195,6 +209,27 @@
       "vendorPath": "internalId"
     }]
   },
+  "classifications": {
+    "vendorName": "Classification",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "departments": {
+    "vendorName": "Department",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+  "locations": {
+    "vendorName": "Location",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
   "contacts": {
     "vendorName": "Contact",
     "fields": [{
@@ -204,6 +239,13 @@
   },
   "accounts": {
     "vendorName": "Account",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "internalId"
+    }]
+  },
+"subsidiaries": {
+    "vendorName": "Subsidiary",
     "fields": [{
       "path": "id",
       "vendorPath": "internalId"

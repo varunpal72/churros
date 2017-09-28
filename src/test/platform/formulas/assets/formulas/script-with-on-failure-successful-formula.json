@@ -9,7 +9,7 @@
             "name": "bad-script-step",
             "type": "script",
             "properties": {
-                "body": "This is an invalid script step;"
+                "body": "console.log('print'); throw('This is an invalid script step');"
             }
         },
         {
@@ -32,14 +32,14 @@
             ],
             "onFailure": [],
             "properties": {
-                "elementInstanceId": "${trigger-instance}"
+                "elementInstanceId": "${trigger_instance}"
             }
         }
     ],
     "configuration": [
         {
-            "key": "trigger-instance",
-            "name": "trigger-instance",
+            "key": "trigger_instance",
+            "name": "trigger_instance",
             "type": "elementInstance",
             "required": true
         }

@@ -6,7 +6,7 @@ const cloud = require('core/cloud');
 
 suite.forElement('documents', 'files', (test) => {
   let path = __dirname + '/assets/brady.jpg';
-  let query = { path: `/brady-${tools.random()}.jpg` };
+  let query = { path: `/brady-${tools.random()}.jpg` ,"overwrite":true };
 
   const fileWrap = (cb) => {
     let file;
@@ -43,6 +43,14 @@ suite.forElement('documents', 'files', (test) => {
         .then(r => cloud.get(`/hubs/documents/files/${file.id}/metadata`));
     };
 
+    return fileWrap(cb);
+  });
+
+  it('should allow R /files/links and R /files/:id/links', () => {
+    const cb = (file) => {
+      return cloud.withOptions({ qs: { path: file.path } }).get('/hubs/documents/files/links')
+      .then(r => cloud.get(`/hubs/documents/files/${file.id}/links`));
+    };
     return fileWrap(cb);
   });
 

@@ -12,18 +12,10 @@ const options = {
   }
 };
 
-const commentsPayload = () => ({
-  "comments": "I am a churro"
-});
-
-const notesPayload = () => ({
-  "work_notes": "I am the churro"
-});
-
-suite.forElement('helpdesk', 'incidents', { payload: payload, skip: true }, (test) => {
+suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.should.supportPagination();
   test.withOptions(options).should.supportCruds();
-  test.withOptions({ qs: { where: 'sys_created_on>=\'2016-02-06T16:35:36\'' } }).should.return200OnGet();
+  test.withName('should allow >= Ceql search').withOptions({ qs: { where: 'sys_created_on>=\'2016-02-06T16:35:36\'' } }).should.return200OnGet();
 
   it('should allow CRDS for /hubs/helpdesk/incidents/{id}/attachments', () => {
     let incidentId = -1;
@@ -40,6 +32,9 @@ suite.forElement('helpdesk', 'incidents', { payload: payload, skip: true }, (tes
   });
 
   it('should allow CS for /hubs/helpdesk/incidents/{id}/comments', () => {
+    let commentsPayload = () => ({
+      "comments": "I am a churro"
+    });
     let incidentId = -1;
     return cloud.get(test.api)
       .then(r => incidentId = r.body[0].id)
@@ -47,6 +42,9 @@ suite.forElement('helpdesk', 'incidents', { payload: payload, skip: true }, (tes
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${incidentId}/comments`));
   });
   it('should allow CS for /hubs/helpdesk/incidents/{id}/work-notes', () => {
+    let notesPayload = () => ({
+      "work_notes": "I am the churro"
+    });
     let incidentId = -1;
     return cloud.get(test.api)
       .then(r => incidentId = r.body[0].id)

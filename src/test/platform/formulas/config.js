@@ -10,7 +10,7 @@ const schema = require('./assets/schemas/formula.schema');
 const tools = require('core/tools');
 
 suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test) => {
-  before(() => cleaner.formulas.withName([invalid.name, 'complex-successful']));
+  before(() => cleaner.formulas.withName([invalid.name, 'complex_successful']));
 
   /* make sure config keys are being validated properly when creating a formula with config */
   test
@@ -27,7 +27,11 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
       .then(r => formulaId = r.body.id)
       .then(r => cloud.post(`${test.api}/${formulaId}/configuration`, config))
       .then(r => cloud.post(`${test.api}/${formulaId}/configuration`, config, validator))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 
   /**
@@ -39,16 +43,16 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
     const v = (r, key) => {
       expect(r).to.have.statusCode(200);
       expect(r.body).to.not.be.null;
-      expect(r.body.triggers[0].properties.elementInstanceId).to.equal(`\${${key}}`);
-      r.body.steps.filter((s) => s.properties.elementInstanceId !== undefined).forEach(rs => expect(rs.properties.elementInstanceId).to.equal(`\${${key}}`));
+      expect(r.body.triggers[0].properties.elementInstanceId).to.equal(`\${config.${key}}`);
+      r.body.steps.filter((s) => s.properties.elementInstanceId !== undefined).forEach(rs => expect(rs.properties.elementInstanceId).to.equal(`\${config.${key}}`));
       return r;
     };
 
-    const validateCreate = (r) => v(r, 'trigger-instance');
+    const validateCreate = (r) => v(r, 'trigger_instance');
 
     const validateUpdate = (r) => v(r, 'sfdc.instance');
 
-    const parseConfig = (formula) => formula.configuration.filter((c) => c.key === 'trigger-instance')[0];
+    const parseConfig = (formula) => formula.configuration.filter((c) => c.key === 'trigger_instance')[0];
 
     const parseConfigId = (formula) => parseConfig(formula).id;
 
@@ -68,6 +72,10 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
       })
       .then(r => cloud.put(`${test.api}/${formulaId}/configuration/${formulaConfigId}`, genConfig(f)))
       .then(r => cloud.get(`${test.api}/${formulaId}`, validateUpdate))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`));
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 });

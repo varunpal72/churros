@@ -44,8 +44,8 @@
       }
     ]
   },
-  "products": {
-    "vendorName": "Product",
+  "customers": {
+    "vendorName": "ClientPortalUser",
     "fields": [
       {
         "path": "id",

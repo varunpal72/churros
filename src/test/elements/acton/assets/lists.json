@@ -1,40 +1,14 @@
 {
-    "headings":"y",
-    "fieldseparator":"COMMA",
-    "quotecharacter":"NONE",
-    "uploadspecs":[
-        {
-            "columnHeading":"First Name",
-            "ignoreColumn":"N",
-            "columnType":"FIRSTNAME",
-            "columnIndex":0
-        },
-        {
-            "columnHeading":"Last Name",
-            "ignoreColumn":"N",
-            "columnType":"LASTNAME",
-            "columnIndex":1
-        },
-        {
-            "columnHeading":"Email",
-            "ignoreColumn":"N",
-            "columnType":"EMAIL",
-            "columnIndex":2
-        },
-        {
-            "columnHeading":"Custom 1",
-            "ignoreColumn":"N",
-            "columnIndex":3
-        },
-        {
-            "columnHeading":"Custom 2",
-            "ignoreColumn":"N",
-            "columnIndex":4
-        },
-        {
-            "columnHeading":"Secret",
-            "ignoreColumn":"Y",
-            "columnIndex":5
-        }
-    ]
+  "headings": "y",
+  "fieldseparator": "COMMA",
+  "listname": "<<random.word>>",
+  "quotecharacter": "NONE",
+  "uploadspecs": [
+    {
+      "columnHeading": "Email",
+      "ignoreColumn": "N",
+      "columnType": "EMAIL",
+      "columnIndex": "0"
+    }
+  ]
 }

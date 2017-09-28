@@ -1,5 +1,7 @@
 {
-    "firstName": "Churros Lead",
-    "lastName": "Churros Name",
-    "email":"fakeemail@churros.bs"
+  "properties": {
+    "firstName": "Tasty",
+    "lastName": "Churros",
+    "email": "churros.test@delete.mq"
+  }
 }

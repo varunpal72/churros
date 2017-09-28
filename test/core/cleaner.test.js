@@ -4,7 +4,7 @@ require('core/assertions');
 const cleaner = require('core/cleaner');
 const chakram = require('chakram');
 const nock = require('nock');
-
+const moment = require('moment');
 const BASE_URL = 'https://api.cloud-elements.com/elements/api-v2;';
 const AUTH = 'User fake, Organization fake';
 
@@ -19,7 +19,7 @@ describe('cleaner', () => {
     return ({ id: opts.id || null, formula: { id: opts.id || null } });
   };
 
-  const elementInstances = [{ id: 123, name: 'foo' }, { id: 456, name: 'bar' }];
+  const elementInstances = [{ id: 123, name: 'foo', createdDate: '2017-05-31T21:29:37Z' }, { id: 456, name: 'bar', createdDate: moment.utc().toISOString() }];
 
   const integrations = [{ id: 123, name: 'foo' }, { id: 456, name: 'bar' }];
 
@@ -71,6 +71,15 @@ describe('cleaner', () => {
       .delete('/instances/123')
       .reply(200);
     return cleaner.elements.withName('foo');
+  });
+
+  it('should support cleaning up elements an hour old', () => {
+    nock(BASE_URL, headers())
+      .get('/instances')
+      .reply(200, (uri, requestBody) => elementInstances)
+      .delete('/instances/123')
+      .reply(200);
+    return cleaner.cleanElementsBefore();
   });
 
   it('should support cleaning up elements with a list of names', () => {

@@ -61,13 +61,13 @@
     "internalId": "8",
     "name": "Packages"
   },
-  "itemId": "The Churros",
+  "itemId": "<<commerce.productName>>",
   "isDonationItem": false,
   "onSpecial": false,
-  "purchaseDescription": "Churros Desc",
+  "purchaseDescription": "<<commerce.productName>>",
   "costEstimateUnits": "per Pkg",
   "autoLeadTime": true,
-  "displayName": "Churros Product",
+  "displayName": "<<commerce.productName>>",
   "isOnline": false,
   "handlingCostUnits": "per Pkg",
   "costCategory": {

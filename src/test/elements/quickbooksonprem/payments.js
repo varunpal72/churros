@@ -1,15 +1,24 @@
 'use strict';
 
 const suite = require('core/suite');
+const tools = require('core/tools');
 const cloud = require('core/cloud');
+const payload = tools.requirePayload(`${__dirname}/assets/payments.json`);
+const updatePayload = { "Memo": tools.random(), "TotalAmount": "136.00" };
 
-suite.forElement('finance', 'payments', null, (test) => {
-  it('should support SR, pagination and Ceql search for /hubs/finance/payments', () => {
+suite.forElement('finance', 'payments', (test) => {
+  it('should support CRUDS and Ceql searching for /hubs/finance/payments', () => {
     let id;
-    return cloud.get(test.api)
-      .then(r => id = r.body[0].TxnID)
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
+    return cloud.post(test.api, payload)
+      .then(r => {
+        id = r.body.id;
+        updatePayload.EditSequence = r.body.EditSequence;
+      })
+      .then(r => cloud.get(test.api))
       .then(r => cloud.withOptions({ qs: { where: `TxnID='${id}'` } }).get(test.api))
-      .then(r => cloud.get(`${test.api}/${id}`));
+      .then(r => cloud.get(`${test.api}/${id}`))
+      .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
+      .then(r => cloud.delete(`${test.api}/${id}`));
   });
+  test.should.supportPagination();
 });

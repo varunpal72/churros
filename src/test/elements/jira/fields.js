@@ -6,7 +6,7 @@ const payload = require('./assets/field');
 
 suite.forElement('helpdesk', 'fields', {skip: true, payload:payload}, (test) => {
   it('should allow create and get of fields', () => {
-    cloud.post("/hubs/helpdesk/fields", payload)
+    return cloud.post("/hubs/helpdesk/fields", payload)
     .then(cloud.get("/hubs/helpdesk/fields"));
   });
 });

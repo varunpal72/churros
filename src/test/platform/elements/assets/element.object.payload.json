@@ -1,0 +1,32 @@
+{
+  "name": "churrosContacts",
+  "primaryKeyName": "id",
+  "createdDateName": "created_dt",
+  "createdDateFormat": "yyyy/mm/dd",
+  "searchConfiguration": {
+    "fields": [
+      "id",
+      "email"
+    ],
+    "operators": [
+      "and",
+      "or"
+    ]
+  },
+  "fields": [
+      {
+          "name": "id",
+          "type" : "number",
+          "primaryKey": false,
+          "hidden": false,
+          "readOnly": false
+      },
+      {
+          "name": "first_name",
+          "type" : "string",
+          "primaryKey": false,
+          "hidden": false,
+          "readOnly": false
+      }
+  ]
+}

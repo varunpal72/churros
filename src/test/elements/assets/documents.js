@@ -10,6 +10,9 @@ exports.all = () => {
   exports.storage();
   exports.search();
 };
+exports.override = (name, func) => {
+  exports[name] = func;
+};
 
 exports.files = () => {
   suite.forElement('documents', 'files', (test) => {
@@ -55,7 +58,7 @@ exports.files = () => {
           path: `/a-${file.name}`
         };
         return cloud.withOptions({ qs: { path: file.path } }).get('/hubs/documents/files/metadata')
-          .then(r => cloud.withOptions({ qs: { path: file.path } }).patch('/hubs/documents/folders/metadata', fileTemp))
+          .then(r => cloud.withOptions({ qs: { path: file.path } }).patch('/hubs/documents/files/metadata', fileTemp))
           .then(r => updatedFile = r.body)
           .then(r => cloud.patch(`/hubs/documents/files/${updatedFile.id}/metadata`, file))
           .then(r => cloud.get(`/hubs/documents/files/${file.id}/metadata`));
@@ -111,6 +114,9 @@ exports.folders = (test) => {
 
     it('should allow CD /folders and DELETE /folders/:id', () => {
       let folder1, folder2;
+      let random1 = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
+      folderPayload.path += `-${random1}`;
+      folderPayload.name += `-${random1}`;
       return cloud.post('/hubs/documents/folders', folderPayload)
         .then(r => folder1 = r.body)
         .then(r => cloud.withOptions({ qs: { path: folder1.path } }).delete('/hubs/documents/folders'))

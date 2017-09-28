@@ -1,5 +1,5 @@
 {
-  "lastName": "ChurrosTest",
+  "lastName": "<<name.lastName>>",
   "title": "VP Sales",
   "employeeStatus": {
     "internalId": "3",
@@ -24,7 +24,7 @@
     "internalId": "1",
     "name": "Honeycomb Mfg."
   },
-  "firstName": "churros",
+  "firstName": "<<name.firstName>>",
   "employeeType": {
     "internalId": "1",
     "name": "Officer"
@@ -37,5 +37,10 @@
   "supervisor": {
     "internalId": "1302",
     "name": "Mark Jones"
+  },
+  "hireDate": "2012-06-01T07:00:00Z",
+  "customForm": {
+    "internalId": "115",
+    "name": "Ramsey Employee Form"
   }
 }

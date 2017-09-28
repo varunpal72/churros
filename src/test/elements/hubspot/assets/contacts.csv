@@ -1,3 +1,3 @@
-properties.firstname,properties.lastname,properties.email
-Test1,Wyse,test1@churros.com
-Test2,Wyse,test2@churros.com
+properties.firstname,properties.lastname,properties.email,properties.address,properties.city,properties.company,properties.phone,properties.state,properties.website,properties.zip
+Test31,Wyse1,test123@churros.com,Baner,Pune,CE,812343241,MH,www.CE.com,431605
+Test32,Wyse1,test123@churros.com,Aundh,Pune,CE,812343241,MH,www.CE.com,431605

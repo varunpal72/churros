@@ -1,6 +1,6 @@
 {
   "notes": "churros Customer",
-  "last_name": "elephants",
-  "first_name": "cLoud",
-  "email": "randomchurros@email.com"
+  "last_name": "<<name.lastName>>",
+  "first_name": "<<name.firstName>>",
+  "email": "<<internet.email>>"
 }

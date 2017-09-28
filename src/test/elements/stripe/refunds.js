@@ -12,9 +12,9 @@ const updateRefunds = () => ({
   }
 });
 
-suite.forElement('payment', 'refunds', { skip: true }, (test) => {
+suite.forElement('payment', 'refunds', (test) => {
   let chargeId;
-  before(() => cloud.post(`/hubs/payment/charges`,charge)
+  before(() => cloud.post(`/hubs/payment/charges`, charge)
     .then(r => chargeId = r.body.id)
   );
   it(`should allow CRU for /hubs/payment/charges/{chargeId}/refunds`, () => {
@@ -22,14 +22,9 @@ suite.forElement('payment', 'refunds', { skip: true }, (test) => {
     return cloud.post(`/hubs/payment/charges/${chargeId}/refunds`, refund)
       .then(r => refundId = r.body.id)
       .then(r => cloud.get(`${test.api}/${refundId}`))
-      .then(r => cloud.patch(`${test.api}/${refundId}`, updateRefunds()));
+      .then(r => cloud.patch(`${test.api}/${refundId}`, updateRefunds()))
+      .then(r => cloud.withOptions({ qs: { pageSize: 1 } }).get(test.api));
   });
   test.should.return200OnGet();
-  it(`should allow RU for /hubs/payment/charges/{chargeId}/refunds`, () => {
-    let refundId;
-    return cloud.get(`${test.api}`)
-      .then(r => refundId = r.body[0].id)
-      .then(r => cloud.get(`${test.api}/${refundId}`))
-      .then(r => cloud.patch(`${test.api}/${refundId}`, updateRefunds()));
-  });
+  test.should.supportNextPagePagination(1);
 });

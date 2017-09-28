@@ -35,7 +35,11 @@ suite.forPlatform('event processing', (test) => {
       // fake an sfdc event
       .then(r => cloud.createEvents('sfdc', { '<elementInstanceId>': instanceId }, loadEventRequest('sfdc'), 1))
       .then(s => server.listen(1, wait))
-      .then(r => provisioner.delete(instanceId));
+      .then(r => provisioner.delete(instanceId))
+      .catch(e => {
+        if (instanceId) provisioner.delete(instanceId);
+        throw new Error(e);
+      });
   });
 
   it.skip('should handle GET /events/{key} with headers and parameters', () => {
@@ -49,7 +53,11 @@ suite.forPlatform('event processing', (test) => {
       // fake a zendesk event
       .then(r => cloud.createEvents('zendesk', { '<targetId>': targetId }, loadEventRequest('zendesk'), 1))
       .then(s => server.listen(1, wait))
-      .then(r => provisioner.delete(instanceId));
+      .then(r => provisioner.delete(instanceId))
+      .catch(e => {
+        if (instanceId) provisioner.delete(instanceId);
+        throw new Error(e);
+      });
   });
 
   it('should handle POST /events/{key} with form parameter body', () => {
@@ -71,6 +79,13 @@ suite.forPlatform('event processing', (test) => {
       .then(s => server.listen(1, wait))
       // clean up
       .then(r => cloud.delete('/hubs/documents/files/' + fileId))
-      .then(r => provisioner.delete(instanceId));
+      .then(r => provisioner.delete(instanceId))
+      .catch(e => {
+        if (instanceId && fileId){
+          provisioner.delete(instanceId);
+          cloud.delete('/hubs/documents/files/' + fileId);
+        }
+        throw new Error(e);
+      });
   });
 });

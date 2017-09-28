@@ -5,6 +5,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const provisioner = require('core/provisioner');
+const defaults = require('core/defaults');
 const schema = require('./assets/transformation.schema');
 const objDefSchema = require('./assets/objectDefinition.schema');
 
@@ -86,7 +87,11 @@ const crud = (url, payload, updatePayload, schema) => {
   return cloud.post(url, payload, schema)
     .then(r => cloud.get(url, schema))
     .then(r => cloud.put(url, updatePayload, schema))
-    .then(r => cloud.delete(url));
+    .then(r => cloud.delete(url))
+    .catch(e => {
+      cloud.delete(url);
+      throw new Error(e);
+    });
 };
 
 const getObjectDefUrl = (level, objectName) => {
@@ -107,7 +112,11 @@ const crudTransformsByName = (level, elementKey, payload, updatePayload, schema)
   let objectName = 'churros-object-' + tools.random();
   return cloud.post(getObjectDefUrl(level, objectName), genDefaultObjectDef({}))
     .then(r => crud(getTransformUrl(level, objectName, elementKey), payload, updatePayload, schema))
-    .then(r => cloud.delete(getObjectDefUrl(level, objectName)));
+    .then(r => cloud.delete(getObjectDefUrl(level, objectName)))
+    .catch(e => {
+      cloud.delete(getObjectDefUrl(level, objectName));
+      throw new Error(e);
+    });
 };
 
 const testTransformationForInstance = (objectName, objDefUrl, transUrl) => {
@@ -139,7 +148,12 @@ const testTransformationForInstance = (objectName, objDefUrl, transUrl) => {
       });
     }))
     .then(r => cloud.delete(transUrl))
-    .then(r => cloud.delete(objDefUrl));
+    .then(r => cloud.delete(objDefUrl))
+    .catch(e => {
+      cloud.delete(transUrl);
+      cloud.delete(objDefUrl);
+      throw new Error(e);
+    });
 };
 
 const testTransformation = (instanceId, objectName, objDefUrl, transUrl) => testTransformationForInstance(objectName, objDefUrl, transUrl);
@@ -167,29 +181,37 @@ suite.forPlatform('transformations', { schema: schema }, (test) => {
   });
 
   /** account-level */
+  const getPlatformAccounts = () => {
+     const secrets = defaults.secrets();
+     const headers = {
+       Authorization: `User ${secrets.userSecret}, Organization ${secrets.orgSecret}`
+     };
+     return cloud.withOptions({ headers }).get("accounts");
+  };
+
   it('should support default account-level object definition CRUD by name', () => crudObjectDefsByName('accounts', genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
   it('should support account-level object definition CRUD by name', () => {
     let accountId;
-    return cloud.get('accounts')
+    return getPlatformAccounts()
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => crudObjectDefsByName('accounts/' + accountId, genDefaultObjectDef({}), genDefaultObjectDef({}), objDefSchema));
   });
   it('should support account-level transformation CRUD by name and element key', () => {
     let accountId;
-    return cloud.get('accounts')
+    return getPlatformAccounts()
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => crudTransformsByName('accounts/' + accountId, elementKey, genDefaultTrans({}), genDefaultTrans({}), schema));
   });
   it('should support account-level transformation CRUD by name and element ID', () => {
     let accountId;
-    return cloud.get('accounts')
+    return getPlatformAccounts()
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => crudTransformsByName('accounts/' + accountId, elementId, genDefaultTrans({}), genDefaultTrans({}), schema));
   });
   it('should support account-level transformations', () => {
     let objectName = 'churros-object-' + tools.random();
     let accountId, level;
-    return cloud.get('accounts')
+    return getPlatformAccounts()
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => level = 'accounts/' + accountId)
       .then(r => testTransformation(sfdcId, objectName, getObjectDefUrl(level, objectName), getTransformUrl(level, objectName, elementKey)));
@@ -222,7 +244,7 @@ suite.forPlatform('transformations', { schema: schema }, (test) => {
         });
       }))
       // create account-level obj def and trans for name field
-      .then(r => cloud.get('accounts'))
+      .then(r => getPlatformAccounts())
       .then(r => r.body.forEach(account => accountId = (account.defaultAccount) ? accountId = account.id : accountId))
       .then(r => {
         let objDef = genBaseObjectDef({ fields: [getObjDefField('churrosName', 'string')] });
@@ -288,6 +310,18 @@ suite.forPlatform('transformations', { schema: schema }, (test) => {
       .then(r => cloud.delete(getTransformUrl('accounts/' + accountId, objectName, elementKey)))
       .then(r => cloud.delete(getObjectDefUrl('accounts/' + accountId, objectName)))
       .then(r => cloud.delete(getTransformUrl('organizations', objectName, elementKey)))
-      .then(r => cloud.delete(getObjectDefUrl('organizations', objectName)));
+      .then(r => cloud.delete(getObjectDefUrl('organizations', objectName)))
+      //clean up if there is a failure
+      .catch(e => {
+        if (sfdcId && objectName && accountId && elementKey) {
+          cloud.delete(getTransformUrl('instances/' + sfdcId, objectName));
+          cloud.delete(getObjectDefUrl('instances/' + sfdcId, objectName));
+          cloud.delete(getTransformUrl('accounts/' + accountId, objectName, elementKey));
+          cloud.delete(getObjectDefUrl('accounts/' + accountId, objectName));
+          cloud.delete(getTransformUrl('organizations', objectName, elementKey));
+          cloud.delete(getObjectDefUrl('organizations', objectName));
+        }
+        throw new Error(e);
+      });
   });
 });

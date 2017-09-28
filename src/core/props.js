@@ -14,7 +14,6 @@ var exports = module.exports = (initConfig) => {
   // if no config was passed in, then stop
   if (!initConfig) tools.logAndThrow('Cannot initialize props with empty config.');
   config = initConfig;
-
   const missingPropForRootKey = (rootKey, key) => {
     const msg = `Missing required property '${key}' for '${rootKey}'\n   Note: Can set this property by calling 'churros props ${rootKey}:${key} <value>'`;
     throw Error(msg);

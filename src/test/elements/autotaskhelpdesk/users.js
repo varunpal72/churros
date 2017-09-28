@@ -10,7 +10,7 @@ const updatePayload = {
   "userName": tools.random()
 };
 
-suite.forElement('helpdesk', 'users', { payload: usersPayload }, (test) => {
+suite.forElement('helpdesk', 'users', { payload: usersPayload, skip: true }, (test) => {
   const build = (overrides) => Object.assign({}, usersPayload, overrides);
   const payload = build({ userName: tools.random() });
   it(`should support paging, Ceql search and CRUDS for ${test.api}`, () => {
@@ -23,7 +23,6 @@ suite.forElement('helpdesk', 'users', { payload: usersPayload }, (test) => {
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
       .then(r => cloud.withOptions({ qs: { where: 'clientPortalActive = True' } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${userId}`))
-      .then(r => cloud.patch(`${test.api}/${userId}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${userId}`));
+      .then(r => cloud.patch(`${test.api}/${userId}`, updatePayload));
   });
 });

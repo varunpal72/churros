@@ -18,7 +18,7 @@ const manualSubFormulas = require('./assets/formulas/sub-formula-executions/manu
 const manualSubFormulasFailedRequest = require('./assets/formulas/sub-formula-executions/manual-sub-formulas-failed-request');
 const filterSubFormulas = require('./assets/formulas/sub-formula-executions/filter-sub-formulas');
 const errorSubFormulas = require('./assets/formulas/sub-formula-executions/error-sub-formulas');
-const event = require('./assets/events/single-event-sfdc');
+const event = require('./assets/events/single-event-closeio');
 
 suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (test) => {
   const cleanFormulas = () => {
@@ -33,13 +33,16 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
     return cleaner.formulas.withName(names);
   };
 
+  const engine = process.env.CHURROS_FORMULAS_ENGINE;
+  const isBodenstein = engine === 'v3';
+
   /* Create SFDC element with events enabled */
-  let sfdcId;
+  let closeioId;
   before(() => {
     const config = { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 };
     return cleanFormulas()
-      .then(r => provisioner.create('sfdc', config))
-      .then(r => sfdcId = r.body.id)
+      .then(r => provisioner.create('closeio', config))
+      .then(r => closeioId = r.body.id)
       .catch(e => tools.logAndThrow('Failed to run before()', e));
   });
 
@@ -63,6 +66,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
 
   const single = (formulaList, name) => {
     const formula = formulaList.filter(formula => formula.name === name)[0];
+    formula.engine = engine;
     if (!formula) throw Error(`No formula found with name: ${name}`);
     return formula;
   };
@@ -119,19 +123,21 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       .then(formula => formulaId = formula.body.id)
       .then(() => cloud.post(`/formulas/${formulaId}/instances`, instanceJson))
       .then(formulaInstance => formulaInstanceId = formulaInstance.body.id)
-      .then(() => common.generateSfdcPollingEvent(sfdcId, event))
+      .then(() => common.generateSfdcPollingEvent(closeioId, event))
       .then(() => tools.wait.upTo(60000).for(common.allExecutionsCompleted(formulaId, formulaInstanceId, 1, expectedNumSteps)))
       .then(() => tools.wait.upTo(10000).for(fetchAndValidateExecutions(formulaInstanceId)));
   };
 
   it('should support a formula that contains a sub-formula', () => {
     const setup = () => createSetCreate(simpleFormulas, 'B-simple-formula', 'A-sub-formula', 'A-simple-formula');
-    return executionTest(setup, 4, buildConfig(sfdcId));
+    const numberOfSteps = isBodenstein ? 3 : 4;
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
   it('should support a formula having a sub-formula with a duplicate stepName in the parent and sub-formula', () => {
     const setup = () => createSetCreate(duplicateStepFormulas, 'B-duplicate-step-sub', 'formula-b-step', 'A-duplicate-step-parent');
-    return executionTest(setup, 4, buildConfig(sfdcId));
+    const numberOfSteps = isBodenstein ? 3 : 4;
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
   it('should support a formula having multiple sub-formulas', () => {
@@ -149,7 +155,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastStepExecution.stepExecutionValues[0].value).to.equal('{"b":"iamb","c":"iamc"}');
     };
 
-    return executionTest(setup, 17, buildConfig(sfdcId), validator);
+    const numberOfSteps = isBodenstein ? 5 : 17;
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator);
   });
 
   it('should support a formula having multiple sub-formulas and no after steps', () => {
@@ -159,7 +166,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
         .then(() => cloud.post(`/formulas`, single(twoSubFormulasNoAfter, 'A-sub-formula-no-steps-after')));
     };
 
-    return executionTest(setup, 7, buildConfig(sfdcId));
+    const numberOfSteps = isBodenstein ? 4 : 7;
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId));
   });
 
   it('should support a formula with a sub-formula that has a manual trigger type', () => {
@@ -176,7 +184,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(value.value).to.be.a('string');
     };
 
-    return executionTest(setup, 8, buildConfig(sfdcId), validator);
+    const numberOfSteps = isBodenstein ? 4 : 8;
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator);
   });
 
   it('should have onSuccess or onFailure to represent the entire sub-formulas execution status', () => {
@@ -189,7 +198,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       stepExecutions.filter(se => se.stepName === 'A-end')[0].status === 'success';
     };
 
-    return executionTest(setup, 5, buildConfig(sfdcId), validator, true);
+    const numberOfSteps = isBodenstein ? 4 : 5;
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
   it('should propagate errors from sub-formulas properly', () => {
@@ -199,25 +209,25 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       const subFormulaExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-sub-formula')[0];
       expect(subFormulaExecution.status).to.equal('failed');
       expect(subFormulaExecution.stepExecutionValues).to.have.length(1);
-      expect(subFormulaExecution.stepExecutionValues[0].value).to.contain('error');
+
+      const subFormulaExecutionEnd = executions[0].stepExecutions.filter(se => se.stepName === 'A-end')[0];
+      expect(subFormulaExecutionEnd.stepExecutionValues).to.have.length(1);
+      expect(subFormulaExecutionEnd.stepExecutionValues[0].value).to.contain('error');
     };
 
-    return executionTest(setup, 4, buildConfig(sfdcId), validator, true);
+    const numberOfSteps = isBodenstein ? 3 : 4;
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
   it('should propagate values from a sub-formula that failed but not with an error', () => {
     const setup = () => createSetCreate(manualSubFormulasFailedRequest, 'B-manual-formula-create-resource-failed-request', 'A-sub-formula', 'A-manual-formula-failed-request');
 
     const validator = (executions) => {
+      // validate the overall execution is a failure
+      expect(executions[0].status).to.equal('failed');
+
       const subFormulaExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-sub-formula')[0];
       expect(subFormulaExecution.status).to.equal('failed');
-
-      // validate A-sub-formula sevs
-      const subFormulaSevs = subFormulaExecution.stepExecutionValues;
-      expect(subFormulaSevs).to.have.length(1);
-      const subFormulaSevsJson = JSON.parse(subFormulaSevs[0].value);
-      expect(subFormulaSevsJson.request).to.not.be.null;
-      expect(subFormulaSevsJson.response).to.not.be.null;
 
       // validate A-end sevs
       const onFailureExecution = executions[0].stepExecutions.filter(se => se.stepName === 'A-end')[0];
@@ -225,27 +235,37 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       const endSevs = onFailureExecution.stepExecutionValues;
       expect(endSevs).to.have.length(1);
       const endSevsJson = JSON.parse(endSevs[0].value);
-      expect(endSevsJson.code).to.equal(404);
+      expect(endSevsJson.code).to.equal(400);
       expect(endSevsJson.headers).to.not.be.null;
       expect(endSevsJson.body).to.not.be.null;
     };
 
-    return executionTest(setup, 5, buildConfig(sfdcId), validator, true);
+    const numberOfSteps = isBodenstein ? 4 : 5;
+    return executionTest(setup, numberOfSteps, buildConfig(closeioId), validator, true);
   });
 
   it('should support passing configs to a sub-formula with different keys than parent configs', () => {
     const setup = () => createSetCreate(simpleFormulas, 'child-accepts-configs', 'subformula', 'parent-passes-conifigs');
 
-    const instance = { name: 'parent instance', configuration: { 'crm.instance': sfdcId, parent: 'parent', 'over.ride.test': 'parent' } };
+    const instance = { name: 'parent instance', configuration: { 'crm.instance': closeioId, parent: 'parent', 'overRideTest': 'parent' } };
 
     const validator = (executions) => {
       const execution = executions[0];
       const stepExecutions = execution.stepExecutions;
       const subStepExecution = stepExecutions.filter(se => se.stepName === 'subformula')[0];
-      const subSEVsJson = JSON.parse(subStepExecution.stepExecutionValues[0].value);
-      expect(subSEVsJson.parent).to.equal('parent');
-      expect(subSEVsJson.overRideConfig).to.equal('child');
-      expect(subSEVsJson.child).to.equal('child');
+      if (isBodenstein){
+        const parent = subStepExecution.stepExecutionValues.filter(sev => sev.key === 'subformula.parent')[0];
+        expect(parent.value).to.equal('parent');
+        const overRideConfig = subStepExecution.stepExecutionValues.filter(sev => sev.key === 'subformula.overRideConfig')[0];
+        expect(overRideConfig.value).to.equal('child');
+        const child = subStepExecution.stepExecutionValues.filter(sev => sev.key === 'subformula.child')[0];
+        expect(child.value).to.equal('child');
+      } else {
+        const subSEVsJson = JSON.parse(subStepExecution.stepExecutionValues[0].value);
+        expect(subSEVsJson.parent).to.equal('parent');
+        expect(subSEVsJson.overRideConfig).to.equal('child');
+        expect(subSEVsJson.child).to.equal('child');
+      }
 
       const lastStepExecution = stepExecutions.filter(se => se.stepName === 'last')[0];
       const lastSEVsJson = JSON.parse(lastStepExecution.stepExecutionValues[0].value);
@@ -253,7 +273,8 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastSEVsJson.overRideConfig).to.equal('parent');
     };
 
-    return executionTest(setup, 5, instance, validator);
+    const numberOfSteps = isBodenstein ? 4 : 5;
+    return executionTest(setup, numberOfSteps, instance, validator);
   });
 
   it('should support passing configs to a sub-formula with same keys as parent and not override', () => {
@@ -266,7 +287,7 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
         .then(() => cloud.post(`/formulas`, single(simpleFormulas, 'parent')));
     };
 
-    const instance = { name: 'parent instance', configuration: { 'crm.instance': sfdcId, 'over.ride.test': 'parent' } };
+    const instance = { name: 'parent instance', configuration: { 'crm.instance': closeioId, 'overRideTest': 'parent' } };
 
     const validator = (executions) => {
       const execution = executions[0];
@@ -281,13 +302,14 @@ suite.forPlatform('formulas', { name: 'formula executions: sub formulas' }, (tes
       expect(lastSEVsJson.child1.child2.child3.over).to.equal('child3');
     };
 
-    return executionTest(setup, 11, instance, validator);
+    const numberOfSteps = isBodenstein ? 4 : 11;
+    return executionTest(setup, numberOfSteps, instance, validator);
   });
 
   /* Cleanup any resources */
   after(() => {
     return cleanFormulas()
-      .then(r => provisioner.delete(sfdcId))
+      .then(r => provisioner.delete(closeioId))
       .catch(e => tools.logAndThrow(`Failed to run after()`, e)) ;
   });
 });
