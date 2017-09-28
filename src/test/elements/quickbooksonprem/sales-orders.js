@@ -6,7 +6,7 @@ const cloud = require('core/cloud');
 const updatePayload = { "RefNumber": "shortString" };
 
 suite.forElement('finance', 'sales-orders', { payload: payload }, (test) => {
-  it('should support CRUDS, pagination for /hubs/finance/sales-orders', () => {
+  it('should support CRUDS, pagination and Ceql searching for /hubs/finance/sales-orders', () => {
     let id;
     return cloud.post(test.api, payload)
       .then(r => id = r.body.TxnID)
