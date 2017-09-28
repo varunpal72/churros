@@ -21,7 +21,7 @@ suite.forElement('helpdesk', 'incidents', null, (test) => {
   payload.threads[0].createdBy.email = email;
 
   it(`should allow allow CRUDS for ${test.api}, R for ${test.api}/{id}/comments and RD for ${attachmentsApi}`, () => {
-    let incidentId, threadId, attachmentId, incidentBody;
+    let incidentId, incidentBody;
     return cloud.post(test.api, payload)
       .then(r => incidentId = r.body.id)
       .then(r => cloud.get(test.api))
