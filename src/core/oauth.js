@@ -299,7 +299,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .thenCatch(r => true)) // ignore
       .then(() => browser.findElement(webdriver.By.className('accept'))
         .then((element) => element.click(), (err) => {}))// ignore
-      .then(() => browser.getCurrentUrl())
+      .then(() => browser.getCurrentUrl());
 
     case 'hubspot--oauth2New':
       browser.get(r.body.oauthUrl);
