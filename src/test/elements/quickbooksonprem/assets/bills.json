@@ -5,7 +5,7 @@
   "APAccountRef": {
     "FullName": "Accounts Payable"
   },
-  "IsPaid": "true",
+  "IsPaid": "false",
   "ItemLineRet": [{
       "Desc": "Light pine kitchen cabinet wall unit \n#CLD- 1235-p",
       "BillableStatus": "Billable",

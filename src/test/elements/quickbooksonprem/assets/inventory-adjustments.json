@@ -9,7 +9,7 @@
         }
     ],
     "InventorySiteRef": {
-        "FullName": "Site1"
+        "FullName": "SampleSite"
     },
     "TxnDate": "2017-07-20",
     "AccountRef": {
