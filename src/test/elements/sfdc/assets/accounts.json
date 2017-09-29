@@ -1,6 +1,6 @@
 {
-    "name" : "ChurrosTestAccount",
-    "type": "Prospect",
-    "phone": "555-666-7777",
-    "website": "http://www.superawesome.com"
+    "name" : "ChurrosTestAccount<<random.alphaNumeric##3>>",
+    "type": "<<lorem.word>>",
+    "phone": "<<phone.phoneNumber>>",
+    "website": "<<internet.url>>"
 }

@@ -16,8 +16,8 @@ const organizationUpdate = {
 };
 
 suite.forElement('crm', 'organizations', { payload: whereOrgPayload }, (test) => {
-  test.should.supportPagination();
-  test.should.supportCeqlSearch('id');
+  test.should.supportPagination('id');
+  test.withOptions({qs: {where: "deletedFlag='false'"}}).should.supportCeqlSearch('deletedFlag');
   it(`should support CRUDS for ${test.api}`, () => {
     let organizationId;
     return cloud.post(test.api, orgPayload)

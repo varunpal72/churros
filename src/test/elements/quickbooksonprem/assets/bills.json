@@ -1,0 +1,68 @@
+{
+  "AmountDue": "13695.00",
+  "TxnDate": "2017-12-02",
+  "RefNumber": "3847498",
+  "APAccountRef": {
+    "FullName": "Accounts Payable"
+  },
+  "IsPaid": "true",
+  "ItemLineRet": [{
+      "Desc": "Light pine kitchen cabinet wall unit \n#CLD- 1235-p",
+      "BillableStatus": "Billable",
+      "Amount": "7500.00",
+      "Quantity": "5",
+      "ItemRef": {
+        "FullName": "PmntDiscount_Less Discounts giv"
+      },
+      "CustomerRef": {
+        "FullName": "Luke, Noelani:Remodel Bathroom"
+      },
+      "Cost": "1500.00"
+    },
+    {
+      "Desc": "Doorknobs Part # DK 3704",
+      "ClassRef": {
+        "FullName": "New Construction"
+      },
+      "BillableStatus": "NotBillable",
+      "Amount": "2700.00",
+      "Quantity": "100",
+      "ItemRef": {
+        "FullName": "Hardware:Doorknobs Std"
+      },
+      "CustomerRef": {
+        "FullName": "Burch, Jason:Room Addition"
+      },
+      "Cost": "27.00"
+    },
+    {
+      "Desc": "Locking interior doorknobs  Part # DK415",
+      "ClassRef": {
+        "FullName": "New Construction"
+      },
+      "BillableStatus": "Billable",
+      "Amount": "3495.00",
+      "Quantity": "100",
+      "ItemRef": {
+        "FullName": "Hardware:Lk Doorknobs"
+      },
+      "CustomerRef": {
+        "FullName": "Burch, Jason:Room Addition"
+      },
+      "Cost": "34.95"
+    }
+  ],
+  "VendorRef": {
+    "FullName": "Patton Hardware Supplies"
+  },
+  "DueDate": "2019-01-01",
+  "VendorAddress": {
+    "Addr1": "Patton Hardware Supplies",
+    "Addr2": "4872 County Rd",
+    "State": "CA",
+    "PostalCode": "94326",
+    "City": "Bayshore"
+  },
+  "TxnNumber": "613",
+  "OpenAmount": "4479.20"
+}

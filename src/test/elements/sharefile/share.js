@@ -6,7 +6,7 @@ const sharepayload = {
   "ShareType": "Send",
   "Title": "Sample Send Share",
   "Items": [],
-  "ExpirationDate": "2017-07-23",
+  "ExpirationDate": "2020-09-23",
   "RequireLogin": false,
   "RequireUserInfo": false,
   "MaxDownloads": -1,

@@ -1,6 +1,14 @@
 {
     "name": "retry-execution",
-    "steps": [
+    "steps": [{
+            "onSuccess": ["retry-execution"],
+            "onFailure": [],
+            "name": "step1",
+            "type": "filter",
+            "properties": {
+                "body": "done(true);"
+            }
+        },
         {
             "onSuccess": [],
             "onFailure": [],
@@ -14,7 +22,7 @@
     "triggers": [
         {
             "onSuccess": [
-                "retry-execution"
+                "step1"
             ],
             "onFailure": [],
             "type": "manual",

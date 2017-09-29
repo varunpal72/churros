@@ -10,7 +10,7 @@
     },
     "isInactive": false,
     "makeInventoryAvailableStore": true,
-    "name": "Addison",
+    "name": "<<random.word>>",
     "mainAddress": {
         "zip": "75001",
         "country": {

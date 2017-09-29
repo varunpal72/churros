@@ -16,7 +16,7 @@
             "onFailure": [],
             "onSuccess": [],
             "properties": {
-                "body": "if (steps[\"get-sfdc-element\"].response.code === 200) {\n  done(true);\n} else {\n  done(false);\n}"
+                "body": "if (steps['get-sfdc-element'].response.code === 200) {\n  done(true);\n} else {\n  done(false);\n}"
             },
             "type": "filter"
         },
@@ -28,7 +28,7 @@
             ],
             "properties": {
                 "method": "GET",
-                "url": "config.http.request.url"
+                "url": "${config.http.request.url}"
             },
             "type": "httpRequest"
         }

@@ -517,6 +517,12 @@
       "type": "string"
     }]
   },
+  "subsidiaries": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "groups": {
     "fields": [{
       "path": "id",
@@ -1140,6 +1146,12 @@
      "type": "string"
    }]
  },
+ "vendor-credits": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "changes": {
    "fields": [{
      "path": "id",
@@ -1150,13 +1162,7 @@
      "type": "string"
    }]
  },
- "inventory-sites": {
-   "fields": [{
-     "path": "id",
-     "type": "string"
-   }]
- },
- "inventory-adjustments": {
+ "drafts" : {
    "fields": [{
      "path": "id",
      "type": "string"
@@ -1169,6 +1175,18 @@
    },
    {
      "path": "junk",
+     "type": "string"
+   }]
+ },
+ "checks" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "posting-periods" : {
+   "fields": [{
+     "path": "id",
      "type": "string"
    }]
  }
