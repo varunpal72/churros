@@ -6,7 +6,8 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const payload = tools.requirePayload(`${__dirname}/assets/credit-terms.json`);
 
-suite.forElement('finance', 'credit-terms', { payload: payload }, (test) => {
+//Need to skip as there is no delete API
+suite.forElement('finance', 'credit-terms', { payload: payload, skip:true }, (test) => {
   test.should.supportCrs();
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.withName(`should support searching ${test.api} by Id`)

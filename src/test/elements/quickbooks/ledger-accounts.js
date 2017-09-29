@@ -6,7 +6,8 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const payload = tools.requirePayload(`${__dirname}/assets/ledger-accounts.json`);
 
-suite.forElement('finance', 'ledger-accounts', { payload: payload }, (test) => {
+//Need to skip as there is no delete API
+suite.forElement('finance', 'ledger-accounts', { payload: payload,skip: true }, (test) => {
   test.should.supportCrs();
   test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
   test.withName(`should support searching ${test.api} by Id`)

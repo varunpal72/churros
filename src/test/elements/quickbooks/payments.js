@@ -5,7 +5,8 @@ const payload = require('./assets/payments');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
-suite.forElement('finance', 'payments', { payload: payload }, (test) => {
+//Need to skip as there is no delete API
+suite.forElement('finance', 'payments', { payload: payload ,skip: true }, (test) => {
   test.should.supportCrus();
   test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
   test.withName(`should support searching ${test.api} by Id`)
