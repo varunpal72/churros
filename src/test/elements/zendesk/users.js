@@ -20,13 +20,7 @@ suite.forElement('helpdesk', 'users', { payload: payload }, (test) => {
   test.withOptions(options).should.supportCruds();
   before(() => cloud.post(test.api, updatePayload)
     .then(r => id = r.body.id));
-  before(() =>
-    cloud.get(test.api, r => {
-      if (r.body.length > 0) {
-        id = r.body[0].id;
-      } else {}
-    })
-  );
+after(() => cloud.delete(`${test.api}/${id}`));
   it(`should allow GET ${test.api}/${id}/groups`, () => {
     return cloud.get(`${test.api}/${id}/groups`)
       .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } })
