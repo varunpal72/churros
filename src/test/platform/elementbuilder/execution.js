@@ -26,6 +26,13 @@ suite.forPlatform('elementexecution', {}, (test) => {
       });
   });
 
+
+  it('should return an error calling API request with executable false', () => {
+      return cloud.get(`/hubs/general/withoutheaders`, (r) => {
+          expect(r['Content-Type']).to.be.undefined;
+      });
+  });
+
   after(() => {
     return provisioner.delete(httpReqResInstanceId, 'elements/httprequestresponse/instances')
         .then(r => cloud.delete(`elements/${createdHttpReqRes.id}`));
