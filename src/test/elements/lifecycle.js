@@ -111,7 +111,7 @@ before(() => {
         }
       })
       .catch(r => {
-        return instanceId && !(argv.instance || argv.save) ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
+        return instanceId && deleteInstance ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
       });
     });
 });
