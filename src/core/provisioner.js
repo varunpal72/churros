@@ -312,7 +312,6 @@ exports.getBackup = (element) => {
     if (!_.isEmpty(r.body) && _.type(r.body) === 'Array') {
       var instance = r.body.reduce((acc, cur) => acc = acc === null && cur.element.key === element ? cur : null, null);
       if (instance !== null) {
-        props.setForKey(element, 'elementId', instance.element.id);
         defaults.token(instance.token);
         expect(instance.element.key).to.equal(tools.getBaseElement(element));
         r.body = instance;

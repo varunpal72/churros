@@ -11,6 +11,8 @@ const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
 const props = require('core/props');
+const suite = require('core/suite');
+const swaggerParser = require('swagger-parser');
 
 const createAll = (urlTemplate, list) => {
   return Object.keys(list).sort()
@@ -48,7 +50,6 @@ before(() => {
     if (argv.instance) {
       getInstance = cloud.get(`/instances/${argv.instance}`)
       .then(r => {
-        props.setForKey(element, 'elementId', r.body.element.id);
         defaults.token(r.body.token);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         deleteInstance = false;
@@ -72,6 +73,7 @@ before(() => {
     return getInstance
       .then(r => {
         expect(r).to.have.statusCode(200);
+        props.setForKey(element, 'elementId', r.body.element.id);
         logger.info('Provisioned with instance id of ' + r.body.id);
         instanceId = r.body.id;
         element = tools.getBaseElement(element);
@@ -120,40 +122,49 @@ before(() => {
     });
 });
 
-// skipped for now because so many fail - remove the skip when fixed
-it.skip('should not allow provisioning with bad credentials', () => {
-  const config = props.all(element);
-  const type = props.getOptionalForKey(element, 'provisioning');
-  const passThrough = (r) => r;
+//Will by default run these
+suite.forElement('', 'Basic tests', {skip: false}, (test) => {
+  test.withApi('/objects').withValidation(r => expect(r.body).to.not.be.empty).should.return200OnGet();
 
-  const badConfig = Object.keys(config).reduce((accum, configKey) => {
-    accum[configKey] = 'IAmBad';
-    return accum;
-  }, {});
+  it('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
+    .then(s => new Promise((res, rej) => swaggerParser.validate(s.body, (err, api) => err ? rej(err) : res()))));
 
-  const elementInstance = {
-    name: tools.random(),
-    element: { key: element },
-    configuration: badConfig
-  };
-  if (type === 'oauth2' || type === 'oauth1') {
-    elementInstance.providerData = {code: 'IAmBad'};
-  }
-  const responseCodeValidator = (statusCode) => {
-    expect(statusCode).to.be.above(399);
-    //expect(statusCode).to.be.below(500);
-  };
+  it('metadata', () => cloud.get(`elements/${props.getForKey(element, 'elementId')}/metadata`).then(r => expect(r.body).to.not.be.empty && expect(r).to.have.statusCode(200)));
+  // skipped for now because so many fail - remove the skip when fixed
+  it.skip('should not allow provisioning with bad credentials', () => {
+    const config = props.all(element);
+    const type = props.getOptionalForKey(element, 'provisioning');
+    const passThrough = (r) => r;
 
-  return cloud.post(`/instances`, elementInstance, passThrough)
-     .then(r => {
-        // if we received a 200 status code, then that's actually bad, as we are validating that an element instance is *not* created with bad configs.  lets delete the newly created element instance, and then do our assertions to show the failed test
-        if (r.response.statusCode === 200) {
-           return cloud.delete(`/instances/${r.body.id}`)
-              .then(() => responseCodeValidator(r.response.statusCode));
-        }
-        // cool, element instance was *not* created, lets make sure we got the right response code
-       responseCodeValidator(r.response.statusCode);
-     });
+    const badConfig = Object.keys(config).reduce((accum, configKey) => {
+      accum[configKey] = 'IAmBad';
+      return accum;
+    }, {});
+
+    const elementInstance = {
+      name: tools.random(),
+      element: { key: element },
+      configuration: badConfig
+    };
+    if (type === 'oauth2' || type === 'oauth1') {
+      elementInstance.providerData = {code: 'IAmBad'};
+    }
+    const responseCodeValidator = (statusCode) => {
+      expect(statusCode).to.be.above(399);
+      //expect(statusCode).to.be.below(500);
+    };
+
+    return cloud.post(`/instances`, elementInstance, passThrough)
+       .then(r => {
+          // if we received a 200 status code, then that's actually bad, as we are validating that an element instance is *not* created with bad configs.  lets delete the newly created element instance, and then do our assertions to show the failed test
+          if (r.response.statusCode === 200) {
+             return cloud.delete(`/instances/${r.body.id}`)
+                .then(() => responseCodeValidator(r.response.statusCode));
+          }
+          // cool, element instance was *not* created, lets make sure we got the right response code
+         responseCodeValidator(r.response.statusCode);
+       });
+  });
 });
 after(done => {
   tools.resetCleanup();
