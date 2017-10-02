@@ -67,7 +67,7 @@
       "type": "elementRequest",
       "onSuccess": ["B-script"],
       "properties": {
-        "elementInstanceId": "${crm.instance}",
+        "elementInstanceId": "${config.crm.instance}",
         "api": "/hubs/crm/contacts",
         "method": "GET",
         "query": "steps.B-build-query.query"

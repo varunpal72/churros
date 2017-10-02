@@ -54,7 +54,7 @@
       "type": "elementRequest",
       "onSuccess": ["B-sub-formula"],
       "properties": {
-        "elementInstanceId": "${crm.instance}",
+        "elementInstanceId": "${config.crm.instance}",
         "api": "/hubs/crm/contacts",
         "method": "GET"
       }

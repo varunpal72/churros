@@ -1,0 +1,10 @@
+{
+"displayName":"<<random.word>>",
+"scope":"enterprise",
+"fields": [
+    {
+      "type": "string",
+      "key": "customerTeam",
+      "displayName": "Customer team"
+    }]
+}

@@ -38,7 +38,8 @@ suite.forElement('documents', 'links', null, (test) => {
         const cb = (file) => {
             return cloud.withOptions({ qs: { path: file.path, expires: '2020-02-20' } }).get('/hubs/documents/files/links')
                 .then(r => {
-                    expect(r.body.providerLinkExpires).to.equal('2020-02-20T00:00:00Z');
+                    // only compare the first 19 characters as the various testing environments may return different system times (UTC & non-UTC)
+                    expect(r.body.providerLinkExpires.substring(0,19)).to.equal('2020-02-20T00:00:00');
                 });
         };
 

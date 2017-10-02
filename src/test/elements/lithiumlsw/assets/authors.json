@@ -2,7 +2,7 @@
     "handles": {
         "crm": [
             {
-                "networkinstance": "msdynamics",
+                "networkinstance": "msdyn",
                 "id": "456",
                 "firstname": "first",
                 "lastname": "last",
