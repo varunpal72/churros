@@ -32,6 +32,10 @@ let deleteInstance = !argv.save; //we don't always want to delete. Defaults to t
 props.set('element', element);
 before(() => {
   tools.resetCleanup();
+  logger.info('Using url: %s', props.get('url'))
+  logger.info('Using user: %s', props.get('user'))
+  if (props.getOptionalForKey(element, 'username')) logger.info('Using oauth username: %s', props.getOptionalForKey(element, 'username'))
+  if (props.getOptionalForKey(element, 'oauth.api.key')) logger.info('Using api key: %s', props.getOptionalForKey(element, 'oauth.api.key'))
   logger.info('Running tests for element: %s', element);
   if (props.getOptionalForKey(argv.element, 'skip') === true) {
     logger.info('Skip provisioning and all tests for %s', element);
