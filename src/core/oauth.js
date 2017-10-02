@@ -252,6 +252,36 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then((element) => element.click(), (err) => {}); // ignore this
       browser.sleep(2000);
       return browser.getCurrentUrl();
+    case 'googlesheetsv4':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
+      browser.findElement(webdriver.By.id('identifierNext')).click();
+      browser.sleep(3000);
+      return browser.wait(() => browser.isElementPresent(webdriver.By.css('#password input')), 10000)
+        .then(r => browser.findElement(webdriver.By.css('#password input')).sendKeys(password))
+        .then(r => browser.findElement(webdriver.By.id('passwordNext')).click())
+        .then(r => browser.sleep(2000))
+        .then(r => browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[1]/div[1]/a')), 10000))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[1]/div[1]/a')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[1]/div[2]/p[2]/a')), 10000))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[1]/div[2]/p[2]/a')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.wait(() => browser.isElementPresent(webdriver.By.css('content input')), 10000))
+        .then(r => browser.findElement(webdriver.By.css('content input')))
+          .then((element) => element.sendKeys('Continue'), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[3]/div/div[2]/div[2]/div[2]/content/span')), 10000))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[3]/div/div[2]/div[2]/div[2]/content/span')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.wait(() => browser.isElementPresent(webdriver.By.id('submit_approve_access')), 10000))
+        .then(r => browser.findElement(webdriver.By.id('submit_approve_access')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.getCurrentUrl());
     case 'gotowebinar':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('emailAddress')).sendKeys(username);

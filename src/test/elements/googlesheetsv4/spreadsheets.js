@@ -59,5 +59,6 @@ let spreadsheetId, sheetId, destsheetId, worksheetName, range, rowId;
         });
 
       after(() => cloud.delete(`${test.api}/${spreadsheetId}/worksheets/${sheetId}`));
+      after(() => cloud.delete(`${test.api}/${spreadsheetId}`));
 
 });
