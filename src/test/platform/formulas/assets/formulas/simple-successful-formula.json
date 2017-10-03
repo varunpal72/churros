@@ -9,7 +9,7 @@
     "type": "event",
     "onSuccess": ["simple-script"],
     "properties": {
-      "elementInstanceId": "${trigger_instance}"
+      "elementInstanceId": "${config.trigger_instance}"
     }
   }],
   "steps": [{

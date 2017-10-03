@@ -11,7 +11,7 @@
     "properties": {
       "method": "GET",
       "api": "/hubs/crm/accounts",
-      "elementInstanceId": "${trigger_instance}"
+      "elementInstanceId": "${config.trigger_instance}"
     }
   }],
   "steps": [{
