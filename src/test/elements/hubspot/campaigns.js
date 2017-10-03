@@ -10,6 +10,7 @@ suite.forElement('marketing', 'campaigns', (test) => {
   before(() => {
     return cloud.withOptions({ qs: { pageSize: 1 } }).get(test.api)
       .then(r => {
+        expect(r.body).to.equal(1);
         let bodyObject = r.body[0];
         hubspotAppId = bodyObject.appId;
         campaignId = bodyObject.id;
@@ -17,7 +18,7 @@ suite.forElement('marketing', 'campaigns', (test) => {
   });
   test.should.supportSr();
   test.should.supportNextPagePagination(2);
-  
+
   it(`should allow cursor pagination for ${test.api}/{id}/activities`, () => {
     const options = { qs: { pageSize: 1, where: `appId='${hubspotAppId}'`} };
     return cloud.withOptions(options).get(`${test.api}/${campaignId}/activities`)

@@ -12,6 +12,8 @@ Before submitting a PR, make sure to run `npm test` locally to ensure that all t
 
 All PRs submitted to the `churros` repository will have *all* of the unit tests run before they're able to be merged into `master`.  When creating a PR, please refrain from assigning it to someone else until all GitHub status checks have been completed and you have that nice little :white_check_mark:.
 
+Once the PR has been approved please assign it to Keith Knapp (@knappkeith) or Austin Mahan (@AustinMahan) to be merged.
+
 > __NOTE:__ When all tests have passed then you can assign the PR out. 
 
 ## Best Practices

@@ -517,6 +517,12 @@
       "type": "string"
     }]
   },
+  "subsidiaries": {
+    "fields": [{
+      "path": "id",
+      "type": "string"
+    }]
+  },
   "groups": {
     "fields": [{
       "path": "id",
@@ -1156,6 +1162,12 @@
      "type": "string"
    }]
  },
+ "drafts" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "problems": {
    "fields": [{
      "path": "id",
@@ -1163,6 +1175,18 @@
    },
    {
      "path": "junk",
+     "type": "string"
+   }]
+ },
+ "checks" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "posting-periods" : {
+   "fields": [{
+     "path": "id",
      "type": "string"
    }]
  }

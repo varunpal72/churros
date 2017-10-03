@@ -8,7 +8,7 @@
     "internalId":"1",
     "name":"Honeycomb Mfg."
   },
-  "companyName":"<<company.companyName>>",
+  "companyName":"<<random.word>>",
   "isPerson":false,
   "isJobResourceVend":false,
   "terms":{

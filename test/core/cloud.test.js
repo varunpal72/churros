@@ -346,6 +346,10 @@ describe('cloud', () => {
       .then(r => fs.unlink(filePath));
   });
 
+  it('should support withOptions with options', () => {
+    cloud.withOptions({ json: true }).withOptions({ json: false });
+  });
+
   it('should throw an error if put file validation fails', () => {
     const filePath = '.tmp';
     fs.closeSync(fs.openSync(filePath, 'w'));

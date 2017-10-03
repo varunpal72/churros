@@ -99,6 +99,8 @@ const setupProps = () => {
 };
 
 describe('provisioner', () => {
+  const backupThings = [{element: {key: 'noFake',id: 321}},{element: {key: 'closeio', id: 123}}, null];
+
   /** Before each because we run all of the unit tests at once and initializing some of these things
   in multiple before blocks breaks things. I prefer them to be self-contained as opposed to a global
   before or something like that ... */
@@ -142,6 +144,11 @@ describe('provisioner', () => {
       .get('/elements/123/metadata')
       .reply(200, () => {
         return {events : {supported: true, methods: ['polling', 'webhook']}};
+      })
+      .get('/instances?tags%5B%5D=churros-backup&hydrate=false')
+      .reply(200, () => {
+        backupThings.pop();
+        return backupThings;//will return 3 different results
       });
 
     nock(baseUrl, headers())
@@ -347,5 +354,18 @@ describe('provisioner', () => {
       .then(r => {
         mockery.disable();
       });
+  });
+
+  it('should use a backup', () => {
+    return provisioner.getBackup('closeio')
+    .then((r) => expect(r.body).to.deep.equal({ element: { key: 'closeio', id: 123 } }));
+  });
+  it('should not find a backup', () => {
+    return provisioner.getBackup('fake')
+    .then((r) => expect(r).to.be.empty);
+  });
+  it('should fail backup on empty response', () => {
+    return provisioner.getBackup('fake')
+    .then((r) => expect(r).to.be.empty);
   });
 });

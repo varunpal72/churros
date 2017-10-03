@@ -37,8 +37,6 @@ suite.forPlatform('events', { name: 'event analytics' }, (test) => {
         .then(sentEvents => sentEvents.filter(event => event.error).length)
         .then(f => { if (f > 0) logger.warn("Failed to POST %d events", f); })
         .then(() => tools.wait.upTo(10000).for(() => cloud.get(`instances/events/analytics`, analyticsSchema)))
-        .then(() => {
-        })
         // Wait up to 10 seconds to see if we've gotten all events in the analytics results.
         .then(r => tools.wait.upTo(90000).for(() => {
           const from = new Date();

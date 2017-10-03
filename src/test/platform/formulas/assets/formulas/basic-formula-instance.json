@@ -1,6 +1,6 @@
 {
     "name": "formula-instance",
     "configuration": {
-        "trigger-instance": "<replace-me>"
+        "trigger_instance": "<replace-me>"
     }
 }

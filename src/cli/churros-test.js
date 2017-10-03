@@ -31,6 +31,7 @@ const fromOptions = (url, options) => {
       params: options.params,
       save: options.save === undefined ? false : true,
       polling: options.polling,
+      backup: options.backup === undefined ? 'use backup' : options.backup //defaults to use back up instance
     });
   });
 };
@@ -102,6 +103,7 @@ const run = (suite, options, cliArgs) => {
   if (cliArgs.polling) args += ` --polling ${cliArgs.polling}`;
   if (cliArgs.params) args += ` --params '${cliArgs.params}'`;
   if (cliArgs.save) args += ` --save '${cliArgs.save}'`;
+  if (cliArgs.backup) args += ` --backup '${cliArgs.backup}'`;
   // loop over each element, constructing the proper paths to pass to mocha
   let cmd = "";
   if (resources.includes('.DS_Store')) resources.splice(resources.indexOf('.DS_Store'), 1);
@@ -167,6 +169,7 @@ commander
   .option('--polling', 'runs the polling tests')
   .option('-P, --params <json>', 'add additional parameters for provisioning')
   .option('--save', 'don\'t run the clean up process before')
+  .option('--backup <arg>', 'options to use backup instance. options: ["use backup", "no backup", "only backup"]. Defaults to "use backup"')
   .on('--help', () => {
     console.log('  Examples:');
     console.log('');
@@ -177,6 +180,7 @@ commander
     console.log('    $ churros test elements/sfdc --polling');
     console.log('    $ churros test elements/zuorav2 --params \'{"zuorav2.sandbox": true}\'');
     console.log('    $ churros test elements/zuorav2 --save');
+    console.log('    $ churros test elements/hubspot --backup "no backup"');
     console.log('    $ churros test elements');
     console.log('    $ churros test elements --exclude autopilot --exclude bigcommerce');
     console.log('    $ churros test elements --start freshbooks');

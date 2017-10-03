@@ -11,12 +11,12 @@ const order = () => ({
   }]
 });
 const createFulfillment = (lineId) => ({
-  "fulfillment": {
+  
     "tracking_number": tools.random(),
     "line_items": [{
       "id": lineId
     }]
-  }
+  
 });
 const updateFulfillment = (fulfillmentId) => ({
   "fulfillment": {
@@ -24,7 +24,7 @@ const updateFulfillment = (fulfillmentId) => ({
     "id": fulfillmentId
   }
 });
-suite.forElement('ecommerce', 'fulfillments', { payload: createFulfillment({}), skip: true }, (test) => {
+suite.forElement('ecommerce', 'fulfillments', { payload: createFulfillment({}) }, (test) => {
   let orderId, lineId, fulfillmentId;
   before(() => cloud.post(`/hubs/ecommerce/orders`, order())
     .then(r => orderId = r.body.id)

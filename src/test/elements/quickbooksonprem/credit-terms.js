@@ -1,15 +1,17 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');
+const expect = require('chakram').expect;
 
-suite.forElement('finance', 'credit-terms', null, (test) => {
-  it('should support SR, pagination and Ceql search for /hubs/finance/credit-terms', () => {
-    let id;
-    return cloud.get(test.api)
-      .then(r => id = r.body[0].ListID)
-      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(test.api))
-      .then(r => cloud.withOptions({ qs: { where: `ListID='${id}'` } }).get(test.api))
-      .then(r => cloud.get(`${test.api}/${id}`));
-  });
+suite.forElement('finance', 'credit-terms', (test) => {
+  test.should.supportSr();
+  test
+    .withName(`should support searching ${test.api} by Name`)
+    .withOptions({ qs: { where: `Name='1% 10 Net 30'` } })
+    .withValidation((r) => {
+      expect(r).to.have.statusCode(200);
+      const validValues = r.body.filter(obj => obj.Name === `1% 10 Net 30`);
+      expect(validValues.length).to.equal(r.body.length);
+    }).should.return200OnGet();
+  test.should.supportPagination();
 });

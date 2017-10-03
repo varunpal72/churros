@@ -11,7 +11,7 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
   test.should.supportCrds();  //update is getting an 500 error from vendor
   test.should.supportPagination();
 
-  it(`should allow C for ${test.api}/:id/comments`, () => {
+  it(`should allow CS for ${test.api}/:id/comments`, () => {
     let id;
     return cloud.get(test.api)
       .then(r => {
@@ -19,7 +19,8 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
         expect(r.body.length).to.be.above(1);
         id = r.body[0].id;
       })
-      .then(r => cloud.post(`${test.api}/${id}/comments`, commentPayload));
+      .then(r => cloud.post(`${test.api}/${id}/comments`, commentPayload))
+      .then(r => cloud.get(`${test.api}/${id}/comments`));
   });
 
   it(`should allow CRUDS for ${test.api}/:id/tasks`, () => {
@@ -47,6 +48,26 @@ suite.forElement('helpdesk', 'incidents', { payload: payload }, (test) => {
         expect(r.body).to.not.be.empty;
         expect(r.body.length).to.be.below(2);
       })
+      .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId1}`))
+      .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId2}`))
+      .then(r => cloud.delete(`${test.api}/${id}`));
+  });
+
+  it(`should allow pagination with page and 1000 pageSize for ${test.api}/:id/tasks`, () => {
+    let id, taskId1, taskId2;
+    return cloud.post(test.api, payload)
+      .then(r => id = r.body.id)
+      .then(r => cloud.post(`${test.api}/${id}/tasks`, taskPayload))
+      .then(r => taskId1 = r.body.id)
+      .then(r => cloud.post(`${test.api}/${id}/tasks`, taskPayload))
+      .then(r => taskId2 = r.body.id)
+      .then(r => cloud.withOptions({ qs: { page: 1, pageSize: 1000 } }).get(`${test.api}/${id}/tasks`))
+      .then(r => {
+        expect(r.body).to.not.be.empty;
+        expect(r.body.length).to.equal(2);
+      })
+      .then(r => cloud.withOptions({ qs: { page: 2, pageSize: 1000 } }).get(`${test.api}/${id}/tasks`))
+      .then(r => expect(r.body).to.be.empty)
       .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId1}`))
       .then(r => cloud.delete(`${test.api}/${id}/tasks/${taskId2}`))
       .then(r => cloud.delete(`${test.api}/${id}`));
