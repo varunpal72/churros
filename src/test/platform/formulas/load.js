@@ -87,25 +87,27 @@ const createXInstances = (x, formulaId, formulaInstance) => {
 /**
  * Tests formula executions under heavy load (number of events, size of events, etc.)
  */
-suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
+suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
   let sfdcId;
   before(() => cleaner.formulas.withName('complex_successful')
+  .then(() => cleaner.formulas.withName('number2'))
     .then(r => common.provisionSfdcWithWebhook())
     .then(r => sfdcId = r.body.id));
 
   /** Clean up */
   after(() => {
-    if (sfdcId) return provisioner.delete(sfdcId);
+    // if (sfdcId) return provisioner.delete(sfdcId);
   });
 
   it('should handle a very large event payload repeatedly', () => {
     const formula = require('./assets/formulas/complex-successful-formula');
     formula.engine = process.env.CHURROS_FORMULAS_ENGINE;
+
     const formulaInstance = require('./assets/formulas/basic-formula-instance');
     formulaInstance.configuration.trigger_instance = sfdcId;
 
-    const numFormulaInstances = 1;
-    const numEvents = 1;
+    const numFormulaInstances = 2;
+    const numEvents = 10;
     const numInOneEvent = 1;
 
     let formulaId;
@@ -115,13 +117,21 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
       .then(ids => ids.map(id => formulaInstances.push(id)))
-      .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
+      .then(() => {
+        formula.name = 'number2';
+        formula.engine = 'v1';
+        return cloud.post(test.api, formula, fSchema)
+      })
+        .then(r => formulaId = r.body.id)
+        .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
+        .then(ids => ids.map(id => formulaInstances.push(id)))
+        .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
       .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
-      .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
-      .then(r => chakram.all(deletes))
-      .then(r => common.deleteFormula(formulaId))
+      // .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
+      // .then(r => chakram.all(deletes))
+      // .then(r => common.deleteFormula(formulaId))
       .catch(e => {
-        if (formulaId) common.deleteFormula(formulaId);
+        // if (formulaId) common.deleteFormula(formulaId);
         throw new Error(e);
       });
   });
