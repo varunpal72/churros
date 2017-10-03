@@ -107,7 +107,7 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     formulaInstance.configuration.trigger_instance = sfdcId;
 
     const numFormulaInstances = 2;
-    const numEvents = 10;
+    const numEvents = 25;
     const numInOneEvent = 1;
 
     let formulaId;
@@ -117,14 +117,14 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
       .then(r => formulaId = r.body.id)
       .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
       .then(ids => ids.map(id => formulaInstances.push(id)))
-      .then(() => {
-        formula.name = 'number2';
-        formula.engine = 'v1';
-        return cloud.post(test.api, formula, fSchema)
-      })
-        .then(r => formulaId = r.body.id)
-        .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
-        .then(ids => ids.map(id => formulaInstances.push(id)))
+      // .then(() => {
+      //   formula.name = 'number2';
+      //   formula.engine = 'v1';
+      //   return cloud.post(test.api, formula, fSchema)
+      // })
+      //   .then(r => formulaId = r.body.id)
+      //   .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
+      //   .then(ids => ids.map(id => formulaInstances.push(id)))
         .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
       .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
       // .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
