@@ -24,7 +24,7 @@ suite.forElement('marketing', 'campaigns', (test) => {
       .then(r => {
         if (r.body.length) {
           id = r.body[0].id;
-          cloud.get(`${test.api}/${id}`);
+          return cloud.get(`${test.api}/${id}`);
         }
       });
   });
@@ -50,6 +50,8 @@ suite.forElement('marketing', 'campaigns', (test) => {
         });
     }
   });
+
+  test.should.supportPagination();
   it(`should allow Sr for ${test.api}/{id}/activities`, () => {
     if (hubspotAppId) {
       const options = { qs: { where: `appId='${hubspotAppId}'` } };

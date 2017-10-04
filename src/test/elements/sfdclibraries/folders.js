@@ -5,7 +5,7 @@
     const logger = require('winston');
     const tools = require('core/tools');
 
-    suite.forElement('documents', 'folders', { skip: true }, (test) => {
+    suite.forElement('documents', 'folders', (test) => {
       const contentsApi = test.api + '/contents';
       const metadataApi = test.api + '/metadata';
       const options1ApiPaging = { qs: { path: '/', page: 1, pageSize: 1 } };

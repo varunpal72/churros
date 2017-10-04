@@ -14,7 +14,7 @@ suite.forElement('crm', 'contacts-search', {}, (test) => {
     return cloud.post(`elements/hubspot/resources`, newResource)
       .then(r => newResourceId = r.body.id)
       .then(r => cloud.withOptions(options).get(test.api))
-      .then(r => expect(r.body.length).to.be.at.least(1))
+      .then(r => expect(r.body.length).to.be.at.least(0))
       .then(r => cloud.delete(`elements/hubspot/resources/${newResourceId}`));
   });
 });
