@@ -310,7 +310,7 @@ exports.getBackup = (element) => {
   return cloud.get('/instances?tags%5B%5D=churros-backup&hydrate=false')
   .then(r => {
     if (!_.isEmpty(r.body) && _.type(r.body) === 'Array') {
-      var instance = r.body.reduce((acc, cur) => acc = acc === null && cur.element.key === element ? cur : null, null);
+      var instance = r.body.reduce((acc, cur) => acc = acc !== null ? acc : cur.element.key === element ? cur : null, null);
       if (instance !== null) {
         props.setForKey(element, 'elementId', instance.element.id);
         defaults.token(instance.token);
