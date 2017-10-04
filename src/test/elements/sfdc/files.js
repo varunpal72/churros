@@ -1,14 +1,17 @@
 'use strict';
-const tools = require('core/tools');
+
+//dependencies at the top
 const cloud = require('core/cloud');
 const suite = require('core/suite');
 const expect = require('chakram').expect;
+const faker = require('faker');
 
 suite.forElement('crm', 'files', (test) => {
 
+  //variables multiple tests will use
   let path = __dirname + '/assets/brady.jpg';
-  let pathOnClient = `/brady-${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10)}.jpg`;
-  let random = tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 10);
+  let pathOnClient = `/brady-${faker.random.uuid()}.jpg`;
+  let random = faker.random.word();
   let body = {Title: random};
 
   const fileWrap = (cb) => {

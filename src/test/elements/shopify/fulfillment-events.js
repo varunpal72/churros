@@ -18,7 +18,7 @@ const createFulfillment = (lineId) => ({
   }]
 });
 
-suite.forElement('ecommerce', 'fulfillment-events', { payload: payload, skip: true}, (test) => {
+suite.forElement('ecommerce', 'fulfillment-events', { payload: payload }, (test) => {
   let orderId, lineId, fulfillmentId, eventId;
   before(() => cloud.post(`/hubs/ecommerce/orders`, order())
     .then(r => orderId = r.body.id)
@@ -38,4 +38,6 @@ suite.forElement('ecommerce', 'fulfillment-events', { payload: payload, skip: tr
   it(`should allow DELETE for /hubs/ecommerce/orders/{orderId}/fulfillments/{fulfillmentId}/fulfillment-events/{eventId}`, () => {
     return cloud.delete(`/hubs/ecommerce/orders/${orderId}/fulfillments/${fulfillmentId}/fulfillment-events/${eventId}`);
   });
+  after(() => cloud.delete(`/hubs/ecommerce/orders/${orderId}`));
+
 });

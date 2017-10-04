@@ -7,7 +7,7 @@ suite.forElement('finance', 'tax-rates', (test) => {
   it('should support GET /tax-rates and GET /tax-rates/:id', () => {
     let taxId;
     return cloud.get(test.api)
-      .then(r => taxId = r.body[0].internalId)
+      .then(r => taxId = r.body[0].id)
       .then(r => cloud.get(`${test.api}/${taxId}`));
   });
   test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
