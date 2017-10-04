@@ -8,7 +8,7 @@ const payload = {
   firstName: 'frank',
   lastName: 'ricard',
   email: 'frank@oldschool.com',
-  password: 'password'
+  password: 'Passw0rd!'
 };
 const updatePayload = {
   firstName: 'joseph',
