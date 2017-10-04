@@ -2,7 +2,7 @@
   "name": "context-modified-formula",
   "singleThreaded": true,
   "configuration": [{
-    "key": "trigger-instance",
+    "key": "trigger_instance",
     "name": "CRM instance",
     "type": "elementInstance"
   }],
@@ -11,7 +11,7 @@
     "type": "event",
     "onSuccess": ["debug"],
     "properties": {
-      "elementInstanceId": "${trigger-instance}"
+      "elementInstanceId": "${trigger_instance}"
     }
   }],
   "steps": [{

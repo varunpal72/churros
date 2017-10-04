@@ -9,7 +9,7 @@
       "type": "event",
       "onSuccess": ["A_build_args"],
       "properties": {
-        "elementInstanceId": "${config.crm.instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{
@@ -39,7 +39,7 @@
       "type": "event",
       "onSuccess": ["B-script"],
       "properties": {
-        "elementInstanceId": "${config.crm.instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{
@@ -116,7 +116,7 @@
       ],
       "type": "event",
       "properties": {
-        "elementInstanceId": "${config.crm.instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "configuration": [{
@@ -175,7 +175,7 @@
       ],
       "type": "event",
       "properties": {
-        "elementInstanceId": "${config.crm.instance}"
+        "elementInstanceId": "${crm.instance}"
       }
     }],
     "configuration": [{

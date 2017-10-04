@@ -19,7 +19,7 @@
             "onSuccess": ["simple-script"],
             "onFailure": [],
             "properties": {
-                "elementInstanceId": "${trigger-instance}"
+                "elementInstanceId": "${trigger_instance}"
             }
         }
     ],
@@ -27,8 +27,8 @@
     "singleThreaded": false,
     "configuration": [
         {
-            "key": "trigger-instance",
-            "name": "trigger-instance",
+            "key": "trigger_instance",
+            "name": "trigger_instance",
             "type": "elementInstance",
             "required": true
         }

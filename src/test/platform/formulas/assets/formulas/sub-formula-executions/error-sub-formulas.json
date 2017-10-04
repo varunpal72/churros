@@ -9,7 +9,7 @@
     "type": "event",
     "onSuccess": ["A-sub-formula"],
     "properties": {
-      "elementInstanceId": "${config.crm.instance}"
+      "elementInstanceId": "${crm.instance}"
     }
   }],
   "steps": [{

@@ -3,11 +3,11 @@
 const suite = require('core/suite');
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
-
+const payloadPost = tools.requirePayload(`${__dirname}/assets/customers.json`);
 suite.forElement('finance', 'customers', { payload: payload }, (test) => {
     test.should.supportCruds();
 	  test.withOptions({ qs: { page: 1, pageSize: 5}}).should.supportPagination();
-  	test.should.supportCeqlSearch('id');
+  	test.should.supportCeqlSearch('id',payloadPost);
     test.withOptions({ qs: { page: 1,
                              pageSize: 5,
                              where : "savedSearchId = '18'"

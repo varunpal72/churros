@@ -4,7 +4,7 @@
     "name": "get-accounts",
     "type": "elementRequest",
     "properties": {
-      "elementInstanceId": "${trigger-instance}",
+      "elementInstanceId": "${trigger_instance}",
       "method": "GET",
       "api": "/hubs/crm/accounts"
     }
@@ -13,13 +13,13 @@
     "type": "event",
     "onSuccess": ["get-accounts"],
     "properties": {
-      "elementInstanceId": "${trigger-instance}"
+      "elementInstanceId": "${trigger_instance}"
     }
   }],
   "singleThreaded": true,
   "configuration": [{
-    "key": "trigger-instance",
-    "name": "trigger-instance",
+    "key": "trigger_instance",
+    "name": "trigger_instance",
     "type": "elementInstance"
   }]
 }

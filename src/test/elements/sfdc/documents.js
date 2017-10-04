@@ -1,14 +1,13 @@
 'use strict';
 
+//dependencies at the top
 const suite = require('core/suite');
-const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 
-const documentId = "0150H00000FRylLQAT";
-
 suite.forElement('crm', 'Document', (test) => {
-  it('should allow GET /{objectName}/{objectId}/data for a Document object', () => {
-    return cloud.get(`${test.api}/${documentId}/data`)
-    .then(r => expect(r.body).to.not.be.empty);
-  });
+  test
+  .withApi(`${test.api}/0150H00000FRylLQAT/data`)//calls specified api
+  .withValidation(r => expect(r.body).to.not.be.empty)//runs this function on the response from the endpoint
+  .withName('should allow GET /{objectName}/{objectId}/data for a Document object')//changes the name of the test
+  .should.return200OnGet();
 });

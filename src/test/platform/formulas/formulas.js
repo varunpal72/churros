@@ -32,22 +32,19 @@ suite.forPlatform('formulas', opts, (test) => {
       }
     }];
     const validateResults = (formulaId, formulas) => {
-      formulas.forEach(formula => {
-        if (formula.id === formulaId) {
-          expect(formula).to.contain.key('name') && expect(formula).to.not.contain.key('steps');
-          cloud.delete(`/formulas/${formulaId}`);
-          return true;
-        }
+      formulas.filter(formula => formula.id === formulaId).forEach(formula => {
+          expect(formula).to.contain.key('name');
+          expect(formula).to.contain.key('triggers');
+          expect(formula).to.not.contain.key('steps');
       });
-      cloud.delete(`/formulas/${formulaId}`);
-      return false;
     };
 
     let formulaId;
     return cloud.post(test.api, f, schema)
       .then(r => formulaId = r.body.id)
       .then(r => cloud.withOptions({ qs: { abridged: true } }).get(test.api))
-      .then(r => validateResults(formulaId, r.body));
+      .then(r => validateResults(formulaId, r.body))
+      .then(() => cloud.delete(`/formulas/${formulaId}`));
   });
 
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
@@ -183,7 +180,7 @@ suite.forPlatform('formulas', opts, (test) => {
   it('should allow setting the engine flag to use bodenstein to execute a formula', () => {
     const f = common.genFormula({});
     const patchBody = {
-      engine: 'bodenstein',
+      engine: 'v3',
     };
 
     const validator = (formula) => {
@@ -210,11 +207,11 @@ suite.forPlatform('formulas', opts, (test) => {
       "properties": {
       }
     }];
-    f.engine = 'bodenstein';
+    f.engine = 'v3';
 
     return cloud.post(test.api, f, (r) => {
       expect(r).to.have.statusCode(400);
-      expect(r.body.message).to.contain('Invalid formula for bodenstein engine');
+      expect(r.body.message).to.contain('Invalid formula for the v3 engine');
     });
   });
 
