@@ -11,7 +11,6 @@
   "response": {
     "contentType": "application/json"
   },
-  "ownerAccountId": 3205,
   "model": {
     "transform": false,
     "name": "getThresholdAndUsageInfo",

@@ -1,5 +1,5 @@
 {
-  "accountName": "churrosTestCustomer",
+  "accountName": "<<name.firstName>>",
   "accountType": 1,
   "phone": "303-555-3001",
   "ownerResourceID": 4
