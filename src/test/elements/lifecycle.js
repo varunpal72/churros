@@ -11,7 +11,6 @@ const argv = require('optimist').argv;
 const fs = require('fs');
 const logger = require('winston');
 const props = require('core/props');
-const beforeTests = require(`${__dirname}/assets/basics.js`)
 
 const createAll = (urlTemplate, list) => {
   return Object.keys(list).sort()
@@ -75,7 +74,9 @@ before(() => {
         props.setForKey(element, 'elementId', r.body.element.id);
         logger.info('Provisioned with instance id of ' + r.body.id);
         instanceId = r.body.id;
+        props.set('instanceId', instanceId);
         hub = r.body.element.hub;
+        props.set('hub', instanceId);
         element = tools.getBaseElement(element);
 
         // object definitions file exists? create the object definitions on the instance
@@ -122,9 +123,6 @@ before(() => {
     });
 });
 
-describe('Basics', () => {
-  beforeTests(element, instanceId, hub);
-});
 
 
 after(done => {

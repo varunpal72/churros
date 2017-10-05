@@ -1,9 +1,7 @@
 
-module.exports = (element, instanceId, hub) => {
-  console.log('what what', element, instanceId, hub);
+// module.exports = (element, instanceId, hub) => {
   const props = require('core/props');
   const cloud = require('core/cloud');
-  const suite = require('core/suite');
   const tools = require('core/tools');
   const util = require('util');
   const fs = require('fs');
@@ -21,9 +19,16 @@ module.exports = (element, instanceId, hub) => {
   };
 
   //Will by default run these
-  // suite.forElement('', 'Basic tests', {skip: false}, (test) => {
-  // describe('Basic tests', () => {
-    // test.withApi('/objects').withValidation(r => expect(r.body).to.not.be.empty).should.return200OnGet();
+  describe('Basic tests', () => {
+    let element , instanceId, hub;
+    before(() => {
+      element = props.get('element');
+      instanceId = props.get('instanceId');
+      hub = props.get('hub');
+    });
+    it('should GET /objects', () => {
+      return cloud.get('/objects').then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
+    });
 
     it('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
       .then(s => new Promise((res, rej) => swaggerParser.validate(s.body, (err, api) => err ? rej(err) : res()))));
@@ -34,7 +39,7 @@ module.exports = (element, instanceId, hub) => {
       // clear current transformations
       return cloud.delete(`/instances/${instanceId}/transformations`).catch(() => {})
       .then(() => {
-        const transformationsFile = `${__dirname}/${element}/assets/transformations`;
+        const transformationsFile = `${__dirname}/../${element}/assets/transformations`;
         // if there is already a transformation file here
         if (fs.existsSync(transformationsFile + '.json')) {
           let transformations = _.cloneDeep(require(transformationsFile + '.json'));
@@ -43,24 +48,24 @@ module.exports = (element, instanceId, hub) => {
             if (idField) {
               idField.path = 'idTransformed';
             } else {
-              transformations[key].fields.push({"path": "idTransformed","vendorPath": "id"})
+              transformations[key].fields.push({"path": "idTransformed","vendorPath": "id"});
             }
-          })
+          });
           //create the transformations and validating they work
           return Promise.all(Object.keys(transformations).map(key => cloud.post(`/instances/${instanceId}/transformations/${key}`, transformations[key])))
-          .then(() => Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))))
+          .then(() => Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
         } else {
           //create defintions before the transformations
-          let allDefs = require(`${__dirname}/assets/object.definitions.json`)
-          let defined = Object.keys(allDefs)
+          let allDefs = require(`${__dirname}/../assets/object.definitions.json`);
+          let defined = Object.keys(allDefs);
           return cloud.get(`/hubs/${hub}/objects`)
           .then(objs => {
             let transDefs = defined.reduce((acc, cur) => {
               if (objs.body.includes(cur)) {
                 acc[cur] = allDefs[cur];
               }
-              return acc
-            },{})
+              return acc;
+            },{});
             return createAll(`/instances/${instanceId}/objects/%s/definitions`, transDefs)
             .then(() => {
               return Promise.all(objs.body.map(key => {
@@ -72,23 +77,23 @@ module.exports = (element, instanceId, hub) => {
                       "vendorPath": "id"
                     }
                   ]
-                }
+                };
                 //creates the same transformations that were defined
-                return defined.includes(key) ? cloud.post(`/instances/${instanceId}/transformations/${key}`, trans) : Promise.resolve(null)
-              }))
+                return defined.includes(key) ? cloud.post(`/instances/${instanceId}/transformations/${key}`, trans) : Promise.resolve(null);
+              }));
             })
             .then(() => {
               //validates the transformations are working
-              return Promise.all(Object.keys(transDefs).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length))))
-            })
-          })
+              return Promise.all(Object.keys(transDefs).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length))));
+            });
+          });
         }
       })
       .catch(e => error = e)
       .then(() => cloud.delete(`/instances/${instanceId}/transformations`).catch(() => {}))
       .then(() => {
         // transformations file exists? create the transformations on the instance
-        const transformationsFile = `${__dirname}/${element}/assets/transformations`;
+        const transformationsFile = `${__dirname}/../${element}/assets/transformations`;
         if (fs.existsSync(transformationsFile + '.json')) {
           logger.debug('Setting up transformations');
           const url = `/instances/${instanceId}/transformations/%s`;
@@ -99,9 +104,9 @@ module.exports = (element, instanceId, hub) => {
       .catch(() => {})
       .then(() => {
         if (error) {
-          throw new Error(error)
+          throw new Error(error);
         }
-      })
+      });
     });
     // skipped for now because so many fail - remove the skip when fixed
     it.skip('should not allow provisioning with bad credentials', () => {
@@ -138,5 +143,5 @@ module.exports = (element, instanceId, hub) => {
            responseCodeValidator(r.response.statusCode);
          });
     });
-  // });
-}
+  });
+// }
