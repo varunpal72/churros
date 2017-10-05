@@ -2,17 +2,23 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const chakram = require('chakram');
-const expect = chakram.expect;
+const tools = require('core/tools');
+const payload = require('./assets/bill-payment-cards');
+const updatePayload = { "Memo": tools.random() };
 
-suite.forElement('finance', 'bill-payment-cards', null, (test) => {
-  it.skip('should support SRD for /hubs/finance/bill-payment-cards', () => {
+
+suite.forElement('finance', 'bill-payment-cards', { payload: payload }, (test) => {
+  it('should support CRUDS and Ceql searching for /hubs/finance/bill-payment-cards', () => {
     let id;
-    return cloud.get(test.api)
+    let refno;
+    return cloud.post(test.api, payload)
       .then(r => {
-        expect(r.body).to.not.be.empty;
-        id = r.body[0].TxnID;
+        id = r.body.id;
+        refno = r.body.RefNumber;
+        updatePayload.EditSequence = r.body.EditSequence;
       })
+      .then(r => cloud.get(test.api))
+      .then(r => cloud.withOptions({ qs: { where: `RefNumber='${refno}'` } }).get(test.api))
       .then(r => cloud.get(`${test.api}/${id}`))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });

@@ -85,6 +85,6 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   });
 });
 // This is Skipped as we do not have any activities in our account
-suite.forElement('crm', `contacts/${contactsId}/activities`, { payload: payload,skip:true }, (test) => {
-  test.should.supportNextPagePagination(1);
+suite.forElement('crm', `contacts/${contactsId}/activities`, { payload: payload }, (test) => {
+  test.should.supportPagination();
 });

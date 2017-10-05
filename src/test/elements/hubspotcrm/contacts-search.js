@@ -19,7 +19,8 @@ suite.forElement('crm', 'contacts-search', {}, (test) => {
       const options = { qs: { where: "q='test'" } };
       return cloud.withOptions(options).get(`contacts-search`)
       .then(r => {
-        expect(r.body).to.not.be.empty;
+        expect(r).to.have.statusCode(200);
+        expect(r.body).to.not.be.undefined;
       });
   });
 });
