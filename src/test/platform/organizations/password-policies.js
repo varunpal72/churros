@@ -60,7 +60,7 @@ suite.forPlatform('organizations/password-policies', {schema: passwordPolicySche
       .then(() => cloud.put('/organizations/password-policies', withNewField({minNumbers: 11}) , shouldBe400WithMessage('minNumbers')))
       .then(() => cloud.put('/organizations/password-policies', withNewField({minSymbols: -1}) , shouldBe400WithMessage('minSymbols')))
       .then(() => cloud.put('/organizations/password-policies', withNewField({symbolCharacterSet: null}) , shouldBe400WithMessage('symbolCharacterSet')))
-      .then(() => cloud.put('/organizations/password-policies', withNewField({expirationDays: 29}) , shouldBe400WithMessage('expirationDays')))
+      .then(() => cloud.put('/organizations/password-policies', withNewField({expirationDays: -1}) , shouldBe400WithMessage('expirationDays')))
       .then(() => cloud.put('/organizations/password-policies', withNewField({previousPasswordCount: 10}) , shouldBe400WithMessage('previousPasswordCount')));
   });
 });
