@@ -48,7 +48,6 @@ before(() => {
     if (argv.instance) {
       getInstance = cloud.get(`/instances/${argv.instance}`)
       .then(r => {
-        props.setForKey(element, 'elementId', r.body.element.id);
         defaults.token(r.body.token);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         deleteInstance = false;
@@ -78,6 +77,7 @@ before(() => {
         hub = r.body.element.hub;
         props.set('hub', instanceId);
         element = tools.getBaseElement(element);
+        props.setForKey(element, 'elementId', r.body.element.id);
 
         // object definitions file exists? create the object definitions on the instance
         const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
