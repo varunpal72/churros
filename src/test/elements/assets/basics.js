@@ -1,5 +1,3 @@
-
-// module.exports = (element, instanceId, hub) => {
   const props = require('core/props');
   const cloud = require('core/cloud');
   const tools = require('core/tools');
@@ -144,4 +142,3 @@
          });
     });
   });
-// }
