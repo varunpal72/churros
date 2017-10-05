@@ -48,6 +48,7 @@ before(() => {
     if (argv.instance) {
       getInstance = cloud.get(`/instances/${argv.instance}`)
       .then(r => {
+        props.setForKey(element, 'elementId', r.body.element.id);
         defaults.token(r.body.token);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
         deleteInstance = false;
@@ -71,7 +72,6 @@ before(() => {
     return getInstance
       .then(r => {
         expect(r).to.have.statusCode(200);
-        props.setForKey(element, 'elementId', r.body.element.id);
         logger.info('Provisioned with instance id of ' + r.body.id);
         instanceId = r.body.id;
         props.set('instanceId', instanceId);
@@ -122,8 +122,6 @@ before(() => {
       });
     });
 });
-
-
 
 after(done => {
   tools.resetCleanup();
