@@ -11,7 +11,7 @@ var accountsId = 285826161;
 
 suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
   test.should.supportPagination();
-  
+
   it('should test CRUD for /accounts and GET /accounts/{id}/activities', () => {
     const updatePayload = {
       "properties": {
@@ -31,7 +31,7 @@ suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/${accountId}`, updatePayload))
       .then(r => cloud.delete(`${test.api}/${accountId}`));
   });
-  
+
   it('should test accounts poller url', () => {
     let id;
     let objects;
@@ -59,10 +59,10 @@ suite.forElement('crm', 'accounts', { payload: payload }, (test) => {
       .then(r => expect(objects[0].properties).to.contain.key('hs_lastmodifieddate') && expect(objects[0].properties).to.contain.key('createdate'))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
-  
-});
 
-suite.forElement('crm', `accounts/${accountsId}/activities`, { payload: payload }, (test) => {
+});
+// We are skipping this as there are no activities in our account.
+suite.forElement('crm', `accounts/${accountsId}/activities`, { payload: payload,skip : true }, (test) => {
   test.should.supportNextPagePagination(1);
-  
+
 });

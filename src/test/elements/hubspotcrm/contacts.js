@@ -12,6 +12,7 @@ var contactsId = 396139;
 
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportNextPagePagination(2);
+  test.withName('should allow pagination for all contacts with page and nextPage').withOptions({qs: { all: true }}).should.supportNextPagePagination(2);
   it('should test CRUD for /contacts and GET /contacts/{id}/activities', () => {
     const updatePayload = {
       "properties": {
@@ -83,7 +84,7 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.delete('/organizations/objects/churrosTestObject/definitions'));
   });
 });
-
-suite.forElement('crm', `contacts/${contactsId}/activities`, { payload: payload }, (test) => {
+// This is Skipped as we do not have any activities in our account
+suite.forElement('crm', `contacts/${contactsId}/activities`, { payload: payload,skip:true }, (test) => {
   test.should.supportNextPagePagination(1);
 });
