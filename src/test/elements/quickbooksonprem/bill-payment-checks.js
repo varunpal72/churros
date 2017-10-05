@@ -17,5 +17,5 @@ suite.forElement('finance', 'bill-payment-checks', (test) => {
   it.skip('should DELETE for /hubs/finance/bill-payment-checks', () => {
     return cloud.delete(`${test.api}/${id}`);
   });
-  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
 });

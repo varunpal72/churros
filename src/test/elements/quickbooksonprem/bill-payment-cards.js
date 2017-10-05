@@ -5,6 +5,7 @@ const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
+//skipping the test as pagination is not proper from element itself.
 suite.forElement('finance', 'bill-payment-cards', null, (test) => {
   it.skip('should support SRD for /hubs/finance/bill-payment-cards', () => {
     let id;
