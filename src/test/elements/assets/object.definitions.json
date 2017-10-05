@@ -1189,5 +1189,29 @@
      "path": "id",
      "type": "string"
    }]
+ },
+ "inventory-sites": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "inventory-adjustments": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "bill-payment-checks": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "bill-payment-cards": {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
  }
 }
