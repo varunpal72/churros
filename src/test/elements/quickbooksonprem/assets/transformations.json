@@ -54,5 +54,19 @@
       "path": "id",
       "vendorPath": "TxnID"
     }]
+  },
+  "bill-payment-checks": {
+    "vendorName": "BillPaymentCheck",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "TxnID"
+    }]
+  },
+  "bill-payment-cards": {
+    "vendorName": "BillPaymentCreditCard",
+    "fields": [{
+      "path": "id",
+      "vendorPath": "TxnID"
+    }]
   }
 }
