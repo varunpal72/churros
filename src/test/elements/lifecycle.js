@@ -75,7 +75,7 @@ before(() => {
         instanceId = r.body.id;
         props.set('instanceId', instanceId);
         hub = r.body.element.hub;
-        props.set('hub', instanceId);
+        props.set('hub', hub);
         element = tools.getBaseElement(element);
         props.setForKey(element, 'elementId', r.body.element.id);
 
