@@ -1,7 +1,8 @@
 'use strict';
 
+const tools = require('core/tools');
 const suite = require('core/suite');
-const payload = require('./assets/slaPolicies');
+const payload = tools.requirePayload(`${__dirname}/assets/slaPolicies.json`);
 
 const options = {
  churros: {

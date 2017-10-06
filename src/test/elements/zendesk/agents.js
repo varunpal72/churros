@@ -1,7 +1,8 @@
 'use strict';
 
+const tools = require('core/tools');
 const suite = require('core/suite');
-const payload = require('./assets/agents');
+const payload = tools.requirePayload(`${__dirname}/assets/agents.json`);
 
 const options = {
   churros: {
