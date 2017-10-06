@@ -18,7 +18,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     return cloud.withOptions(opts).post(test.api, undefined)
       .then(r => {
         listId = r.body.id;
-        cloud.delete(`${test.api}/${listId}`)
+        cloud.delete(`${test.api}/${listId}`);
       });
   });
 
@@ -31,7 +31,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
     return cloud.withOptions(opts).post(test.api, undefined)
       .then(r => {
         listId = r.body.listId;
-        cloud.delete(`${test.api}/${listId}`)
+        cloud.delete(`${test.api}/${listId}`);
       });
   });
 
