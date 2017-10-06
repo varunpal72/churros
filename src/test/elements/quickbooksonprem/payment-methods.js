@@ -19,5 +19,5 @@ suite.forElement('finance', 'payment-methods', null, (test) => {
       const validValues = r.body.filter(obj => obj.Name === `05jvatrmfgb6dhrggb9`);
       expect(validValues.length).to.equal(r.body.length);
     }).should.return200OnGet();
-  test.should.supportNextPagePagination(1);
+  test.should.supportPagination();
 });
