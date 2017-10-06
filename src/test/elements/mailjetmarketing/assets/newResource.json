@@ -1,7 +1,7 @@
 {
   "method": "GET",
   "nextResource": "",
-  "description": "GET Campaigns.",
+  "description": "GET Contacts.",
   "type": "api",
   "vendorPath": "contact",
   "nextPageKey": "",
