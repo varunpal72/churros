@@ -18,7 +18,7 @@
 
   //Will by default run these
   describe('Basic tests', () => {
-    let element , instanceId, hub;
+    let element, instanceId, hub;
     before(() => {
       element = props.get('element');
       instanceId = props.get('instanceId');
