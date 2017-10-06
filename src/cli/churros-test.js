@@ -69,6 +69,7 @@ const run = (suite, options, cliArgs) => {
   // always pass the lifecycle file first.  if it's an element, then use that element's lifecycle file too
   const baseMochaPaths = [rootTestDir + '/lifecycle'];
   if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/lifecycle`);
+  if (isElement(suite)) baseMochaPaths.push(`${rootTestDir}/elements/assets/basics`);
 
   const isAfterStart = (start, suite, arr) => {
     if (!start) return true;
