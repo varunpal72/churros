@@ -2,8 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const tools = require('core/tools');
-const id = 'APP5JTYW917TW';
 
 
 suite.forElement('employee', 'locations/APP5JTYW917TW/payments', (test) => {
