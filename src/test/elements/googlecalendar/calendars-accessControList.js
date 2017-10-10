@@ -13,7 +13,7 @@ suite.forElement('general', 'calendars', { payload: payload }, (test) => {
   .then(r => calendarId = r.body.id));
 
   it('should test CRUDS of  AccessControlList', () => {
-  return cloud.cruds(`${test.api}/${calendarId}/AccessControlList`, payload)
+  return cloud.cruds(`${test.api}/${calendarId}/AccessControlList`, payload);
   });
 
   it('should test pagination for AccessControlList', () => {

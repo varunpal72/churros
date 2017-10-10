@@ -13,7 +13,7 @@ suite.forElement('general', 'calendars', { payload: payload }, (test) => {
   .then(r => calendarId = r.body.id));
 
   it('should test CRUDS of  events', () => {
-  return cloud.cruds(`${test.api}/${calendarId}/events`, payload)
+  return cloud.cruds(`${test.api}/${calendarId}/events`, payload);
   });
 
   it('should test pagination for events', () => {
@@ -24,7 +24,7 @@ suite.forElement('general', 'calendars', { payload: payload }, (test) => {
   });
 
   it('should test where for events', () => {
-         return cloud.withOptions({ qs: { where : `maxAttendees=1` } }).get(`${test.api}/${calendarId}/events`)
+         return cloud.withOptions({ qs: { where : `maxAttendees=1` } }).get(`${test.api}/${calendarId}/events`);
       //There are no events exist for newly created calendar
 	  /*.then(r => {
            expect(r.body.length).to.not.be.empty;

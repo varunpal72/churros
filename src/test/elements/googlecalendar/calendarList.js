@@ -12,7 +12,7 @@ suite.forElement('general', 'users/me/calendarList', null, (test) => {
   .then(r => calendarId = r.body.id));
 
   it('should test CRUDS of  /users/me/calendarlist', () => {
-  return cloud.cruds(test.api, { "id":calendarId })
+  return cloud.cruds(test.api, { "id":calendarId });
   });
 
   it('should test pagination for users/me/calendarList', () => {
