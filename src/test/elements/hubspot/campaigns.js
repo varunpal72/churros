@@ -6,6 +6,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 
 //skipped the test as there is no data available on the portal for this resource
+// tracking under #1191 churros issue
 suite.forElement('marketing', 'campaigns',{ skip: true }, (test) => {
   let hubspotAppId, campaignId;
   before(() => {
