@@ -1,8 +1,8 @@
 {
   "name": "simple-successful",
   "configuration": [{
-    "key": "trigger-instance",
-    "name": "trigger-instance",
+    "key": "trigger_instance",
+    "name": "trigger_instance",
     "type": "elementInstance"
   }],
   "triggers": [{
@@ -11,7 +11,7 @@
     "properties": {
       "method": "GET",
       "api": "/hubs/crm/accounts",
-      "elementInstanceId": "${trigger-instance}"
+      "elementInstanceId": "${trigger_instance}"
     }
   }],
   "steps": [{

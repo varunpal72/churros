@@ -1,13 +1,15 @@
 'use strict';
 
+//dependencies at the top
 const expect = require('chakram').expect;
 const suite = require('core/suite');
-const payload = require('./assets/contacts');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const activities = require('./assets/activities');
-const notes = require('./assets/notes');
-const tasks = require('./assets/tasks');
+//how to import payloads
+const payload = tools.requirePayload(`${__dirname}/assets/contacts.json`);
+const activities = tools.requirePayload(`${__dirname}/assets/activities.json`);
+const notes = tools.requirePayload(`${__dirname}/assets/notes.json`);
+const tasks = tools.requirePayload(`${__dirname}/assets/tasks.json`);
 
 const contact = () => ({
   FirstName: 'Conan',
@@ -17,9 +19,11 @@ const contact = () => ({
 
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
   test.should.supportCruds();
-  test.should.supportCeqlSearch('id');
+  test.should.supportCeqlSearch('id');//search contacts by 'id'
   test.should.supportPagination();
-  test.should.return404OnGet('0');
+  test.should.return404OnGet('0');//should not find contact with id of '0'
+
+  //'it' statements for sfdc specific issues
   it('should allow CRUDS for /hubs/crm/contacts/:id/activites', () => {
     let contactId;
     return cloud.post(test.api, payload)

@@ -7,13 +7,13 @@
     }],
     "triggers": [{
       "type": "event",
-      "onSuccess": ["A-build-args"],
+      "onSuccess": ["A_build_args"],
       "properties": {
         "elementInstanceId": "${crm.instance}"
       }
     }],
     "steps": [{
-      "name": "A-build-args",
+      "name": "A_build_args",
       "type": "script",
       "onSuccess": ["A-sub-formula"],
       "properties": {
@@ -24,7 +24,7 @@
       "type": "formula",
       "properties": {
         "formulaId": "SUB_FORMULA_ID",
-        "args": "${steps.A-build-args}"
+        "args": "${steps.A_build_args}"
       }
     }]
   },
@@ -55,7 +55,7 @@
       "name": "childScript",
       "type": "script",
       "properties": {
-        "body": "done({\n  child: config.child,\n  overRideConfig: config.over.ride.test,\n  parent: config.parent\n});"
+        "body": "done({\n  child: config.child,\n  overRideConfig: config.overRideTest,\n  parent: config.parent\n});"
       }
     }],
     "triggers": [{
@@ -73,8 +73,8 @@
         "required": true
       },
       {
-        "key": "over.ride.test",
-        "name": "over.ride.test",
+        "key": "overRideTest",
+        "name": "overRideTest",
         "type": "value",
         "required": true
       }
@@ -85,7 +85,7 @@
         "name": "last",
         "type": "script",
         "properties": {
-          "body": "done({\n  body: { parent: config.parent,\n  overRideConfig: config.over.ride.test\n}});"
+          "body": "done({\n  body: { parent: config.parent,\n  overRideConfig: config.overRideTest\n}});"
         }
       },
       {
@@ -106,7 +106,7 @@
         "name": "build",
         "type": "script",
         "properties": {
-          "body": "done({\n  configs: {\n    child: 'child',\n    'over.ride.test' : 'child'\n  }\n})"
+          "body": "done({\n  configs: {\n    child: 'child',\n    overRideTest: 'child'\n  }\n})"
         }
       }
     ],
@@ -125,8 +125,8 @@
         "type": "value"
       },
       {
-        "key": "over.ride.test",
-        "name": "over.ride.test",
+        "key": "overRideTest",
+        "name": "overRideTest",
         "type": "value"
       },
       {
@@ -144,7 +144,7 @@
         "name": "last",
         "type": "script",
         "properties": {
-          "body": "done({ body: {\n  over: config.over.ride.test,\n  child1: steps.subformula\n}});"
+          "body": "done({ body: {\n  over: config.overRideTest,\n  child1: steps.subformula\n}});"
         }
       },
       {
@@ -154,7 +154,7 @@
         "name": "build",
         "type": "script",
         "properties": {
-          "body": "done({\n  configs: {\n    'over.ride.test' : 'child1',\n    child1: 'child1'\n  }\n})"
+          "body": "done({\n  configs: {\n    overRideTest: 'child1',\n    child1: 'child1'\n  }\n})"
         }
       },
       {
@@ -179,8 +179,8 @@
       }
     }],
     "configuration": [{
-        "key": "over.ride.test",
-        "name": "over.ride.test",
+        "key": "overRideTest",
+        "name": "overRideTest",
         "type": "value"
       },
       {
@@ -196,7 +196,7 @@
       "name": "childScript3",
       "type": "script",
       "properties": {
-        "body": "done({\n  over: config.over.ride.test\n});"
+        "body": "done({\n  over: config.overRideTest\n});"
       }
     }],
     "triggers": [{
@@ -206,8 +206,8 @@
       "type": "manual"
     }],
     "configuration": [{
-      "key": "over.ride.test",
-      "name": "over.ride.test",
+      "key": "overRideTest",
+      "name": "overRideTest",
       "type": "value"
     }]
   },
@@ -231,14 +231,14 @@
         "name": "build1",
         "type": "script",
         "properties": {
-          "body": "done({\n  configs: {\n    'over.ride.test' : 'child2'\n  }\n})"
+          "body": "done({\n  configs: {\n    overRideTest : 'child2'\n  }\n})"
         }
       },
       {
         "name": "last1",
         "type": "script",
         "properties": {
-          "body": "done({\n  over: config.over.ride.test,\n  child1: config.child1,\n  child2: steps.subformula1\n});"
+          "body": "done({\n  over: config.overRideTest,\n  child1: config.child1,\n  child2: steps.subformula1\n});"
         }
       }
     ],
@@ -249,8 +249,8 @@
       "type": "manual"
     }],
     "configuration": [{
-      "key": "over.ride.test",
-      "name": "over.ride.test",
+      "key": "overRideTest",
+      "name": "overRideTest",
       "type": "value"
     }]
   },
@@ -274,14 +274,14 @@
         "name": "build2",
         "type": "script",
         "properties": {
-          "body": "done({\n  configs: {\n    'over.ride.test' : 'child3'\n  }\n})"
+          "body": "done({\n  configs: {\n    overRideTest : 'child3'\n  }\n})"
         }
       },
       {
         "name": "last2",
         "type": "script",
         "properties": {
-          "body": "done({\n  over: config.over.ride.test,\n  child3: steps.subformula2\n});"
+          "body": "done({\n  over: config.overRideTest,\n  child3: steps.subformula2\n});"
         }
       }
     ],
@@ -292,8 +292,8 @@
       "type": "manual"
     }],
     "configuration": [{
-      "key": "over.ride.test",
-      "name": "over.ride.test",
+      "key": "overRideTest",
+      "name": "overRideTest",
       "type": "value"
     }]
 }]
