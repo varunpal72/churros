@@ -5,9 +5,9 @@ const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
-//skipped the test as there is no data available on the portal for this resource
-// tracking under #1191 churros issue
-suite.forElement('marketing', 'campaigns',{ skip: true }, (test) => {
+// tests are failing as there is no data available on the portal for this resource
+// raised churros issue #1191 for the same
+suite.forElement('marketing', 'campaigns', (test) => {
   let hubspotAppId, campaignId;
   before(() => {
     return cloud.withOptions({ qs: { pageSize: 1 } }).get(test.api)
@@ -22,7 +22,7 @@ suite.forElement('marketing', 'campaigns',{ skip: true }, (test) => {
   test.should.supportNextPagePagination(2);
 
   it(`should allow cursor pagination for ${test.api}/{id}/activities`, () => {
-    const options = { qs: { pageSize: 1, where: `appId='${hubspotAppId}'`} };
+    const options = { qs: { pageSize: 1, where: `appId='${hubspotAppId}'` } };
     return cloud.withOptions(options).get(`${test.api}/${campaignId}/activities`)
       .then(r => {
         expect(r.body).to.not.be.null;
@@ -31,7 +31,7 @@ suite.forElement('marketing', 'campaigns',{ skip: true }, (test) => {
       });
   });
   it(`should allow Sr for ${test.api}/{id}/activities`, () => {
-    const options = { qs: { where: `appId='${hubspotAppId}'`} };
+    const options = { qs: { where: `appId='${hubspotAppId}'` } };
     let bodyObject;
     return cloud.withOptions(options).get(`${test.api}/${campaignId}/activities`)
       .then(r => bodyObject = r.body[0])
@@ -39,5 +39,5 @@ suite.forElement('marketing', 'campaigns',{ skip: true }, (test) => {
         options.qs.created = bodyObject.created;
       })
       .then(r => cloud.withOptions(options).get(`${test.api}/${campaignId}/activities/${bodyObject.id}`));
-    });
+  });
 });
