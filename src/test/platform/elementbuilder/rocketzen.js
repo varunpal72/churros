@@ -10,8 +10,7 @@ const rocketzenelement = require('./assets/rocketzen.json');
 //to include the needed tests
 
 suite.forPlatform('rocketzen', {}, (test) => {
-  let createdElement;
-  let instanceId;
+  let createdElement, instanceId;
   before(() => cloud.post('elements', rocketzenelement)
       .then(r => createdElement = r.body)
       .then(r => provisioner.create('rocketzen', undefined, 'elements/rocketzen/instances'))

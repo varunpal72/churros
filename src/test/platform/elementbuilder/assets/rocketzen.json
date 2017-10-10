@@ -538,7 +538,6 @@
       "description": "Search for  contacts",
       "type": "api",
       "vendorPath": "/contacts",
-      "executable": true,
       "nextPageKey": "",
       "path": "/hubs/general/contacts-nonexec",
       "paginationType": "VENDOR_SUPPORTED",
