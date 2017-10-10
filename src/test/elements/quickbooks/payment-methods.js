@@ -7,8 +7,9 @@ const expect = chakram.expect;
 const payload = tools.requirePayload(`${__dirname}/assets/payment-methods.json`);
 
 //Need to skip as there is no delete API
-suite.forElement('finance', 'payment-methods', { payload: payload,skip: true }, (test) => {
-  test.should.supportCrs();
+suite.forElement('finance', 'payment-methods', { payload: payload }, (test) => {
+  test.should.supportSr();
+  test.withOptions({skip:true}).should.return200OnPost();
   test.withOptions({ qs: { page: 1, pageSize: 1 } }).should.return200OnGet();
   test.withName(`should support searching ${test.api} by Id`)
     .withOptions({ qs: { where: `id ='1234'` } })
