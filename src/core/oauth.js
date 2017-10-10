@@ -228,6 +228,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('pass')).sendKeys(password);
       browser.findElement(webdriver.By.name('submit')).click();
       return browser.getCurrentUrl();
+      case 'googlecalendar':
       case 'googlesheets':
       case 'googledrive':
       browser.get(r.body.oauthUrl);
