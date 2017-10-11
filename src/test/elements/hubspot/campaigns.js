@@ -5,15 +5,21 @@ const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
 
-suite.forElement('marketing', 'campaigns', (test) => {
+suite.forElement('marketing', 'campaigns', function(test) {
   let hubspotAppId, campaignId;
-  before(() => {
+  let skip = false;
+  before(function() {
     return cloud.withOptions({ qs: { pageSize: 1 } }).get(test.api)
       .then(r => {
-        expect(r.body).to.equal(1);
-        let bodyObject = r.body[0];
-        hubspotAppId = bodyObject.appId;
-        campaignId = bodyObject.id;
+        expect(r.body).to.be.an('Array');
+        if (r.body.length > 0) {
+          let bodyObject = r.body[0];
+          hubspotAppId = bodyObject.appId;
+          campaignId = bodyObject.id;
+        } else {
+          // If there is no campaigns skip the tests below
+          this.skip()
+        }
       });
   });
   test.should.supportSr();
