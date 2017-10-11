@@ -228,30 +228,31 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('pass')).sendKeys(password);
       browser.findElement(webdriver.By.name('submit')).click();
       return browser.getCurrentUrl();
-    case 'googledrive':
+      case 'googlesheets':
+      case 'googledrive':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
       browser.findElement(webdriver.By.id('identifierNext')).click();
-      waitForElement(webdriver.By.name('password'));
-      browser.findElement(webdriver.By.name('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('passwordNext')).click();
-      waitForElement(webdriver.By.id('submit_approve_access'));
-      browser.findElement(webdriver.By.id('submit_approve_access'))
-        .then((element) => element.click(), (err) => {}); // ignore this
-      browser.sleep(2000);
-      return browser.getCurrentUrl();
-    case 'googlesheets':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
-      browser.findElement(webdriver.By.id('identifierNext')).click();
-      waitForElement(webdriver.By.name('password'));
-      browser.findElement(webdriver.By.name('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('passwordNext')).click();
-      waitForElement(webdriver.By.id('submit_approve_access'));
-      browser.findElement(webdriver.By.id('submit_approve_access'))
-        .then((element) => element.click(), (err) => {}); // ignore this
-      browser.sleep(2000);
-      return browser.getCurrentUrl();
+      return waitForElement(webdriver.By.css('#password input'))
+        .then(r => browser.findElement(webdriver.By.css('#password input')).sendKeys(password))
+        .then(r => browser.findElement(webdriver.By.id('passwordNext')).click())
+        .then(r => waitForElement(webdriver.By.xpath('/html/body/div[1]/div[1]/a')))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[1]/div[1]/a')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[1]/div[2]/p[2]/a')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => waitForElement(webdriver.By.css('content input')))
+        .then(r => browser.findElement(webdriver.By.css('content input')))
+          .then((element) => element.sendKeys('Continue'), (err) => {}) // ignore this
+        .then(r => waitForElement(webdriver.By.xpath('/html/body/div[3]/div/div[2]/div[2]/div[2]/content/span')))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[3]/div/div[2]/div[2]/div[2]/content/span')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => waitForElement(webdriver.By.id('submit_approve_access')))
+        .then(r => browser.findElement(webdriver.By.id('submit_approve_access')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.getCurrentUrl());
     case 'gotowebinar':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('emailAddress')).sendKeys(username);
