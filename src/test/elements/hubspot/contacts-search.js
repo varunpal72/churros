@@ -16,7 +16,7 @@ suite.forElement('crm', 'contacts-search', {}, (test) => {
   after(() => cloud.delete(`elements/hubspot/resources/${newResourceId}`));
 
   it('should test newly added account resource contacts-search', () => {
-      const options = { qs: { where: "q='test'" } };
+      const options = { qs: { where: "q='churros'" } };
       return cloud.withOptions(options).get(`contacts-search`)
       .then(r => {
         expect(r.body).to.not.be.empty;

@@ -7,7 +7,6 @@ const expect = chakram.expect;
 
 suite.forElement('marketing', 'campaigns', function(test) {
   let hubspotAppId, campaignId;
-  let skip = false;
   before(function() {
     return cloud.withOptions({ qs: { pageSize: 1 } }).get(test.api)
       .then(r => {
@@ -18,7 +17,7 @@ suite.forElement('marketing', 'campaigns', function(test) {
           campaignId = bodyObject.id;
         } else {
           // If there is no campaigns skip the tests below
-          this.skip()
+          this.skip();
         }
       });
   });
