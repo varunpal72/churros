@@ -87,6 +87,17 @@ const generateSfdcEvent = (instanceId, payload) => {
     .post(url, payload);
 };
 
+const generateCloseioPollingEvent = (instanceId, payload) => {
+  const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
+  const encodedId = b64(instanceId.toString());
+
+  payload.instance_id = instanceId;
+
+  return cloud
+    .withOptions({ 'headers': headers })
+    .post('/events/closeioPolling/' + encodedId, payload);
+};
+
 const generateSfdcPollingEvent = (instanceId, payload) => {
   const headers = { 'Content-Type': 'application/json', 'Id': instanceId };
   const encodedId = b64(instanceId.toString());
@@ -175,7 +186,7 @@ const testWrapper = (test, kickOffDatFormulaCb, f, fi, numEs, numSes, numSevs, e
   const fiIds = [];
   return createFormula(f)
     .then(f => fId = f.id)
-    .then(() => tools.times(numInstances || 1)(() => createFormulaInstance(fId, fi)))//cloud.post(`/formulas/${fId}/instances`, fi, fiSchema)))
+    .then(() => tools.times(numInstances || 1)(() => createFormulaInstance(fId, fi)))
     .then(ps => Promise.all(ps.map(p => {
       let fiId;
       return p
@@ -242,6 +253,7 @@ module.exports = {
   provisionSfdcWithWebhook,
   generateSfdcEvent,
   generateSfdcPollingEvent,
+  generateCloseioPollingEvent,
   defaultValidator,
   execValidatorWrapper,
   testWrapper,

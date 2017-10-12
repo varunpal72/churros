@@ -11,13 +11,13 @@ const expect = chakram.expect;
 const logger = require('winston');
 const provisioner = require('core/provisioner');
 
-const genWebhookEvent = (action, num) => {
-  const event = require('./assets/events/raw-webhook');
+const genCloseioEvent = (action, num) => {
+  const event = require('./assets/events/raw-closeio-account-obj');
   const events = [];
   for (let i = 0; i < num; i++) {
     events.push(event);
   }
-  return { action: action, objects: events };
+  return { objectType: 'accounts', accounts: events };
 };
 
 const simulateTrigger = (num, instanceId, payload, simulateCb) => {
@@ -88,15 +88,15 @@ const createXInstances = (x, formulaId, formulaInstance) => {
  * Tests formula executions under heavy load (number of events, size of events, etc.)
  */
 suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
-  let sfdcId;
+  let closeioId;
   before(() => cleaner.formulas.withName('complex_successful')
-  .then(() => cleaner.formulas.withName('number2'))
-    .then(r => common.provisionSfdcWithWebhook())
-    .then(r => sfdcId = r.body.id));
+  // .then(() => cleaner.formulas.withName('number2'))
+    .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
+    .then(r => closeioId = r.body.id));
 
   /** Clean up */
   after(() => {
-    // if (sfdcId) return provisioner.delete(sfdcId);
+    if (closeioId) return provisioner.delete(closeioId);
   });
 
   it('should handle a very large event payload repeatedly', () => {
@@ -104,10 +104,10 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     formula.engine = process.env.CHURROS_FORMULAS_ENGINE;
 
     const formulaInstance = require('./assets/formulas/basic-formula-instance');
-    formulaInstance.configuration.trigger_instance = sfdcId;
+    formulaInstance.configuration.trigger_instance = closeioId;
 
-    const numFormulaInstances = 2;
-    const numEvents = 25;
+    const numFormulaInstances = 4;
+    const numEvents = 10;
     const numInOneEvent = 1;
 
     let formulaId;
@@ -125,13 +125,13 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
       //   .then(r => formulaId = r.body.id)
       //   .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
       //   .then(ids => ids.map(id => formulaInstances.push(id)))
-        .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
+        .then(r => simulateTrigger(numEvents, closeioId, genCloseioEvent('update', numInOneEvent), common.generateCloseioPollingEvent))
       .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
-      // .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
-      // .then(r => chakram.all(deletes))
-      // .then(r => common.deleteFormula(formulaId))
+      .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
+      .then(r => chakram.all(deletes))
+      .then(r => common.deleteFormula(formulaId))
       .catch(e => {
-        // if (formulaId) common.deleteFormula(formulaId);
+        if (formulaId) common.deleteFormula(formulaId);
         throw new Error(e);
       });
   });
