@@ -1,7 +1,7 @@
 {
-    "description": "Test for Marketing Hub",
-    "type": "Conference",
+    "description": "<<company.catchPhrase>>",
+    "type": "<<lorem.word>>",
     "ownerId": "005i0000001VNdeAAG",
-    "name": "Test Marketing",
-    "status": "Planned"
+    "name": "<<company.companyName>>",
+    "status": "<<random.word>>"
 }

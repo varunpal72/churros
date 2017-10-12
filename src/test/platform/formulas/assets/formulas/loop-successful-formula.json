@@ -31,13 +31,13 @@
     "type": "event",
     "onSuccess": ["create-list"],
     "properties": {
-      "elementInstanceId": "${trigger-instance}"
+      "elementInstanceId": "${trigger_instance}"
     }
   }],
   "active": true,
   "configuration": [{
-    "key": "trigger-instance",
-    "name": "trigger-instance",
+    "key": "trigger_instance",
+    "name": "trigger_instance",
     "type": "elementInstance"
   }]
 }

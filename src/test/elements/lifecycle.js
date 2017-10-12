@@ -27,10 +27,15 @@ const terminate = error => {
 
 let element = argv.element;
 let instanceId;
+let deleteInstance = !argv.save; //we don't always want to delete. Defaults to true
 // Setting which element we are currently running on
 props.set('element', element);
 before(() => {
   tools.resetCleanup();
+  logger.info('Using url: %s', props.get('url'));
+  logger.info('Using user: %s', props.get('user'));
+  if (props.getOptionalForKey(element, 'username')) logger.info('Using oauth username: %s', props.getOptionalForKey(element, 'username'));
+  if (props.getOptionalForKey(element, 'oauth.api.key')) logger.info('Using api key: %s', props.getOptionalForKey(element, 'oauth.api.key'));
   logger.info('Running tests for element: %s', element);
   if (props.getOptionalForKey(argv.element, 'skip') === true) {
     logger.info('Skip provisioning and all tests for %s', element);
@@ -39,14 +44,30 @@ before(() => {
   return tools.runFile(element, `${__dirname}/${element}/assets/scripts.js`, 'before')
   .then(() => !argv.save ? cleaner.cleanElementsBefore() : null)
   .then(() => {
-    const getInstance = argv.instance ? cloud.get(`/instances/${argv.instance}`)
+    let getInstance;
+    if (argv.instance) {
+      getInstance = cloud.get(`/instances/${argv.instance}`)
       .then(r => {
         props.setForKey(element, 'elementId', r.body.element.id);
         defaults.token(r.body.token);
         expect(r.body.element.key).to.equal(tools.getBaseElement(element));
+        deleteInstance = false;
         return r;
-      }) : provisioner
-        .create(element);
+      });
+    } else if (argv.backup === 'only backup') {
+      deleteInstance = false;
+      getInstance = provisioner.getBackup(element);
+    } else {
+      getInstance = provisioner.create(element)
+      .catch(e => {
+        if (argv.backup === 'use backup') { //if default flag
+          deleteInstance = false;
+          return provisioner.getBackup(element);
+        } else {
+          throw Error(e);
+        }
+      });
+    }
 
     return getInstance
       .then(r => {
@@ -94,7 +115,7 @@ before(() => {
         }
       })
       .catch(r => {
-        return instanceId && !(argv.instance || argv.save) ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
+        return instanceId && deleteInstance ? provisioner.delete(instanceId).then(() => terminate(r)).catch(() => terminate(r)) : terminate(r);
       });
     });
 });
@@ -136,7 +157,7 @@ it.skip('should not allow provisioning with bad credentials', () => {
 });
 after(done => {
   tools.resetCleanup();
-  instanceId && !(argv.instance || argv.save) ? provisioner
+  instanceId && deleteInstance ? provisioner
         .delete(instanceId)
         .then(() => done())
         .catch(r => logger.error('Failed to delete element instance: %s', r))

@@ -17,7 +17,7 @@ const updateAddress = (addressId) => ({
   "zip": tools.random()
 });
 
-suite.forElement('ecommerce', 'addresses', {skip: true}, (test) => {
+suite.forElement('ecommerce', 'addresses', (test) => {
   let customerId;
   before(() => cloud.post(`/hubs/ecommerce/customers`,customer())
     .then(r => customerId = r.body.id)
