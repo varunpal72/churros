@@ -1,11 +1,3 @@
 {
-  "firstName": "Robot",
-  "Salutation": "Mr",
-  "BillAddress": {
-    "Addr1": "Cloud Elements",
-    "Addr2": "CCC# 123"
-  },
-  "Name": "<<name.firstName>>",
-  "CompanyName": "Cloud Elements",
-  "FullName": "<<name.firstName>> <<name.lastName>>"
+  "Name": "<<name.firstName>>"
 }

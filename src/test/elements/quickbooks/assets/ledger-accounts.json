@@ -12,5 +12,6 @@
     "value": "USD"
   },
   "domain": "QBO",
-  "name": "<<random.word>>"
+  "name": "<<random.alphaNumeric##15>>"
+
 }

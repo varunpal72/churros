@@ -14,7 +14,7 @@ const vendorPaymentsPayload = require('./assets/vendor-payments');
 const vendorsPayload = tools.requirePayload(`${__dirname}/assets/vendors.json`);
 
 // Polling not working right now, uncomment when fixed
-suite.forElement('finance', 'polling', {skip: true}, (test) => {
+suite.forElement('finance', 'polling',  (test) => {
   test.withApi('/hubs/finance/customers').should.supportPolling(customersPayload, 'customers');
   test.withApi('/hubs/finance/employees').should.supportPolling(employeesPayload, 'employees');
   test.withApi('/hubs/finance/invoices').should.supportPolling(invoicesPayload, 'invoices');

@@ -1,10 +1,10 @@
 {
-  "zip": "11111",
-  "country": "United States",
-  "city": "New York",
-  "last_name": "Parker",
-  "street_1": "Daily Bugle",
-  "phone": "1238675309",
-  "state": "New York",
-  "first_name": "Peter"
+  "zip": "<<address.zipCode>>",
+  "country": "<<address.country>>",
+  "city": "<<address.city>>",
+  "last_name": "<<name.lastName>>",
+  "street_1": "<<address.streetName>>",
+  "phone": "<<phone.phoneNumber>>",
+  "state": "<<address.state>>",
+  "first_name": "<<name.firstName>>"
 }

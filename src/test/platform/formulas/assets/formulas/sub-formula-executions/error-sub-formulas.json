@@ -23,7 +23,7 @@
     "name": "A-end",
     "type": "script",
     "properties": {
-      "body": "done({subFormulaValues:steps['A-sub-formula']});"
+      "body": "done({subFormulaValues: steps['A-sub-formula']});"
     }
   }]
 }, {

@@ -32,22 +32,19 @@ suite.forPlatform('formulas', opts, (test) => {
       }
     }];
     const validateResults = (formulaId, formulas) => {
-      formulas.forEach(formula => {
-        if (formula.id === formulaId) {
-          expect(formula).to.contain.key('name') && expect(formula).to.not.contain.key('steps');
-          cloud.delete(`/formulas/${formulaId}`);
-          return true;
-        }
+      formulas.filter(formula => formula.id === formulaId).forEach(formula => {
+          expect(formula).to.contain.key('name');
+          expect(formula).to.contain.key('triggers');
+          expect(formula).to.not.contain.key('steps');
       });
-      cloud.delete(`/formulas/${formulaId}`);
-      return false;
     };
 
     let formulaId;
     return cloud.post(test.api, f, schema)
       .then(r => formulaId = r.body.id)
       .then(r => cloud.withOptions({ qs: { abridged: true } }).get(test.api))
-      .then(r => validateResults(formulaId, r.body));
+      .then(r => validateResults(formulaId, r.body))
+      .then(() => cloud.delete(`/formulas/${formulaId}`));
   });
 
   it('should allow adding and removing "scheduled" trigger to a formula', () => {
@@ -178,6 +175,44 @@ suite.forPlatform('formulas', opts, (test) => {
         if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
         throw new Error(e);
       });
+  });
+
+  it('should allow setting the engine flag to use bodenstein to execute a formula', () => {
+    const f = common.genFormula({});
+    const patchBody = {
+      engine: 'v3',
+    };
+
+    const validator = (formula) => {
+      expect(formula.engine).to.equal(patchBody.engine);
+    };
+
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.patch(`${test.api}/${formulaId}`, patchBody))
+      .then(r => validator(r.body))
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
+  });
+
+  it('should not allow upgrading a formula to bodenstein with unsupported steps', () => {
+    const f = common.genFormula({});
+    f.steps = [{
+      "name": "unsupported-by-bode",
+      "type": "java",
+      "properties": {
+      }
+    }];
+    f.engine = 'v3';
+
+    return cloud.post(test.api, f, (r) => {
+      expect(r).to.have.statusCode(400);
+      expect(r.body.message).to.contain('Invalid formula for the v3 engine');
+    });
   });
 
   test

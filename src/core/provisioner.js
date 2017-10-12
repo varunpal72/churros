@@ -12,6 +12,7 @@ const r = require('request');
 const defaults = require('core/defaults');
 const cloud = require('core/cloud');
 const argv = require('optimist').argv;
+const _ = require('ramda');
 
 var exports = module.exports = {};
 
@@ -302,4 +303,25 @@ exports.delete = (id, baseApi) => {
       return r.body;
     })
     .catch(r => tools.logAndThrow('Failed to delete element instance with ID: %s', r, id));
+};
+
+exports.getBackup = (element) => {
+  logger.info('Attempting to use backup');
+  return cloud.get('/instances?tags%5B%5D=churros-backup&hydrate=false')
+  .then(r => {
+    if (!_.isEmpty(r.body) && _.type(r.body) === 'Array') {
+      var instance = r.body.reduce((acc, cur) => acc = acc !== null ? acc : cur.element.key === element ? cur : null, null);
+      if (instance !== null) {
+        props.setForKey(element, 'elementId', instance.element.id);
+        defaults.token(instance.token);
+        expect(instance.element.key).to.equal(tools.getBaseElement(element));
+        r.body = instance;
+        return r;
+      } else {
+        logger.error('No "churros-backup" instance available');
+      }
+    } else {
+      logger.error('Invalid response: ', JSON.stringify(r.body));
+    }
+  });
 };
