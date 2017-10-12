@@ -8,8 +8,9 @@ const payload= require('./assets/tax-agencies');
 const build = (overrides) => Object.assign({}, payload, overrides);
 const agencyPayload = build({"displayName": tools.random()});
 
-suite.forElement('finance', 'tax-agencies', { payload: agencyPayload, skip: true}, (test) => {
-  test.should.supportCrs();
+suite.forElement('finance', 'tax-agencies', { payload: agencyPayload}, (test) => {
+  test.should.supportSr();
+  test.withOptions({skip:true}).should.return200OnPost();
   test.withName(`should support searching ${test.api} by Id`)
     .withOptions({ qs: { where: `id ='1234'` } })
     .withValidation((r) => {
