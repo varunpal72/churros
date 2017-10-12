@@ -18,17 +18,19 @@
 
   //Will by default run these
   describe('Basic tests', () => {
-    let element, instanceId, hub;
+    let element, instanceId, hub, instanceName;
     before(() => {
       element = props.get('element');
       instanceId = props.get('instanceId');
       hub = props.get('hub');
+      instanceName = props.get('instanceName');
     });
+    it('should provision', () => expect(instanceName).to.not.equal('churros-backup'));
     it('should GET /objects', () => {
       return cloud.get('/objects').then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
     });
 
-    it('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
+    it.skip('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
       .then(s => new Promise((res, rej) => swaggerParser.validate(s.body, (err, api) => err ? rej(err) : res()))));
 
     it('metadata', () => cloud.get(`elements/${props.getForKey(element, 'elementId')}/metadata`).then(r => expect(r.body).to.not.be.empty && expect(r).to.have.statusCode(200)));
