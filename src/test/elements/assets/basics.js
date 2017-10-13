@@ -51,16 +51,9 @@
               transformations[key].fields.push({"path": "idTransformed","vendorPath": "id"});
             }
           });
-          console.log('transformations', JSON.stringify(transformations));
           //create the transformations and validating they work
           return createAll(`/instances/${instanceId}/transformations/%s`, transformations)
-          // return Promise.all(Object.keys(transformations).map(key => cloud.post(`/instances/${instanceId}/transformations/${key}`, transformations[key]).then(r => console.log('body', r.body))))
-          .then(() => Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []}))
-          .then(r => {
-            console.log(key, r.body.length, r.body.filter(t => t.idTransformed).length, r.body[0]);
-            return r;
-          })
-          .then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
+          .then(() => Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
         } else {
           //create defintions before the transformations
           let allDefs = require(`${__dirname}/../assets/object.definitions.json`);
