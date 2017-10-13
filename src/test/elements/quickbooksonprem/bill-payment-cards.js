@@ -6,9 +6,9 @@ const tools = require('core/tools');
 const payload = require('./assets/bill-payment-cards');
 const updatePayload = { "Memo": tools.random() };
 
-//skipping the test as pagination is not proper from element itself.
+//Pagination is not working from Element
 suite.forElement('finance', 'bill-payment-cards', null, (test) => {
-  it.skip('should support SRD for /hubs/finance/bill-payment-cards', () => {
+  it('should support SRD for /hubs/finance/bill-payment-cards', () => {
     let id;
     let refno;
     return cloud.post(test.api, payload)
