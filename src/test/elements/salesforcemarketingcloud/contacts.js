@@ -33,7 +33,7 @@ suite.forElement('marketing', 'contacts', { payload: contactsPayload}, (test) =>
  it('should allow CUS for /contacts', () => {
    let id;
    return cloud.post(test.api,contactsPayload)
-	  .then(r => id =r.body.contactID)
+	  .then(r => id = r.body.id)
 	  .then(r => cloud.patch(`${test.api}/${id}`,updatedPayload))
  	  .then(r => cloud.get(`${test.api}`), { qs: { key: 'Email Addresses',value:'${tools.randomStr()}' } });
 });

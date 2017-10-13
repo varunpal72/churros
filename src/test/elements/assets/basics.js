@@ -52,7 +52,7 @@
             }
           });
           //create the transformations and validating they work
-          return Promise.all(Object.keys(transformations).map(key => cloud.post(`/instances/${instanceId}/transformations/${key}`, transformations[key])))
+          return createAll(`/instances/${instanceId}/transformations/%s`, transformations)
           .then(() => Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
         } else {
           //create defintions before the transformations
