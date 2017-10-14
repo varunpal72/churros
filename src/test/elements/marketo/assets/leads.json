@@ -1,0 +1,18 @@
+{
+    "programName": "API TestTwice Program",
+    "source": "Cool Sales Site",
+    "reason": "Downloaded pricing sheet",
+    "lookupField": "email",
+    "input": [
+        {
+             "email": "Theresa.May@westminister.gov.uk",
+             "country": "united kingdom",
+             "firstName": "Theresa"
+         },
+         {
+             "email": "Justin.Trudeau@ottowa.gov.ca",
+             "country": "canada",
+             "firstName": "Justin"
+         }
+     ]
+}
