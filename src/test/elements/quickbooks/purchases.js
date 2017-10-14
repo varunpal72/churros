@@ -2,6 +2,9 @@
 
 const suite = require('core/suite');
 const payload = require('./assets/purchases');
+const tools = require('core/tools');
+
+payload.docNumber = tools.random();
 
 suite.forElement('finance', 'purchases', { payload: payload }, (test) => {
   test.should.supportCruds();
