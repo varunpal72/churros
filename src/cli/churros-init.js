@@ -15,7 +15,7 @@ commander
   .option('-u, --user <user>', 'default CE user to run churros as', '')
   .option('-p, --password <password>', 'password for that user', '')
   .option('-r, --url <url>', 'default CE url to run churros against', '')
-  .option('-t, --template </full/path/to/template/file | https://token@github.com/owner/repo/sauce.json', 'path or url to sauce template', __dirname + '/assets/sauce.template.json')
+  .option('-t, --template </full/path/to/template/file | https://token@github.com/owner/repo/sauce.json', 'path or url to sauce template', optimist.argv.template || __dirname + '/assets/sauce.template.json')
   .parse(process.argv);
 
 const validateValue = (value) => value ? true : 'Must enter a value';
