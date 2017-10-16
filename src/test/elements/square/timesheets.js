@@ -13,11 +13,15 @@ suite.forElement('employee', 'timesheets', (test) => {
 
 
     it('should allow CRUD for timesheets', () => {
-      let id = 'H3S8944HEAMBY';
-      let tsId = 'RKEZB20KJKVTQ';
+
+      let tsId, len;
 
       return cloud.get(test.api)
-      .then(r => cloud.get(`${test.api}/${id}`))
+      .then(r => {
+          len = r.body.length;
+          tsId = r.body[len-1].id;
+      })
+      .then(r => cloud.get(`${test.api}/${tsId}`))
       .then(r => cloud.post(`${test.api}`, timeSheetPayload))
       .then(r => cloud.patch(`${test.api}/${tsId}`, timeSheetUpdatePayload));
     });

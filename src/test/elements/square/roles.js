@@ -9,11 +9,15 @@ suite.forElement('employee', 'roles', (test) => {
   test.should.supportPagination();
 
   it('should allow CRUD for roles', () => {
-    let id = 'j1YRWVF7zBl9RzbFA0mC';
+    let roleId, len;
 
     return cloud.get(test.api)
-      .then(r => cloud.get(`${test.api}/${id}`))
+    .then(r => {
+        len = r.body.length;
+        paymentId = r.body[len-1].id;
+    })
+      .then(r => cloud.get(`${test.api}/${roleId}`))
       .then(r => cloud.post(`${test.api}`, rolePayload))
-      .then(r => cloud.patch(`${test.api}/${id}`, roleUpdatePayload));
+      .then(r => cloud.patch(`${test.api}/${roleId}`, roleUpdatePayload));
   });
 });

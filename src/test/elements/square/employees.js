@@ -12,10 +12,14 @@ suite.forElement('employee', 'employees', (test) => {
   test.withOptions({ qs: { where: "status='active' and begin_updated_at='2017-09-02T19:11:18Z' and end_updated_at='2017-09-20T19:11:18Z' and begin_created_at='2017-09-15T19:58:11Z'" } }).should.return200OnGet();
 
   it('should allow CRUD for employees', () => {
-    let id = 'eBwo-rn3Odwkp9lCGLk3';
+    let empId, len;
     return cloud.get(test.api)
-     .then(r => cloud.get(`${test.api}/${id}`))
+    .then(r => {
+        len = r.body.length;
+        empId = r.body[len-1].id;
+    })
+     .then(r => cloud.get(`${test.api}/${empId}`))
      .then(r => cloud.post(`${test.api}`, employeePayload))
-     .then(r => cloud.patch(`${test.api}/${id}`, employeeUpdatePayload));
+     .then(r => cloud.patch(`${test.api}/${empId}`, employeeUpdatePayload));
   });
 });

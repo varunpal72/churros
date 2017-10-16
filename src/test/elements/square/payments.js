@@ -11,8 +11,12 @@ suite.forElement('employee', 'locations/APP5JTYW917TW/payments', (test) => {
 
     it('should allow GET for payments', () => {
 
-      let id = '7vBFGKCie9rNuTB2KEmq4tMF';
+      let paymentId, len;
       return cloud.get(test.api)
-      .then(r => cloud.get(`${test.api}/${id}`));
+      .then(r => {
+          len = r.body.length;
+          paymentId = r.body[len-1].id;
+      })
+      .then(r => cloud.get(`${test.api}/${paymentId}`));
     });
 });
