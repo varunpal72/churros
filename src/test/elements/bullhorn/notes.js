@@ -2,6 +2,7 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
+const expect = require('chakram').expect;
 const cloud = require('core/cloud');
 const notesPayload = require('./assets/notes');
 
@@ -15,7 +16,9 @@ suite.forElement('crm', 'notes', { payload: notesPayload }, (test) => {
   it('should create a note and then update', () => {
     let noteId;
     return cloud.post(test.api, payload)
-      .then(r => noteId = r.body.data.id)
-      .then(r => cloud.put(`${test.api}/${noteId}`, updatePayload));
+      .then(r => noteId = r.body.changedEntityId)
+      .then(r => cloud.get(`${test.api}/${noteId}`))
+      .then(r => cloud.patch(`${test.api}/${noteId}`, updatePayload))
+      .then(r => cloud.delete(`${test.api}/${noteId}`, r => expect(r).to.have.statusCode(403)));
   });
 });
