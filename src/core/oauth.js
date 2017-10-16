@@ -228,19 +228,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('pass')).sendKeys(password);
       browser.findElement(webdriver.By.name('submit')).click();
       return browser.getCurrentUrl();
-      case 'googlesheets':
-      case 'googledrive':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
-      browser.findElement(webdriver.By.id('identifierNext')).click();
-      waitForElement(webdriver.By.name('password'));
-      browser.findElement(webdriver.By.name('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('passwordNext')).click();
-      waitForElement(webdriver.By.id('submit_approve_access'));
-      browser.findElement(webdriver.By.id('submit_approve_access'))
-        .then((element) => element.click(), (err) => {}); // ignore this
-      browser.sleep(2000);
-      return browser.getCurrentUrl();
+    case 'googlesheets':
+    case 'googledrive':
     case 'googlesheetsv4':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
