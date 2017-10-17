@@ -11,13 +11,10 @@ suite.forElement('employee', 'roles', (test) => {
   it('should allow CRUD for roles', () => {
     let roleId, len;
 
-    return cloud.get(test.api)
-    .then(r => {
-        len = r.body.length;
-        paymentId = r.body[len-1].id;
-    })
-      .then(r => cloud.get(`${test.api}/${roleId}`))
-      .then(r => cloud.post(`${test.api}`, rolePayload))
-      .then(r => cloud.patch(`${test.api}/${roleId}`, roleUpdatePayload));
+    return cloud.post(`${test.api}`, rolePayload)
+    .then(r => roleId = r.body.id)
+    .then(r => cloud.get(`${test.api}/${roleId}`))
+    .then(r => cloud.patch(`${test.api}/${roleId}`, roleUpdatePayload))
+    .then(cloud.get(test.api));
   });
 });

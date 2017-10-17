@@ -9,20 +9,23 @@ const timeSheetUpdatePayload = tools.requirePayload(`${__dirname}/assets/timeShe
 suite.forElement('employee', 'timesheets', (test) => {
 
     test.should.supportPagination();
-    test.withOptions({ qs: { where: "employee_id='APP5JTYW917TW' and deleted='false' and begin_updated_at='2017-10-01T17:49:02Z' and end_updated_at='2017-10-04T17:49:02Z' and begin_clockin_time='1998-11-15T09:00:00Z' and end_clockin_time='2000-11-15T09:00:00Z' and begin_clockout_time='2015-11-15T16:00:00Z' and end_clockout_time='2016-11-15T16:00:00Z'" } }).should.return200OnGet();
-
+    test.withOptions({ qs: { where: "end_clockout_time='2016-11-15T16:00:00Z'" } }).should.return200OnGet();
+    test.withOptions({ qs: { where: "employee_id='APP5JTYW917TW'" } }).should.return200OnGet();
+    test.withOptions({ qs: { where: "deleted='false'" } }).should.return200OnGet();
+    test.withOptions({ qs: { where: "begin_updated_at='2017-10-01T17:49:02Z'" } }).should.return200OnGet();
+    test.withOptions({ qs: { where: "end_updated_at='2017-10-04T17:49:02Z'" } }).should.return200OnGet();
+    test.withOptions({ qs: { where: "begin_clockin_time='1998-11-15T09:00:00Z'" } }).should.return200OnGet();
+    test.withOptions({ qs: { where: "end_clockin_time='2000-11-15T09:00:00Z'" } }).should.return200OnGet();
+    test.withOptions({ qs: { where: "begin_clockout_time='2015-11-15T16:00:00Z'" } }).should.return200OnGet();
 
     it('should allow CRUD for timesheets', () => {
 
       let tsId, len;
 
-      return cloud.get(test.api)
-      .then(r => {
-          len = r.body.length;
-          tsId = r.body[len-1].id;
-      })
+      return cloud.post(`${test.api}`, timeSheetPayload)
+      .then(r => tsId = r.body.id)
       .then(r => cloud.get(`${test.api}/${tsId}`))
-      .then(r => cloud.post(`${test.api}`, timeSheetPayload))
-      .then(r => cloud.patch(`${test.api}/${tsId}`, timeSheetUpdatePayload));
+      .then(r => cloud.patch(`${test.api}/${tsId}`, timeSheetUpdatePayload))
+      .then(r => cloud.get(test.api));
     });
 });

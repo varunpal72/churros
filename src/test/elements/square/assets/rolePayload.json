@@ -1,6 +1,6 @@
 {
   "is_owner": false,
-  "name": "Temp Clerk",
+  "name": "Perm Clerk",
   "permissions": [
     "REGISTER_ISSUE_REFUNDS"
   ]
