@@ -17,8 +17,9 @@ suite.forPlatform('rocketzen', {}, (test) => {
       .then(r => instanceId = r.body.id));
 
 
-  it('should return an error calling API request with executable false', () => {
+  it('should return an error calling API request with kind java', () => {
       return cloud.get(`/hubs/general/contacts-nonexec`, (r) => {
+        console.log(r.body);
           expect(r.body.message).to.be.equal('This API is not currently supported for this element');
       });
   });
