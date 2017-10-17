@@ -29,7 +29,7 @@ const shipmentsUpdate = () => ({
   "comments": "UpdateThis"
 });
 /*  orders with Sales Tax Calculation set to 'automatic' in Vendor account are not allowed to be deleted
-    hence all the tests are skipped.
+    Hence skip the tests if Tax calculation = 'automatic' 
 */
 suite.forElement('ecommerce', 'orders', { payload: payload}, (test) => {
   test.withOptions(options).should.supportCruds();
