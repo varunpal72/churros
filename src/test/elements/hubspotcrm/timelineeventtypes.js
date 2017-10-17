@@ -6,7 +6,7 @@ const payload = require('./assets/timelineeventtypes');
 
 suite.forElement('crm', 'timeline-event-types', (test) => {
 
-  it('should test CUDS for /timelineeventtypes', () => {
+  it('should test CUDS for /timeline-event-types', () => {
     let id;
     return cloud.get(test.api)
       .then(r => cloud.post(test.api, payload))
