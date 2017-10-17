@@ -31,7 +31,7 @@ const shipmentsUpdate = () => ({
 /*  orders with Sales Tax Calculation set to 'automatic' in Vendor account are not allowed to be deleted
     hence all the tests are skipped.
 */
-suite.forElement('ecommerce', 'orders', { payload: payload, skip: true }, (test) => {
+suite.forElement('ecommerce', 'orders', { payload: payload}, (test) => {
   test.withOptions(options).should.supportCruds();
   /* updated the where query from  'fetchShippingAddresses=\'true\'' to
      'email=\'jamesjiffer@jiffylube.org\'' as fetchShippingAddresses field not present in
