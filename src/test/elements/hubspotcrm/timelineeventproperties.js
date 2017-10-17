@@ -4,9 +4,9 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/timelineeventproperties');
 
-suite.forElement('crm', 'timelineeventtypes', (test) => {
+suite.forElement('crm', 'timeline-event-types', (test) => {
 
-  it('should test CRUD for /timelineeventtypes/{id}/properties ', () => {
+  it('should test CUDS for /timelineeventtypes/{id}/properties ', () => {
     let id = 19073,
       propertyId;
     return cloud.get(`${test.api}/${id}/properties`)

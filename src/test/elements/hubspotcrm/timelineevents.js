@@ -4,7 +4,7 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/timelineevents');
 
-suite.forElement('crm', 'timelineeventtypes', (test) => {
+suite.forElement('crm', 'timeline-event-types', (test) => {
 
   it('should test CRU for /timelineeventtypes/{id}/events ', () => {
     let id = 19073,

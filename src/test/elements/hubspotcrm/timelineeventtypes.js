@@ -4,14 +4,14 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const payload = require('./assets/timelineeventtypes');
 
-suite.forElement('crm', 'timelineeventtypes', (test) => {
+suite.forElement('crm', 'timeline-event-types', (test) => {
 
-  it('should test CRUD for /timelineeventtypes', () => {
+  it('should test CUDS for /timelineeventtypes', () => {
     let id;
     return cloud.get(test.api)
       .then(r => cloud.post(test.api, payload))
       .then(r => id = r.body.id)
-      .then(r => cloud.put(`${test.api}/${id}`, payload))
+      .then(r => cloud.patch(`${test.api}/${id}`, payload))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
 
