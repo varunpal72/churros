@@ -15,7 +15,7 @@ suite.forElement('employee', 'employees', (test) => {
   test.withOptions({ qs: { where: "begin_created_at='2017-09-15T19:58:11Z'" } }).should.return200OnGet();
 
   it('should allow CRU for employees', () => {
-    let empId, len;
+    let empId;
     return cloud.post(`${test.api}`, employeePayload)
     .then(r => empId = r.body.id)
     .then(r => cloud.get(`${test.api}/${empId}`))

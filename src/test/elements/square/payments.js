@@ -1,8 +1,6 @@
 'use strict';
 
 const suite = require('core/suite');
-const cloud = require('core/cloud');
-
 
 suite.forElement('employee', 'locations/APP5JTYW917TW/payments', (test) => {
 

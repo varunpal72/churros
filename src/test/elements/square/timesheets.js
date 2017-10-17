@@ -20,7 +20,7 @@ suite.forElement('employee', 'timesheets', (test) => {
 
     it('should allow CRUD for timesheets', () => {
 
-      let tsId, len;
+      let tsId;
 
       return cloud.post(`${test.api}`, timeSheetPayload)
       .then(r => tsId = r.body.id)

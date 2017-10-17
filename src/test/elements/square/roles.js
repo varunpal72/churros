@@ -9,7 +9,7 @@ suite.forElement('employee', 'roles', (test) => {
   test.should.supportPagination();
 
   it('should allow CRUD for roles', () => {
-    let roleId, len;
+    let roleId;
 
     return cloud.post(`${test.api}`, rolePayload)
     .then(r => roleId = r.body.id)
