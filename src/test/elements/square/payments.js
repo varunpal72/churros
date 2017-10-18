@@ -23,6 +23,6 @@ suite.forElement('employee', 'locations', (test) => {
     it(`should allow GET for ${test.api}/:id/payments/:paymentId`, () =>{
       return cloud.get(`${test.api}/${locId}/payments`)
       .then(r => paymentId = r.body[0].id)
-      .then(r => cloud.get(`${test.api}/${locId}/payments/${paymentId}`))
+      .then(r => cloud.get(`${test.api}/${locId}/payments/${paymentId}`));
     });
 });
