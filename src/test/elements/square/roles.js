@@ -8,7 +8,7 @@ suite.forElement('employee', 'roles', (test) => {
 
   test.should.supportPagination();
 
-  it('should allow CRUD for roles', () => {
+  it('should allow CRUs for roles', () => {
     let roleId;
 
     return cloud.post(`${test.api}`, rolePayload)

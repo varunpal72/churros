@@ -3,16 +3,37 @@
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
+const expect = require('chakram').expect;
 const employeePayload = tools.requirePayload(`${__dirname}/assets/employee.json`);
 const employeeUpdatePayload = tools.requirePayload(`${__dirname}/assets/employeeUpdate.json`);
 
 suite.forElement('employee', 'employees', (test) => {
 
   test.should.supportPagination();
-  test.withOptions({ qs: { where: "status='active'" } }).should.return200OnGet();
-  test.withOptions({ qs: { where: "begin_updated_at='2017-09-02T19:11:18Z'" } }).should.return200OnGet();
-  test.withOptions({ qs: { where: "end_updated_at='2017-09-20T19:11:18Z'" } }).should.return200OnGet();
-  test.withOptions({ qs: { where: "begin_created_at='2017-09-15T19:58:11Z'" } }).should.return200OnGet();
+
+  test.withApi(`${test.api}`)
+  .withOptions({ qs: { where: "status='ACTIVE'" } })
+  .withValidation(r => expect(r.body.filter(obj => obj.status === 'ACTIVE')).to.not.be.empty)
+  .withName('should allow GET with option status')
+  .should.return200OnGet();
+
+  test.withApi(`${test.api}`)
+  .withOptions({ qs: { where: "begin_updated_at='2017-10-17T19:11:18Z'" } })
+  .withValidation(r => expect(r.body.filter(obj => obj.updated_at >= '2017-10-17T19:11:18Z')).to.not.be.empty)
+  .withName('should allow GET with option begin_updated_at')
+  .should.return200OnGet();
+
+  test.withApi(`${test.api}`)
+  .withOptions({ qs: { where: "end_updated_at='2017-10-16T19:11:18Z'" } })
+  .withValidation(r => expect(r.body.filter(obj => obj.updated_at <= '2017-10-16T19:11:18Z')).to.not.be.empty)
+  .withName('should allow GET with option end_updated_at')
+  .should.return200OnGet();
+
+  test.withApi(`${test.api}`)
+  .withOptions({ qs: { where: "begin_created_at='2017-09-15T19:58:11Z'" } })
+  .withValidation(r => expect(r.body.filter(obj => obj.created_at >= '2017-10-16T19:11:18Z')).to.not.be.empty)
+  .withName('should allow GET with option begin_created_at')
+  .should.return200OnGet();
 
   let empId;
   let roleId;
@@ -21,7 +42,7 @@ suite.forElement('employee', 'employees', (test) => {
   .then(r => employeePayload.role_ids = roleId)
   .then(r => employeeUpdatePayload.role_ids = roleId));
 
-  it('should allow CRU for employees', () => {
+  it('should allow CRUs for employees', () => {
 
     return cloud.post(`${test.api}`, employeePayload)
     .then(r => empId = r.body.id)
