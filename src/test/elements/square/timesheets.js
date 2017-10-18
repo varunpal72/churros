@@ -20,7 +20,7 @@ suite.forElement('employee', 'timesheets', (test) => {
 
     it('should allow CRU for timesheets', () => {
 
-      let tsId, empId;
+      let tsId;
 
       return cloud.get(test.api)
        .then(r => { timeSheetPayload.employee_id = r.body[0].employee_id;
