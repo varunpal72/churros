@@ -18,14 +18,17 @@ suite.forElement('employee', 'timesheets', (test) => {
     test.withOptions({ qs: { where: "end_clockin_time='2000-11-15T09:00:00Z'" } }).should.return200OnGet();
     test.withOptions({ qs: { where: "begin_clockout_time='2015-11-15T16:00:00Z'" } }).should.return200OnGet();
 
-    it('should allow CRUD for timesheets', () => {
+    it('should allow CRU for timesheets', () => {
 
-      let tsId;
+      let tsId, empId;
 
-      return cloud.post(`${test.api}`, timeSheetPayload)
-      .then(r => tsId = r.body.id)
-      .then(r => cloud.get(`${test.api}/${tsId}`))
-      .then(r => cloud.patch(`${test.api}/${tsId}`, timeSheetUpdatePayload))
-      .then(r => cloud.get(test.api));
+      return cloud.get(test.api)
+       .then(r => { timeSheetPayload.employee_id = r.body[0].employee_id;
+                    timeSheetUpdatePayload.employee_id = r.body[0].employee_id;
+                  })
+       .then(r => cloud.post(`${test.api}`, timeSheetPayload))
+       .then(r => tsId = r.body.id)
+       .then(r => cloud.get(`${test.api}/${tsId}`))
+       .then(r => cloud.patch(`${test.api}/${tsId}`, timeSheetUpdatePayload));
     });
 });

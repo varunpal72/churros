@@ -14,8 +14,15 @@ suite.forElement('employee', 'employees', (test) => {
   test.withOptions({ qs: { where: "end_updated_at='2017-09-20T19:11:18Z'" } }).should.return200OnGet();
   test.withOptions({ qs: { where: "begin_created_at='2017-09-15T19:58:11Z'" } }).should.return200OnGet();
 
+  let empId;
+  let roleId;
+  before(() => cloud.get(`hubs/employee/roles`)
+  .then(r => roleId = r.body[0].id)
+  .then(r => employeePayload.role_ids = roleId)
+  .then(r => employeeUpdatePayload.role_ids = roleId));
+
   it('should allow CRU for employees', () => {
-    let empId;
+
     return cloud.post(`${test.api}`, employeePayload)
     .then(r => empId = r.body.id)
     .then(r => cloud.get(`${test.api}/${empId}`))
