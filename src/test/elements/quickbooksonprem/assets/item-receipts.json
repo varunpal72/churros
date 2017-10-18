@@ -1,23 +1,34 @@
 {
   "ItemLine": [{
-    "Desc": "Anchor Spring",
-    "TxnLineID": "82DD-1418670217",
+    "Desc": "Cabinet Pulls",
+    "TxnLineID": "E1F-933785668",
+    "ClassRef": {
+      "FullName": "New Construction"
+    },
+    "BillableStatus": "NotBillable",
     "Amount": "87.50",
     "Quantity": "50",
     "ItemRef": {
-      "ListID": "540004-1044568147"
-    }
+      "FullName": "Cabinets:Cabinet Pulls"
+    },
+    "CustomerRef": {
+      "FullName": "Keenan, Bridget:Storage Shed"
+    },
+    "Cost": "1.75"
   }],
+  "CurrencyRef": {
+    "FullName": "US Dollar"
+  },
   "RefNumber": "123456",
   "TxnDate": "2018-12-05",
   "ItemType": "ItemReceipt",
   "TotalAmount": "87.50",
   "APAccountRef": {
-    "ListID": "C0000-896817249"
+    "FullName": "Accounts Payable"
   },
   "TotalAmountInHomeCurrency": "3459.20",
   "VendorRef": {
-    "ListID": "5F0001-1044573802"
+    "FullName": "Patton Hardware Supplies"
   },
   "Memo": "Sample Item Receipt"
 }

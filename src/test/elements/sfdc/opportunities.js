@@ -1,16 +1,21 @@
 'use strict';
 
+//dependencies at the top
 const suite = require('core/suite');
-const payload = require('./assets/opportunities');
-const activities = require('./assets/activities');
-const notes = require('./assets/notes');
+const tools = require('core/tools');
 const cloud = require('core/cloud');
+//how to import payloads
+const payload = tools.requirePayload(`${__dirname}/assets/opportunities.json`);
+const activities = tools.requirePayload(`${__dirname}/assets/activities.json`);
+const notes = tools.requirePayload(`${__dirname}/assets/notes.json`);
 
 suite.forElement('crm', 'opportunities', { payload: payload }, (test) => {
   test.should.supportPagination();
-  test.should.supportCeqlSearch('id');
+  test.should.supportCeqlSearch('id');//search opportunities by id
   test.should.supportCruds();
-  test.should.return404OnGet('0');
+  test.should.return404OnGet('0');//should not find opportunity with id of '0'
+
+  //'it' statements to test sfdc specifc issues
   it('should allow CRUDS for /hubs/crm/opportunities/:id/activities', () => {
     let opportunityId;
     return cloud.post(test.api, payload)

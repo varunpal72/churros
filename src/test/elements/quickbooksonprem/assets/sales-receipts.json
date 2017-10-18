@@ -1,51 +1,101 @@
 {
-  "CurrencyRef": {
-    "FullName": "US Dollar"
-  },
-  "ClassRef": {
-    "ListID": "80001-1026828072"
-  },
   "IsToBeEmailed": "false",
   "BillAddress": {
-    "Addr1": "Reyes Properties",
-    "Addr2": "P.O. Box 2836",
+    "Addr1": "Renee Barley",
+    "Addr2": "4417 N. Sun Valley Rd",
     "State": "CA",
-    "PostalCode": "94482",
+    "PostalCode": "94471",
     "City": "Middlefield"
   },
-  "PaymentMethodRef": {
-    "FullName": "Check"
-  },
-  "CustomerSalesTaxCodeRef": {
-    "FullName": "Tax"
+  "TimeCreated": "2017-01-20T21:33:37+00:00",
+  "TimeModified": "2017-01-20T21:33:37+00:00",
+  "SalesTaxTotal": "0.00",
+  "ShipAddress": {
+    "Addr1": "4417 N. Sun Valley Rd",
+    "State": "CA",
+    "PostalCode": "94471",
+    "City": "Middlefield"
   },
   "IsToBePrinted": "false",
   "SalesReceiptLine": [{
-    "Desc": "Removal labor1",
-    "ClassRef": {
-      "ListID": "80001-1026828072"
+      "Desc": "jjj",
+      "SalesTaxCodeRef": {
+        "ListID": "80000002-1484947875",
+        "FullName": "Non"
+      },
+      "TxnLineID": "16C6-1484948017",
+      "Rate": "28.00",
+      "Amount": "28.00",
+      "Quantity": "1",
+      "ItemRef": {
+        "ListID": "80000095-1484947954",
+        "FullName": "Freight Reimbursement"
+      }
     },
-    "Rate": "35.00",
-    "Amount": "560.00",
-    "Quantity": "16",
-    "ItemRef": {
-      "ListID": "7A0003-1044571005"
+    {
+      "Desc": "kkj",
+      "SalesTaxCodeRef": {
+        "ListID": "80000002-1484947875",
+        "FullName": "Non"
+      },
+      "TxnLineID": "16C7-1484948017",
+      "Rate": "54.00",
+      "Amount": "54.00",
+      "Quantity": "1",
+      "ItemRef": {
+        "ListID": "8000003B-1484947953",
+        "FullName": "Blueprints"
+      }
+    },
+    {
+      "Desc": "CA sales tax, San Tomas County",
+      "SalesTaxCodeRef": {
+        "ListID": "80000002-1484947875",
+        "FullName": "Non"
+      },
+      "TxnLineID": "16C8-1484948017",
+      "Rate": "0",
+      "Amount": "0.00",
+      "ItemRef": {
+        "ListID": "8000014F-1484947957",
+        "FullName": "San Tomas"
+      }
     }
-  }],
-  "DueDate": "2019-05-21",
-  "SalesTaxPercentage": "7.50",
-  "BillAddressBlock": {
-    "Addr3": "Middlefield CA 94482",
-    "Addr1": "Reyes Properties",
-    "Addr2": "P.O. Box 2836"
+  ],
+  "DueDate": "2011-06-21",
+  "ShipAddressBlock": {
+    "Addr1": "4417 N. Sun Valley Rd",
+    "Addr2": "Middlefield, CA 94471"
   },
-  "RefNumber": "3001222",
-  "Subtotal": "560.00",
-  "ShipDate": "2018-05-21",
-  "TotalAmount": "560.00",
-  "CheckNumber": "63852",
-  "Memo": "Sample Memo",
+  "IsPending": "false",
+  "TxnNumber": "892",
+  "SalesTaxPercentage": "0.00",
+  "ShipMethodRef": {
+    "ListID": "80000001-1484947959",
+    "FullName": "UPS"
+  },
+  "BillAddressBlock": {
+    "Addr3": "Middlefield, CA  94471",
+    "Addr1": "Renee Barley",
+    "Addr2": "4417 N. Sun Valley Rd"
+  },
+  "TxnDate": "2011-06-21",
+  "RefNumber": "WEB000002",
+  "EditSequence": "1484948017",
+  "Subtotal": "82.00",
+  "ShipDate": "2011-06-21",
+  "TotalAmount": "82.00",
+  "TxnID": "16C4-1484948017",
+  "DepositToAccountRef": {
+    "ListID": "80000003-1484947909",
+    "FullName": "Undeposited Funds"
+  },
   "CustomerRef": {
-    "ListID": "6D0000-1046201334"
+    "ListID": "8000002F-1484947912",
+    "FullName": "Barley, Renee"
+  },
+  "TemplateRef": {
+    "ListID": "80000009-1484947909",
+    "FullName": "Custom Sales Receipt"
   }
 }
