@@ -19,7 +19,12 @@ let Id;
       .then(r => {
         if (Id)
           cloud.get(`${test.api}/${Id}`);
-      });
+        else{
+             cloud.get(`${test.api}/${Id}`,null,
+        r => {
+          (expect(r).to.have.statusCode(400)); });
+            }
+         });
   });
 //Need to skip as there is no delete API
   test.withOptions({skip:true}).should.supportCrus();
