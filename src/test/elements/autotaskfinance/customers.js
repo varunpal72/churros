@@ -6,8 +6,8 @@ const payload = tools.requirePayload(`${__dirname}/assets/customers.json`);
 const expect = require('chakram').expect;
 
 //As delete customers is not supported skipped test cases.
-suite.forElement('finance', 'customers', { payload: payload, skip: true }, (test) => {
-  test.should.supportCrus();
+suite.forElement('finance', 'customers', { payload: payload }, (test) => {
+  test.withOptions({skip:true}).should.supportCrus();
   test.withName(`should support searching ${test.api} by accountName`).
   withOptions({ qs: { where: 'accountName=\'churrosTestCustomer\'' } }).
   withValidation((r) =>

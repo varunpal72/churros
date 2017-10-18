@@ -24,8 +24,14 @@ suite.forElement('finance', 'items', { payload: payload }, (test) => {
           expect(validValues.length).to.equal(r.body.length);
         }).should.return200OnGet();
 
-      return cloud.get(`${test.api}/${itemId}`)
-      .then(r => cloud.patch(`${test.api}/${itemId}`, payload));
+      return cloud.get(`${test.api}/${itemId}`);
       });
   });
+  //skipped patch operation as delete is not supported
+  it.skip(`should support RUS and where for /hubs/crm/items`, () => {
+    let itemId;
+    return cloud.get('/hubs/finance/items')
+    .then(r =>  itemId = r.body[0].id)
+    .then(r => cloud.patch(`${test.api}/${itemId}`, payload));
+    });
 });

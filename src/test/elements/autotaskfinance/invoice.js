@@ -24,8 +24,14 @@ suite.forElement('finance', 'invoices', { payload: payload }, (test) => {
           const validValues = r.body.filter(obj => obj.id = `${invoiceId}`);
           expect(validValues.length).to.equal(r.body.length);
         }).should.return200OnGet();
-       return cloud.get(`${test.api}/${invoiceId}`)
-      .then(r => cloud.patch(`${test.api}/${invoiceId}`, payload));
+       return cloud.get(`${test.api}/${invoiceId}`);
       });
   });
+  //skipped patch operation as delete is not supported
+  it.skip(`should support RUS and where for /hubs/crm/invoices`, () => {
+    let invoiceId;
+    return cloud.get('/hubs/finance/invoices')
+    .then(r =>  invoiceId = r.body[0].id)
+    .then(r => cloud.patch(`${test.api}/${invoiceId}`, payload));
+    });
 });
