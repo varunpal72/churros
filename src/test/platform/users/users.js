@@ -51,7 +51,7 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
       .then(r => cloud.get(`/accounts`))
       .then(r => accountId = r.body.filter(account => account.defaultAccount)[0].id)
       .then(r => cloud.post(`/accounts/${accountId}/users`, payload, schema))
-      .then(r => userId = r.body.id)
+      .then(r => { expect(r.body).to.have.property('roles'); userId = r.body.id; })
       .then(() => cloud.get(`/users`))
       .then(r => currUserId = r.body.filter(u => u.email === props.get('user'))[0].id);
   });
