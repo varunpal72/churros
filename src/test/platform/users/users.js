@@ -112,7 +112,7 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
       const api = `/users/${currUserId}/roles`;
       return cloud.put(`${api}/admin`, null, r => expect(r).to.have.statusCode(403))
       .then(() => cloud.delete(`${api}/admin`, r => expect(r).to.have.statusCode(403)));
-    })
+    });
 
     test
       .withApi('/users/-1/roles/admin')
@@ -147,7 +147,7 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
     it('should not allow creation of a user with higher roles', () => {
       return cloud.post(`/accounts/${accountId}/users`, payloadWithRoles, r => {
         expect(r).to.have.statusCode(403);
-      })
-    })
+      });
+    });
   });
 });
