@@ -12,10 +12,10 @@ const updatePayload =
     "LastLogin": "today",
     "LastName": "stiltz"
   }
-}
+};
 const incrementPayload = {
   "step":3
-}
+};
 
 //data-events are very account unique I set the primary key in our account to be First Name and added data that exists under that.
 suite.forElement('marketing', 'data-events', (test) => {
@@ -25,7 +25,7 @@ suite.forElement('marketing', 'data-events', (test) => {
     let columnName='Number';
     return cloud.post(test.api,DataEventPayload)
  	  .then(r => cloud.put(`${test.api}/${eventId}/rows/${key}`,updatePayload))
-    .then(r => cloud.put(`${test.api}/${eventId}/rows/${key}/column/${columnName}/increment`,incrementPayload))
+    .then(r => cloud.put(`${test.api}/${eventId}/rows/${key}/column/${columnName}/increment`,incrementPayload));
 
  });
 });
