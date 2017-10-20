@@ -8,13 +8,12 @@ suite.forElement('employee', 'roles', (test) => {
 
   test.should.supportPagination();
 
-  it('should allow CRUs for roles', () => {
+  it('should allow CRUS for /roles', () => {
     let roleId;
-
     return cloud.post(`${test.api}`, rolePayload)
     .then(r => roleId = r.body.id)
+    .then(r => cloud.get(test.api))
     .then(r => cloud.get(`${test.api}/${roleId}`))
-    .then(r => cloud.patch(`${test.api}/${roleId}`, roleUpdatePayload))
-    .then(cloud.get(test.api));
+    .then(r => cloud.patch(`${test.api}/${roleId}`, roleUpdatePayload));
   });
 });
