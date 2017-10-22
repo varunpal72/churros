@@ -10,6 +10,6 @@ suite.forElement('marketing', 'attribute-sets', (test) => {
 it('should allow R for /data-events', () => {
 let name;
   return cloud.get(test.api)
-  .then(r => cloud.get(`${test.api}/${name}`))
+  .then(r => cloud.get(`${test.api}/${name}`));
 });
 });
