@@ -288,11 +288,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(() => browser.sleep(2000))
         .then(() => Array(5).fill(0).map((e, i) => i + 1).reduce((acc, cur) => {
           return acc.then(() => {
-            return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[1]/span`))
+            return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[2]/span[2]`))
               .then((el) => el.getText().then(t => t.toLowerCase().includes(`${config.portalId}`) ? el.click() : null), (err) => {}); // ignore this
           });
         }, Promise.resolve(null)))
-        .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.className('uiLoading')), 10000))
+        .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.className('uiLoading')).then(r => !r), 10000))
         .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/button/i18n-string')), 5000)
           .catch((err) => {}))
         .then(() => browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/button/i18n-string'))
