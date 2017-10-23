@@ -425,7 +425,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.getCurrentUrl();
     case 'servicenowoauth':
       browser.get(r.body.oauthUrl);
-      browser.waitForElement(webdriver.By.id('user_name'), 5000);
+      waitForElement(webdriver.By.id('user_name'), 5000);
       browser.findElement(webdriver.By.id('user_name')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.id('sysverb_login')).click();
