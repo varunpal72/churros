@@ -3,7 +3,7 @@ const cloud = require('core/cloud');
 const suite = require('core/suite');
 
 suite.forElement('marketing', 'attribute-sets', (test) => {
-  it('should allow R for /attribute-sets', () => {
+  it('should allow Sr for /attribute-sets', () => {
     let name;
     return cloud.get(test.api)
       .then(r => name = r.body.items[0].name.value)
