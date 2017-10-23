@@ -92,6 +92,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('login_submit')).click();
       browser.findElement(webdriver.By.name('consent_accept')).click();
       return browser.getCurrentUrl();
+    case 'square':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.name('email')).sendKeys(username);
+      browser.findElement(webdriver.By.name('password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('sign-in-button')).click();
+      browser.sleep(2000);
+      return browser.getCurrentUrl();
     case 'campaignmonitor':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
