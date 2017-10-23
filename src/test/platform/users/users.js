@@ -6,12 +6,29 @@ const schema = require('./assets/users.schema');
 const roleSchema = require('./assets/role.schema');
 const rolesSchema = require('./assets/roles.schema');
 const expect = require('chakram').expect;
+const props = require('core/props');
 const payload = {
   firstName: 'frank',
   lastName: 'ricard',
   email: 'frank@oldschool.com',
   password: 'Passw0rd!'
 };
+
+const payloadWithRoles = {
+  firstName: 'frank',
+  lastName: 'ricard',
+  email: 'frankwithroles@oldschool.com',
+  password: 'Passw0rd!',
+  roles: [
+    {
+      key: 'sys-admin'
+    },
+    {
+      key: 'org-admin'
+    }
+  ]
+};
+
 const updatePayload = {
   firstName: 'joseph',
   lastName: 'pulaski'
@@ -21,20 +38,22 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
   const cleanup = () => {
     return cloud.get(`/users`)
       .then(r => {
-        const usersToDelete = r.body.filter(user => user.email === payload.email);
-        return usersToDelete && usersToDelete[0] ?
-          cloud.delete(`/users/${usersToDelete[0].id}`) :
+        const usersToDelete = r.body.filter(user => user.email === payload.email || user.email === payloadWithRoles.email);
+        return usersToDelete ?
+          Promise.all(usersToDelete.map(u => cloud.delete(`/users/${u.id}`))) :
           true;
       });
   };
 
-  let accountId, userId;
+  let accountId, userId, currUserId;
   before(() => {
     return cleanup()
       .then(r => cloud.get(`/accounts`))
       .then(r => accountId = r.body.filter(account => account.defaultAccount)[0].id)
       .then(r => cloud.post(`/accounts/${accountId}/users`, payload, schema))
-      .then(r => userId = r.body.id);
+      .then(r => { expect(r.body).to.have.property('roles'); userId = r.body.id; })
+      .then(() => cloud.get(`/users`))
+      .then(r => currUserId = r.body.filter(u => u.email === props.get('user'))[0].id);
   });
 
   after(() => cleanup());
@@ -89,6 +108,12 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
       .then(() => cloud.delete(`${api}/admin`, r => expect(r).to.have.statusCode(403)));
     });
 
+    it('should not support CD of roles for current user', () => {
+      const api = `/users/${currUserId}/roles`;
+      return cloud.put(`${api}/admin`, null, r => expect(r).to.have.statusCode(403))
+      .then(() => cloud.delete(`${api}/admin`, r => expect(r).to.have.statusCode(403)));
+    });
+
     test
       .withApi('/users/-1/roles/admin')
       .should.return404OnPut();
@@ -117,6 +142,12 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
           expect(r).to.have.statusCode(409);
         }))
         .then(r => cloud.delete(`/users/${userId}/roles/admin`));
+    });
+
+    it('should not allow creation of a user with higher roles', () => {
+      return cloud.post(`/accounts/${accountId}/users`, payloadWithRoles, r => {
+        expect(r).to.have.statusCode(403);
+      });
     });
   });
 });
