@@ -40,7 +40,12 @@ chakram.addMethod("schemaAnd200", (r, schema) => {
   const valid = tv4.validate(r.response.body, schema);
   const composeErrorMessage = () => {
     let errorMsg = 'expected body to match JSON schema';
-    if (tv4.error !== null) errorMsg += ' - ' + tv4.error.message;
+    if (tv4.error !== null) {
+      console.log('Error: ', tv4.error);
+      console.log('Body: ', r.response.body);
+      errorMsg += ' - ' + tv4.error.message;
+    }
+
     return errorMsg;
   };
 
