@@ -91,9 +91,10 @@ const getPollerConfig = (element, instance) => {
   .catch(() => instance);
 };
 
-const addParams = (instance) => {
+const addParams = (instance, element) => {
   let instanceCopy = JSON.parse(JSON.stringify(instance));
   if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+  if (element && props.getOptionalForKey(element, 'extra.oauth.params')) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, props.getOptionalForKey(element, 'extra.oauth.params'));
   return instanceCopy;
 };
 
@@ -116,7 +117,7 @@ const createInstance = (element, config, providerData, baseApi) => {
 
   if (providerData) instance.providerData = providerData;
   return getPollerConfig(tools.getBaseElement(element), instance)
-    .then(r => cloud.post(baseApi, addParams(r)))
+    .then(r => cloud.post(baseApi, addParams(r, element)))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
