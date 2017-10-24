@@ -24,9 +24,9 @@ suite.forElement('employee', 'timesheets', (test) => {
       .then(r => {
         var utcDate = new Date(new Date().toUTCString());
         utcDate.setHours(utcDate.getHours() + 5); //Current PST time
-        cin = utcDate.toISOString().split('.')[0];
+        let cin = utcDate.toISOString().split('.')[0];
         utcDate.setHours(utcDate.getHours() + 8);
-        cout = utcDate.toISOString().split('.')[0];
+        let cout = utcDate.toISOString().split('.')[0];
         timeSheetPayload.clock_in = cin; //"2017-12-24T10:00:48";//cin;
         timeSheetPayload.clock_out = cout; //"2017-12-24T16:00:48";//cout;
       });

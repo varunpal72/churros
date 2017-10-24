@@ -17,7 +17,7 @@ suite.forElement('employee', 'tips', (test) => {
       .then(r => {
         var utcDate = new Date(new Date().toUTCString());
         utcDate.setHours(utcDate.getHours() + 5); //Current PST time
-        tipTime = utcDate.toISOString().split('.')[0];
+        let tipTime = utcDate.toISOString().split('.')[0];
         tipPayload.tips_date = tipTime;
       });
   });

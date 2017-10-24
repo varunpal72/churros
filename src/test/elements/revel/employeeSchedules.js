@@ -32,9 +32,9 @@ suite.forElement('employee', 'employeeSchedules', (test) => {
       .then(r => {
         var utcDate = new Date(new Date().toUTCString());
         utcDate.setHours(utcDate.getHours() + 5);
-        begin = utcDate.toISOString().split('.')[0];
+        let begin = utcDate.toISOString().split('.')[0];
         utcDate.setHours(utcDate.getHours() + 8);
-        end = utcDate.toISOString().split('.')[0];
+        let end = utcDate.toISOString().split('.')[0];
         employeeSchedulePayload.shift_begin_time = begin;
         employeeSchedulePayload.shift_end_time = end;
       });

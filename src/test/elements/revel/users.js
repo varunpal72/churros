@@ -3,8 +3,6 @@ const expect = require('chakram').expect;
 
 suite.forElement('employee', 'users', (test) => {
 
-  let userId;
-
   test.should.supportPagination();
 
   test.withApi(test.api)

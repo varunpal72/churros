@@ -24,7 +24,7 @@ suite.forElement('employee', 'employees', (test) => {
       .then(r => {
         var utcDate = new Date(new Date().toUTCString());
         utcDate.setHours(utcDate.getHours() + 5); //Current PTC dateTime
-        startDate = utcDate.toISOString().split('.')[0];
+        let startDate = utcDate.toISOString().split('.')[0];
         employeePayload.employee_start = startDate;
       });
   });

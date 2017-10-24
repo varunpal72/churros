@@ -16,6 +16,18 @@ const manipulateDom = (element, browser, r, username, password, config) => {
   };
   waitForElement = waitForElement.bind(browser);
   switch (element) {
+    case 'revel':
+
+      browser.get(r.body.oauthurl);
+      browser.wait(5000);
+      browser.findElement(webdriver.By.id('id_username')).sendKeys(username);
+      browser.wait(5000);
+      browser.findElement(webdriver.By.id('id_password')).sendKeys(password);
+      browser.wait(5000);
+      browser.findElement(webdriver.By.xpath('/html/body/div[2]/div[1]/div[1]/form/fieldset/div[3]/input')).click();
+      browser.wait(5000);
+
+
     case 'adobe-esign':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('j_username')).sendKeys(username);

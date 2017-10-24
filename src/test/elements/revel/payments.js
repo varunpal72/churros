@@ -24,7 +24,7 @@ suite.forElement('employee', 'payments', (test) => {
       .then(r => {
         var utcDate = new Date(new Date().toUTCString());
         utcDate.setHours(utcDate.getHours() + 5);
-        pDate = utcDate.toISOString().split('.')[0];
+        let pDate = utcDate.toISOString().split('.')[0];
         paymentPayload.payment_date = pDate;
       });
   });
