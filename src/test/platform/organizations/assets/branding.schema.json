@@ -1,0 +1,63 @@
+{
+  "type": "object",
+  "properties": {
+    "headerFont": {
+      "type": "string"
+    },
+    "headerColor": {
+      "type": "string"
+    },
+    "bodyFont": {
+      "type": "string"
+    },
+    "bodyColor": {
+      "type": "string"
+    },
+    "logo": {
+      "type": "string"
+    },
+    "favicon": {
+      "type": "string"
+    },
+    "themePrimaryColor": {
+      "type": "string"
+    },
+    "themeSecondaryColor": {
+      "type": "string"
+    },
+    "themeHighlightColor": {
+      "type": "string"
+    },
+    "buttonPrimaryBackgroundColor": {
+      "type": "string"
+    },
+    "buttonPrimaryTextColor": {
+      "type": "string"
+    },
+    "buttonSecondaryBackgroundColor": {
+      "type": "string"
+    },
+    "buttonSecondaryTextColor": {
+      "type": "string"
+    },
+    "buttonDeleteBackgroundColor": {
+      "type": "string"
+    },
+    "buttonDeleteTextColor": {
+      "type": "string"
+    },
+    "logoBackgroundColor": {
+      "type": "string"
+    },
+    "topBarBackgroundColor": {
+      "type": "string"
+    },
+    "navigationBackgroundColor": {
+      "type": "string"
+    },
+    "contextBackgroundColor": {
+      "type": "string"
+    }
+  },
+  "required": []
+}
