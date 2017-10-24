@@ -23,6 +23,6 @@ suite.forElement('marketing', 'programs', { payload: payload }, (test) => {
     .then(r => id = r.body[0].id)
     .then(r => cloud.get(`${test.api}/${id}`))
     .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
-    .then(r => cloud.delete(`${test.api}/${id}`))
+    .then(r => cloud.delete(`${test.api}/${id}`));
   });
 });
