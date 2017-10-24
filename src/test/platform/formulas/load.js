@@ -48,7 +48,7 @@ const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) =
           setTimeout(() => {
             return pollExecutions(formulaId, formulaInstanceId, numExpected, attemptNum + 1)
               .then(s => res(s));
-          }, 5000);
+          }, 10000);
         } else {
           logger.debug(`Formula ${formulaId} instance ${formulaInstanceId}: All ${numExpected} executions finished. ${status.success} success, ${status.failed} failed`);
           return res(status);
@@ -106,7 +106,7 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
     const formulaInstance = require('./assets/formulas/basic-formula-instance');
     formulaInstance.configuration.trigger_instance = closeioId;
 
-    const numFormulaInstances = 4;
+    const numFormulaInstances = 5;
     const numEvents = 10;
     const numInOneEvent = 1;
 
@@ -129,9 +129,9 @@ suite.forPlatform('formulas', { name: 'formulas load' }, (test) => {
       .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
       .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
       .then(r => chakram.all(deletes))
-      .then(r => common.deleteFormula(formulaId))
+      // .then(r => common.deleteFormula(formulaId))
       .catch(e => {
-        if (formulaId) common.deleteFormula(formulaId);
+        // if (formulaId) common.deleteFormula(formulaId);
         throw new Error(e);
       });
   });
