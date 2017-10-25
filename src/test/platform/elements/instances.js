@@ -91,7 +91,7 @@ const updateInstanceWithReprovision = (baseUrl, schema) => {
     .catch(e => {
       if (ids.length > 0) {
         return Promise.all(ids.map(d => provisioner.delete(d, baseUrl)))
-        .catch(err => {}).then(() => {throw new Error(e)});
+        .catch(err => {}).then(() => { throw new Error(e); });
       } else {
         throw new Error(e);
       }
