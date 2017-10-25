@@ -2,7 +2,7 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const paymentPayload = tools.requirePayload(`${__dirname}/assets/payment.json`);
-const paymentUpdatePayload = tools.requirePayload(`${__dirname}/assets/paymentUpdate.json`);
+//const paymentUpdatePayload = tools.requirePayload(`${__dirname}/assets/paymentUpdate.json`);
 
 suite.forElement('employee', 'payments', (test) => {
 
