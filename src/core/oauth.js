@@ -363,6 +363,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       return browser.getCurrentUrl();
     case 'onedrivev2':
     case 'onedrive':
+    case 'onenote':
       browser.get(r.body.oauthUrl);
       waitForElement(webdriver.By.id('i0116'));
       browser.findElement(webdriver.By.id('i0116')).sendKeys(username);
@@ -370,8 +371,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('idSIButton9')).click();
       waitForElement(webdriver.By.id('i0118'));
       browser.findElement(webdriver.By.id('i0118')).sendKeys(password);
-      waitForElement(webdriver.By.id('idSIButton9'));
-      browser.findElement(webdriver.By.id('idSIButton9')).click();
+      waitForElement(webdriver.By.xpath('.//*[@value= "Sign in" and @type= "submit"]'));
+      browser.findElement(webdriver.By.xpath('.//*[@value= "Sign in" and @type= "submit"]')).click();
       waitForElement(webdriver.By.id('idBtn_Accept')).thenCatch(r => true); // ignore
       browser.findElement(webdriver.By.id('idBtn_Accept'))
         .then((element) => element.click(), (err) => {}); // ignore this
