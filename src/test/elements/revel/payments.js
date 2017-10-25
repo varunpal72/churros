@@ -4,13 +4,9 @@ const cloud = require('core/cloud');
 const paymentPayload = tools.requirePayload(`${__dirname}/assets/payment.json`);
 const paymentUpdatePayload = tools.requirePayload(`${__dirname}/assets/paymentUpdate.json`);
 
-
-
 suite.forElement('employee', 'payments', (test) => {
 
-  let paymentId, len;
-
-  before(() => {
+before(() => {
     return cloud.get('/users')
       .then(r => {
         paymentPayload.created_by = r.body[0].resource_uri;
@@ -29,14 +25,13 @@ suite.forElement('employee', 'payments', (test) => {
       });
   });
 
-  it('Should allow CRUD for payments', () => {
+  it('Should allow SR for payments', () => {
+    let paymentId, len;
     return cloud.get(test.api)
       .then(r => {
         len = r.body.length;
         paymentId = r.body[len - 1].id;
       })
-      .then(r => cloud.get(test.api + '/' + paymentId))
-      .then(r => cloud.post(test.api, paymentPayload))
-      .then(r => cloud.patch(test.api + '/' + paymentId, paymentUpdatePayload));
+      .then(r => cloud.get(`${test.api}/${paymentId}`));
   });
 });

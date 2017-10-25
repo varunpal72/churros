@@ -6,8 +6,6 @@ const locationUpdatePayload = tools.requirePayload(`${__dirname}/assets/location
 
 suite.forElement('employee', 'locations', (test) => {
 
-  let locationId, len;
-
   before(() => {
     return cloud.get('/users')
       .then(r => {
@@ -16,6 +14,7 @@ suite.forElement('employee', 'locations', (test) => {
   });
 
   it('Should allow RU for locations', () => {
+    let locationId, len;
     return cloud.get(test.api)
       .then(r => {
         len = r.body.length;

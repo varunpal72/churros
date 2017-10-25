@@ -8,7 +8,6 @@ const tipUpdatePayload = tools.requirePayload(`${__dirname}/assets/tipUpdate.jso
 
 suite.forElement('employee', 'tips', (test) => {
 
-  let tipId;
   before(() => {
     return cloud.get('/users')
       .then(r => tipPayload.employee = r.body[0].resource_uri)
@@ -36,7 +35,8 @@ suite.forElement('employee', 'tips', (test) => {
     .withName('should allow GET with option date_range_from')
     .should.return200OnGet();
 
-  it('Should allow CRUD for tips', () => {
+  it('Should allow CRUS for tips', () => {
+    let tipId;
     return cloud.post(test.api, tipPayload)
       .then(r => tipId = r.body.id)
       .then(r => cloud.patch(test.api + '/' + tipId, tipUpdatePayload))

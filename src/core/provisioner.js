@@ -199,7 +199,8 @@ const oauth = (element, args, config) => {
         oauth_verifier: query.oauth_verifier,
         secret: args.secret,
         realmId: query.realmId,
-        dataSource: query.dataSource
+        dataSource: query.dataSource,
+        token: query.token
       };
       if(args && args.debug) {
         providerData.debug = true;

@@ -8,14 +8,11 @@ const employeeScheduleUpdatePayload = tools.requirePayload(`${__dirname}/assets/
 
 suite.forElement('employee', 'employeeSchedules', (test) => {
 
-  let esId;
   before(() => {
-
     return cloud.get('/users')
       .then(r => {
         employeeSchedulePayload.created_by = r.body[0].resource_uri;
         employeeSchedulePayload.updated_by = r.body[0].resource_uri;
-
       })
       .then(r => cloud.get('/roles')
         .then(r => employeeSchedulePayload.role = r.body[0].resource_uri))
@@ -54,13 +51,13 @@ suite.forElement('employee', 'employeeSchedules', (test) => {
 
   test.should.supportPagination();
 
-  it('Should allow CRU for employeeSchedules', () => {
+  it('Should allow CRUS for employeeSchedules', () => {
+    let esId;
     return cloud.post(test.api, employeeSchedulePayload)
       .then(r => esId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + esId))
-      .then(r => cloud.patch(test.api + '/' + esId, employeeScheduleUpdatePayload))
-      .then(r => cloud.withOptions({ qs: { where: `reason='xyz' and details='xyz' and description='xyz'` } }).delete(test.api + '/' + esId))
-      .then(r => expect(r).to.have.statusCode(200))
+      .then(r => cloud.get(`${test.api}/${esId}`))
+      .then(r => cloud.patch(`${test.api}/${esId}`, employeeScheduleUpdatePayload))
+      .then(r => cloud.withOptions({ qs: { reason: 'xyz', details: 'xyz', description: 'xyz' } }).delete(`${test.api}/${esId}`))
       .then(r => cloud.get(test.api));
   });
 

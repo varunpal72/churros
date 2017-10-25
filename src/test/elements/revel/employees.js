@@ -7,11 +7,11 @@ const employeeUpdatePayload = tools.requirePayload(`${__dirname}/assets/employee
 
 suite.forElement('employee', 'employees', (test) => {
 
-  let empId, user, arr;
+  let user;
   before(() => {
     return cloud.get(test.api)
       .then(r => {
-        arr = r.body[0].user.split('/');
+        let arr = r.body[0].user.split('/');
         user = arr[3];
       })
       .then(r => cloud.get('/users'))
@@ -48,12 +48,13 @@ suite.forElement('employee', 'employees', (test) => {
       .then(r => expect(r.body.filter(obj => obj.user === `/enterprise/User/'${user}'/`)).to.not.be.null);
   });
 
-  it('Should allow CRU for employees', () => {
+  it('Should allow CRUS for employees', () => {
+    let empId;
     return cloud.post(test.api, employeePayload) //Should change payload while running.
       .then(r => empId = r.body.id)
-      .then(r => cloud.patch(test.api + '/' + empId, employeeUpdatePayload))
-      .then(r => cloud.get(test.api + '/' + empId))
-      .then(r => cloud.get(test.api + '/' + empId + '/' + 'tips'))
+      .then(r => cloud.patch(`${test.api}/${empId}`, employeeUpdatePayload))
+      .then(r => cloud.get(`${test.api}/${empId}`))
+      .then(r => cloud.get(`${test.api}/${empId}/tips`))
       .then(r => cloud.get(test.api));
   });
 });

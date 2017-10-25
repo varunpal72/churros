@@ -5,11 +5,7 @@ const expect = require('chakram').expect;
 const timeSheetPayload = tools.requirePayload(`${__dirname}/assets/timesheet.json`);
 const timeSheetUpdatePayload = tools.requirePayload(`${__dirname}/assets/timeSheetUpdate.json`);
 
-
-
 suite.forElement('employee', 'timesheets', (test) => {
-
-  let timesheetId;
 
   before(() => {
     return cloud.get('/users')
@@ -27,8 +23,8 @@ suite.forElement('employee', 'timesheets', (test) => {
         let cin = utcDate.toISOString().split('.')[0];
         utcDate.setHours(utcDate.getHours() + 8);
         let cout = utcDate.toISOString().split('.')[0];
-        timeSheetPayload.clock_in = cin; //"2017-12-24T10:00:48";//cin;
-        timeSheetPayload.clock_out = cout; //"2017-12-24T16:00:48";//cout;
+        timeSheetPayload.clock_in = cin;
+        timeSheetPayload.clock_out = cout;
       });
   });
 
@@ -45,7 +41,8 @@ suite.forElement('employee', 'timesheets', (test) => {
     .should.return200OnGet();
 
 
-  it('Should allow CRU for timesheets', () => {
+  it('Should allow CRUS for timesheets', () => {
+    let timesheetId;
     return cloud.post(test.api, timeSheetPayload)
       .then(r => timesheetId = r.body.id)
       .then(r => cloud.get(test.api + '/' + timesheetId))
