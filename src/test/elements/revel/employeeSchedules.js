@@ -6,7 +6,7 @@ const employeeSchedulePayload = tools.requirePayload(`${__dirname}/assets/employ
 const employeeScheduleUpdatePayload = tools.requirePayload(`${__dirname}/assets/employeeScheduleUpdate.json`);
 
 
-suite.forElement('employee', 'employeeSchedules', (test) => {
+suite.forElement('employee', 'employee-schedules', (test) => {
 
   before(() => {
     return cloud.get('/users')
