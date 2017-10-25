@@ -27,7 +27,7 @@
     });
     it('should provision', () => expect(instanceName).to.not.equal('churros-backup'));
     it('should GET /objects', () => {
-      return cloud.get('/objects').then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
+      return cloud.get('/objects').then(r => hub === 'documents' ? null : expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
     });
 
     it.skip('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
