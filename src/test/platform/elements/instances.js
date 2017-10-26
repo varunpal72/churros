@@ -301,6 +301,14 @@ suite.forPlatform('elements/instances', opts, (test) => {
       .then(r => expect(r.body).to.deep.equal(withCorrectHub));
   });
 
+  it('should return element-instance-id on headers', () => {
+    let instanceId;
+    return provisioner.create('jira')
+      .then(r => instanceId = r.body.id)
+      .then(() => cloud.get(`/incidents`))
+      .then(r => expect(parseInt(r.response.headers['elements-element-instance-id'])).to.equal(instanceId));
+  });
+
   it('should allow disabling and enabling  an instance', () => {
     let instanceId;
     defaults.token(closeioInstance.token);
