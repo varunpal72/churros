@@ -4,9 +4,9 @@ const suite = require('core/suite');
 const cloud = require('core/cloud');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const branding = require('./assets/branding.schema');
+const R = require('ramda');
 
-suite.forPlatform('organizations/branding', {schema: branding}, test => {
+suite.forPlatform('organizations/branding', test => {
   const cleanup = () => {
     return cloud.delete('/organizations/branding', () => true);
   };
@@ -35,7 +35,7 @@ suite.forPlatform('organizations/branding', {schema: branding}, test => {
     contextBackgroundColor: '#aedce7',
   };
 
-  it('should support upserting, retrieving and deleting a branding for a company', () => {
+  it('should support upserting, retrieving and deleting branding for a company', () => {
     return cloud.put('/organizations/branding', branding)
       .then(r => {
         expect(r.body.bodyFont).to.equal('Helvetica');
@@ -64,17 +64,17 @@ suite.forPlatform('organizations/branding', {schema: branding}, test => {
   });
 
   it('should fail when upserting branding for a company with invalid color fields', () => {
-    branding.headerColor = 'blah';
+    const b = R.assoc('headerColor', 'blah', branding);
 
     const validator = r => {
       expect(r).to.have.statusCode(400);
       expect(r.body.message).to.contain('Branding contains invalid color field(s)');
     };
 
-    return cloud.put('/organizations/branding', branding, validator);
+    return cloud.put('/organizations/branding', b, validator);
   });
 
-  it('should support saving a logo for the branding for a company', () => {
+  it('should support saving a logo for branding for a company', () => {
     return cloud.put('/organizations/branding', branding)
       .then(r => {
         expect(r.body.logo).to.equal('https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png');
@@ -87,7 +87,7 @@ suite.forPlatform('organizations/branding', {schema: branding}, test => {
       .then(() => cloud.delete(`/organizations/branding`));
   });
 
-  it('should support saving a favicon for the branding for a company', () => {
+  it('should support saving a favicon the branding for a company', () => {
     return cloud.put('/organizations/branding', branding)
       .then(r => {
         expect(r.body.favicon).to.equal('https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png');
