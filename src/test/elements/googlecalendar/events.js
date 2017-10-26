@@ -4,10 +4,10 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const expect = require('chakram').expect;
 const cloud = require('core/cloud');
-const payload = tools.requirePayload(`${__dirname}/assets/calendars-events.json`);
+const payload = tools.requirePayload(`${__dirname}/assets/events.json`);
 const calendarsPayload = tools.requirePayload(`${__dirname}/assets/calendars.json`);
 
-suite.forElement('general', 'calendars', { payload: payload }, (test) => {
+suite.forElement('scheduling', 'calendars', { payload: payload }, (test) => {
   let calendarId;
   before(() => cloud.post(test.api, calendarsPayload)
   .then(r => calendarId = r.body.id));
@@ -16,12 +16,7 @@ suite.forElement('general', 'calendars', { payload: payload }, (test) => {
   return cloud.cruds(`${test.api}/${calendarId}/events`, payload);
   });
 
-  it('should test pagination for events', () => {
-      return cloud.withOptions({ qs: { page: 1, pageSize: 1 } }).get(`${test.api}/${calendarId}/events`)
-      .then(r => {
-        expect(r.body.length).to.below(2);
-      });
-  });
+  test.withApi(`${test.api}/primary/events`).should.supportNextPagePagination(1);
 
   it('should test where for events', () => {
          return cloud.withOptions({ qs: { where : `maxAttendees=1` } }).get(`${test.api}/${calendarId}/events`);
