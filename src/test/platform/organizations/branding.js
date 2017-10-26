@@ -15,24 +15,24 @@ suite.forPlatform('organizations/branding', {schema: branding}, test => {
 
   const branding = {
     headerFont: 'Helvetica',
-    headerColor: '586f75',
+    headerColor: '#586f75',
     bodyFont: 'Helvetica',
-    bodyColor: 'aedce7',
+    bodyColor: '#aedce7',
     logo: 'https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png',
     favicon: 'https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png',
-    themePrimaryColor: '586f75',
-    themeSecondaryColor: 'aedce7',
-    themeHighlightColor: '468499',
-    buttonPrimaryBackgroundColor: 'cc6649',
-    buttonPrimaryTextColor: 'aedce7',
-    buttonSecondaryBackgroundColor: 'aedce7',
-    buttonSecondaryTextColor: 'cc6649',
-    buttonDeleteBackgroundColor: 'eeeeee',
-    buttonDeleteTextColor: 'FFFFFF',
-    logoBackgroundColor: 'ffffff',
-    topBarBackgroundColor: 'aedce7',
-    navigationBackgroundColor: 'aedce7',
-    contextBackgroundColor: 'aedce7',
+    themePrimaryColor: '#586f75',
+    themeSecondaryColor: '#aedce7',
+    themeHighlightColor: '#468499',
+    buttonPrimaryBackgroundColor: '#c64',
+    buttonPrimaryTextColor: '#aedce7',
+    buttonSecondaryBackgroundColor: '#aedce7',
+    buttonSecondaryTextColor: '#cc6649',
+    buttonDeleteBackgroundColor: '#eee',
+    buttonDeleteTextColor: '#FFF',
+    logoBackgroundColor: '#ffffff',
+    topBarBackgroundColor: '#aedce7',
+    navigationBackgroundColor: '#aedce7',
+    contextBackgroundColor: '#aedce7',
   };
 
   it('should support upserting, retrieving and deleting a branding for a company', () => {
@@ -52,6 +52,28 @@ suite.forPlatform('organizations/branding', {schema: branding}, test => {
       .then(() => cloud.delete(`/organizations/branding`));
   });
 
+  it('should fail when upserting branding for a company with missing fields', () => {
+    const b = { headerFont: 'Helvetica' };
+
+    const validator = r => {
+      expect(r).to.have.statusCode(400);
+      expect(r.body.message).to.contain('Branding missing required field(s)');
+    };
+
+    return cloud.put('/organizations/branding', b, validator);
+  });
+
+  it('should fail when upserting branding for a company with invalid color fields', () => {
+    branding.headerColor = 'blah';
+
+    const validator = r => {
+      expect(r).to.have.statusCode(400);
+      expect(r.body.message).to.contain('Branding contains invalid color field(s)');
+    };
+
+    return cloud.put('/organizations/branding', branding, validator);
+  });
+
   it('should support saving a logo for the branding for a company', () => {
     return cloud.put('/organizations/branding', branding)
       .then(r => {
@@ -62,6 +84,14 @@ suite.forPlatform('organizations/branding', {schema: branding}, test => {
       .then(r => {
         expect(r.body.logo).to.contain('https://images.cloudelements.io/logo');
       })
+      .then(() => cloud.delete(`/organizations/branding`));
+  });
+
+  it('should support saving a favicon for the branding for a company', () => {
+    return cloud.put('/organizations/branding', branding)
+      .then(r => {
+        expect(r.body.favicon).to.equal('https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png');
+      })
       .then(() => cloud.patchFile('/organizations/branding/favicon', __dirname + `/assets/favicon.png`))
       .then(() => cloud.get(`/organizations/branding`))
       .then(r => {
@@ -69,8 +99,5 @@ suite.forPlatform('organizations/branding', {schema: branding}, test => {
       })
       .then(() => cloud.delete(`/organizations/branding`));
   });
-
-
-
 
 });
