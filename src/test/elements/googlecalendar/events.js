@@ -2,7 +2,7 @@
 
 const suite = require('core/suite');
 const tools = require('core/tools');
-const expect = require('chakram').expect;
+//const expect = require('chakram').expect;
 const cloud = require('core/cloud');
 const payload = tools.requirePayload(`${__dirname}/assets/events.json`);
 const calendarsPayload = tools.requirePayload(`${__dirname}/assets/calendars.json`);
