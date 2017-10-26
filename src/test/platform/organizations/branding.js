@@ -74,28 +74,17 @@ suite.forPlatform('organizations/branding', test => {
     return cloud.put('/organizations/branding', b, validator);
   });
 
-  it('should support saving a logo for branding for a company', () => {
+  it('should support saving a logo and favicon for branding for a company', () => {
     return cloud.put('/organizations/branding', branding)
       .then(r => {
         expect(r.body.logo).to.equal('https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png');
       })
       .then(() => cloud.patchFile('/organizations/branding/logo', __dirname + `/assets/logo.png`))
-      .then(() => cloud.get(`/organizations/branding`))
-      .then(r => {
-        expect(r.body.logo).to.contain('https://images.cloudelements.io/logo');
-      })
-      .then(() => cloud.delete(`/organizations/branding`));
-  });
-
-  it('should support saving a favicon the branding for a company', () => {
-    return cloud.put('/organizations/branding', branding)
-      .then(r => {
-        expect(r.body.favicon).to.equal('https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png');
-      })
       .then(() => cloud.patchFile('/organizations/branding/favicon', __dirname + `/assets/favicon.png`))
       .then(() => cloud.get(`/organizations/branding`))
       .then(r => {
         expect(r.body.favicon).to.contain('https://images.cloudelements.io/favicon');
+        expect(r.body.logo).to.contain('https://images.cloudelements.io/logo');
       })
       .then(() => cloud.delete(`/organizations/branding`));
   });
