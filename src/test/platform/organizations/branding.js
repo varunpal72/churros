@@ -18,8 +18,6 @@ suite.forPlatform('organizations/branding', test => {
     headerColor: '#586f75',
     bodyFont: 'Helvetica',
     bodyColor: '#aedce7',
-    logo: 'https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png',
-    favicon: 'https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png',
     themePrimaryColor: '#586f75',
     themeSecondaryColor: '#aedce7',
     themeHighlightColor: '#468499',
@@ -76,9 +74,6 @@ suite.forPlatform('organizations/branding', test => {
 
   it('should support saving a logo and favicon for branding for a company', () => {
     return cloud.put('/organizations/branding', branding)
-      .then(r => {
-        expect(r.body.logo).to.equal('https://cloud-elements.com/wp-content/uploads/2017/06/ce_full_color-menu.png');
-      })
       .then(() => cloud.patchFile('/organizations/branding/logo', __dirname + `/assets/logo.png`))
       .then(() => cloud.patchFile('/organizations/branding/favicon', __dirname + `/assets/favicon.png`))
       .then(() => cloud.get(`/organizations/branding`))
