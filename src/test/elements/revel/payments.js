@@ -2,11 +2,10 @@ const suite = require('core/suite');
 const tools = require('core/tools');
 const cloud = require('core/cloud');
 const paymentPayload = tools.requirePayload(`${__dirname}/assets/payment.json`);
-//const paymentUpdatePayload = tools.requirePayload(`${__dirname}/assets/paymentUpdate.json`);
 
 suite.forElement('employee', 'payments', (test) => {
 
-before(() => {
+  before(() => {
     return cloud.get('/users')
       .then(r => {
         paymentPayload.created_by = r.body[0].resource_uri;
@@ -25,13 +24,8 @@ before(() => {
       });
   });
 
-  it('Should allow SR for payments', () => {
-    let paymentId, len;
-    return cloud.get(test.api)
-      .then(r => {
-        len = r.body.length;
-        paymentId = r.body[len - 1].id;
-      })
-      .then(r => cloud.get(`${test.api}/${paymentId}`));
-  });
+  test.withValidation(r => {
+    expect(r).to.have.statusCode(200);
+    expect(r.body[0].id).to.not.be.empty;
+  }).should.supportSr();
 });

@@ -1,5 +1,4 @@
 const suite = require('core/suite');
-const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 
 
@@ -11,10 +10,8 @@ suite.forElement('employee', 'roles', (test) => {
     .withName('should allow GET with option active')
     .should.return200OnGet();
 
-  it('Should allow Sr for roles', () => {
-    let roleId;
-    return cloud.get(test.api)
-      .then(r => roleId = r.body[0].id)
-      .then(r => cloud.get(test.api + '/' + roleId));
-  });
+  test.withValidation(r => {
+    expect(r).to.have.statusCode(200);
+    expect(r.body[0].id).to.not.be.empty;
+  }).should.supportSr();
 });

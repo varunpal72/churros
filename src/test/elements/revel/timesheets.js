@@ -45,8 +45,8 @@ suite.forElement('employee', 'timesheets', (test) => {
     let timesheetId;
     return cloud.post(test.api, timeSheetPayload)
       .then(r => timesheetId = r.body.id)
-      .then(r => cloud.get(test.api + '/' + timesheetId))
-      .then(r => cloud.patch(test.api + '/' + timesheetId, timeSheetUpdatePayload))
+      .then(r => cloud.get(`${test.api}/${timesheetId}`))
+      .then(r => cloud.patch(`${test.api}/${timesheetId}`, timeSheetUpdatePayload))
       .then(r => cloud.get(test.api));
   });
 });

@@ -3,7 +3,6 @@ const tools = require('core/tools');
 const cloud = require('core/cloud');
 const locationUpdatePayload = tools.requirePayload(`${__dirname}/assets/locationUpdate.json`);
 
-
 suite.forElement('employee', 'locations', (test) => {
 
   before(() => {
@@ -13,14 +12,14 @@ suite.forElement('employee', 'locations', (test) => {
       });
   });
 
-  it('Should allow RU for locations', () => {
+  it('Should allow SRU for locations', () => {
     let locationId, len;
     return cloud.get(test.api)
       .then(r => {
         len = r.body.length;
         locationId = r.body[len - 1].id;
       })
-      .then(r => cloud.get(test.api + '/' + locationId))
-      .then(r => cloud.patch(test.api + '/' + locationId, locationUpdatePayload));
+      .then(r => cloud.get(`${test.api}/${locationId}`))
+      .then(r => cloud.patch(`${test.api}/${locationId}`, locationUpdatePayload));
   });
 });

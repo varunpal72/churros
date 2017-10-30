@@ -39,8 +39,8 @@ suite.forElement('employee', 'tips', (test) => {
     let tipId;
     return cloud.post(test.api, tipPayload)
       .then(r => tipId = r.body.id)
-      .then(r => cloud.patch(test.api + '/' + tipId, tipUpdatePayload))
-      .then(r => cloud.get(test.api + '/' + tipId))
+      .then(r => cloud.patch(`${test.api}/${tipId}`, tipUpdatePayload))
+      .then(r => cloud.get(`${test.api}/${tipId}`))
       .then(r => cloud.get(test.api));
 
   });
