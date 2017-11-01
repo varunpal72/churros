@@ -95,10 +95,10 @@ suite.forElement('documents', 'files', null, (test) => {
         tempKey = r.body.templateKey;
         updatePayload.template = r.body.templateKey;
       })
-      .then(r => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields-templates/${tempKey}`, payload))
+      .then(r => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}/templates`, payload))
       .then(r => cloud.get(`/hubs/documents/files/${fileId1}/custom-fields`))
       .then(r => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
-      .then(r => cloud.withOptions({ qs: { operation: "replace" } }).patch(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
+      .then(r => cloud.withOptions({ qs: { op: "replace" } }).patch(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
       .then(r => cloud.withOptions({ qs: { scope: "enterprise" } }).get(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`))
       .then(r => cloud.withOptions({ qs: { scope: "enterprise" } }).delete(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`))
       .then(r => cloud.delete('/hubs/documents/files/' + fileId1));
