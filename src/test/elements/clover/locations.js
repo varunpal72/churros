@@ -8,7 +8,6 @@ suite.forElement('employee', 'locations', (test) => {
 
   it('Should allow RU for locations', () => {
 
-    let locId;
     return cloud.get(test.api)
       .then(r => cloud.patch(test.api, locationsUpdatePayload))
       .then(r => expect(r.body.name === 'Atul').to.not.be.null)
