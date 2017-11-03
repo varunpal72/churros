@@ -95,9 +95,9 @@ suite.forPlatform('formulas', { name: 'FaaRs' }, test => {
       .then(r => enableValidator(r.body))
       .then(r => cloud.patch(`/formulas/${formulaId}`, disableFaarBody))
       .then(r => disableValidator(r.body))
-      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .then(r => cloud.delete(`/formulas/${formulaId}`))
       .catch(e => {
-        if (formulaId) cloud.delete(`/formulas//${formulaId}`);
+        if (formulaId) cloud.delete(`/formulas/${formulaId}`);
         throw new Error(e);
       });
   });
