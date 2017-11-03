@@ -1,0 +1,8 @@
+{
+    "isOwner": false,
+    "name": "<<random.word>>",
+    "nickname": "<<random.word>>",
+    "inviteSent": false,
+    "customId": "<<random.alphaNumeric##4>>",
+    "email": "<<internet.email>>"
+  }
