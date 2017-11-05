@@ -148,6 +148,40 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
       return cloud.post(`/accounts/${accountId}/users`, payloadWithRoles, r => {
         expect(r).to.have.statusCode(403);
       });
+
     });
   });
+  describe('preferences', () => {
+    let preferenceId;
+      before(() => {
+        return cleanup()
+          .then(r => cloud.get(`/accounts`))
+          .then(r => accountId = r.body.filter(account => account.defaultAccount)[0].id)
+          .then(r => cloud.post(`/accounts/${accountId}/users`, payload, schema))
+          .then(r => userId = r.body.id);
+      });
+
+      it('should allow preference to be associated with a user', () => {
+        return cloud.post(`/users/${userId}/preferences`, {key:'display.test.preference', preferenceValue:'true'})
+        .then(r => {
+            preferenceId = r.body.preferenceId
+            expect(r.body.entityId).to.equal(userId)
+          });
+        });
+
+      it('should allow existing user preference value to be updated', () => {
+        return cloud.patch(`/users/${userId}/preferences/${preferenceId}`, {preferenceValue:'false'})
+        .then(r => expect(r.body.preferenceValue).to.equal('false'));
+      });
+
+      it('should return user preferences', () => {
+        return cloud.get(`/users/${userId}/preferences`)
+        .then(r => expect(r.body.length).to.be.above(0));
+      });
+
+      it('should return user preference', () => {
+        return cloud.get(`/users/${userId}/preferences/${preferenceId}`)
+        .then(r => expect(r.body).to.not.be.empty);
+      });
+    });
 });

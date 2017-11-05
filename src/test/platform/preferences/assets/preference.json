@@ -1,0 +1,8 @@
+{
+        "key": "display.test.preference",
+        "description": "This will display the test preference",
+        "name": "Display the preference",
+        "defaultValue": "true",
+        "type":"BOOLEAN",
+        "active": true
+}
