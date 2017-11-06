@@ -1,22 +1,68 @@
 machine:
-  node:
-    version: 6.3.0
+    node:
+        version: 6.2.1
+    java:
+        version: oraclejdk8
 
 dependencies:
-  post:
-    - npm link
+    pre:
+        - |
+          sudo service mysql stop
+          sudo service mongod stop
+          sudo service irqbalance stop
+          sudo -u postgres psql -U postgres -w -q -c "create user cesecurity with createdb inherit login encrypted password 'cesecurity'"
+          sudo -u postgres psql -U postgres -w -q -c "create database cesecurity with owner cesecurity"
+          sudo -u postgres psql -U postgres -w -q -c "create user elements with createdb inherit login encrypted password 'elementsdb'"
+          sudo -u postgres psql -U postgres -w -q -c "create database elements with owner elements"
+          sudo -u postgres psql -U postgres elements < $HOME/soba/.circleci/baseline.sql
+          sudo mkdir -p $HOME/.m2
+          sudo rsync -auv $HOME/soba/.circleci/.m2/settings.xml $HOME/.m2/settings.xml
+          sudo rsync -r --include='*/' --include='*.jar' --exclude='*' $HOME/soba/.circleci/jre/ $JAVA_HOME/jre
+    override:
+      - |
+        mvn -Dmaven.test.skip=true clean install
+        mvn 2qrius:yakisoba:dbdeploy -f security-pom.xml -P circleci-security
+        mvn 2qrius:yakisoba:dbdeploy -P circleci
+
+      - >
+        if [ -n "${RUN_CHURROS_SUITE}" ]; then
+          # clone churros and churros-sauce
+          git clone https://github.com/cloud-elements/churros.git ../churros
+          git clone https://github.com/cloud-elements/churros-sauce.git ../churros-sauce
+
+          # run setup for churros
+          cd ../churros && npm install && npm link
+        fi
 
 test:
-  post:
-    - npm run coveralls
+    override:
+
+        - mvn test:
+            timeout: 1800
+        - ./.circleci/churros_init.sh ${CHURROS_ENVIRONMENT}
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} platform/accounts
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} platform/jobs
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} platform/signup
+
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/actessentialsoauth
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/brighttalk
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/chargebee
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/chargify
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/eventmobiv1
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/kissmetrics
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/mysql
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/sailthru
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/salesforcemarketingcloud
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/sendgrid
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/stripe
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/taxify
+        - ./.circleci/run_churros_suite.sh ${RUN_CHURROS_SUITE} elements/wufoo
 
 general:
-  artifacts:
-    - "churros.log"
-    - "coverage"
-
-deployment:
-  docs:
-    branch: master
-    commands:
-      - ./deploy/deploy-docs.sh
+    artifacts:
+          - "/home/ubuntu/churros/churros.log"
+    branches:
+        ignore:
+            - master
+            - /release-[1-9]+\.[0-9]+$/gm
+            - develop
