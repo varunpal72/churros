@@ -11,6 +11,15 @@ const expect = chakram.expect;
 const logger = require('winston');
 const provisioner = require('core/provisioner');
 
+const genCloseioEvent = (action, num) => {
+  const event = require('./assets/events/raw-closeio-account-obj');
+  const events = [];
+  for (let i = 0; i < num; i++) {
+    events.push(event);
+  }
+  return { objectType: 'accounts', accounts: events };
+};
+
 const genWebhookEvent = (action, num) => {
   const event = require('./assets/events/raw-webhook');
   const events = [];
@@ -48,7 +57,7 @@ const pollExecutions = (formulaId, formulaInstanceId, numExpected, attemptNum) =
           setTimeout(() => {
             return pollExecutions(formulaId, formulaInstanceId, numExpected, attemptNum + 1)
               .then(s => res(s));
-          }, 5000);
+          }, 10000);
         } else {
           logger.debug(`Formula ${formulaId} instance ${formulaInstanceId}: All ${numExpected} executions finished. ${status.success} success, ${status.failed} failed`);
           return res(status);
@@ -89,24 +98,28 @@ const createXInstances = (x, formulaId, formulaInstance) => {
  */
 suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   let sfdcId;
+  let closeioId;
+
   before(() => cleaner.formulas.withName('complex_successful')
     .then(r => common.provisionSfdcWithWebhook())
-    .then(r => sfdcId = r.body.id));
+    .then(r => sfdcId = r.body.id))
+    .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
+    .then(r => closeioId = r.body.id));
 
   /** Clean up */
   after(() => {
     if (sfdcId) return provisioner.delete(sfdcId);
   });
 
-  it('should handle a very large event payload repeatedly', () => {
+  const numFormulaInstances = 1;
+  const numEvents = 1;
+  const numInOneEvent = 1;
+
+  it('should handle a very large event payload repeatedly using sfdc', () => {
     const formula = require('./assets/formulas/complex-successful-formula');
     formula.engine = process.env.CHURROS_FORMULAS_ENGINE;
     const formulaInstance = require('./assets/formulas/basic-formula-instance');
     formulaInstance.configuration.trigger_instance = sfdcId;
-
-    const numFormulaInstances = 1;
-    const numEvents = 1;
-    const numInOneEvent = 1;
 
     let formulaId;
     let formulaInstances = [];
@@ -116,6 +129,30 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
       .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
       .then(ids => ids.map(id => formulaInstances.push(id)))
       .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
+      .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
+      .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
+      .then(r => chakram.all(deletes))
+      .then(r => common.deleteFormula(formulaId))
+      .catch(e => {
+        if (formulaId) common.deleteFormula(formulaId);
+        throw new Error(e);
+      });
+  });
+
+  it('should handle a very large event payload repeatedly using closeio', () => {
+    const formula = require('./assets/formulas/complex-successful-formula');
+    formula.engine = process.env.CHURROS_FORMULAS_ENGINE;
+    const formulaInstance = require('./assets/formulas/basic-formula-instance');
+    formulaInstance.configuration.trigger_instance = closeioId;
+
+    let formulaId;
+    let formulaInstances = [];
+    let deletes = [];
+    return cloud.post(test.api, formula, fSchema)
+      .then(r => formulaId = r.body.id)
+      .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
+      .then(ids => ids.map(id => formulaInstances.push(id)))
+      .then(r => simulateTrigger(numEvents, closeioId, genCloseioEvent('update', numInOneEvent), common.generateCloseioPollingEvent))
       .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
       .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
       .then(r => chakram.all(deletes))
