@@ -162,4 +162,40 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
         throw new Error(e);
       });
   });
+
+  it('should handle a very large number of executions using v1 and v3 engine at the same time', () => {
+    const formula = require('./assets/formulas/complex-successful-formula');
+    formula.engine = 'v3';
+
+    const formulaInstance = require('./assets/formulas/basic-formula-instance');
+    formulaInstance.configuration.trigger_instance = closeioId;
+
+    let formulaId, formulaId2;
+    let formulaInstances = [];
+    let deletes = [];
+    return cloud.post(test.api, formula, fSchema)
+      .then(r => formulaId = r.body.id)
+      .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
+      .then(ids => ids.map(id => formulaInstances.push(id)))
+      .then(() => {
+        formula.name = 'number2';
+        formula.engine = 'v1';
+        return cloud.post(test.api, formula, fSchema)
+      })
+      .then(r => formulaId2 = r.body.id)
+      .then(() => createXInstances(numFormulaInstances, formulaId2, formulaInstance))
+      .then(ids => ids.map(id => formulaInstances.push(id)))
+      .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
+      .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
+      .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
+      .then(r => chakram.all(deletes))
+      .then(r => common.deleteFormula(formulaId))
+      .then(r => common.deleteFormula(formulaId2))
+      .catch(e => {
+        if (formulaId) common.deleteFormula(formulaId);
+        if (formulaId2) common.deleteFormula(formulaId2);
+        throw new Error(e);
+      });
+  });
+
 });
