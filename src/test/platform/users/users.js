@@ -7,6 +7,8 @@ const roleSchema = require('./assets/role.schema');
 const rolesSchema = require('./assets/roles.schema');
 const expect = require('chakram').expect;
 const props = require('core/props');
+const preference = require('./assets/preference');
+
 const payload = {
   firstName: 'frank',
   lastName: 'ricard',
@@ -158,7 +160,8 @@ suite.forPlatform('users', { schema: schema, payload: payload }, (test) => {
           .then(r => cloud.get(`/accounts`))
           .then(r => accountId = r.body.filter(account => account.defaultAccount)[0].id)
           .then(r => cloud.post(`/accounts/${accountId}/users`, payload, schema))
-          .then(r => userId = r.body.id);
+          .then(r => userId = r.body.id)
+          .then(r => cloud.post('/preferences', preference, r => Promise.resolve(true)));
       });
 
       it('should allow preference to be associated with a user', () => {
