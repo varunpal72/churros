@@ -96,7 +96,7 @@ const createXInstances = (x, formulaId, formulaInstance) => {
 /**
  * Tests formula executions under heavy load (number of events, size of events, etc.)
  */
-suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
+suite.forPlatform('formulas', { name: 'formulas load', skip: false }, (test) => {
   let sfdcId;
   let closeioId;
 
@@ -181,7 +181,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
       .then(() => {
         formula.name = 'number2';
         formula.engine = 'v3';
-        return cloud.post(test.api, formula, fSchema)
+        return cloud.post(test.api, formula, fSchema);
       })
       .then(r => formulaId2 = r.body.id)
       .then(() => createXInstances(numFormulaInstances, formulaId2, formulaInstance))
