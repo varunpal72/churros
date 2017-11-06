@@ -1,16 +1,14 @@
 'use strict';
 
 const suite = require('core/suite');
-const tools = require('core/tools');
+const payload = require('./assets/refund-receipts');
 const chakram = require('chakram');
 const expect = chakram.expect;
-const payload= require('./assets/tax-agencies');
-const build = (overrides) => Object.assign({}, payload, overrides);
-const agencyPayload = build({"displayName": tools.random()});
 
-suite.forElement('finance', 'tax-agencies', { payload: agencyPayload}, (test) => {
+suite.forElement('finance', 'refund-receipts', { payload: payload}, (test) => {
+  test.withOptions({skip:true}).should.supportCruds();
   test.should.supportSr();
-  test.withOptions({skip:true}).should.return200OnPost();
+  test.withOptions({ qs: { page: 1, pageSize: 5 } }).should.return200OnGet();
   test.withName(`should support searching ${test.api} by Id`)
     .withOptions({ qs: { where: `id ='1234'` } })
     .withValidation((r) => {
