@@ -16,5 +16,5 @@ suite.forElement('finance', 'vendor-credits', { payload: payload }, (test) => {
       .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
-  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
 });
