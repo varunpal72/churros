@@ -1669,24 +1669,36 @@
  },
  "inventory-sites": {
    "fields": [{
+     "path": "idTransformed",
+     "type": "string"
+    },{
      "path": "id",
      "type": "string"
    }]
  },
  "inventory-adjustments": {
    "fields": [{
+     "path": "idTransformed",
+     "type": "string"
+    },{
      "path": "id",
      "type": "string"
    }]
  },
  "bill-payment-checks": {
    "fields": [{
+     "path": "idTransformed",
+     "type": "string"
+    },{
      "path": "id",
      "type": "string"
    }]
  },
  "bill-payment-cards": {
    "fields": [{
+     "path": "idTransformed",
+     "type": "string"
+    },{
      "path": "id",
      "type": "string"
    }]
