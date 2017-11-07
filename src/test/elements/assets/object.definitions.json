@@ -1700,6 +1700,15 @@
      "type": "string"
    }]
  },
+ "equipment-cards": {
+   "fields": [{
+     "path": "idTransformed",
+     "type": "string"
+    },{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "bill-payment-cards": {
    "fields": [{
      "path": "idTransformed",
