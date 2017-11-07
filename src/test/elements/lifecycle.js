@@ -78,7 +78,7 @@ before(() => {
         props.set('hub', hub);
         element = tools.getBaseElement(element);
         props.setForKey(element, 'elementId', r.body.element.id);
-
+        props.set('instanceName', r.body.name);
         // object definitions file exists? create the object definitions on the instance
         const objectDefinitionsFile = `${__dirname}/assets/object.definitions`;
         if (fs.existsSync(objectDefinitionsFile + '.json')) {

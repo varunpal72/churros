@@ -11,24 +11,27 @@
   const createAll = (urlTemplate, list) => {
     return Object.keys(list).sort()
       .reduce((p, key) => p.then(() => {
-        return cloud.post(util.format(urlTemplate, key), list[key])
+        //if there is a 409 then we don't need to create another since it is already there
+        return cloud.post(util.format(urlTemplate, key), list[key], r => r.response.statusCode === 409 ? null : expect(r).to.have.statusCode(200))
         .catch(err => cloud.post(util.format(urlTemplate, key), list[key]));
       }), Promise.resolve(true)); // initial
   };
 
   //Will by default run these
   describe('Basic tests', () => {
-    let element, instanceId, hub;
+    let element, instanceId, hub, instanceName;
     before(() => {
       element = props.get('element');
       instanceId = props.get('instanceId');
       hub = props.get('hub');
+      instanceName = props.get('instanceName');
     });
+    it('should provision', () => expect(instanceName).to.not.equal('churros-backup'));
     it('should GET /objects', () => {
-      return cloud.get('/objects').then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
+      return cloud.get('/objects').then(r => hub === 'documents' ? null : expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
     });
 
-    it('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
+    it.skip('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
       .then(s => new Promise((res, rej) => swaggerParser.validate(s.body, (err, api) => err ? rej(err) : res()))));
 
     it('metadata', () => cloud.get(`elements/${props.getForKey(element, 'elementId')}/metadata`).then(r => expect(r.body).to.not.be.empty && expect(r).to.have.statusCode(200)));
@@ -50,7 +53,7 @@
             }
           });
           //create the transformations and validating they work
-          return Promise.all(Object.keys(transformations).map(key => cloud.post(`/instances/${instanceId}/transformations/${key}`, transformations[key])))
+          return createAll(`/instances/${instanceId}/transformations/%s`, transformations)
           .then(() => Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
         } else {
           //create defintions before the transformations
