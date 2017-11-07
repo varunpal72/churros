@@ -15,7 +15,10 @@ const lock = () => ({
 
 
 suite.forElement('documents', 'files', null, (test) => {
-
+  afterEach(done => {
+    //We were getting a 429 before this
+    setTimeout(done, 2500);
+  });
   it('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
