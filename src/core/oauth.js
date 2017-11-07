@@ -425,6 +425,17 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('authorizeBtn')).click();
       browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
       return browser.getCurrentUrl();
+    case 'revel':
+      browser.get(r.body.oauthUrl);
+      waitForElement(webdriver.By.id('id_username'));
+      browser.findElement(webdriver.By.id('id_username')).sendKeys(username);
+      waitForElement(webdriver.By.id('id_password'));
+      browser.findElement(webdriver.By.id('id_password')).sendKeys(password);
+      browser.findElement(webdriver.By.xpath('//*[@id="form-login"]/fieldset/div[3]/input')).click();
+      waitForElement(webdriver.By.id('btn_ok'));
+      browser.findElement(webdriver.By.id('btn_ok')).click();
+      browser.sleep(3000);
+      return browser.getCurrentUrl();
     case 'servicenowoauth':
       browser.get(r.body.oauthUrl);
       waitForElement(webdriver.By.id('user_name'), 5000);
