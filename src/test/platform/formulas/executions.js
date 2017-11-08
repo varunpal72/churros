@@ -883,4 +883,22 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
     return manualTriggerTest('use-moment-package', null, {}, 2, validator);
   });
 
+  it('should spawn 3 executions with one event each that for a single polling event with 3 objects', () => {
+    const validator = (executions) => {
+      expect(executions.length).to.equal(3);
+      executions.forEach(e => {
+        const sevs = e.stepExecutions[0].stepExecutionValues;
+        const event = JSON.parse(sevs.filter(sev => sev.key == 'simple-script.event')[0].value);
+        const events = JSON.parse(sevs.filter(sev => sev.key == 'simple-script.events')[0].value);
+        expect(events.length).to.equal(1);
+        expect(events[0]).to.deep.equal(event);
+      });
+    };
+
+    const triggerCb = (fId, fiId) => generateXSingleSfdcPollingEvents(closeioId, 1, 'triple-event-closeio');
+    const f = require('./assets/formulas/simple-successful-formula');
+    const fi = require('./assets/formulas/basic-formula-instance');
+    return testWrapper(triggerCb, f, fi, 3, 2, 2, validator);
+  });
+
 });
