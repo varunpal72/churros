@@ -6,11 +6,9 @@ const locationsUpdatePayload = tools.requirePayload(`${__dirname}/assets/locatio
 
 suite.forElement('employee', 'locations', (test) => {
 
-  it('Should allow RU for locations', () => {
-
+  it('should allow SU for locations', () => {
     return cloud.get(test.api)
       .then(r => cloud.patch(test.api, locationsUpdatePayload))
-      .then(r => expect(r.body.name === 'Atul').to.not.be.null)
-      .then(r => cloud.get(test.api));
+      .then(r => expect(r.body.name === 'Atul').to.not.be.null);
   });
 });

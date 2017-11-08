@@ -28,8 +28,7 @@ suite.forElement('employee', 'employees', (test) => {
     .withName('should allow GET with option role')
     .should.return200OnGet();
 
-  it('Should allow CRUDS for employees', () => {
-
+  it('should allow CRUDS for employees', () => {
     let empId;
     return cloud.post(test.api, employeePayload)
       .then(r => empId = r.body.id)

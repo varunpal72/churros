@@ -28,14 +28,13 @@ suite.forElement('employee', 'timesheets', (test) => {
     .withName('should allow GET with option server_banking')
     .should.return200OnGet();
 
-  it('Should allow CRUD for timesheets', () => {
-
+  it('should allow CRUDS for timesheets', () => {
     let tId;
     return cloud.post(test.api, timeSheetPayload)
       .then(r => tId = r.body.id)
       .then(r => cloud.get(`${test.api}/${tId}`))
       .then(r => cloud.patch(`${test.api}/${tId}`, timeSheetUpdatePayload))
-      .then(r => cloud.withOptions({ qs: { where: `id = '${empId}'` } }).delete(`${test.api}/${tId}`))
+      .then(r => cloud.withOptions({ qs: { employeeId: `${empId}` } }).delete(`${test.api}/${tId}`))
       .then(r => cloud.get(test.api));
   });
 });

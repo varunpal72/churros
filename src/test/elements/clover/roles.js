@@ -5,7 +5,7 @@ const expect = require('chakram').expect;
 const rolesPayload = tools.requirePayload(`${__dirname}/assets/roles.json`);
 const rolesUpdatePayload = tools.requirePayload(`${__dirname}/assets/rolesUpdate.json`);
 
-suite.forElement('employee', 'roles', (test) => {
+suite.forElement('employee', 'roles', { payload: rolesPayload }, (test) => {
 
   test.should.supportPagination();
 
@@ -21,11 +21,10 @@ suite.forElement('employee', 'roles', (test) => {
     .withName('should allow GET with option systemRole')
     .should.return200OnGet();
 
-  it('Should allow CRUDS for roles', () => {
+  it('should allow CRUDS for roles', () => {
     let roleId;
     let arr = ['EMPLOYEE', 'ADMIN', 'MANAGER'];
     rolesPayload.systemRole = arr[Math.floor(Math.random() * arr.length)];
-
     return cloud.post(test.api, rolesPayload)
       .then(r => roleId = r.body.id)
       .then(r => cloud.get(`${test.api}/${roleId}`))

@@ -4,21 +4,25 @@ const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 const paymentPayload = tools.requirePayload(`${__dirname}/assets/payments.json`);
 
-suite.forElement('employee', 'payments', (test) => {
+suite.forElement('employee', 'payments', { payload: paymentPayload }, (test) => {
 
-  test.withValidation(r => {
-    expect(r).to.have.statusCode(200);
-    if (r.body !== null || r.body !== undefined) {
-      expect(r.body[0].id).to.not.be.empty;
-    }
-  }).should.supportSr();
+  before(() => cloud.get('/orders')
+    .then(r => {
+      paymentPayload.orderId = r.body[0].id;
+    })
+  );
+  test.withApi(test.api)
+    .withOptions({ qs: { where: "modifiedTime>1508943600000" } })
+    .withValidation(r => expect(r.body.filter(obj => obj.id !== "")).to.not.be.null)
+    .withName('should allow GET with option modifiedTime')
+    .should.return200OnGet();
 
-  it('Should support CRS for payments', () => {
-    let pId;
-    return cloud.post(test.api, paymentPayload)
-      .then(r => pId = r.body.paymentId)
-      .then(r => cloud.get(`${test.api}/${pId}`))
-      .then(r => cloud.get(test.api))
-      .then(r => expect(r.body).to.not.to.be.empty);
-  });
+    it('should support CRS for payments', () => {
+        let pId;
+        return cloud.post(test.api, paymentPayload)
+          .then(r => pId = r.body.id)
+          .then(r => cloud.get(`${test.api}/${pId}`))
+          .then(r => cloud.get(test.api))
+          .then(r => expect(r.body).to.not.to.be.empty);
+      });
 });
