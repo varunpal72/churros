@@ -557,7 +557,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .thenCatch(r => true); //
       browser.findElement(webdriver.By.id('submitButton')).click();
       browser.findElement(webdriver.By.id('submit-button')).click();
-      browser.sleep(3000);
+      browser.sleep(600);
       return browser.getCurrentUrl();
 
 

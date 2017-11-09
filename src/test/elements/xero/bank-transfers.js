@@ -8,6 +8,7 @@ const expect = require('chakram').expect;
 let payload = require('./assets/bank-transfer.json');
 
 suite.forElement('finance', 'bank-transfers', (test) => {
+
     before(() => {
         /* 
         ** Accounts w/ transactions can't be deleted so we rely 
@@ -25,14 +26,21 @@ suite.forElement('finance', 'bank-transfers', (test) => {
                 payload.FromBankAccount.AccountID = toAccount[0].AccountID;
             });
     });
-    it('should support CRS', () => {
+
+    it('should support CRS for /bank-transfers', () => {
         let id;
+
         return cloud.post(test.api, payload)
             .then(r => id = r.body.BankTransferID)
             .then(() => cloud.get(`${test.api}/${id}`))
-            .then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty)
+            .then(r => expect(r.body).to.not.be.empty)
             .then(() => cloud.get(test.api))
-            .then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
-            
+            .then(r => expect(r.body).to.not.be.empty)
+            .then(() => cloud.withOptions({qs: {where: `BankTransferID='${id}'`}}).get(test.api))
+            .then(r => expect(r.body.length).to.equal(1) && expect(r.body[0].BankTransferID).to.equal(id))
+            .then(() => cloud.get(test.api))
+            .then(r => expect(r.body.length).to.be.at.least(2))
+            .then(() => cloud.withOptions({qs: { page: 2, pageSize: 1}}).get(test.api))
+            .then(r => expect(r.body.length).to.equal(1));
     });
 });
