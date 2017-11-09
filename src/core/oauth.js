@@ -175,11 +175,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
 
       return browser.getCurrentUrl();
-    case 'bullhorn':	  
-      browser.get(r.body.oauthUrl); 
-      browser.findElement(webdriver.By.id('un')).sendKeys(username); 
+    case 'bullhorn':	  
+      browser.get(r.body.oauthUrl); 
+      browser.findElement(webdriver.By.id('un')).sendKeys(username); 
       browser.findElement(webdriver.By.id('pw')).sendKeys(password);
-      browser.findElement(webdriver.By.id('btn')).click();         
+      browser.findElement(webdriver.By.id('btn')).click();         
       return browser.getCurrentUrl();
     case 'facebookleadads':
     case 'facebooksocial':
@@ -235,11 +235,14 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('pass')).sendKeys(password);
       browser.findElement(webdriver.By.name('submit')).click();
       return browser.getCurrentUrl();
-      case 'googlesheets':
-      case 'googledrive':
+    case 'googlesheets':
+    case 'googledrive':
+    case 'googlesheetsv4':
+    case 'googlecalendar':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
       browser.findElement(webdriver.By.id('identifierNext')).click();
+      browser.sleep(3000);
       return waitForElement(webdriver.By.css('#password input'))
         .then(r => browser.findElement(webdriver.By.css('#password input')).sendKeys(password))
         .then(r => browser.findElement(webdriver.By.id('passwordNext')).click())
@@ -430,15 +433,27 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('authorizeBtn')).click();
       browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
       return browser.getCurrentUrl();
+    case 'revel':
+      browser.get(r.body.oauthUrl);
+      waitForElement(webdriver.By.id('id_username'));
+      browser.findElement(webdriver.By.id('id_username')).sendKeys(username);
+      waitForElement(webdriver.By.id('id_password'));
+      browser.findElement(webdriver.By.id('id_password')).sendKeys(password);
+      browser.findElement(webdriver.By.xpath('//*[@id="form-login"]/fieldset/div[3]/input')).click();
+      waitForElement(webdriver.By.id('btn_ok'));
+      browser.findElement(webdriver.By.id('btn_ok')).click();
+      browser.sleep(3000);
+      return browser.getCurrentUrl();
     case 'servicenowoauth':
       browser.get(r.body.oauthUrl);
-      browser.waitForElement(webdriver.By.id('user_name'), 5000);
+      waitForElement(webdriver.By.id('user_name'), 5000);
       browser.findElement(webdriver.By.id('user_name')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.id('sysverb_login')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.className('btn btn-primary')), 10000)
         .thenCatch(r => true);
       browser.findElement(webdriver.By.className('btn btn-primary')).click();
+      browser.sleep(2000);
       return browser.getCurrentUrl();
     case 'servicemax':
     case 'sagelive':
@@ -644,3 +659,4 @@ module.exports = (element, r, username, password, config) => {
   logger.debug('Redirecting to %s', r.body.oauthUrl);
   return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);
 };
+

@@ -43,7 +43,9 @@ suite.forPlatform('formulas', { name: 'formula config', schema: schema }, (test)
     const v = (r, key) => {
       expect(r).to.have.statusCode(200);
       expect(r.body).to.not.be.null;
-      expect(r.body.triggers[0].properties.elementInstanceId).to.equal(`\${config.${key}}`);
+      // make sure it replaces one without the config. prefix
+      expect(r.body.triggers[0].properties.elementInstanceId).to.equal(`\${${key}}`);
+      // make sure it replaces also with the config. prefix
       r.body.steps.filter((s) => s.properties.elementInstanceId !== undefined).forEach(rs => expect(rs.properties.elementInstanceId).to.equal(`\${config.${key}}`));
       return r;
     };

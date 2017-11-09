@@ -137,7 +137,7 @@ suite.forPlatform('element-extend', {}, (test) => {
       return cloud.withOptions({ qs: { accountOnly: true } }).get(`elements/closeio/resources`)
         .then(r => {
           expect(r.body).to.not.be.empty;
-          expect(r.body.length === 2).to.be.true;
+          expect(r.body.length === 1).to.be.true;
         });
     });
 

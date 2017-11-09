@@ -11,7 +11,8 @@
   const createAll = (urlTemplate, list) => {
     return Object.keys(list).sort()
       .reduce((p, key) => p.then(() => {
-        return cloud.post(util.format(urlTemplate, key), list[key])
+        //if there is a 409 then we don't need to create another since it is already there
+        return cloud.post(util.format(urlTemplate, key), list[key], r => r.response.statusCode === 409 ? null : expect(r).to.have.statusCode(200))
         .catch(err => cloud.post(util.format(urlTemplate, key), list[key]));
       }), Promise.resolve(true)); // initial
   };

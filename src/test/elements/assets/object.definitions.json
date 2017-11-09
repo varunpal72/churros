@@ -1658,6 +1658,12 @@
      "type": "string"
    }]
  },
+ "employee-schedules" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "posting-periods" : {
    "fields": [{
      "path": "idTransformed",
@@ -1694,6 +1700,15 @@
      "type": "string"
    }]
  },
+ "equipment-cards": {
+   "fields": [{
+     "path": "idTransformed",
+     "type": "string"
+    },{
+     "path": "id",
+     "type": "string"
+   }]
+ },
  "bill-payment-cards": {
    "fields": [{
      "path": "idTransformed",
@@ -1708,6 +1723,30 @@
      "path": "idTransformed",
      "type": "string"
     },{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "employee-schedules" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "roles" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "timesheets" : {
+   "fields": [{
+     "path": "id",
+     "type": "string"
+   }]
+ },
+ "tips" : {
+   "fields": [{
      "path": "id",
      "type": "string"
    }]
