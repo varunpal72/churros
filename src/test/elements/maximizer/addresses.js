@@ -2,26 +2,18 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-
-const addressPayload = () => ({
-  "City": "Kent",
-  "StateProvince": "Ohio",
-  "Country":"USA",
-  "ZipCode":"44240"
-});
+const addressPayload = require('./assets/addresses');
 
 suite.forElement('crm', 'addresses', (test) => {
-  test.withOptions({ qs: { page: 1, pageSize: 5,  } }).should.supportPagination();
-  let parentId, addressId, req;
+  test.should.supportPagination();
+  let addressId;
   it('should allow CRUD for /addresses', () => {
-    return cloud.get(`/hubs/crm/contacts`)
-      .then(r => parentId = r.body[0].Key)
-      .then(r => req = addressPayload())
-      .then(r => req.ParentKey = parentId)
-      .then(r => cloud.post(`${test.api}`, req))
+    return cloud.get(`/hubs/crm/addressbook-entries`)
+      .then(r => addressPayload.ParentKey = r.body[0].id)
+      .then(r => cloud.post(`${test.api}`, addressPayload))
+      .then(r => addressId = r.body.Key)
       .then(r => cloud.get(`${test.api}`))
-      .then(r => addressId = r.body[0].Address.Key)
-      .then(r => cloud.patch(`${test.api}/${addressId}`, {}))
+      .then(r => cloud.patch(`${test.api}/${addressId}`, addressPayload))
       .then(r => cloud.delete(`${test.api}/${addressId}`));
   });
 });
