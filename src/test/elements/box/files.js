@@ -15,7 +15,10 @@ const lock = () => ({
 
 
 suite.forElement('documents', 'files', null, (test) => {
-
+  afterEach(done => {
+    //We were getting a 429 before this
+    setTimeout(done, 2500);
+  });
   it('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
@@ -94,12 +97,11 @@ suite.forElement('documents', 'files', null, (test) => {
       .then(r => {
         tempKey = r.body.templateKey;
         updatePayload.template = r.body.templateKey;
-        payload.template = r.body.templateKey;
       })
-      .then(r => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields`, payload))
+      .then(r => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}/templates`, payload))
       .then(r => cloud.get(`/hubs/documents/files/${fileId1}/custom-fields`))
-      .then(r => cloud.put(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
-      .then(r => cloud.patch(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
+      .then(r => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
+      .then(r => cloud.withOptions({ qs: { op: "replace" } }).patch(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
       .then(r => cloud.withOptions({ qs: { scope: "enterprise" } }).get(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`))
       .then(r => cloud.withOptions({ qs: { scope: "enterprise" } }).delete(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`))
       .then(r => cloud.delete('/hubs/documents/files/' + fileId1));
