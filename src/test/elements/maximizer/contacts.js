@@ -6,7 +6,7 @@ const contactPayload = require('./assets/contacts');
 
 suite.forElement('crm', 'contacts', (test) => {
   test.should.supportPagination('id');
-  let parentId, contactId, req;
+  let contactId;
   it('should allow CRUDS for /contacts', () => {
     return cloud.get(`/hubs/crm/addressbook-entries`)
       .then(r => contactPayload.ParentKey = r.body[0].id)
