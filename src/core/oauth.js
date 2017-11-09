@@ -175,11 +175,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
 
       return browser.getCurrentUrl();
-    case 'bullhorn':	  
-      browser.get(r.body.oauthUrl); 
-      browser.findElement(webdriver.By.id('un')).sendKeys(username); 
+    case 'bullhorn':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('un')).sendKeys(username);
       browser.findElement(webdriver.By.id('pw')).sendKeys(password);
-      browser.findElement(webdriver.By.id('btn')).click();         
+      browser.findElement(webdriver.By.id('btn')).click();
       return browser.getCurrentUrl();
     case 'facebookleadads':
     case 'facebooksocial':
@@ -540,6 +540,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 10000);
       browser.findElement(webdriver.By.id('ctl00_PlaceHolderMain_BtnAllow')).click();
       return browser.getCurrentUrl();
+
     case 'wrike':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('emailField')).sendKeys(username);
@@ -548,6 +549,18 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       //Only needed first time
       //browser.findElement(webdriver.By.id('user_oauth_approval')).click();
       return browser.getCurrentUrl();
+    case 'xero':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('email')).sendKeys(username);
+      browser.findElement(webdriver.By.id('password')).sendKeys(password);
+      browser.wait(() => browser.isElementPresent(webdriver.By.id('submitButton')), 10000)
+        .thenCatch(r => true); //
+      browser.findElement(webdriver.By.id('submitButton')).click();
+      browser.findElement(webdriver.By.id('submit-button')).click();
+      browser.sleep(3000);
+      return browser.getCurrentUrl();
+
+
     case 'zendesk':
       browser.get(r.body.oauthUrl);
       browser.switchTo().frame(0);
@@ -652,4 +665,3 @@ module.exports = (element, r, username, password, config) => {
   logger.debug('Redirecting to %s', r.body.oauthUrl);
   return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);
 };
-
