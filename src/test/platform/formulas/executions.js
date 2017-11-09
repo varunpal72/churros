@@ -888,8 +888,8 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       expect(executions.length).to.equal(3);
       executions.forEach(e => {
         const sevs = e.stepExecutions[0].stepExecutionValues;
-        const event = JSON.parse(sevs.filter(sev => sev.key == 'simple-script.event')[0].value);
-        const events = JSON.parse(sevs.filter(sev => sev.key == 'simple-script.events')[0].value);
+        const event = JSON.parse(sevs.filter(sev => sev.key === 'simple-script.event')[0].value);
+        const events = JSON.parse(sevs.filter(sev => sev.key === 'simple-script.events')[0].value);
         expect(events.length).to.equal(1);
         expect(events[0]).to.deep.equal(event);
       });
