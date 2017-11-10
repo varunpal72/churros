@@ -6,61 +6,69 @@ const suite = require('core/suite');
 const random = require('core/tools.js').randomStr;
 
 suite.forElement('finance', 'reports', (test) => {
-    let reports = [];
-    let reportsWithRequiredField = [];
-    let contactReports = [];
-    let bankAccountReports = [];
+    let reportsMetadataResponse = require('./assets/reportsmetadataresponse.json');    
+    expect(reportsMetadataResponse).to.not.be.empty;
+    let reports = reportsMetadataResponse.filter(report => report.required.length === 0);
+    expect(reports).to.not.be.empty;
+    let contactReports = reportsMetadataResponse.filter(report => report.required[0] === 'contactId');
+    expect(contactReports).to.not.be.empty;
+    let bankAccountReports = reportsMetadataResponse.filter(report => report.required[0] === 'bankAccountId');
+    expect(bankAccountReports).to.not.be.empty;
+    let noReports = reportsMetadataResponse.filter(report => (report.required[0] === 'bankAccountId' || report.required[0] === 'contactId' || report.required.length === 0));
+    expect(noReports.length).to.equal(reports.length + contactReports.length + bankAccountReports.length);
+    
+    const contactWrap = (contactReportCallback) => {
+        let contactId;
+        let vendorPayload = require('./assets/contact.json');    
+        vendorPayload.Name = 'churros-' + random('1234567890abcdefghij', 8);
+        return cloud.post('/vendors', vendorPayload)
+            .then(r => contactId = r.body.ContactID)
+            .then(() => contactReportCallback(contactId))
+            .then(() => cloud.delete(`/vendors/${contactId}`))
+    };
 
     it('should support GET /reports/metadata', () => {
         return cloud.get(`${test.api}/metadata`)
             .then(r => {
                 expect(r.body).to.not.be.empty;
-                reports = r.body.filter(report => report.required.length === 0);
-                expect(reports).to.not.be.empty;
-                contactReports = r.body.filter(report => report.required[0] === 'contactId');
-                expect(contactReports).to.not.be.empty;
-                bankAccountReports = r.body.filter(report => report.required[0] === 'bankAccountId');
-                expect(bankAccountReports).to.not.be.empty;
-            })
+                expect(r.body).to.deep.equal(reportsMetadataResponse);
+            });
     });
+
+    it('should support GET /reports/:id for all standard reports', () => {
+        return Promise.all(
+            reports.map(report => {
+                let id = report.id;
+                return cloud.get(`${test.api}/${id}`)
+                    .then(r => expect(r.body).to.not.be.empty);
+            })
+        );
+    });
+                
+    
+    it('should support GET /reports/:id for all bank account reports', () => {
+        return Promise.all(
+            bankAccountReports.map(report => {
+                let bankAccountId;
+                return cloud.get(`/ledger-accounts`)
+                    .then(r => bankAccountId = r.body.filter(account => account.Type === 'BANK')[0].AccountID)
+                    .then(() => cloud.withOptions({qs: {where: `${report.required[0]}='${bankAccountId}'` }}).get(`${test.api}/${report.id}`))
+                    .then(r => expect(r.body.ReportID).to.equal(`${report.id}`));
+            })
+        );
+    });
+                
 
     
-    reports.forEach(report => {
-        it(`should support GET /reports/${report.id}`, () => {
-            id = report.id;
-            return cloud.get(`${test.api}/${id}`)
-                .then(r => expect(r).to.not.be.empty);
-        });
-    });
-                
-    bankAccountReports.forEach(report => {
-        it(`should support S for /reports/${report.id}`, () => {
-            let bankAccountId;
-            return cloud.get(`/ledger-accounts`)
-            .then(r => bankAccuntId = r.filter(account => account.Type === 'BANK')[0].AccountID)
-            .then(() => cloud.withOptions({qs: {where: `${report.required[0]}='${bankAccountId}'` }}).get(`${test.api}/${report.id}`))
-            .then(r => expect(r.body.ReportID).to.equal(`${report.id}`))
-        })
-    });
-                
-
-    contactReports.forEach(report => {
-        it('should support S for /reports/:id', () => {
-            const contactWrap = (contactReportCallback) => {
-                let contactId;
-                let vendorPayload = require('./assets/contact.json');    
-                vendorPayload.Name = 'churros-' + random('1234567890abcdefghij', 8);
-                return cloud.post('/vendors', vendorPayload)
-                    .then(r => contactId = r.body.ContactID)
-                    .then(r => contactReportCallback(contactId))
-                    .then(() => cloud.delete(`/vendors/${vendor.ContactID}`));
-            };
-
-            const contactReportCallback = (contactId) => {
-                    return cloud.withOptions({qs: {where: `${report.required[0]}='${contactId}'` }}).get(`${test.api}/${report.id}`)
-                    .then(r => expect(r.body.ReportID).to.equal(`${report.id}`))
-            }
-            contactWrap(contactReportCallback);   
-        });
-    });
+    it('should support GET /reports/:id for all contact reports', () => {
+        return Promise.all(
+            contactReports.map(report => {
+                const contactReportCallback = (contactId) => {
+                        return cloud.withOptions({qs: {where: `${report.required[0]}='${contactId}'` }}).get(`${test.api}/${report.id}`)
+                        .then(r => expect(r.body.ReportID).to.equal(report.id));
+                }
+                return contactWrap(contactReportCallback);   
+            })
+        );
+    })
 });
