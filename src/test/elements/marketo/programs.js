@@ -18,9 +18,9 @@ const updatePayload = {
 suite.forElement('marketing', 'programs', { payload: payload }, (test) => {
   payload.name += tools.random();
   let id;
-  it('should allow CRUDS for /programs', () => {
+  it('should allow CRUD for /programs', () => {
     return cloud.post(test.api, payload)
-    .then(r => id = r.body[0].id)
+    .then(r => id = r.body.id)
     .then(r => cloud.get(`${test.api}/${id}`))
     .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
     .then(r => cloud.delete(`${test.api}/${id}`));
