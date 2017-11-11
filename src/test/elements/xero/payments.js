@@ -41,7 +41,7 @@ suite.forElement('finance', 'payments', (test) => {
                     .then(() => cloud.post(`${test.api}`, paymentPayload))
                     .then(r => cloud.get(`${test.api}/${r.body.PaymentID}`))
                     .then(r => cloud.get(`${test.api}`));
-            }
+            };
 
 
             let invoiceId;
@@ -53,7 +53,7 @@ suite.forElement('finance', 'payments', (test) => {
                     invoiceId = r.body.InvoiceID;
                 })
                 .then(() => makePayment(invoiceId));
-        }
+        };
 
 
         return contactWrap(cb);

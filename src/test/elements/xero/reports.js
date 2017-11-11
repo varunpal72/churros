@@ -66,9 +66,9 @@ suite.forElement('finance', 'reports', (test) => {
                 const contactReportCallback = (contactId) => {
                         return cloud.withOptions({qs: {where: `${report.required[0]}='${contactId}'` }}).get(`${test.api}/${report.id}`)
                         .then(r => expect(r.body.ReportID).to.equal(report.id));
-                }
+                };
                 return contactWrap(contactReportCallback);   
             })
         );
-    })
+    });
 });
