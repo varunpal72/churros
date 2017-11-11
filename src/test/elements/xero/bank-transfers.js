@@ -1,6 +1,5 @@
 'use strict';
 
-//dependencies at the top
 const cloud = require('core/cloud');
 const suite = require('core/suite');
 const expect = require('chakram').expect;
@@ -11,8 +10,8 @@ suite.forElement('finance', 'bank-transfers', (test) => {
 
     before(() => {
         /* 
-        ** Accounts w/ transactions can't be deleted so we rely 
-        *  on 2 accounts to be present - 'FromBank-DoNotDelete' & 'ToBank-DoNotDelete'
+        Accounts w/ transactions can't be deleted so we rely 
+         on 2 accounts to be present - 'FromBank-DoNotDelete' & 'ToBank-DoNotDelete'
         */
         return cloud.get('/ledger-accounts')
             .then(r => {

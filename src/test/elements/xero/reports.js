@@ -6,7 +6,7 @@ const suite = require('core/suite');
 const random = require('core/tools.js').randomStr;
 
 suite.forElement('finance', 'reports', (test) => {
-    let reportsMetadataResponse = require('./assets/reportsmetadataresponse.json');    
+    let reportsMetadataResponse = require('./assets/reports-metadataResponse.json');    
     expect(reportsMetadataResponse).to.not.be.empty;
     let reports = reportsMetadataResponse.filter(report => report.required.length === 0);
     expect(reports).to.not.be.empty;
