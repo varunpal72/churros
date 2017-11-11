@@ -8,7 +8,7 @@
             "Quantity": "1",
             "UnitAmount": "5.00",
             "Description": "Order of churros",
-            "AccountCode": "4000"
+            "AccountCode": "4000" //4000 should be default 'Sales' account
         }
     ],
     "Type": "ACCREC",

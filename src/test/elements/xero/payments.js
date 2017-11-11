@@ -19,13 +19,13 @@ suite.forElement('finance', 'payments', (test) => {
                     contactName = r.body.Name;
                 })
                 .then(() => invoiceWrap(contactName))
-                .then(() => cloud.delete(`/customers/${contactId}`))
+                .then(() => cloud.delete(`/customers/${contactId}`));
         };
 
         const cb = (contactName) => {
 
             const makePayment = (invoiceId) => {
-                let bankAccountName = 'ToBank-DoNotDelete';
+                const bankAccountName = 'ToBank-DoNotDelete';
                 let paymentPayload = require('./assets/payment.json');
                 let accountId;
                 return cloud.withOptions({qs: {where: `Name='${bankAccountName}'`}}).get('/ledger-accounts') 
@@ -40,7 +40,7 @@ suite.forElement('finance', 'payments', (test) => {
                     })
                     .then(() => cloud.post(`${test.api}`, paymentPayload))
                     .then(r => cloud.get(`${test.api}/${r.body.PaymentID}`))
-                    .then(r => cloud.get(`${test.api}`))
+                    .then(r => cloud.get(`${test.api}`));
             }
 
 
@@ -52,7 +52,7 @@ suite.forElement('finance', 'payments', (test) => {
                     expect(r.body).to.not.be.empty;
                     invoiceId = r.body.InvoiceID;
                 })
-                .then(() => makePayment(invoiceId))
+                .then(() => makePayment(invoiceId));
         }
 
 

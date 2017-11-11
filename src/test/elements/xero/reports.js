@@ -24,7 +24,7 @@ suite.forElement('finance', 'reports', (test) => {
         return cloud.post('/vendors', vendorPayload)
             .then(r => contactId = r.body.ContactID)
             .then(() => contactReportCallback(contactId))
-            .then(() => cloud.delete(`/vendors/${contactId}`))
+            .then(() => cloud.delete(`/vendors/${contactId}`));
     };
 
     it('should support GET /reports/metadata', () => {

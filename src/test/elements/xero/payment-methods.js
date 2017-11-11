@@ -25,6 +25,6 @@ suite.forElement('finance', 'payment-methods', (test) => {
                     });
                 
             })
-        )
+        );
     });
 });
