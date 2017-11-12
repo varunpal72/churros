@@ -3,9 +3,12 @@
 const cloud = require('core/cloud.js');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
-const random = require('core/tools.js').randomStr;
+const faker = require('faker');
 
 suite.forElement('finance', 'reports', (test) => {
+    /**
+       GET /reports/metadata passes back a hard-coded payload so 
+    */
     let reportsMetadataResponse = require('./assets/reports-metadataResponse.json');    
     expect(reportsMetadataResponse).to.not.be.empty;
     let reports = reportsMetadataResponse.filter(report => report.required.length === 0);
@@ -14,13 +17,12 @@ suite.forElement('finance', 'reports', (test) => {
     expect(contactReports).to.not.be.empty;
     let bankAccountReports = reportsMetadataResponse.filter(report => report.required[0] === 'bankAccountId');
     expect(bankAccountReports).to.not.be.empty;
-    let noReports = reportsMetadataResponse.filter(report => (report.required[0] === 'bankAccountId' || report.required[0] === 'contactId' || report.required.length === 0));
-    expect(noReports.length).to.equal(reports.length + contactReports.length + bankAccountReports.length);
+    expect(reportsMetadataResponse.length).to.equal(reports.length + contactReports.length + bankAccountReports.length);
     
     const contactWrap = (contactReportCallback) => {
         let contactId;
         let vendorPayload = require('./assets/contact.json');    
-        vendorPayload.Name = 'churros-' + random('1234567890abcdefghij', 8);
+        vendorPayload.Name = faker.name.findName(); 
         return cloud.post('/vendors', vendorPayload)
             .then(r => contactId = r.body.ContactID)
             .then(() => contactReportCallback(contactId))

@@ -1,0 +1,12 @@
+{
+    "employees": {
+      "vendorName": "employee",
+      "fields": [
+        {
+          "path": "id",
+          "vendorPath": "EmployeeID"
+        }
+      ]
+    }
+  }
+  
