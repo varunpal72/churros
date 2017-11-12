@@ -31,7 +31,7 @@ suite.forElement('finance', 'payments', (test) => {
             expect(r.body.length).to.equal(1);
             expect(r.body[0].Name).to.equal(bankAccountName);
             accountId = r.body[0].AccountID;
-        })
+        }, "Test relies on BANK account named 'ToBank-DoNotDelete'")
         .then(() => {
             paymentPayload.Account.AccountID = accountId;
             paymentPayload.Invoice.InvoiceID = invoiceId;
