@@ -43,9 +43,5 @@ suite.forElement('finance', 'bank-transfers', (test) => {
         .then(r => expect(r.body).to.not.be.empty)
         .then(() => cloud.withOptions({qs: {where: `BankTransferID='${id}'`}}).get(test.api))
         .then(r => expect(r.body.length).to.equal(1) && expect(r.body[0].BankTransferID).to.equal(id))
-        .then(() => cloud.get(test.api))
-        .then(r => expect(r.body.length).to.be.at.least(2))
-        .then(() => cloud.withOptions({qs: { page: 2, pageSize: 1}}).get(test.api))
-        .then(r => expect(r.body.length).to.equal(1));
     });
 });
