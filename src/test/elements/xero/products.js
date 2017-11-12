@@ -3,7 +3,7 @@
 const suite = require('core/suite');
 const faker = require('faker');
 
-let product = { Code: faker.commerce.department() + '-' + faker.commerce.product()}
+let product = { Code: faker.commerce.department() + '-' + faker.commerce.product()};
 
 suite.forElement('finance', 'products', {payload: product}, (test) => {
     afterEach(done => {

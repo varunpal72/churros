@@ -28,6 +28,6 @@ suite.forElement('finance', 'ledger-accounts', (test) => {
             expect(r.body.length).to.equal(1);
             expect(r.body[0].Name).to.equal(name);
         })
-        .then(() => cloud.withOptions({qs: {where: `AccountID='${accountId}'`}}).get(test.api))
+        .then(() => cloud.withOptions({qs: {where: `AccountID='${accountId}'`}}).get(test.api));
     });
 });

@@ -16,7 +16,7 @@ suite.forElement('finance', 'payments', (test) => {
     
     it(`should support CRS for /payments`, () => {
         const bankAccountName = 'ToBank-DoNotDelete';
-        let invoiceId, accountId;
+        let invoiceNumber, accountId;
         let paymentPayload = require('./assets/payment.json');
         let invoicePayload = require('./assets/payment-invoice.json');
         
@@ -24,9 +24,9 @@ suite.forElement('finance', 'payments', (test) => {
         return cloud.post('/invoices', invoicePayload)
         .then(r => {
             expect(r.body).to.not.be.empty;
-            invoiceId = r.body.InvoiceID;
+            invoiceNumber = r.body.InvoiceNumber;
         })
-        cloud.withOptions({qs: {where: `Name='${bankAccountName}'`}}).get('/ledger-accounts') 
+        .then(() => cloud.withOptions({qs: {where: `Name='${bankAccountName}'`}}).get('/ledger-accounts'))
         .then(r => {
             expect(r.body.length).to.equal(1);
             expect(r.body[0].Name).to.equal(bankAccountName);
@@ -34,7 +34,7 @@ suite.forElement('finance', 'payments', (test) => {
         }, "Test relies on BANK account named 'ToBank-DoNotDelete'")
         .then(() => {
             paymentPayload.Account.AccountID = accountId;
-            paymentPayload.Invoice.InvoiceID = invoiceId;
+            paymentPayload.Invoice.InvoiceNumber = invoiceNumber;
         })
         .then(() => cloud.post(`${test.api}`, paymentPayload))
         .then(r => cloud.get(`${test.api}/${r.body.PaymentID}`))

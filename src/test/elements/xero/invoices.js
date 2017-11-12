@@ -25,6 +25,6 @@ suite.forElement('finance', 'invoices', (test) => {
         .then(r => expect(r.body.Reference).to.equal(invoiceUpdate.Reference))
         .then(() => cloud.withOptions({qs: {where: `InvoiceID='${invoiceId}'`}}).get(test.api))
         .then(r => expect(r.body[0].id).to.equal(invoiceId))
-        .then(() => cloud.delete(`${test.api}/${invoiceId}`))
+        .then(() => cloud.delete(`${test.api}/${invoiceId}`));
     });
 });
