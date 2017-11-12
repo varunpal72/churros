@@ -7,6 +7,24 @@
           "vendorPath": "EmployeeID"
         }
       ]
+    },
+    "products": {
+      "vendorName": "product",
+      "fields": [
+        {
+          "path": "id",
+          "vendorPath": "ItemID"
+        }
+      ]
+    },
+    "invoices": {
+      "vendorName": "invoice",
+      "fields": [
+        {
+          "path": "id",
+          "vendorPath": "InvoiceID"
+        }
+      ]
     }
   }
   

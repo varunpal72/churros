@@ -8,6 +8,13 @@ const faker = require('faker');
 
 
 suite.forElement('finance', 'expense-receipts', (test) => {
+    afterEach(done => {
+        // to avoid rate limit errors
+        setTimeout(done, 2500);
+    });
+    
+    test.should.supportPagination();
+    
     it('should support CRUDS for /expense-receipts', () => {
         let expenseReceipt = require('./assets/expense-receipt.json');
         let expenseReference = faker.commerce.product();

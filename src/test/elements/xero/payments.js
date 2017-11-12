@@ -7,6 +7,13 @@ const faker = require('faker');
 
 
 suite.forElement('finance', 'payments', (test) => {
+    afterEach(done => {
+        // to avoid rate limit errors
+        setTimeout(done, 5000);
+    });
+    
+    test.should.supportPagination();
+    
     it(`should support CRS for /payments`, () => {
         const bankAccountName = 'ToBank-DoNotDelete';
         let invoiceId, accountId;

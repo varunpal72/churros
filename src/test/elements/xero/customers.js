@@ -7,9 +7,16 @@ const faker = require('faker');
 
 
 suite.forElement('finance', 'customers', (test) => {
+    afterEach(done => {
+        // to avoid rate limit errors
+        setTimeout(done, 2500);
+    });
+    
+    test.should.supportPagination();
+    
     it('should support CRUDS for /customers', () => {
-        let customer = require('./assets/customer-invoice.json');
-        let invoice = require('./assets/invoice.json');
+        let customer = require('./assets/customer.json');
+        let invoice = require('./assets/customer-invoice.json');
         let customerId;
         let customerUpdate = customer;
 

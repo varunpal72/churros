@@ -6,6 +6,11 @@ const suite = require('core/suite');
 const faker = require('faker');
 
 suite.forElement('finance', 'reports', (test) => {
+    afterEach(done => {
+        // to avoid rate limit errors
+        setTimeout(done, 2500);
+    });
+    
     /**
        GET /reports/metadata passes back a hard-coded payload so 
     */
@@ -17,24 +22,24 @@ suite.forElement('finance', 'reports', (test) => {
     expect(contactReports).to.not.be.empty;
     let bankAccountReports = reportsMetadataResponse.filter(report => report.required[0] === 'bankAccountId');
     expect(bankAccountReports).to.not.be.empty;
-    expect(reportsMetadataResponse.length).to.equal(reports.length + contactReports.length + bankAccountReports.length);
     
     const contactWrap = (contactReportCallback) => {
         let contactId;
         let vendorPayload = require('./assets/contact.json');    
         vendorPayload.Name = faker.name.findName(); 
         return cloud.post('/vendors', vendorPayload)
-            .then(r => contactId = r.body.ContactID)
-            .then(() => contactReportCallback(contactId))
-            .then(() => cloud.delete(`/vendors/${contactId}`));
+        .then(r => contactId = r.body.ContactID)
+        .then(() => contactReportCallback(contactId))
+        .then(() => cloud.delete(`/vendors/${contactId}`));
     };
-
+    
     it('should support GET /reports/metadata', () => {
         return cloud.get(`${test.api}/metadata`)
-            .then(r => {
-                expect(r.body).to.not.be.empty;
-                expect(r.body).to.deep.equal(reportsMetadataResponse);
-            });
+        .then(r => {
+            expect(r.body).to.not.be.empty;
+            expect(r.body).to.deep.equal(reportsMetadataResponse);
+        })
+        .then(expect(reportsMetadataResponse.length).to.equal(reports.length + contactReports.length + bankAccountReports.length), "New required field types have been added. Add a test for these types and include them in this validation.");
     });
 
     it('should support GET /reports/:id for all standard reports', () => {
@@ -42,7 +47,7 @@ suite.forElement('finance', 'reports', (test) => {
             reports.map(report => {
                 let id = report.id;
                 return cloud.get(`${test.api}/${id}`)
-                    .then(r => expect(r.body).to.not.be.empty);
+                .then(r => expect(r.body).to.not.be.empty);
             })
         );
     });
@@ -53,9 +58,9 @@ suite.forElement('finance', 'reports', (test) => {
             bankAccountReports.map(report => {
                 let bankAccountId;
                 return cloud.get(`/ledger-accounts`)
-                    .then(r => bankAccountId = r.body.filter(account => account.Type === 'BANK')[0].AccountID)
-                    .then(() => cloud.withOptions({qs: {where: `${report.required[0]}='${bankAccountId}'` }}).get(`${test.api}/${report.id}`))
-                    .then(r => expect(r.body.ReportID).to.equal(`${report.id}`));
+                .then(r => bankAccountId = r.body.filter(account => account.Type === 'BANK')[0].AccountID)
+                .then(() => cloud.withOptions({qs: {where: `${report.required[0]}='${bankAccountId}'` }}).get(`${test.api}/${report.id}`))
+                .then(r => expect(r.body.ReportID).to.equal(`${report.id}`));
             })
         );
     });
@@ -66,8 +71,8 @@ suite.forElement('finance', 'reports', (test) => {
         return Promise.all(
             contactReports.map(report => {
                 const contactReportCallback = (contactId) => {
-                        return cloud.withOptions({qs: {where: `${report.required[0]}='${contactId}'` }}).get(`${test.api}/${report.id}`)
-                        .then(r => expect(r.body.ReportID).to.equal(report.id));
+                    return cloud.withOptions({qs: {where: `${report.required[0]}='${contactId}'` }}).get(`${test.api}/${report.id}`)
+                    .then(r => expect(r.body.ReportID).to.equal(report.id));
                 };
                 return contactWrap(contactReportCallback);   
             })
