@@ -13,7 +13,7 @@ suite.forElement('finance', 'customers', (test) => {
         let customerId;
         let customerUpdate = customer;
 
-        customer.Name = faker.name.getName();
+        customer.Name = faker.name.findName();
         customerUpdate.FirstName = faker.name.firstName();
 
         return cloud.post(test.api, customer)

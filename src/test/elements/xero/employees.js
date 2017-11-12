@@ -1,8 +1,7 @@
 'use strict';
 
-const cloud = require('core/cloud');
-const expect = require('chakram').expect;
 const suite = require('core/suite');
+const faker = require('faker');
 
 
 let employee = require('./assets/employee.json');
