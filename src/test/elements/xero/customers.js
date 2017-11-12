@@ -21,7 +21,7 @@ suite.forElement('finance', 'customers', (test) => {
         let customerUpdate = customer;
 
         customer.Name = faker.name.findName();
-        customerUpdate.FirstName = faker.name.firstName();
+        customerUpdate.FirstName = customer.Name.split(" ")[0];
 
         return cloud.post(test.api, customer)
         .then(r => customerId = r.body.ContactID)

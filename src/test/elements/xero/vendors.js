@@ -21,7 +21,7 @@ suite.forElement('finance', 'vendors', (test) => {
         let vendorUpdate = vendor;
 
         vendor.Name = faker.name.findName();
-        vendorUpdate.FirstName = faker.name.firstName();
+        vendorUpdate.FirstName = vendor.Name.split(" ")[0];
 
         return cloud.post(test.api, vendor)
         .then(r => vendorId = r.body.ContactID)
