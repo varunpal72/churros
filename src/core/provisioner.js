@@ -52,6 +52,8 @@ const parseProps = (element) => {
       }
     }
   };
+
+  props.getOptionalForKey(element, 'extra.oauth.params') ? args.options.qs = Object.assign({}, args.options.qs, props.getOptionalForKey(element, 'extra.oauth.params')) : null;
   return new Promise((res, rej) => res(args));
 };
 
@@ -89,9 +91,10 @@ const getPollerConfig = (element, instance) => {
   .catch(() => instance);
 };
 
-const addParams = (instance) => {
+const addParams = (instance, element) => {
   let instanceCopy = JSON.parse(JSON.stringify(instance));
   if (argv.params) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, JSON.parse(argv.params));
+  if (element && props.getOptionalForKey(element, 'extra.oauth.params')) instanceCopy.configuration = Object.assign({}, instanceCopy.configuration, props.getOptionalForKey(element, 'extra.oauth.params'));
   return instanceCopy;
 };
 
@@ -114,7 +117,7 @@ const createInstance = (element, config, providerData, baseApi) => {
 
   if (providerData) instance.providerData = providerData;
   return getPollerConfig(tools.getBaseElement(element), instance)
-    .then(r => cloud.post(baseApi, addParams(r)))
+    .then(r => cloud.post(baseApi, addParams(r, element)))
     .then(r => {
       expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
@@ -199,7 +202,8 @@ const oauth = (element, args, config) => {
         oauth_verifier: query.oauth_verifier,
         secret: args.secret,
         realmId: query.realmId,
-        dataSource: query.dataSource
+        dataSource: query.dataSource,
+        token: query.token
       };
       if(args && args.debug) {
         providerData.debug = true;
@@ -310,7 +314,7 @@ exports.getBackup = (element) => {
   return cloud.get('/instances?tags%5B%5D=churros-backup&hydrate=false')
   .then(r => {
     if (!_.isEmpty(r.body) && _.type(r.body) === 'Array') {
-      var instance = r.body.reduce((acc, cur) => acc = acc === null && cur.element.key === element ? cur : null, null);
+      var instance = r.body.reduce((acc, cur) => acc = acc !== null ? acc : cur.element.key === element ? cur : null, null);
       if (instance !== null) {
         props.setForKey(element, 'elementId', instance.element.id);
         defaults.token(instance.token);

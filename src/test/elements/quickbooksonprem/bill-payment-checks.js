@@ -2,20 +2,26 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const tools = require('core/tools');
+const payload = require('./assets/bill-payment-checks');
+const updatePayload = { "Memo": tools.random() };
 
-suite.forElement('finance', 'bill-payment-checks', (test) => {
-  let id, refno;
-  it('should support SR for /hubs/finance/bill-payment-checks', () => {
-    return cloud.get(test.api)
+
+suite.forElement('finance', 'bill-payment-checks', { payload: payload }, (test) => {
+  it('should support CRUDS and Ceql searching for /hubs/finance/bill-payment-checks', () => {
+    let id;
+    let refno;
+    return cloud.post(test.api, payload)
       .then(r => {
-        id = r.body[0].TxnID;
-        refno = r.body[0].RefNumber;
+        id = r.body.id;
+        refno = r.body.RefNumber;
+        updatePayload.EditSequence = r.body.EditSequence;
       })
+      .then(r => cloud.get(test.api))
       .then(r => cloud.withOptions({ qs: { where: `RefNumber='${refno}'` } }).get(test.api))
-      .then(r => cloud.get(`${test.api}/${id}`));
+      .then(r => cloud.get(`${test.api}/${id}`))
+      .then(r => cloud.patch(`${test.api}/${id}`, updatePayload))
+      .then(r => cloud.delete(`${test.api}/${id}`));
   });
-  it.skip('should DELETE for /hubs/finance/bill-payment-checks', () => {
-    return cloud.delete(`${test.api}/${id}`);
-  });
-  test.should.supportPagination();
+  test.should.supportNextPagePagination(1);
 });

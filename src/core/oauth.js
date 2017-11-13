@@ -92,6 +92,13 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.name('login_submit')).click();
       browser.findElement(webdriver.By.name('consent_accept')).click();
       return browser.getCurrentUrl();
+    case 'square':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.name('email')).sendKeys(username);
+      browser.findElement(webdriver.By.name('password')).sendKeys(password);
+      browser.findElement(webdriver.By.id('sign-in-button')).click();
+      browser.sleep(2000);
+      return browser.getCurrentUrl();
     case 'campaignmonitor':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('username')).sendKeys(username);
@@ -168,11 +175,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
 
       return browser.getCurrentUrl();
-    case 'bullhorn':	  
-      browser.get(r.body.oauthUrl); 
-      browser.findElement(webdriver.By.id('un')).sendKeys(username); 
+    case 'bullhorn':	  
+      browser.get(r.body.oauthUrl); 
+      browser.findElement(webdriver.By.id('un')).sendKeys(username); 
       browser.findElement(webdriver.By.id('pw')).sendKeys(password);
-      browser.findElement(webdriver.By.id('btn')).click();         
+      browser.findElement(webdriver.By.id('btn')).click();         
       return browser.getCurrentUrl();
     case 'facebookleadads':
     case 'facebooksocial':
@@ -228,30 +235,34 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('pass')).sendKeys(password);
       browser.findElement(webdriver.By.name('submit')).click();
       return browser.getCurrentUrl();
-    case 'googledrive':
-      browser.get(r.body.oauthUrl);
-      browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
-      browser.findElement(webdriver.By.id('identifierNext')).click();
-      waitForElement(webdriver.By.name('password'));
-      browser.findElement(webdriver.By.name('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('passwordNext')).click();
-      waitForElement(webdriver.By.id('submit_approve_access'));
-      browser.findElement(webdriver.By.id('submit_approve_access'))
-        .then((element) => element.click(), (err) => {}); // ignore this
-      browser.sleep(2000);
-      return browser.getCurrentUrl();
     case 'googlesheets':
+    case 'googledrive':
+    case 'googlesheetsv4':
+    case 'googlecalendar':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.id('identifierId')).sendKeys(username);
       browser.findElement(webdriver.By.id('identifierNext')).click();
-      waitForElement(webdriver.By.name('password'));
-      browser.findElement(webdriver.By.name('password')).sendKeys(password);
-      browser.findElement(webdriver.By.id('passwordNext')).click();
-      waitForElement(webdriver.By.id('submit_approve_access'));
-      browser.findElement(webdriver.By.id('submit_approve_access'))
-        .then((element) => element.click(), (err) => {}); // ignore this
-      browser.sleep(2000);
-      return browser.getCurrentUrl();
+      browser.sleep(3000);
+      return waitForElement(webdriver.By.css('#password input'))
+        .then(r => browser.findElement(webdriver.By.css('#password input')).sendKeys(password))
+        .then(r => browser.findElement(webdriver.By.id('passwordNext')).click())
+        .then(r => waitForElement(webdriver.By.xpath('/html/body/div[1]/div[1]/a')))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[1]/div[1]/a')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[1]/div[2]/p[2]/a')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => waitForElement(webdriver.By.css('content input')))
+        .then(r => browser.findElement(webdriver.By.css('content input')))
+          .then((element) => element.sendKeys('Continue'), (err) => {}) // ignore this
+        .then(r => waitForElement(webdriver.By.xpath('/html/body/div[3]/div/div[2]/div[2]/div[2]/content/span')))
+        .then(r => browser.findElement(webdriver.By.xpath('/html/body/div[3]/div/div[2]/div[2]/div[2]/content/span')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => waitForElement(webdriver.By.id('submit_approve_access')))
+        .then(r => browser.findElement(webdriver.By.id('submit_approve_access')))
+          .then((element) => element.click(), (err) => {}) // ignore this
+        .then(r => browser.sleep(2000))
+        .then(r => browser.getCurrentUrl());
     case 'gotowebinar':
       browser.get(r.body.oauthUrl);
       browser.findElement(webdriver.By.name('emailAddress')).sendKeys(username);
@@ -280,11 +291,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then(() => browser.sleep(2000))
         .then(() => Array(5).fill(0).map((e, i) => i + 1).reduce((acc, cur) => {
           return acc.then(() => {
-            return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[1]/span`))
+            return browser.findElement(webdriver.By.xpath(`/html/body/div[2]/div/div[2]/div/table/tbody/tr[${cur}]/td[2]/span[2]`))
               .then((el) => el.getText().then(t => t.toLowerCase().includes(`${config.portalId}`) ? el.click() : null), (err) => {}); // ignore this
           });
         }, Promise.resolve(null)))
-        .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.className('uiLoading')), 10000))
+        .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.className('uiLoading')).then(r => !r), 10000))
         .then(() => browser.wait(() => browser.isElementPresent(webdriver.By.xpath('/html/body/div[2]/div/div[2]/button/i18n-string')), 5000)
           .catch((err) => {}))
         .then(() => browser.findElement(webdriver.By.xpath('/html/body/div[2]/div/div[2]/button/i18n-string'))
@@ -415,15 +426,27 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       browser.findElement(webdriver.By.id('authorizeBtn')).click();
       browser.sleep(5000); // So flaky, quickbooks' 302 takes forever
       return browser.getCurrentUrl();
+    case 'revel':
+      browser.get(r.body.oauthUrl);
+      waitForElement(webdriver.By.id('id_username'));
+      browser.findElement(webdriver.By.id('id_username')).sendKeys(username);
+      waitForElement(webdriver.By.id('id_password'));
+      browser.findElement(webdriver.By.id('id_password')).sendKeys(password);
+      browser.findElement(webdriver.By.xpath('//*[@id="form-login"]/fieldset/div[3]/input')).click();
+      waitForElement(webdriver.By.id('btn_ok'));
+      browser.findElement(webdriver.By.id('btn_ok')).click();
+      browser.sleep(3000);
+      return browser.getCurrentUrl();
     case 'servicenowoauth':
       browser.get(r.body.oauthUrl);
-      browser.waitForElement(webdriver.By.id('user_name'), 5000);
+      waitForElement(webdriver.By.id('user_name'), 5000);
       browser.findElement(webdriver.By.id('user_name')).sendKeys(username);
       browser.findElement(webdriver.By.id('user_password')).sendKeys(password);
       browser.findElement(webdriver.By.id('sysverb_login')).click();
       browser.wait(() => browser.isElementPresent(webdriver.By.className('btn btn-primary')), 10000)
         .thenCatch(r => true);
       browser.findElement(webdriver.By.className('btn btn-primary')).click();
+      browser.sleep(2000);
       return browser.getCurrentUrl();
     case 'servicemax':
     case 'sagelive':
@@ -629,3 +652,4 @@ module.exports = (element, r, username, password, config) => {
   logger.debug('Redirecting to %s', r.body.oauthUrl);
   return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);
 };
+

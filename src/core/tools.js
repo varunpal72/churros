@@ -222,6 +222,9 @@ const fake = (str, startDelim, endDelim) => {
     return str;
   }
 
+  faker.random.letter = () => exports.randomStr('abcdefghijklmnopqrstuvwxyz', 1);
+  faker.random.letterUppercase = () => exports.randomStr('abcdefghijklmnopqrstuvwxyz', 1).toUpperCase();
+  faker.random.singleNumber = () => Math.floor(Math.random() * 10);
   const token = str.substr(start + 2,  end - start - 2);
   const method = token.replace(endDelim, '').replace(startDelim, '');
   //allows you say specify how many words or numbers or whatnot
