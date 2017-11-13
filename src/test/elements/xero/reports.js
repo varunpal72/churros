@@ -22,6 +22,7 @@ suite.forElement('finance', 'reports', (test) => {
     expect(contactReports).to.not.be.empty;
     let bankAccountReports = reportsMetadataResponse.filter(report => report.required[0] === 'bankAccountId');
     expect(bankAccountReports).to.not.be.empty;
+    expect(reportsMetadataResponse.length).to.equal(reports.length + contactReports.length + bankAccountReports.length);
     
     const contactWrap = (contactReportCallback) => {
         let contactId;
@@ -39,7 +40,6 @@ suite.forElement('finance', 'reports', (test) => {
             expect(r.body).to.not.be.empty;
             expect(r.body).to.deep.equal(reportsMetadataResponse);
         })
-        .then(expect(reportsMetadataResponse.length).to.equal(reports.length + contactReports.length + bankAccountReports.length), "New required field types have been added. Add a test for these types and include them in this validation.");
     });
 
     it('should support GET /reports/:id for all standard reports', () => {
