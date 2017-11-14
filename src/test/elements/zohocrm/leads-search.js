@@ -13,13 +13,11 @@ suite.forElement('crm', 'leads-search', {}, (test) => {
   before(() => cloud.get('elements/zohocrm/resources')
     .then(r => {
       if (!_.isArray(r.body)) return null;
-      console.log(r.body);
-      //get resources then grab the one above and delete it before creating another
-      return r.body.reduce((acc, cur) => acc = acc ? acc : cur.path === "/hubs/crm/leads-search" && cur.method.toUpperCase() === 'GET' ? cur.id : acc, null)
+      return r.body.reduce((acc, cur) => acc = acc ? acc : cur.path === "/hubs/crm/leads-search" && cur.method.toUpperCase() === 'GET' ? cur.id : acc, null);
     })
     .then(id => id ? cloud.delete(`elements/zohocrm/resources/${id}`) : null)
     .then(() => cloud.post(`elements/zohocrm/resources`, newResource))
-    .then(r => newResourceId = r.body.id))
+    .then(r => newResourceId = r.body.id));
   // before(() => cloud.post(`elements/zohocrm/resources`, newResource)
   //   .then(r => newResourceId = r.body.id));
 
