@@ -39,7 +39,7 @@ suite.forElement('finance', 'reports', (test) => {
         .then(r => {
             expect(r.body).to.not.be.empty;
             expect(r.body).to.deep.equal(reportsMetadataResponse);
-        })
+        });
     });
 
     it('should support GET /reports/:id for all standard reports', () => {
