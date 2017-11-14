@@ -18,13 +18,13 @@ suite.forElement('employee', 'timesheets', (test) => {
 
   test.withApi(test.api)
     .withOptions({ qs: { where: "in_time>=1508943600000" } })
-    .withValidation(r => expect(r.body.filter(obj => obj.in_time > '1508943600000')).to.not.be.null)
+    .withValidation(r => expect(r.body.filter(obj => obj.inTime > '1508943600000')).to.not.be.empty)
     .withName('should allow GET with option in_time')
     .should.return200OnGet();
 
   test.withApi(test.api)
     .withOptions({ qs: { where: "server_banking='false'" } })
-    .withValidation(r => expect(r.body.filter(obj => obj.server_banking === false)).to.not.be.null)
+    .withValidation(r => expect(r.body.filter(obj => obj.serverBanking === false)).to.not.be.empty)
     .withName('should allow GET with option server_banking')
     .should.return200OnGet();
 

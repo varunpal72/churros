@@ -9,16 +9,13 @@ suite.forElement('employee', 'employees', (test) => {
 
   before(() => {
     return cloud.get('/roles')
-      .then(r => {
-        employeePayload.role = r.body[0].systemRole;
-        employeePayload.pin = tools.randomStr('0123456789', 4);
-      });
+      .then(r => employeePayload.role = r.body[0].systemRole);
   });
   test.should.supportPagination();
 
   test.withApi(test.api)
     .withOptions({ qs: { where: "modifiedTime>1508943600000" } })
-    .withValidation(r => expect(r.body.filter(obj => obj.id !== "")).to.not.be.null)
+    .withValidation(r => expect(r.body.filter(obj => obj.id !== "")).to.not.be.empty)
     .withName('should allow GET with option modifiedTime')
     .should.return200OnGet();
 

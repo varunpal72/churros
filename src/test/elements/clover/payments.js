@@ -13,7 +13,7 @@ suite.forElement('employee', 'payments', { payload: paymentPayload }, (test) => 
   );
   test.withApi(test.api)
     .withOptions({ qs: { where: "modifiedTime>1508943600000" } })
-    .withValidation(r => expect(r.body.filter(obj => obj.id !== "")).to.not.be.null)
+    .withValidation(r => expect(r.body.filter(obj => obj.id !== "")).to.not.be.empty)
     .withName('should allow GET with option modifiedTime')
     .should.return200OnGet();
 

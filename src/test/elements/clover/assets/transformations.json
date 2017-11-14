@@ -1,11 +1,4 @@
 {
-  "employees": {
-    "vendorName": "employees",
-    "fields": [{
-      "path": "id",
-      "vendorPath": "id"
-    }]
-  },
   "payments": {
     "vendorName": "payments",
     "fields": [{
