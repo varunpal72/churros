@@ -7,11 +7,13 @@
   const logger = require('winston');
   const swaggerParser = require('swagger-parser');
   const _ = require('lodash');
+  const argv = require('optimist').argv;
 
   const createAll = (urlTemplate, list) => {
     return Object.keys(list).sort()
       .reduce((p, key) => p.then(() => {
-        return cloud.post(util.format(urlTemplate, key), list[key])
+        //if there is a 409 then we don't need to create another since it is already there
+        return cloud.post(util.format(urlTemplate, key), list[key], r => r.response.statusCode === 409 ? null : expect(r).to.have.statusCode(200))
         .catch(err => cloud.post(util.format(urlTemplate, key), list[key]));
       }), Promise.resolve(true)); // initial
   };
@@ -25,9 +27,13 @@
       hub = props.get('hub');
       instanceName = props.get('instanceName');
     });
-    it('should provision', () => expect(instanceName).to.not.equal('churros-backup'));
+    it('should provision', () => {
+      if (argv.backup !== 'only backup') {
+        expect(instanceName).to.not.equal('churros-backup');
+      }
+    });
     it('should GET /objects', () => {
-      return cloud.get('/objects').then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
+      return cloud.get('/objects').then(r => hub === 'documents' ? null : expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
     });
 
     it.skip('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
