@@ -6,5 +6,5 @@ const payload = require('./assets/productsAttributes');
 suite.forElement('ecommerce', 'products-attributes', { payload: payload }, (test) => {
   test.should.supportCruds();
   // unique is "id"
-  test.should.supportPagination('id');
+  test.withOptions({qs:{pageSize: 5, page: 1}}).should.supportPagination('id');
 });
