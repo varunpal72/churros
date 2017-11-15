@@ -175,11 +175,11 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       }, 5000);
 
       return browser.getCurrentUrl();
-    case 'bullhorn':	  
-      browser.get(r.body.oauthUrl); 
-      browser.findElement(webdriver.By.id('un')).sendKeys(username); 
+    case 'bullhorn':
+      browser.get(r.body.oauthUrl);
+      browser.findElement(webdriver.By.id('un')).sendKeys(username);
       browser.findElement(webdriver.By.id('pw')).sendKeys(password);
-      browser.findElement(webdriver.By.id('btn')).click();         
+      browser.findElement(webdriver.By.id('btn')).click();
       return browser.getCurrentUrl();
     case 'facebookleadads':
     case 'facebooksocial':
@@ -652,4 +652,3 @@ module.exports = (element, r, username, password, config) => {
   logger.debug('Redirecting to %s', r.body.oauthUrl);
   return attemptOAuthExchange(1, manipulateDom, element, b, r, username, password, config);
 };
-
