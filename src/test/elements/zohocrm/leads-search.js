@@ -18,8 +18,6 @@ suite.forElement('crm', 'leads-search', {}, (test) => {
     .then(id => id ? cloud.delete(`elements/zohocrm/resources/${id}`) : null)
     .then(() => cloud.post(`elements/zohocrm/resources`, newResource))
     .then(r => newResourceId = r.body.id));
-  // before(() => cloud.post(`elements/zohocrm/resources`, newResource)
-  //   .then(r => newResourceId = r.body.id));
 
   //delete new/overide resource should work fine
   after(() => cloud.delete(`elements/zohocrm/resources/${newResourceId}`));
