@@ -90,7 +90,7 @@ suite.forElement('documents', 'files', null, (test) => {
     };
 
     let path = __dirname + '/../assets/brady.jpg';
-    let query1 = { path: `/brady-${faker.random.number()}.jpg` };
+    let query1 = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => fileId1 = r.body.id)
       .then(r => cloud.post('/hubs/documents/custom-fields/templates', temPayload))
