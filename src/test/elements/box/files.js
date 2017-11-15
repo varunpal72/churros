@@ -22,7 +22,7 @@ suite.forElement('documents', 'files', null, (test) => {
   it('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${faker.random.number()}.jpg` };
+    let query = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
       .then(r => cloud.put('/hubs/documents/files/' + fileId + '/lock', null, null, lock))
@@ -33,7 +33,7 @@ suite.forElement('documents', 'files', null, (test) => {
   it('should support links for files/:id/links without raw payload', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${faker.random.number()}.jpg` };
+    let query = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
       .then(r => cloud.get("/hubs/documents/files/" + fileId + "/links"))
@@ -45,7 +45,7 @@ suite.forElement('documents', 'files', null, (test) => {
     let fileId;
     let filePath;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${faker.random.number()}.jpg` };
+    let query = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => {
         fileId = r.body.id;
@@ -59,8 +59,8 @@ suite.forElement('documents', 'files', null, (test) => {
   it('should fail when copying file with existing file name', () => {
     let fileId1, fileId2, filePath1, filePath2;
     let path = __dirname + '/../assets/brady.jpg';
-    let query1 = { path: `/brady-${faker.random.number()}.jpg` };
-    let query2 = { path: `/brady-${faker.random.number()}.jpg` };
+    let query1 = { path: `/brady-${faker.address.zipCode()}.jpg` };
+    let query2 = { path: `/brady-${faker.address.zipCode()}.jpg` };
 
     return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => {
