@@ -2,11 +2,11 @@
   "company": "<<company.companyName>>",
   "annualRevenue": "<<random.singleNumber##4>>",
   "billingCity": "<<address.city>>",
-  "externalCompanyId": "1234",
+  "externalCompanyId": "<<random.singleNumber##6>>",
   "billingCountry": "<<address.country>>",
   "billingPostalCode": "<<address.zipCode>>",
   "billingState": "<<address.state>>",
   "companyNotes": "<<random.alphaNumeric##15>>",
-  "industry": "IT",
-  "mainPhone": "<<phone.phoneNumber"
+  "industry": "<<random.letter##3>>",
+  "mainPhone": "<<phone.phoneNumber>>"
 }
