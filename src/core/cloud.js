@@ -128,10 +128,6 @@ const postFile = (api, filePath, validationCb, options) => {
 
   logger.debug('POST %s with multipart/form-data file', api);
   return chakram.post(api, validationCb, options)
-    .then(r => {
-      console.log('res', r);
-      return r;
-    })
     .then(r => validator(validationCb)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
@@ -149,10 +145,6 @@ const patchFile = (api, filePath, options) => {
 
   logger.debug('PATCH %s with multipart/form-data file');
   return chakram.patch(api, undefined, options)
-    .then(r => {
-      console.log('res', r);
-      return r;
-    })
     .then(r => validator(undefined)(r))
     .catch(r => tools.logAndThrow('Failed to upload file to %s', r, api));
 };
