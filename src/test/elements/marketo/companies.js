@@ -9,7 +9,7 @@ suite.forElement('marketing', 'companies', { payload: payload }, (test) => {
   it('should allow CRUDS for /companies', () => {
     let id, value;
     const updatedPayload = tools.requirePayload(`${__dirname}/assets/companies.json`);
-    delete updatedPayload.externalCompanyId //Can't update this
+    delete updatedPayload.externalCompanyId; //Can't update this
     return cloud.post(test.api, payload)
       .then(r => id = r.body.id)
       .then(r => value = `id in ( ${id} )`)

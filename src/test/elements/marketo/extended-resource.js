@@ -13,9 +13,7 @@ suite.forElement('marketing', 'extended-resource', {}, (test) => {
   before(() => cloud.get('elements/marketo/resources')
     .then(r => {
       if (!_.isArray(r.body)) return null;
-      let id = r.body.reduce((acc, cur) => acc = acc ? acc : cur.path === "/hubs/marketing/extended-resource" && cur.method.toUpperCase() === 'GET' ? cur.id : acc, null);
-      console.log('id', id);
-      return id
+      return r.body.reduce((acc, cur) => acc = acc ? acc : cur.path === "/hubs/marketing/extended-resource" && cur.method.toUpperCase() === 'GET' ? cur.id : acc, null);
     })
     .then(id => id ? cloud.delete(`elements/marketo/resources/${id}`) : null)
     .then(() => cloud.post(`elements/marketo/resources`, newResource))
