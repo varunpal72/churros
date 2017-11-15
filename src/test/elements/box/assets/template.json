@@ -1,5 +1,5 @@
 {
-"displayName":"<<lorem.word>>",
+"displayName":"c<<random.alphaNumeric##10>>",
 "scope":"enterprise",
 "fields": [
     {
