@@ -88,7 +88,7 @@ suite.forElement('documents', 'files', null, (test) => {
       "value": "madhuri",
       "scope": "enterprise"
     };
-    console.log('temPayload', temPayload);
+
     let path = __dirname + '/../assets/brady.jpg';
     let query1 = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
