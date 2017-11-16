@@ -3,13 +3,12 @@
 const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const defaults = require('core/defaults');
 const provisioner = require('core/provisioner');
 const newResource = require('./assets/faar2/resource.json');
 let formula = require('./assets/faar2/formula.json');
 
 suite.forPlatform('faar2', {}, (test) => {
-  let faarFormula, faarResource, newInstance, newResourceId, formulaInstance;
+  let faarFormula, faarResource, newInstance, formulaInstance;
 
   before(() => cloud.post('formulas', formula)
     .then(r => {
@@ -17,7 +16,7 @@ suite.forPlatform('faar2', {}, (test) => {
       newResource.formulaId = faarFormula.id;
     })
     .then(r => {
-      return provisioner.create('sfdc')
+      return provisioner.create('sfdc');
     })
     .then(r => newInstance = r.body));
 
