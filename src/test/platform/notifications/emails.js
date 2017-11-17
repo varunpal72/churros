@@ -14,8 +14,20 @@ suite.forPlatform('notifications/emails', {payload: email, email: emailSchema}, 
   .should.return200OnPost({});
 
   test
-  .withName('should fail for empty email body')
+  .withName('should send email with empty or null sender')
+  .withJson({ to: email.to, subject: email.subject, message: email.message })
+  .withValidation((r) => expect(r.body).to.be.empty)
+  .should.return200OnPost({});
+
+  test
+  .withName('should fail for empty or null posted body')
   .withJson({})
+  .withValidation((r) => expect(r.body).to.be.empty)
+  .should.return400OnPost({});
+
+  test
+  .withName('should fail for empty or null recipient(s)')
+  .withJson({ from: email.from, subject: email.subject, message: email.message })
   .withValidation((r) => expect(r.body).to.be.empty)
   .should.return400OnPost({});
 });
