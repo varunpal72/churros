@@ -6,7 +6,7 @@
             "Quantity": "1",
             "UnitAmount": "5.00",
             "Description": "Order of churros",
-            "AccountCode": "4000"
+            "AccountCode": "TO_BE_POPULATED_BY_CODE"
         }
     ],
     "Type": "ACCREC",

@@ -15,7 +15,9 @@ suite.forElement('finance', 'invoices', (test) => {
         const invoice = require('./assets/invoice.json');
         let invoiceId;
         const invoiceUpdate = {Reference: 'churros-' + commerce.product() };
-        return cloud.post(test.api,invoice)
+        return cloud.withOptions({qs: {where: `Name='Sales'`}}).get('/ledger-accounts')
+        .then(r => invoice.LineItems[0].AccountCode = r.body[0].Code)
+        .then(() => cloud.post(test.api,invoice))
         .then(r => {
             expect(r.body.Reference).to.be.empty;
             invoiceId = r.body.id;

@@ -28,6 +28,8 @@ suite.forElement('finance', 'customers', (test) => {
         .then(r => cloud.get(`${test.api}/${customerId}`))
         .then(r => expect(r.body.IsCustomer).to.be.false)
         .then(() => invoice.Contact.ContactID = customerId)
+        .then(() => cloud.withOptions({qs: {where: `Name='Sales'`}}).get('/ledger-accounts'))
+        .then(r => invoice.LineItems[0].AccountCode = r.body[0].Code)
         .then(() => cloud.post('/invoices', invoice))
         .then(() => cloud.patch(`${test.api}/${customerId}`, customerUpdate))
         .then(() => cloud.get(`${test.api}/${customerId}`))
