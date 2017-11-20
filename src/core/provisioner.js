@@ -86,7 +86,7 @@ const getPollerConfig = (element, instance) => {
     instanceCopy.configuration['event.notification.enabled'] = 'true';
     instanceCopy.configuration['event.poller.refresh_interval'] = '1';
     instanceCopy.configuration['event.notification.signature.key'] = '';
-    element === 'onedrivev2' ? instanceCopy.configuration['event.poller.urls'] = null : null
+    element === 'onedrivev2' ? instanceCopy.configuration['event.poller.urls'] = null : null;
     return instanceCopy;
   })
   .catch(() => instance);
