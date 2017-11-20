@@ -29,7 +29,7 @@ suite.forElement('finance', 'bank-transfers', (test) => {
             let toAccount = objsWithBank.filter(obj => obj.Name === 'ToBank-DoNotDelete');
             expect(toAccount).to.not.be.empty;
             payload.FromBankAccount.AccountID = toAccount[0].AccountID;
-        }, "Verify Xero account has BANK accounts named 'ToBank-DoNotDelete' & 'FromBank-DoNotDelete'");
+        });
     });
 
     it('should support CRS for /bank-transfers', () => {

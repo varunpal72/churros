@@ -28,6 +28,8 @@ suite.forElement('finance', 'expense-receipts', (test) => {
             expenseReceipt.User.UserID = userId;
             receiptUpdate.User.UserID = userId;
         })
+        .then(() => cloud.withOptions({qs: {where: `ShowInExpenseClaims=true`}}).get('/ledger-accounts'))
+        .then(r => expenseReceipt.LineItems[0].AccountCode = r.response.body[0].Code)
         .then(() => cloud.post(test.api, expenseReceipt))
         .then(r => receiptId = r.body.ReceiptID)
         .then(() => cloud.get(`${test.api}/${receiptId}`))

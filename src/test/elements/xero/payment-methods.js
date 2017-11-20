@@ -8,7 +8,7 @@ const suite = require('core/suite');
 suite.forElement('finance', 'payment-methods', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 3000);
     });
     
     const paymentMethodsResponse = require('./assets/payment-methodsResponse.json');

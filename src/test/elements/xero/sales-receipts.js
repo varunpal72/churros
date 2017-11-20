@@ -26,6 +26,8 @@ suite.forElement('finance', 'sales-receipts', (test) => {
         return cloud.withOptions({qs: {where: `Name='${bankAccountName}'`}}).get('/ledger-accounts')
         .then(r => accountId = r.body[0].AccountID)
         .then(() => salesReceipt.BankAccount.AccountID = accountId)
+        .then(() => cloud.withOptions({qs: {where: `Name='Sales'`}}).get('/ledger-accounts'))
+        .then(r => salesReceipt.LineItems[0].AccountCode = r.body[0].Code)
         .then(() => cloud.post(test.api, salesReceipt))
         .then(r => receiptId = r.body.BankTransactionID)
         .then(() => cloud.get(`${test.api}/${receiptId}`))

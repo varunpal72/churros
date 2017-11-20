@@ -21,7 +21,9 @@ suite.forElement('finance', 'payments', (test) => {
         let invoicePayload = require('./assets/payment-invoice.json');
         
         invoicePayload.Contact.Name = faker.name.findName();
-        return cloud.post('/invoices', invoicePayload)
+        return cloud.withOptions({qs: {where: `Name='Sales'`}}).get('/ledger-accounts')
+        .then(r => invoicePayload.LineItems[0].AccountCode = r.body[0].Code)
+        .then(() => cloud.post('/invoices', invoicePayload))
         .then(r => {
             expect(r.body).to.not.be.empty;
             invoiceNumber = r.body.InvoiceNumber;
