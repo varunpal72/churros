@@ -96,15 +96,17 @@ const createXInstances = (x, formulaId, formulaInstance) => {
 /**
  * Tests formula executions under heavy load (number of events, size of events, etc.)
  */
-suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
-  let sfdcId;
-  let closeioId;
+suite.forPlatform('formulas', { name: 'formulas load', skip: false }, (test) => {
+  let sfdcId, closeioId, kissmetricsId;
 
   before(() => cleaner.formulas.withName('complex_successful')
     .then(() => cleaner.formulas.withName('number2'))
     .then(() => cleaner.formulas.withName('complex_starwars_sucessful'))
+    .then(() => cleaner.formulas.withName('Kissmetrics Events/Props'))
     .then(r => common.provisionSfdcWithWebhook())
     .then(r => sfdcId = r.body.id)
+    .then(r => provisioner.create('kissmetrics'))
+    .then(r => kissmetricsId = r.body.id)
     .then(r => provisioner.create('closeio', { 'event.notification.enabled': true, 'event.vendor.type': 'polling', 'event.poller.refresh_interval': 999999999 }))
     .then(r => closeioId = r.body.id));
 
@@ -112,6 +114,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
   after(() => {
     if (sfdcId) provisioner.delete(sfdcId);
     if (closeioId) provisioner.delete(closeioId);
+    if (kissmetricsId) provisioner.delete(closeioId);
   });
 
   const numFormulaInstances = process.env.NUM_FORMULA_INSTANCES ? process.env.NUM_FORMULA_INSTANCES : 1;
@@ -226,4 +229,28 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: true }, (test) => {
       });
   });
 
+  it('should handle a high load for the KissMetrics Events/Props formula', () => {
+    const formula = require('./assets/formulas/customer-formulas/kissmetrics');
+    formula.engine = process.env.CHURROS_FORMULAS_ENGINE;
+    const formulaInstance = require('./assets/formulas/customer-formulas/kissmetrics-instance');
+    formulaInstance.configuration.sourceInstanceId = sfdcId;
+    formulaInstance.configuration.kissmetricsInstanceId = kissmetricsId;
+
+    let formulaId;
+    let formulaInstances = [];
+    let deletes = [];
+    return cloud.post(test.api, formula, fSchema)
+      .then(r => formulaId = r.body.id)
+      .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
+      .then(ids => ids.map(id => formulaInstances.push(id)))
+      .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
+      .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
+      .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
+      .then(r => chakram.all(deletes))
+      .then(r => common.deleteFormula(formulaId))
+      .catch(e => {
+        if (formulaId) common.deleteFormula(formulaId);
+        throw new Error(e);
+    });
+  });
 });
