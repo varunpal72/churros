@@ -1,0 +1,207 @@
+{
+	"id": 1472,
+	"name": "Kissmetrics Events/ props",
+	"description": "When a specified field is changed on the initiating system, a property is set or an event is fired in Kissmetrics",
+	"userId": 153202,
+	"accountId": 153052,
+	"createdDate": "2017-01-26T23:53:00Z",
+	"steps": [{
+		"id": 14995,
+		"onSuccess": ["5-has-field-changed"],
+		"onFailure": ["10-need-to-update"],
+		"name": "4-loop-over-monitored-fields",
+		"type": "loop",
+		"properties": {
+			"list": "${config.monitored.fields}"
+		}
+	}, {
+		"id": 14996,
+		"onSuccess": [],
+		"onFailure": [],
+		"name": "11-endpoint-update",
+		"type": "elementRequest",
+		"properties": {
+			"path": "${2-request-variables.body}",
+			"body": "${9-endpoint-update-body.body}",
+			"elementInstanceId": "${element.instance.id}",
+			"retryAttempts": "3",
+			"api": "/hubs/{hubName}/{objectType}/{objectId}",
+			"retry": "true",
+			"method": "PATCH",
+			"headers": "${2-request-variables.headers}",
+			"retryDelay": "500"
+		}
+	}, {
+		"id": 14997,
+		"onSuccess": ["11-endpoint-update"],
+		"onFailure": [],
+		"name": "10-need-to-update",
+		"type": "filter",
+		"properties": {
+			"body": "function isEmpty(object) {\n  for(var key in object) {\n    if(object.hasOwnProperty(key)){\n      return false;\n    }\n  }\n  return true;\n}\n\ndone(steps['9-endpoint-update-body'] != null && !isEmpty(steps['9-endpoint-update-body'].body));",
+			"scriptEngine": "v2",
+			"mimeType": "application/javascript"
+		}
+	}, {
+		"id": 14998,
+		"onSuccess": ["4-loop-over-monitored-fields"],
+		"onFailure": [],
+		"name": "9-endpoint-update-body",
+		"type": "script",
+		"properties": {
+			"body": "var body;\nif (steps['9-endpoint-update-body']) {\n  body = steps['9-endpoint-update-body'].body;\n} else {\n  body = {}\n}\n\nvar ceFieldName = steps['4-loop-over-monitored-fields'].entry.ceFieldName;\nif(ceFieldName != null){\n  body[ceFieldName] = steps['3-get-object'].response.body[steps['4-loop-over-monitored-fields'].entry.monitoredFieldName];\n}\n\ndone({\n  body: body\n});\n",
+			"scriptEngine": "v2",
+			"mimeType": "application/javascript"
+		}
+	}, {
+		"id": 14999,
+		"onSuccess": ["8-km-request"],
+		"onFailure": ["9-endpoint-update-body"],
+		"name": "7-anything-to-post",
+		"type": "filter",
+		"properties": {
+			"body": "done(steps['6-km-request-details'].kmRequest);"
+		}
+	}, {
+		"id": 15000,
+		"onSuccess": ["7-anything-to-post"],
+		"onFailure": [],
+		"name": "6-km-request-details",
+		"type": "script",
+		"properties": {
+			"body": "var kmRequest = false;\nvar body = {};\nvar path;\n\n//Do they want to process an event? \nif (steps['4-loop-over-monitored-fields'].entry.kmEventName != null) {\n  var desiredEventFieldValue = steps['4-loop-over-monitored-fields'].entry.fieldValueForEvent;\n  var eventFieldValue = steps['3-get-object'].response.body[steps['4-loop-over-monitored-fields'].entry.monitoredFieldName];\n  \n  // Has the event happened? \n  if (eventFieldValue === desiredEventFieldValue) {\n    kmRequest = true;\n    path = 'recorded-events';\n    \n    //prepare post data for an event\n    body['_p'] =steps['3-get-object'].response.body[config.unique.id.field.name];\n    body['_n'] = steps['4-loop-over-monitored-fields'].entry.kmEventName;\n      \n    //Do they also want to process a property? \n    if (steps['4-loop-over-monitored-fields'].entry.kmPropertyName != null) {\n      //add post data for a property\n      var kmField = steps['4-loop-over-monitored-fields'].entry.kmPropertyName;\n      body[kmField] = steps['3-get-object'].response.body[steps['4-loop-over-monitored-fields'].entry.monitoredFieldName];\n      \n    }\n    \n    done({\n      kmRequest: kmRequest,\n      body: body,\n      path: path\n    });\n    \n  }\n}\n\n//If we are here, then either they don't want to process an event, or the event hasn't happened\n//Do they want to process a property?\nif (steps['4-loop-over-monitored-fields'].entry.kmPropertyName != null) {\n  kmRequest = true;\n  path = 'properties';\n  body['_p'] = steps['3-get-object'].response.body[config.unique.id.field.name];\n  \n  var kmField = steps['4-loop-over-monitored-fields'].entry.kmPropertyName;\n  body[kmField] = steps['3-get-object'].response.body[steps['4-loop-over-monitored-fields'].entry.monitoredFieldName];\n\n}\n\ndone({\n  kmRequest: kmRequest,\n  body: body,\n  path: path\n});\n\n",
+			"scriptEngine": "v2",
+			"mimeType": "application/javascript"
+		}
+	}, {
+		"id": 15001,
+		"onSuccess": ["3-get-object"],
+		"onFailure": [],
+		"name": "2-request-variables",
+		"type": "script",
+		"properties": {
+			"body": "done({\n  body: {\n    objectId: trigger.event.objectId,\n    objectType: trigger.event.objectType,\n    hubName: config.hub.name\n  },\n  headers: {\n    'Sforce-Auto-Assign': 'false'\n  }\n});",
+			"scriptEngine": "v2",
+			"mimeType": "application/javascript"
+		}
+	}, {
+		"id": 15002,
+		"onSuccess": ["4-loop-over-monitored-fields"],
+		"onFailure": [],
+		"name": "3-get-object",
+		"type": "elementRequest",
+		"properties": {
+			"path": "${2-request-variables.body}",
+			"elementInstanceId": "${element.instance.id}",
+			"retryAttempts": "3",
+			"api": "/hubs/{hubName}/{objectType}/{objectId}",
+			"retry": "true",
+			"method": "GET",
+			"retryDelay": "500"
+		}
+	}, {
+		"id": 15003,
+		"onSuccess": ["2-request-variables"],
+		"onFailure": [],
+		"name": "1-1-is-created-updated",
+		"type": "filter",
+		"properties": {
+			"body": "done(trigger.event.eventType.toLowerCase() === 'created' || trigger.event.eventType.toLowerCase() === 'updated');",
+			"scriptEngine": "v2",
+			"mimeType": "application/javascript"
+		}
+	}, {
+		"id": 15004,
+		"onSuccess": ["1-1-is-created-updated"],
+		"onFailure": [],
+		"name": "1-is-monitored-object",
+		"type": "filter",
+		"properties": {
+			"body": "done(trigger.event.objectType.toLowerCase() === config.object.name.toLowerCase());",
+			"scriptEngine": "v2",
+			"mimeType": "application/javascript"
+		}
+	}, {
+		"id": 15005,
+		"onSuccess": ["6-km-request-details"],
+		"onFailure": ["4-loop-over-monitored-fields"],
+		"name": "5-has-field-changed",
+		"type": "filter",
+		"properties": {
+			"body": "var monitoredFieldName = steps['4-loop-over-monitored-fields'].entry.monitoredFieldName;\nvar ceFieldName = steps['4-loop-over-monitored-fields'].entry.ceFieldName;\n\nvar monitoredFieldValue = steps['3-get-object'].response.body[monitoredFieldName];\nvar ceFieldValue = steps['3-get-object'].response.body[ceFieldName];\n\ndone(monitoredFieldValue != ceFieldValue);",
+			"mimeType": "application/javascript"
+		}
+	}, {
+		"id": 15006,
+		"onSuccess": ["9-endpoint-update-body"],
+		"onFailure": [],
+		"name": "8-km-request",
+		"type": "elementRequest",
+		"properties": {
+			"path": "${6-km-request-details}",
+			"body": "${6-km-request-details.body}",
+			"elementInstanceId": "${kissmetrics.instance.id}",
+			"retryAttempts": "3",
+			"api": "/hubs/marketing/{path}",
+			"retry": "true",
+			"method": "POST",
+			"retryDelay": "500"
+		}
+	}],
+	"triggers": [{
+		"id": 1311,
+		"onSuccess": ["1-is-monitored-object"],
+		"onFailure": [],
+		"type": "event",
+		"async": true,
+		"name": "trigger",
+		"properties": {
+			"elementInstanceId": "${element.instance.id}"
+		}
+	}],
+	"active": true,
+	"singleThreaded": false,
+	"configuration": [{
+		"id": 3396,
+		"key": "element.instance.id",
+		"name": "element.instance.id",
+		"type": "elementInstance",
+		"description": "The element instance ID of the endpoint to monitor.",
+		"required": true
+	}, {
+		"id": 3397,
+		"key": "hub.name",
+		"name": "hub.name",
+		"type": "value",
+		"description": "The hub name (i.e. crm) of the endpoint to monitor.",
+		"required": true
+	}, {
+		"id": 3398,
+		"key": "kissmetrics.instance.id",
+		"name": "kissmetrics.instance.id",
+		"type": "elementInstance",
+		"description": "The Kissmetrics instance id.",
+		"required": true
+	}, {
+		"id": 3394,
+		"key": "monitored.fields",
+		"name": "monitored.fields",
+		"type": "value",
+		"description": "A JSON list of fields to monitored in the following format: [{ \"monitoredFieldName\": \"required\", \"ceFieldName\": \"required\", \"kmPropertyName\": \"optional\", \"kmEventName\": \"optional\", \"fieldValueForEvent\": \"required if kmEventName is set\"}]. Where ceFIeldName is the custom field used to track changes of the monitored field, kmPropertyName is the name of the property to create in Kissmetrics, kmEventName is the name of the event to create in Kissmetrics and fieldValueForEvent is the value of monitoredFieldName for which to create the event.",
+		"required": true
+	}, {
+		"id": 3399,
+		"key": "object.name",
+		"name": "object.name",
+		"type": "value",
+		"description": "The object name (i.e. Contact or Lead) of the object to monitor.",
+		"required": true
+	}, {
+		"id": 3395,
+		"key": "unique.id.field.name",
+		"name": "unique.id.field.name",
+		"type": "value",
+		"description": "The API name of the unique ID field. This is typically an email address, but should be whatever field used as the unique identifier in Kissmetrics.",
+		"required": true
+	}]
+}

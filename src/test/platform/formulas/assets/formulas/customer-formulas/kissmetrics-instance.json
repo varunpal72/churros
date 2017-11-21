@@ -1,0 +1,11 @@
+{
+    "name": "KM Test - Contact FirstName Prop",
+    "configuration": {
+      "object.name": "Contact",
+      "monitored.fields": "[{\"monitoredFieldName\":\"FirstName\", \"ceFieldName\":\"CE_First_Name__c\", \"kmPropertyName\":\"SFDC First Name\"}]",
+      "element.instance.id": "{}",
+      "hub.name": "crm",
+      "kissmetrics.instance.id": "{}",
+      "unique.id.field.name": "Email"
+    }
+}
