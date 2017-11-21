@@ -16,6 +16,6 @@ suite.forElement('crm', 'candidates', { payload: payload }, (test) => {
       .then(r => cloud.get(test.api))
       .then(r => cloud.get(`${test.api}/${candidateId}`))
       .then(r => cloud.patch(`${test.api}/${candidateId}`, updatePayload))
-      .then(r => cloud.delete(`${test.api}/${candidateId}`, r => expect(r).to.have.statusCode(403)));
+      .then(r => cloud.delete(`${test.api}/${candidateId}`));
   });
 });
