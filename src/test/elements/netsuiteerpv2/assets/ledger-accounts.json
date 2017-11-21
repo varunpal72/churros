@@ -8,9 +8,9 @@
   },
   "description": "Sample New Account",
   "inventory": false,
-  "acctName": "SampleAccount",
+  "acctName": "<<random.word##2>>",
   "revalue": true,
-  "acctNumber": "897654",
+  "acctNumber": "<<random.number>>",
   "curDocNum": 1001,
   "cashFlowRate": {
     "value": "_average"
