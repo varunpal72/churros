@@ -554,7 +554,7 @@
       }
     ]
   },
-    "payments": {
+  "payments": {
     "fields": [{
       "path": "idTransformed",
       "type": "string"
