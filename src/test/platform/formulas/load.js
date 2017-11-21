@@ -117,9 +117,9 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: false }, (test) => 
     if (kissmetricsId) provisioner.delete(closeioId);
   });
 
-  const numFormulaInstances = process.env.NUM_FORMULA_INSTANCES ? process.env.NUM_FORMULA_INSTANCES : 1;
-  const numEvents = process.env.NUM_EVENTS ? process.env.NUM_EVENTS : 1;
-  const numInOneEvent = process.env.NUM_OBJECTS_PER_EVENT ? process.env.NUM_OBJECTS_PER_EVENT : 1;
+  const numFormulaInstances = process.env.NUM_FORMULA_INSTANCES ? process.env.NUM_FORMULA_INSTANCES : 2;
+  const numEvents = process.env.NUM_EVENTS ? process.env.NUM_EVENTS : 50;
+  const numInOneEvent = process.env.NUM_OBJECTS_PER_EVENT ? process.env.NUM_OBJECTS_PER_EVENT : 5;
 
   it('should handle a very large event payload repeatedly using sfdc', () => {
     const formula = require('./assets/formulas/complex-successful-formula');
