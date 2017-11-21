@@ -10,20 +10,6 @@
 			"list": "${config.monitoredFields}"
 		}
 	}, {
-		"name": "11_endpoint_update",
-		"type": "elementRequest",
-		"properties": {
-			"body": "${steps.9_endpoint_update_body.body}",
-			"elementInstanceId": "${config.sourceInstanceId}",
-			"retryAttempts": "3",
-			"api": "/hubs/${config.hubName}/${steps.2_request_variables.body.objectType}/${steps.2_request_variables.body.objectId}",
-			"retry": "true",
-			"method": "PATCH",
-			"headers": "${steps.2_request_variables.headers}",
-			"retryDelay": "500"
-		}
-	}, {
-		"onSuccess": ["11_endpoint_update"],
 		"name": "10_need_to_update",
 		"type": "filter",
 		"properties": {
@@ -67,12 +53,8 @@
 		"name": "3_get_object",
 		"type": "script",
 		"properties": {
-			"elementInstanceId": "${config.sourceInstanceId}",
-			"retryAttempts": "3",
-			"api": "/hubs/${config.hubName}/${steps.2_request_variables.body.objectType}/${steps.2_request_variables.body.objectId}",
-			"retry": "true",
-			"method": "GET",
-			"retryDelay": "500"
+			"body": "done({response: {body: {Email: 'myEmail@email.com', FirstName: 'first', CE_First_Name__c: 'different first'}}})",
+			"mimeType": "application/javascript"
 		}
 	}, {
 		"onSuccess": ["2_request_variables"],
