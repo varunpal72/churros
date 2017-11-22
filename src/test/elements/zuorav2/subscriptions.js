@@ -40,9 +40,9 @@ const ceqlOptions = {
       .then(r => payload.accountKey = customerId);
   });
 
-  //test.withName(ceqlOptions.name).withOptions(ceqlOptions).should.return200OnGet();
-  //test.should.supportNextPagePagination(2);
-  //test.withOptions(options).should.supportCruds(chakram.put);
+  test.withName(ceqlOptions.name).withOptions(ceqlOptions).should.return200OnGet();
+  test.should.supportNextPagePagination(2);
+  test.withOptions(options).should.supportCruds(chakram.put);
 
 
 
