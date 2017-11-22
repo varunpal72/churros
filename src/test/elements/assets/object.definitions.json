@@ -1596,6 +1596,15 @@
      "type": "string"
    }]
  },
+   "spreadsheets": {
+     "fields": [{
+       "path": "idTransformed",
+       "type": "string"
+      },{
+       "path": "id",
+       "type": "string"
+     }]
+   },
  "productsCategories": {
    "fields": [{
      "path": "idTransformed",
