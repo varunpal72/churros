@@ -2,7 +2,9 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const payload = require('./assets/company');
+const tools = require('core/tools');
+const payload = tools.requirePayload(`${__dirname}/assets/company.json`);
+
 const updatePayload = {};
 //Skipping the test since Delete is not supported for this Company resource.
 suite.forElement('crm', 'company', { payload: payload }, (test) => {
