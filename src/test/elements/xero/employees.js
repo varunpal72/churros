@@ -1,6 +1,5 @@
 'use strict';
 
-const faker = require('faker');
 const suite = require('core/suite');
 const tools = require('core/tools');
 

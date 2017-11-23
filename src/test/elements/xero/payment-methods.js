@@ -5,7 +5,7 @@ const expect = require('chakram').expect;
 const suite = require('core/suite');
 const tools = require('core/tools');
 
-const paymentMethodsResponse = tools.requirePayload(`${__dirname}/assets/payment-methodsResponse.json`)
+const paymentMethodsResponse = tools.requirePayload(`${__dirname}/assets/payment-methodsResponse.json`);
 
 suite.forElement('finance', 'payment-methods', (test) => {
     afterEach(done => {

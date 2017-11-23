@@ -2,7 +2,6 @@
 
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
-const faker = require('faker');
 const suite = require('core/suite');
 const tools = require('core/tools');
 
