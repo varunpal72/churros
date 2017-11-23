@@ -2,8 +2,11 @@
 
 const cloud = require('core/cloud');
 const expect = require('chakram').expect;
-const suite = require('core/suite');
 const faker = require('faker');
+const suite = require('core/suite');
+const tools = require('core/tools');
+
+let salesReceipt = tools.requirePayload(`${__dirname}/assets/sales-receipt.json`);
 
 suite.forElement('finance', 'sales-receipts', (test) => {
     afterEach(done => {
@@ -14,7 +17,6 @@ suite.forElement('finance', 'sales-receipts', (test) => {
     test.should.supportPagination();
 
     it('should support CRUDS for /sales-receipts', () => {
-        let salesReceipt = require('./assets/sales-receipt.json');
         let salesReference = faker.commerce.product();
         const bankAccountName = 'ToBank-DoNotDelete';
         let receiptUpdate = { Reference: salesReference};

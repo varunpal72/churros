@@ -1,3 +1,4 @@
 {
-    "FirstName": "Claude"
+    "FirstName": "Claude",
+    "Name": "<<name.findName>>"
 }

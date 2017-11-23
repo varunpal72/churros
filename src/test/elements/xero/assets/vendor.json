@@ -1,3 +1,4 @@
 {
-    "FirstName": "Amazon"
+    "FirstName": "Amazon",
+    "Name": "<<name.findName>>"
 }

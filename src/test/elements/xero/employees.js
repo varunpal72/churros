@@ -1,11 +1,10 @@
 'use strict';
 
-const suite = require('core/suite');
 const faker = require('faker');
+const suite = require('core/suite');
+const tools = require('core/tools');
 
-
-let employee = require('./assets/employee.json');
-employee.LastName = faker.name.lastName();
+let employee = tools.requirePayload(`${__dirname}/assets/employee.json`);
 
 suite.forElement('finance', 'employees', {payload: employee}, (test) => {
     afterEach(done => {

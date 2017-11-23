@@ -1,10 +1,13 @@
 'use strict';
 
 const cloud = require('core/cloud');
-const suite = require('core/suite');
 const expect = require('chakram').expect;
 const faker = require('faker');
+const suite = require('core/suite');
+const tools = require('core/tools');
 
+let customer = tools.requirePayload(`${__dirname}/assets/customer.json`);
+let invoice = tools.requirePayload(`${__dirname}/assets/customer-invoice.json`);
 
 suite.forElement('finance', 'customers', (test) => {
     afterEach(done => {
@@ -15,8 +18,6 @@ suite.forElement('finance', 'customers', (test) => {
     test.should.supportPagination();
     
     it('should support CRUDS for /customers', () => {
-        let customer = require('./assets/customer.json');
-        let invoice = require('./assets/customer-invoice.json');
         let customerId;
         let customerUpdate = customer;
 

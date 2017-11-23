@@ -1,10 +1,13 @@
 'use strict';
 
 const cloud = require('core/cloud');
-const suite = require('core/suite');
 const expect = require('chakram').expect;
 const faker = require('faker');
+const suite = require('core/suite');
+const tools = require('core/tools');
 
+let vendor = tools.requirePayload(`${__dirname}/assets/vendor.json`);
+let invoice = tools.requirePayload(`${__dirname}/assets/vendor-invoice.json`);
 
 suite.forElement('finance', 'vendors', (test) => {
     afterEach(done => {
@@ -15,12 +18,9 @@ suite.forElement('finance', 'vendors', (test) => {
     test.should.supportPagination();
     
     it('should support CRUDS for /vendors', () => {
-        let vendor = require('./assets/vendor.json');
-        let invoice = require('./assets/vendor-invoice.json');
         let vendorId;
         let vendorUpdate = vendor;
 
-        vendor.Name = faker.name.findName();
         vendorUpdate.FirstName = vendor.Name.split(" ")[0];
 
         return cloud.post(test.api, vendor)

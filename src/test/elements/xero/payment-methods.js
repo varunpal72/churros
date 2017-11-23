@@ -1,17 +1,17 @@
 'use strict';
 
-const cloud = require('core/cloud.js');
+const cloud = require('core/cloud');
 const expect = require('chakram').expect;
 const suite = require('core/suite');
+const tools = require('core/tools');
 
+const paymentMethodsResponse = tools.requirePayload(`${__dirname}/assets/payment-methodsResponse.json`)
 
 suite.forElement('finance', 'payment-methods', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
         setTimeout(done, 3000);
     });
-    
-    const paymentMethodsResponse = require('./assets/payment-methodsResponse.json');
     
     it('should support GET /payment-methods', () =>{
         return cloud.get(`${test.api}`)

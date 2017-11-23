@@ -2,8 +2,12 @@
 
 const cloud = require('core/cloud.js');
 const expect = require('chakram').expect;
-const suite = require('core/suite');
 const faker = require('faker');
+const suite = require('core/suite');
+const tools = require('core/tools');
+
+// -- GET /reports/metadata passes back a hard-coded payload --
+let reportsMetadataResponse = tools.requirePayload(`${__dirname}/assets/reports-metadataResponse.json`);    
 
 suite.forElement('finance', 'reports', (test) => {
     afterEach(done => {
@@ -11,18 +15,9 @@ suite.forElement('finance', 'reports', (test) => {
         setTimeout(done, 2500);
     });
     
-    /**
-       GET /reports/metadata passes back a hard-coded payload so 
-    */
-    let reportsMetadataResponse = require('./assets/reports-metadataResponse.json');    
-    expect(reportsMetadataResponse).to.not.be.empty;
     let reports = reportsMetadataResponse.filter(report => report.required.length === 0);
-    expect(reports).to.not.be.empty;
     let contactReports = reportsMetadataResponse.filter(report => report.required[0] === 'contactId');
-    expect(contactReports).to.not.be.empty;
     let bankAccountReports = reportsMetadataResponse.filter(report => report.required[0] === 'bankAccountId');
-    expect(bankAccountReports).to.not.be.empty;
-    expect(reportsMetadataResponse.length).to.equal(reports.length + contactReports.length + bankAccountReports.length);
     
     const contactWrap = (contactReportCallback) => {
         let contactId;

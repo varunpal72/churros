@@ -1,4 +1,4 @@
 {
     "FirstName": "Claude",
-    "LastName": "Elements"
+    "LastName": "<<name.lastName>>"
 }

@@ -1,7 +1,7 @@
 {
   "Type" : "SPEND",
   "Contact" : {
-    "Name":""
+    "Name":"<<name.firstName>>"
   },
   "Date" : "2015-12-08T00:00:00",
   "LineItems" : [
