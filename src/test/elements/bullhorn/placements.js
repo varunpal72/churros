@@ -1,8 +1,8 @@
 'use strict';
 
+const suite = require('core/suite');
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/placments.json`);
-const updatePayload = {};
 
 
 suite.forElement('crm', 'placements', { payload: payload }, (test) => {
