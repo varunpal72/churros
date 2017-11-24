@@ -179,6 +179,15 @@
       }
     ]
   },
+  "bills-payments": {
+    "vendorName": "",
+    "fields": [
+      {
+        "path": "id",
+        "vendorPath": "RECORDNO"
+      }
+    ]
+  },
   "items": {
     "vendorName": "",
     "fields": [
