@@ -5,6 +5,8 @@ const cloud = require('core/cloud');
 const payload = require('./assets/files');
 const expect = require('chakram').expect;
 const faker = require('faker');
+const folderPayload = require('./assets/folders');
+const filePayload = require('./assets/files');
 
 payload.path = `/${faker.random.number()}`;
 
@@ -19,7 +21,12 @@ const propertiesPayload = {
   }
 };
 
+let directoryPath = faker.random.word();
+
 suite.forElement('documents', 'files', { payload: payload }, (test) => {
+
+
+
   it('should allow ping for googledrive', () => {
     return cloud.get(`/hubs/documents/ping`);
   });
@@ -57,7 +64,134 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
       .then(r => cloud.delete(`${test.api}/${fileId}`))
       .then(r => cloud.withOptions({ qs: { path: `${destPath}` } }).delete(`${test.api}`));
   });
-  // Test For Export Functionality
+
+  const fileWrap = (conditionChecks) => {
+    let jpgFile = __dirname + '/assets/Penguins.jpg';
+    let pngFile = __dirname + '/assets/Dice.png';
+    let textFile = __dirname + '/assets/textFile.txt';
+    let jpgFileBody, pngFileBody, textFileBody;
+    return cloud.withOptions({ qs: { path: `/${directoryPath}/Penguins.jpg`, overwrite: 'true' } }).postFile(`${test.api}`, jpgFile)
+      .then(r => jpgFileBody = r.body)
+      .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/Dice.png`, overwrite: 'true' } }).postFile(`${test.api}`, pngFile))
+      .then(r => pngFileBody = r.body)
+      .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/textFile.txt`, overwrite: 'true' } }).postFile(`${test.api}`, textFile))
+      .then(r => { textFileBody = r.body })
+      .then(r => conditionChecks(jpgFileBody))
+      .then(r => cloud.delete(`${test.api}/${jpgFileBody.id}`))
+      .then(r => cloud.delete(`${test.api}/${pngFileBody.id}`))
+      .then(r => cloud.delete(`${test.api}/${textFileBody.id}`))
+      .then(r => cloud.delete(`/hubs/documents/folders/${jpgFileBody.parentFolderId}`));
+  }
+
+  it('it should allow RS for documents/files/:id/revisions', () => {
+    const revisionChecks = (jpgFileBody) => {
+      let revisionId;
+      return cloud.get(`${test.api}/${jpgFileBody.id}/revisions`)
+        .then(r => {
+            expect(r).to.have.statusCode(200) &&
+            expect(r.body).to.not.be.null &&
+            expect(r.body).to.be.a('array') &&
+            expect(r.body).to.have.length.above(0) &&
+            expect(r.body[0]).to.contain.key('id');
+          revisionId = r.body[0].id;
+        })
+        .then(r => cloud.get(`${test.api}/${jpgFileBody.id}/revisions/${revisionId}`))
+        .then(r => {
+            expect(r).to.have.statusCode(200) &&
+            expect(r.body).to.not.be.null &&
+            expect(r.body).to.contain.key('mimeType')
+        });
+    };
+    return fileWrap(revisionChecks);
+  });
+
+  it('should allow GET /folders/contents', () => {
+    const conditionChecks = (jpgFileBody) => {
+      return cloud.withOptions({ qs: { path: `/${directoryPath}` } }).get(`/hubs/documents/folders/contents`)
+        .then(r => expect(r).to.have.statusCode(200) &&
+          expect(r.body).to.not.be.null &&
+          expect(r.body).to.be.a('array') &&
+          expect(r.body).to.have.length.above(0) &&
+          expect(r.body[0]).to.contain.key('name')
+        );
+    };
+    return fileWrap(conditionChecks);
+  });
+
+  it('should allow GET /folders/contents with name like', () => {
+    const conditionChecks = (jpgFileBody) => {
+      return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "name like 'Dice'" } }).get(`/hubs/documents/folders/contents`)
+        .then(r => expect(r).to.have.statusCode(200) &&
+          expect(r.body).to.not.be.null &&
+          expect(r.body).to.be.a('array') &&
+          expect(r.body.length).to.be.equal(1) &&
+          expect(r.body[0]).to.contain.key('name') &&
+          expect(r.body[0].properties.mimeType).to.equal("image/png")
+        );
+    };
+    return fileWrap(conditionChecks);
+  });
+
+  it('should allow GET /folders/contents with name equals', () => {
+    const conditionChecks = (jpgFileBody) => {
+      return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "name='Penguins.jpg'" } }).get(`/hubs/documents/folders/contents`)
+        .then(r => expect(r).to.have.statusCode(200) &&
+          expect(r.body).to.not.be.null &&
+          expect(r.body).to.be.a('array') &&
+          expect(r.body.length).to.be.equal(1) &&
+          expect(r.body[0]).to.contain.key('name') &&
+          expect(r.body[0].name).to.equal("Penguins.jpg")
+        );
+    };
+    return fileWrap(conditionChecks);
+  });
+
+  it('should allow GET /folders/contents with name IN', () => {
+    const conditionChecks = (jpgFileBody) => {
+      return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "name IN ('Penguins.jpg','Dice.png')" } }).get(`/hubs/documents/folders/contents`)
+        .then(r => expect(r).to.have.statusCode(200) &&
+          expect(r.body).to.not.be.null &&
+          expect(r.body).to.be.a('array') &&
+          expect(r.body).to.have.length.above(0) &&
+          expect(r.body[0]).to.contain.key('name') ||
+          expect(r.body[0].name).to.equal("Penguins.jpg") ||
+          expect(r.body[0].name).to.equal("Dice.png")
+        );
+    };
+    return fileWrap(conditionChecks);
+  });
+
+  it('should allow GET /folders/contents with extension', () => {
+    const conditionChecks = (jpgFileBody) => {
+      return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "extension='.jpg'" } }).get(`/hubs/documents/folders/contents`)
+        .then(r => expect(r).to.have.statusCode(200) &&
+          expect(r.body).to.not.be.null &&
+          expect(r.body).to.be.a('array') &&
+          expect(r.body.length).to.be.equal(1) &&
+          expect(r.body[0]).to.contain.key('properties') &&
+          expect(r.body[0].properties.mimeType).to.equal("image/jpeg")
+        );
+    };
+    return fileWrap(conditionChecks);
+  });
+
+  it('should allow GET /folders/contents with mimeType', () => {
+    const conditionChecks = (jpgFileBody) => {
+      return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "mimeType='text/plain'" } }).get(`/hubs/documents/folders/contents`)
+        .then(r => expect(r).to.have.statusCode(200) &&
+          expect(r.body).to.not.be.null &&
+          expect(r.body).to.be.a('array') &&
+          expect(r.body).to.have.length.above(0) &&
+          expect(r.body[0]).to.contain.key('properties') &&
+          expect(r.body[0].properties.mimeType).to.equal("text/plain")
+        );
+    };
+    return fileWrap(conditionChecks);
+  });
+
+
+
+  Test For Export Functionality
   it('Should allow export of Google Doc to plain text using media type', () => {
     let DocFile = '/ChurrosDocDoNotDelete';
     return cloud.withOptions({ qs: { path: DocFile, mediaType: 'text/plain' } }).get(test.api)
