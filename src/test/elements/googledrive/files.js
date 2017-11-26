@@ -5,8 +5,6 @@ const cloud = require('core/cloud');
 const payload = require('./assets/files');
 const expect = require('chakram').expect;
 const faker = require('faker');
-const folderPayload = require('./assets/folders');
-const filePayload = require('./assets/files');
 
 payload.path = `/${faker.random.number()}`;
 
@@ -24,8 +22,6 @@ const propertiesPayload = {
 let directoryPath = faker.random.word();
 
 suite.forElement('documents', 'files', { payload: payload }, (test) => {
-
-
 
   it('should allow ping for googledrive', () => {
     return cloud.get(`/hubs/documents/ping`);
@@ -75,20 +71,20 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
       .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/Dice.png`, overwrite: 'true' } }).postFile(`${test.api}`, pngFile))
       .then(r => pngFileBody = r.body)
       .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/textFile.txt`, overwrite: 'true' } }).postFile(`${test.api}`, textFile))
-      .then(r => { textFileBody = r.body })
+      .then(r => textFileBody = r.body)
       .then(r => conditionChecks(jpgFileBody))
       .then(r => cloud.delete(`${test.api}/${jpgFileBody.id}`))
       .then(r => cloud.delete(`${test.api}/${pngFileBody.id}`))
       .then(r => cloud.delete(`${test.api}/${textFileBody.id}`))
       .then(r => cloud.delete(`/hubs/documents/folders/${jpgFileBody.parentFolderId}`));
-  }
+  };
 
   it('it should allow RS for documents/files/:id/revisions', () => {
     const revisionChecks = (jpgFileBody) => {
       let revisionId;
       return cloud.get(`${test.api}/${jpgFileBody.id}/revisions`)
         .then(r => {
-            expect(r).to.have.statusCode(200) &&
+          expect(r).to.have.statusCode(200) &&
             expect(r.body).to.not.be.null &&
             expect(r.body).to.be.a('array') &&
             expect(r.body).to.have.length.above(0) &&
@@ -97,9 +93,9 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
         })
         .then(r => cloud.get(`${test.api}/${jpgFileBody.id}/revisions/${revisionId}`))
         .then(r => {
-            expect(r).to.have.statusCode(200) &&
+          expect(r).to.have.statusCode(200) &&
             expect(r.body).to.not.be.null &&
-            expect(r.body).to.contain.key('mimeType')
+            expect(r.body).to.contain.key('mimeType');
         });
     };
     return fileWrap(revisionChecks);
@@ -191,7 +187,7 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
 
 
 
-  Test For Export Functionality
+  //Test For Export Functionality
   it('Should allow export of Google Doc to plain text using media type', () => {
     let DocFile = '/ChurrosDocDoNotDelete';
     return cloud.withOptions({ qs: { path: DocFile, mediaType: 'text/plain' } }).get(test.api)
