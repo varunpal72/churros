@@ -234,7 +234,7 @@ const itCeqlSearchMultiple = (name, api, payload, field, options) => {
     let tranformedObjs = props.getOptionalForKey(props.get('element'), 'transformed') || [];
     //Have to update field for the query if there is a transformation
     let transform = tranformedObjs.reduce((acc, cur) => acc = acc ? acc : api.split('/').slice(-2).filter(str => str === cur).length > 0 ? true : false, false);
-    if (field === 'id' && transformed) field = 'idTransformed';
+    if (field === 'id' && transform) field = 'idTransformed';
     return cloud.post(api, payload)
       .then(r => {
         id = r.body.id;
