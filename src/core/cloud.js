@@ -5,6 +5,7 @@ const fs = require('fs');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
+const swaggerParser = require('swagger-parser');
 
 var exports = module.exports = {};
 
@@ -61,6 +62,34 @@ const get = (api, validationCb, options) => {
  * @return {Promise}  A Promise that resolves to the HTTP response
  */
 exports.get = (api, validationCb) => get(api, validationCb, null);
+
+
+const validateGetModel = (api, validationCb, options) => {  
+  //get(api, validationCb, options) 
+  // logger.debug('GET %s with options %s', api, JSON.stringify(options));
+  // return chakram.get(api, options)
+  //   .then(r => validator(validationCb)(r))
+  //   .catch(r => tools.logAndThrow('Failed to retrieve or validate: %s', r, api));
+    let validatedDereferenceDocs;
+    return returnElementDocs('jira')
+    .then(r => dereference(r.body))
+    .then(r => validate(r))
+    .then(r => validatedDereferenceDocs = r)
+    .then(r => get(api, validationCb, options))
+    .then(r => console.log(r.body))      
+    //.then(r => console.log(r))       
+    // .then(r => { validate(r) });
+
+};
+
+/**
+ * HTTP GET For Model
+ * @param  {string} api          The API to call
+ * @param  {Function} validationCb The optional validation callback function to use to validate the HTTP response
+ * @return {Promise}  A Promise that resolves to the HTTP response
+ */
+exports.validateGetModel = (api, validationCb) => validateGetModel(api, validationCb, null);
+
 
 const modifyPayload = (payload, options) => {
   if (!options || !options.churros) return payload;
@@ -273,6 +302,7 @@ const withOptions = (options) => {
     patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
     update: (api, payload, validationCb, chakramCb) => update(api, payload, validationCb, chakramCb, options),
     get: (api, validationCb) => get(api, validationCb, options),
+    validateGetModel: (api, validationCb) => validateGetModel(api, validationCb, options),
     delete: (api, validationCb) => remove(api, validationCb, options),
     cruds: (api, payload, validationCb, updateCb) => cruds(api, payload, validationCb, updateCb, options),
     crd: (api, payload, validationCb, updateCb) => crd(api, payload, validationCb, updateCb, options),
@@ -329,3 +359,45 @@ exports.createEvents = (element, replacements, eventRequest, numEvents) => {
   return chakram.all(promises);
 
 };
+
+
+const invalidType = ['{objectName}', 'bulk', 'ping', 'objects' ];
+
+const returnElementDocs = (elementkeyOrId) => {   
+    let elementObj;
+    return get('/elements/' + elementkeyOrId)
+    .then(r => elementObj = r.body)    
+    .then(r => get(`elements/${elementObj.id}/docs`))      
+};
+
+exports.returnElementDocs = (elementkeyOrId) =>  returnElementDocs(elementkeyOrId);
+
+const validate = (docs) => { 
+  return new Promise((res, rej) => {
+  var definitions = Object.keys(docs.paths).map(path => {    
+    if(invalidType.indexOf(path.split('/')[1]) == -1 && 
+    Object.keys(docs.paths[path]).indexOf('get') > -1) {                               
+      return { //[path] : { 
+        "parameters" : docs.paths[path]['get']['parameters'],
+        "schema" : docs.paths[path]['get']['responses']['200']['schema'],
+        "path" : path }         
+    }
+    return null;    
+  }).filter((definition) => {       
+      return definition != null
+  })
+  //console.log(definitions)
+  res(definitions)
+})
+}
+
+exports.validate = (docs) =>  validate(docs);
+
+const dereference = (docs) => {
+  return new Promise((res, rej) => {
+    var parser = new swaggerParser();    
+    res(parser.dereference(docs))        
+  })
+}
+
+exports.dereference = (docs) =>  dereference(docs);
