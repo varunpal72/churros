@@ -13,5 +13,5 @@
     "IsCustomer": true,
     "IsSupplier": true,
     "LastName": "Account",
-    "Name":""
+    "Name":"<<name.findName>>"
 }
