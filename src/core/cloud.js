@@ -5,7 +5,7 @@ const fs = require('fs');
 const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
-const swaggerParser = require('swagger-parser');
+//const swaggerParser = require('swagger-parser');
 
 var exports = module.exports = {};
 
@@ -64,23 +64,23 @@ const get = (api, validationCb, options) => {
 exports.get = (api, validationCb) => get(api, validationCb, null);
 
 
-const validateGetModel = (api, validationCb, options) => {  
-  //get(api, validationCb, options) 
-  // logger.debug('GET %s with options %s', api, JSON.stringify(options));
-  // return chakram.get(api, options)
-  //   .then(r => validator(validationCb)(r))
-  //   .catch(r => tools.logAndThrow('Failed to retrieve or validate: %s', r, api));
-    let validatedDereferenceDocs;
-    return returnElementDocs('jira')
-    .then(r => dereference(r.body))
-    .then(r => validate(r))
-    .then(r => validatedDereferenceDocs = r)
-    .then(r => get(api, validationCb, options))
-    .then(r => console.log(r.body))      
-    //.then(r => console.log(r))       
-    // .then(r => { validate(r) });
+// const validateGetModel = (api, pattern, validationCb, options) => {  
+  
+//   // validate api value and patten value.
+  
+//   let validatedDereferenceDocs;
+//     return returnElementDocs('jira')
+//     .then(r => dereference(r.body))
+//     //.then(r => validate(r))
+//     .then(r => validatedDereferenceDocs = r)
+//     .then(r => get(api, validationCb, options))
+//     .then(r => {//console.log(validatedDereferenceDocs)
+//       compare(pattern, validatedDereferenceDocs, r.body)    
+//     })      
+//     //.then(r => console.log(r))       
+//     // .then(r => { validate(r) });
 
-};
+// };
 
 /**
  * HTTP GET For Model
@@ -302,7 +302,7 @@ const withOptions = (options) => {
     patch: (api, payload, validationCb) => patch(api, payload, validationCb, options),
     update: (api, payload, validationCb, chakramCb) => update(api, payload, validationCb, chakramCb, options),
     get: (api, validationCb) => get(api, validationCb, options),
-    validateGetModel: (api, validationCb) => validateGetModel(api, validationCb, options),
+//    validateGetModel: (api, pattern, validationCb) => validateGetModel(api, pattern, validationCb, options),
     delete: (api, validationCb) => remove(api, validationCb, options),
     cruds: (api, payload, validationCb, updateCb) => cruds(api, payload, validationCb, updateCb, options),
     crd: (api, payload, validationCb, updateCb) => crd(api, payload, validationCb, updateCb, options),
@@ -361,43 +361,122 @@ exports.createEvents = (element, replacements, eventRequest, numEvents) => {
 };
 
 
-const invalidType = ['{objectName}', 'bulk', 'ping', 'objects' ];
+// const invalidType = ['{objectName}', 'bulk', 'ping', 'objects' ];
 
-const returnElementDocs = (elementkeyOrId) => {   
-    let elementObj;
-    return get('/elements/' + elementkeyOrId)
-    .then(r => elementObj = r.body)    
-    .then(r => get(`elements/${elementObj.id}/docs`))      
-};
+// const returnElementDocs = (elementkeyOrId) => {   
+//     let elementObj;
+//     return get('/elements/' + elementkeyOrId)
+//     .then(r => elementObj = r.body)    
+//     .then(r => get(`elements/${elementObj.id}/docs`))      
+// };
 
-exports.returnElementDocs = (elementkeyOrId) =>  returnElementDocs(elementkeyOrId);
+// exports.returnElementDocs = (elementkeyOrId) =>  returnElementDocs(elementkeyOrId);
 
-const validate = (docs) => { 
-  return new Promise((res, rej) => {
-  var definitions = Object.keys(docs.paths).map(path => {    
-    if(invalidType.indexOf(path.split('/')[1]) == -1 && 
-    Object.keys(docs.paths[path]).indexOf('get') > -1) {                               
-      return { //[path] : { 
-        "parameters" : docs.paths[path]['get']['parameters'],
-        "schema" : docs.paths[path]['get']['responses']['200']['schema'],
-        "path" : path }         
-    }
-    return null;    
-  }).filter((definition) => {       
-      return definition != null
-  })
-  //console.log(definitions)
-  res(definitions)
-})
-}
+// const validate = (docs) => { 
+//   return new Promise((res, rej) => {
+//   var definitions = Object.keys(docs.paths).map(path => {    
+//     if(invalidType.indexOf(path.split('/')[1]) == -1 && 
+//     Object.keys(docs.paths[path]).indexOf('get') > -1) {                               
+//       return { //[path] : { 
+//         "parameters" : docs.paths[path]['get']['parameters'],
+//         "schema" : docs.paths[path]['get']['responses']['200']['schema'],
+//         "path" : path }         
+//     }
+//     return null;    
+//   }).filter((definition) => {       
+//       return definition != null
+//   })
+//   //console.log(definitions)
+//   res(definitions)
+// })
+// }
 
-exports.validate = (docs) =>  validate(docs);
+// exports.validate = (docs) =>  validate(docs);
 
-const dereference = (docs) => {
-  return new Promise((res, rej) => {
-    var parser = new swaggerParser();    
-    res(parser.dereference(docs))        
-  })
-}
+// const compare = (pattern, docs, apiResponse) => { 
+//   return new Promise((res, rej) => {
+//   //console.log(docs.paths[pattern])
+//   //console.log(docs.paths['agents'])
+//   if(docs.paths[pattern] === undefined) {    
+//       rej(`cannot find input pattern '${pattern}' `)  
+//   }
+//   // todo: remove hardcode 'get' and write code for the same  
+//   // todo: write error checkings
+//   // todo: check if it is getall then we should have items and its type with in it. if res is having array then it is getall
+//   const schema = docs.paths[pattern]['get']['responses']['200']['schema'] 
+//   if(Array.isArray(apiResponse)) {    
+//     if(schema['items'] === undefined) {
+//       const msg = 'API returns array of objects. Model expected to be an Array'
+//       console.log(msg)
+//       rej(msg)
+//     } else {
+//       const primaryKey = schema['items']['x-primary-key']
+//       primaryKey === undefined ? 
+//       console.log('Primary key is not found') : console.log(`Primary key is : ${primaryKey}`)             
+//       compareGetModelWithResponse(schema['items']['properties'], apiResponse[0])
+//     }
+//   } else {
+//     if(schema['items'] !== undefined) {
+//       const msg = 'API returns object. Model expected to be an Object'
+//       console.log(msg)
+//       rej(msg)      
+//     } else {
 
-exports.dereference = (docs) =>  dereference(docs);
+//     }
+//   }
+//   res(null)
+// })
+// }
+
+
+// const dereference = (docs) => {
+//   return new Promise((res, rej) => {
+//     var parser = new swaggerParser();    
+//     res(parser.dereference(docs))        
+//   })
+// }
+
+// exports.dereference = (docs) =>  dereference(docs);
+
+// function traverse(o ) {
+//   for (i in o) {
+//       if (!!o[i] && typeof(o[i])=="object") {
+//           console.log(i, o[i])
+//           traverse(o[i] );
+//       }
+//   }
+// }  
+
+// const compareGetModelWithResponse = (docsProperties, APIProperties) => {
+  
+//   for (var i in APIProperties) {
+//     if (!!APIProperties[i] && typeof(APIProperties[i])=="object") {
+//         //console.log(i, APIProperties[i])
+//         if(docsProperties[i] === undefined) {
+//           console.log('missing properties : ', i)
+//         }
+//         // console.log('APIProperties[i] : ', i)
+//         // console.log('docsProperties : ')
+//         // console.log(Object.keys(docsProperties))    
+//         compareGetModelWithResponse(docsProperties[i]['properties'] ,APIProperties[i]);
+//     } else {
+//         console.log('APIProperties[i] : ', i)
+//         console.log('docsProperties : ')
+//         console.log(Object.keys(docsProperties))
+//         if (Object.keys(docsProperties).indexOf(i) > -1) {
+//           console.log(i, ' is present in docsProperties' )
+//         } else {
+//           console.error(i, ' not present in docsProperties' )
+//         }
+
+//     }
+//   }
+
+//   // for (var i in docsProperties) {
+//   //   if (!!docsProperties[i] && typeof(docsProperties[i])=="object") {
+//   //       console.log(i, docsProperties[i])
+//   //       compareGetModelWithResponse(docsProperties[i]);
+//   //   }
+//   // }  
+//   //Object.keys(docsProperties['properties'])
+// }

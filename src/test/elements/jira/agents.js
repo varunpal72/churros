@@ -2,6 +2,7 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
+const model = require('core/model');
 
 // suite.forElement('helpdesk', 'agents', (test) => {
 //   let agentId;
@@ -16,6 +17,8 @@ const cloud = require('core/cloud');
 suite.forElement('helpdesk', 'agents', (test) => {
   let agentId;
   it('should allow get for /agents', () => {
-    return cloud.withOptions({qs:{where:`username='jiradev'`}}).validateGetModel('/hubs/helpdesk/agents')    
+    return cloud.withOptions({qs:{where:`username='jiradev'`}}).get('/hubs/helpdesk/agents')
+    .then(r => model.validateGetModel(r, '/agents'))
+    //return cloud.withOptions({qs:{where:`username='jiradev'`}}).validateGetModel('/hubs/helpdesk/agents', '/agents')    
   });
 });
