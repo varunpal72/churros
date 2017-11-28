@@ -33,22 +33,18 @@
 	}],
 	"steps": [{
 		"name": "fetchJobs",
-		"onFailure": [],
 		"type": "request",
 		"properties": {
 			"method": "GET",
-			"api": "/jobs",
-			"mimeType": "application/javascript"
+			"api": "/jobs"
 		},
 		"onSuccess": ["findJob"]
 	}, {
 		"name": "getExecutions",
 		"type": "request",
 		"properties": {
-			"path": "${info}",
 			"method": "GET",
-			"api": "/formulas/{formulaId}/instances/{formulaInstanceId}/executions",
-			"mimeType": "application/javascript"
+			"api": "/formulas/${info.formulaId}/instances/${info.formulaInstanceId}/executions"
 		},
 		"onSuccess": ["findPreviousExecution"]
 	}, {
@@ -65,19 +61,16 @@
 		"onFailure": ["getMeetingDetails"],
 		"type": "filter",
 		"properties": {
-			"scriptEngine": "v1",
 			"mimeType": "application/javascript",
-			"body": "return steps.findPreviousExecution.hasPreviousExecution;"
+			"body": "done(steps.findPreviousExecution.hasPreviousExecution);"
 		},
 		"onSuccess": ["getPreviousExecution"]
 	}, {
 		"name": "getPreviousExecution",
 		"type": "request",
 		"properties": {
-			"path": "${steps.findPreviousExecution}",
 			"method": "GET",
-			"api": "/formulas/{formulaId}/instances/{formulaInstanceId}/executions/{id}",
-			"mimeType": "application/javascript"
+			"api": "/formulas/${steps.findPreviousExecution.formulaId}/instances/${steps.findPreviousExecution.formulaInstanceId}/executions/${steps.findPreviousExecution.id}"
 		},
 		"onSuccess": ["ifPreviousExecutionFinished"]
 	}, {
@@ -93,11 +86,9 @@
 		"name": "getMeetingDetails",
 		"type": "elementRequest",
 		"properties": {
-			"path": "${config.readytalk.meeting}",
 			"method": "GET",
-			"elementInstanceId": "${readytalk.instance.id}",
-			"api": "/hubs/marketing/meetings/{id}",
-			"mimeType": "application/javascript"
+			"elementInstanceId": "${config.readytalk.instance.id}",
+			"api": "/hubs/marketing/meetings/${config.readytalk.meeting.id}"
 		},
 		"onSuccess": ["checkForInstanceCreation"]
 	}, {
@@ -105,9 +96,8 @@
 		"onFailure": ["fetchJobs"],
 		"type": "filter",
 		"properties": {
-			"scriptEngine": "v1",
 			"mimeType": "application/javascript",
-			"body": "return trigger.event['trigger.formula.instance.action'] == 'create';\n"
+			"body": "done(trigger.event['trigger.formula.instance.action'] == 'create');"
 		},
 		"onSuccess": ["constructJobCreationRequest"]
 	}, {
@@ -124,9 +114,8 @@
 		"type": "request",
 		"properties": {
 			"method": "POST",
-			"elementInstanceId": "${readytalk.instance.id}",
+			"elementInstanceId": "${config.readytalk.instance.id}",
 			"api": "/jobs",
-			"mimeType": "application/javascript",
 			"body": "${steps.constructJobCreationRequest}"
 		},
 		"onSuccess": ["getFirstActonCallTime"]
@@ -143,9 +132,8 @@
 		"type": "elementRequest",
 		"properties": {
 			"method": "GET",
-			"elementInstanceId": "${acton.instance.id}",
-			"api": "/hubs/marketing/lists?pageSize=1000",
-			"mimeType": "application/javascript"
+			"elementInstanceId": "${config.acton.instance.id}",
+			"api": "/hubs/marketing/lists?pageSize=1000"
 		},
 		"onSuccess": ["findMeetingList"]
 	}, {
@@ -162,20 +150,17 @@
 		"onFailure": ["constructMeetingListPayload"],
 		"type": "filter",
 		"properties": {
-			"scriptEngine": "v1",
 			"mimeType": "application/javascript",
-			"body": "return steps.findMeetingList.exists;"
+			"body": "done(steps.findMeetingList.exists);"
 		},
 		"onSuccess": ["fetchMeetingList"]
 	}, {
 		"name": "fetchMeetingList",
 		"type": "elementRequest",
 		"properties": {
-			"path": "${steps.findMeetingList}",
 			"method": "GET",
-			"elementInstanceId": "${acton.instance.id}",
-			"api": "/hubs/marketing/lists/{id}/contacts?pageSize=1000",
-			"mimeType": "application/javascript"
+			"elementInstanceId": "${config.acton.instance.id}",
+			"api": "/hubs/marketing/lists/${steps.findMeetingList.id}/contacts?pageSize=1000"
 		},
 		"onSuccess": ["getMeetingList"]
 	}, {
@@ -192,11 +177,9 @@
 		"onFailure": ["getPostEventSurveys"],
 		"type": "elementRequest",
 		"properties": {
-			"path": "${config.readytalk.meeting}",
 			"method": "GET",
-			"elementInstanceId": "${readytalk.instance.id}",
-			"api": "/hubs/marketing/meetings/{id}/chats",
-			"mimeType": "application/javascript"
+			"elementInstanceId": "${config.readytalk.instance.id}",
+			"api": "/hubs/marketing/meetings/${config.readytalk.meeting.id}/chats"
 		},
 		"onSuccess": ["getPostEventSurveys"]
 	}, {
@@ -204,32 +187,27 @@
 		"onFailure": ["constructRegistrationsWhereClause"],
 		"type": "elementRequest",
 		"properties": {
-			"path": "${config.readytalk.meeting}",
 			"method": "GET",
-			"elementInstanceId": "${readytalk.instance.id}",
-			"api": "/hubs/marketing/meetings/{id}/surveys",
-			"mimeType": "application/javascript"
+			"elementInstanceId": "${config.readytalk.instance.id}",
+			"api": "/hubs/marketing/meetings/${config.readytalk.meeting.id}/surveys"
 		},
 		"onSuccess": ["constructRegistrationsWhereClause"]
 	}, {
 		"name": "constructRegistrationsWhereClause",
 		"type": "script",
 		"properties": {
-			"scriptEngine": "v1",
 			"mimeType": "application/javascript",
-			"body": "return {pageSize: 2000}\n"
+			"body": "done({pageSize: 2000});"
 		},
 		"onSuccess": ["listRegistrations"]
 	}, {
 		"name": "listRegistrations",
 		"type": "elementRequest",
 		"properties": {
-			"path": "${config.readytalk.meeting}",
 			"method": "GET",
-			"elementInstanceId": "${readytalk.instance.id}",
+			"elementInstanceId": "${config.readytalk.instance.id}",
 			"query": "${steps.constructRegistrationsWhereClause}",
-			"api": "/hubs/marketing/meetings/{id}/registrations",
-			"mimeType": "application/javascript"
+			"api": "/hubs/marketing/meetings/${config.readytalk.meeting.id}/registrations"
 		},
 		"onSuccess": ["parseRegistrations"]
 	}, {
@@ -254,9 +232,8 @@
 		"name": "determineContinueRegistrationsLoop",
 		"type": "filter",
 		"properties": {
-			"scriptEngine": "v1",
 			"mimeType": "application/javascript",
-			"body": "return !steps.loopContacts.done"
+			"body": "done(!steps.loopContacts.done);"
 		},
 		"onSuccess": ["findDataForCurrentContact"]
 	}, {
@@ -283,9 +260,8 @@
 		"onFailure": ["constructContactCreationPayload"],
 		"type": "filter",
 		"properties": {
-			"scriptEngine": "v1",
 			"mimeType": "application/javascript",
-			"body": "return steps.findContactInList.exists"
+			"body": "done(steps.findContactInList.exists);"
 		},
 		"onSuccess": ["constructContactUpdatePayload"]
 	}, {
@@ -302,9 +278,8 @@
 		"onFailure": ["loopContacts"],
 		"type": "filter",
 		"properties": {
-			"scriptEngine": "v1",
 			"mimeType": "application/javascript",
-			"body": "return steps.constructContactUpdatePayload.payload.size() > 1;"
+			"body": "done(steps.constructContactUpdatePayload.payload.size() > 1);"
 		},
 		"onSuccess": ["updateContact"]
 	}, {
@@ -312,10 +287,9 @@
 		"onFailure": ["trackRate"],
 		"type": "elementRequest",
 		"properties": {
-			"path": "${steps.findContactInList}",
 			"method": "PATCH",
-			"elementInstanceId": "${acton.instance.id}",
-			"api": "/hubs/marketing/lists/{listId}/contacts/{id}",
+			"elementInstanceId": "${config.acton.instance.id}",
+			"api": "/hubs/marketing/lists/${steps.findContactInList.listId}/contacts/${steps.findContactInList.id}",
 			"mimeType": "application/javascript",
 			"body": "${steps.constructContactUpdatePayload.payload}"
 		},
@@ -359,11 +333,9 @@
 		"onFailure": ["trackRate"],
 		"type": "elementRequest",
 		"properties": {
-			"path": "${steps.getMeetingList}",
 			"method": "POST",
-			"elementInstanceId": "${acton.instance.id}",
-			"api": "/hubs/marketing/lists/{id}/contacts",
-			"mimeType": "application/javascript",
+			"elementInstanceId": "${config.acton.instance.id}",
+			"api": "/hubs/marketing/lists/${steps.getMeetingList.id}/contacts",
 			"body": "${steps.constructContactCreationPayload.payload}"
 		},
 		"onSuccess": ["trackRate"]
@@ -381,7 +353,7 @@
 		"type": "elementRequest",
 		"properties": {
 			"method": "POST",
-			"elementInstanceId": "${acton.instance.id}",
+			"elementInstanceId": "${config.acton.instance.id}",
 			"api": "/hubs/marketing/lists",
 			"mimeType": "application/javascript",
 			"body": "${steps.constructMeetingListPayload}"
@@ -411,10 +383,8 @@
 		"onFailure": ["getFirstActonCallTime"],
 		"type": "request",
 		"properties": {
-			"path": "${steps.findJob}",
 			"method": "DELETE",
-			"api": "/jobs/{id}",
-			"mimeType": "application/javascript"
+			"api": "/jobs/${steps.findJob.id}"
 		},
 		"onSuccess": ["getFirstActonCallTime"]
 	}]
