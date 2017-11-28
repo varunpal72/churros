@@ -9,7 +9,7 @@ const lorem = require('faker').lorem;
 suite.forElement('finance', 'credit-memos', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
     test.should.supportPagination();
     it('should support CRUDS for /credit-memos', () => {

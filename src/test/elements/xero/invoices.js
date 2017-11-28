@@ -6,7 +6,7 @@ const commerce = require('faker').commerce;
 suite.forElement('finance', 'invoices', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
     
     test.should.supportPagination();

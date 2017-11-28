@@ -11,7 +11,7 @@ let expenseReceipt = tools.requirePayload(`${__dirname}/assets/expense-receipt.j
 suite.forElement('finance', 'expense-receipts', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
     
     test.should.supportPagination();

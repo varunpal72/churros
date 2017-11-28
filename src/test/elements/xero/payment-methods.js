@@ -10,7 +10,7 @@ const paymentMethodsResponse = tools.requirePayload(`${__dirname}/assets/payment
 suite.forElement('finance', 'payment-methods', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 3000);
+        setTimeout(done, 5000);
     });
     
     it('should support GET /payment-methods', () =>{

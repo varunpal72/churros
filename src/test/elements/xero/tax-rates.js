@@ -7,7 +7,7 @@ const expect = require('chakram').expect;
 suite.forElement('finance', 'tax-rates', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
 
     test.should.supportPagination();

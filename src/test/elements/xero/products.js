@@ -8,7 +8,7 @@ let product = { Code: faker.commerce.department() + '-' + faker.commerce.product
 suite.forElement('finance', 'products', {payload: product}, (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
     
     test.should.supportPagination();

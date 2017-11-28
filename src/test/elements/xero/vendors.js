@@ -11,7 +11,7 @@ let invoice = tools.requirePayload(`${__dirname}/assets/vendor-invoice.json`);
 suite.forElement('finance', 'vendors', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
     
     test.should.supportPagination();

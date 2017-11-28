@@ -11,7 +11,7 @@ let salesReceipt = tools.requirePayload(`${__dirname}/assets/sales-receipt.json`
 suite.forElement('finance', 'sales-receipts', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
     
     test.should.supportPagination();

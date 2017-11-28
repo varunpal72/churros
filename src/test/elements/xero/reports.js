@@ -12,7 +12,7 @@ let reportsMetadataResponse = tools.requirePayload(`${__dirname}/assets/reports-
 suite.forElement('finance', 'reports', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
     
     let reports = reportsMetadataResponse.filter(report => report.required.length === 0);
@@ -21,7 +21,7 @@ suite.forElement('finance', 'reports', (test) => {
     
     const contactWrap = (contactReportCallback) => {
         let contactId;
-        let vendorPayload = require('./assets/contact.json');    
+        let vendorPayload = tools.requirePayload(`${__dirname}/assets/contact.json`);    
         vendorPayload.Name = faker.name.findName(); 
         return cloud.post('/vendors', vendorPayload)
         .then(r => contactId = r.body.ContactID)

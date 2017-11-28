@@ -8,7 +8,7 @@ const suite = require('core/suite');
 suite.forElement('finance', 'ledger-accounts', (test) => {
     afterEach(done => {
         // to avoid rate limit errors
-        setTimeout(done, 2500);
+        setTimeout(done, 5000);
     });
     
     test.should.supportPagination();
