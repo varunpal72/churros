@@ -67,7 +67,6 @@
           let defined = Object.keys(allDefs);
           return cloud.get(`/hubs/${hub}/objects`)
           .then(objs => {
-            console.log(objs.body);
             let transDefs = defined.reduce((acc, cur) => {
               if (objs.body.includes(cur)) {
                 acc[cur] = allDefs[cur];
