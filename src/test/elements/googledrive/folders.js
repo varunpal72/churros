@@ -51,35 +51,11 @@ suite.forElement('documents', 'folders',{ payload: payload }, (test) => {
 
           before(() =>
                     cloud.withOptions({ qs: { path: `/${directoryPath}/Penguins.jpg`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, jpgFile)
-                    .then(r =>
-                      {
-                        expect(r).to.have.statusCode(200) &&
-                        expect(r.body).to.not.be.null &&
-                        expect(r.body).to.be.an('object') &&
-                        expect(Object.keys(r.body)).to.have.length.above(0) &&
-                        expect(r.body).to.contain.key('name');
-                        jpgFileBody = r.body;
-                      })
+                    .then(r => jpgFileBody = r.body )
                     .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/Dice.png`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, pngFile))
-                    .then(r =>
-                      {
-                        expect(r).to.have.statusCode(200) &&
-                        expect(r.body).to.not.be.null &&
-                        expect(r.body).to.be.an('object') &&
-                        expect(Object.keys(r.body)).to.have.length.above(0) &&
-                        expect(r.body).to.contain.key('name');
-                        pngFileBody = r.body;
-                      })
+                    .then(r =>  pngFileBody = r.body)
                     .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/textFile.txt`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, textFile))
-                    .then(r =>
-                      {
-                        expect(r).to.have.statusCode(200) &&
-                        expect(r.body).to.not.be.null &&
-                        expect(r.body).to.be.an('object') &&
-                        expect(Object.keys(r.body)).to.have.length.above(0) &&
-                        expect(r.body).to.contain.key('name');
-                        textFileBody = r.body;
-                      }));
+                    .then(r =>textFileBody = r.body));
 
           after(() =>
                   cloud.delete(`/hubs/documents/files/${jpgFileBody.id}`)
@@ -89,68 +65,32 @@ suite.forElement('documents', 'folders',{ payload: payload }, (test) => {
 
       it('should allow GET /folders/contents', () => {
           return cloud.withOptions({ qs: { path: `/${directoryPath}` } }).get(`${test.api}/contents`)
-            .then(r => expect(r).to.have.statusCode(200) &&
-              expect(r.body).to.not.be.null &&
-              expect(r.body).to.be.a('array') &&
-              expect(r.body).to.have.length.above(0) &&
-              expect(r.body[0]).to.contain.key('name')
-            );
+            .then(r => expect(r.body[0]).to.contain.key('name'));
       });
 
       it('should allow GET /folders/contents with name like', () => {
           return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "name like 'Dice'" } }).get(`${test.api}/contents`)
-            .then(r => expect(r).to.have.statusCode(200) &&
-              expect(r.body).to.not.be.null &&
-              expect(r.body).to.be.a('array') &&
-              expect(r.body.length).to.be.equal(1) &&
-              expect(r.body[0]).to.contain.key('name') &&
-              expect(r.body[0].properties.mimeType).to.equal("image/png")
-            );
+            .then(r => expect(r.body[0].properties.mimeType).to.equal("image/png"));
       });
 
       it('should allow GET /folders/contents with name equals', () => {
           return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "name='Penguins.jpg'" } }).get(`${test.api}/contents`)
-            .then(r => expect(r).to.have.statusCode(200) &&
-              expect(r.body).to.not.be.null &&
-              expect(r.body).to.be.a('array') &&
-              expect(r.body.length).to.be.equal(1) &&
-              expect(r.body[0]).to.contain.key('name') &&
-              expect(r.body[0].name).to.equal("Penguins.jpg")
-            );
+            .then(r => expect(r.body[0].name).to.equal("Penguins.jpg"));
       });
 
       it('should allow GET /folders/contents with name IN', () => {
           return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "name IN ('Penguins.jpg','Dice.png')" } }).get(`${test.api}/contents`)
-            .then(r => expect(r).to.have.statusCode(200) &&
-              expect(r.body).to.not.be.null &&
-              expect(r.body).to.be.a('array') &&
-              expect(r.body).to.have.length.above(0) &&
-              expect(r.body[0]).to.contain.key('name') ||
-              expect(r.body[0].name).to.equal("Penguins.jpg") ||
-              expect(r.body[0].name).to.equal("Dice.png")
-            );
+            .then(r => expect(r.body.filter(obj => obj.name === 'Penguins.jpg' || obj.name === 'Dice.png')).to.not.be.empty);
       });
 
       it('should allow GET /folders/contents with extension', () => {
           return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "extension='jpg'" } }).get(`${test.api}/contents`)
-            .then(r => expect(r).to.have.statusCode(200) &&
-              expect(r.body).to.not.be.null &&
-              expect(r.body).to.be.a('array') &&
-              expect(r.body.length).to.be.equal(1) &&
-              expect(r.body[0]).to.contain.key('properties') &&
-              expect(r.body[0].properties.mimeType).to.equal("image/jpeg")
-            );
+            .then(r => expect(r.body[0].properties.mimeType).to.equal("image/jpeg"));
       });
 
       it('should allow GET /folders/contents with mimeType', () => {
           return cloud.withOptions({ qs: { path: `/${directoryPath}`, where: "mimeType='text/plain'" } }).get(`${test.api}/contents`)
-            .then(r => expect(r).to.have.statusCode(200) &&
-              expect(r.body).to.not.be.null &&
-              expect(r.body).to.be.a('array') &&
-              expect(r.body).to.have.length.above(0) &&
-              expect(r.body[0]).to.contain.key('properties') &&
-              expect(r.body[0].properties.mimeType).to.equal("text/plain")
-            );
+            .then(r => expect(r.body[0].properties.mimeType).to.equal("text/plain"));
       });
 
 });

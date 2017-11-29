@@ -75,19 +75,11 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
       let revisionId;
       return cloud.get(`${test.api}/${jpgFileBody.id}/revisions`)
         .then(r => {
-          expect(r).to.have.statusCode(200) &&
-            expect(r.body).to.not.be.null &&
-            expect(r.body).to.be.a('array') &&
-            expect(r.body).to.have.length.above(0) &&
             expect(r.body[0]).to.contain.key('id');
-          revisionId = r.body[0].id;
+            revisionId = r.body[0].id;
         })
         .then(r => cloud.get(`${test.api}/${jpgFileBody.id}/revisions/${revisionId}`))
-        .then(r => {
-          expect(r).to.have.statusCode(200) &&
-            expect(r.body).to.not.be.null &&
-            expect(r.body).to.contain.key('mimeType');
-        });
+        .then(r => expect(r.body).to.contain.key('mimeType'));
     };
     return fileWrap(revisionChecks);
   });
