@@ -64,7 +64,7 @@
     "internalId": "121",
     "name": "Cost of Goods Sold"
   },
-  "itemId": "ChurrosLotNumberedAssem",
+  "itemId": "<<random.letter##25>>",
   "isDonationItem": false,
   "onSpecial": false,
   "effectiveBomControl": {
