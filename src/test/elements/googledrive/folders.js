@@ -18,7 +18,7 @@ suite.forElement('documents', 'folders',{ payload: payload }, (test) => {
   let pngFile = __dirname + '/assets/Dice.png';
   let textFile = __dirname + '/assets/textFile.txt';
   let jpgFileBody, pngFileBody, textFileBody;
-  
+
     it('should allow CRD for hubs/documents/folders and RU for hubs/documents/folders/metadata by path', () => {
     let srcPath,destPath;
     return cloud.post(`${test.api}`, payload)
@@ -51,11 +51,35 @@ suite.forElement('documents', 'folders',{ payload: payload }, (test) => {
 
           before(() =>
                     cloud.withOptions({ qs: { path: `/${directoryPath}/Penguins.jpg`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, jpgFile)
-                    .then(r => jpgFileBody = r.body)
+                    .then(r =>
+                      {
+                        expect(r).to.have.statusCode(200) &&
+                        expect(r.body).to.not.be.null &&
+                        expect(r.body).to.be.an('object') &&
+                        expect(Object.keys(r.body)).to.have.length.above(0) &&
+                        expect(r.body).to.contain.key('name');
+                        jpgFileBody = r.body;
+                      })
                     .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/Dice.png`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, pngFile))
-                    .then(r => pngFileBody = r.body)
+                    .then(r =>
+                      {
+                        expect(r).to.have.statusCode(200) &&
+                        expect(r.body).to.not.be.null &&
+                        expect(r.body).to.be.an('object') &&
+                        expect(Object.keys(r.body)).to.have.length.above(0) &&
+                        expect(r.body).to.contain.key('name');
+                        pngFileBody = r.body;
+                      })
                     .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/textFile.txt`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, textFile))
-                    .then(r => textFileBody = r.body));
+                    .then(r =>
+                      {
+                        expect(r).to.have.statusCode(200) &&
+                        expect(r.body).to.not.be.null &&
+                        expect(r.body).to.be.an('object') &&
+                        expect(Object.keys(r.body)).to.have.length.above(0) &&
+                        expect(r.body).to.contain.key('name');
+                        textFileBody = r.body;
+                      }));
 
           after(() =>
                   cloud.delete(`/hubs/documents/files/${jpgFileBody.id}`)
