@@ -65,9 +65,9 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
     let jpgFileBody,jpgFile = __dirname + '/assets/Penguins.jpg';
     return cloud.withOptions({ qs: { path: `/${directoryPath}/Penguins.jpg`, overwrite: 'true' } }).postFile(`${test.api}`, jpgFile)
       .then(r => jpgFileBody = r.body)
-      .then(r => conditionChecks(jpgFileBody))
-      .then(r => cloud.delete(`${test.api}/${jpgFileBody.id}`))
-      .then(r => cloud.delete(`/hubs/documents/folders/${jpgFileBody.parentFolderId}`));
+      .then(() => conditionChecks(jpgFileBody))
+      .then(() => cloud.delete(`${test.api}/${jpgFileBody.id}`))
+      .then(() => cloud.delete(`/hubs/documents/folders/${jpgFileBody.parentFolderId}`));
   };
 
   it('it should allow RS for documents/files/:id/revisions', () => {
@@ -78,7 +78,7 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
             expect(r.body[0]).to.contain.key('id');
             revisionId = r.body[0].id;
         })
-        .then(r => cloud.get(`${test.api}/${jpgFileBody.id}/revisions/${revisionId}`))
+        .then(() => cloud.get(`${test.api}/${jpgFileBody.id}/revisions/${revisionId}`))
         .then(r => expect(r.body).to.contain.key('mimeType'));
     };
     return fileWrap(revisionChecks);

@@ -52,16 +52,16 @@ suite.forElement('documents', 'folders',{ payload: payload }, (test) => {
           before(() =>
                     cloud.withOptions({ qs: { path: `/${directoryPath}/Penguins.jpg`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, jpgFile)
                     .then(r => jpgFileBody = r.body )
-                    .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/Dice.png`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, pngFile))
-                    .then(r =>  pngFileBody = r.body)
-                    .then(r => cloud.withOptions({ qs: { path: `/${directoryPath}/textFile.txt`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, textFile))
-                    .then(r =>textFileBody = r.body));
+                    .then(() => cloud.withOptions({ qs: { path: `/${directoryPath}/Dice.png`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, pngFile))
+                    .then(r => pngFileBody = r.body)
+                    .then(() => cloud.withOptions({ qs: { path: `/${directoryPath}/textFile.txt`, overwrite: 'true' } }).postFile(`/hubs/documents/files`, textFile))
+                    .then(r => textFileBody = r.body));
 
           after(() =>
                   cloud.delete(`/hubs/documents/files/${jpgFileBody.id}`)
-                  .then(r => cloud.delete(`/hubs/documents/files/${pngFileBody.id}`))
-                  .then(r => cloud.delete(`/hubs/documents/files/${textFileBody.id}`))
-                  .then(r => cloud.delete(`${test.api}/${jpgFileBody.parentFolderId}`)));
+                  .then(() => cloud.delete(`/hubs/documents/files/${pngFileBody.id}`))
+                  .then(() => cloud.delete(`/hubs/documents/files/${textFileBody.id}`))
+                  .then(() => cloud.delete(`${test.api}/${jpgFileBody.parentFolderId}`)));
 
       it('should allow GET /folders/contents', () => {
           return cloud.withOptions({ qs: { path: `/${directoryPath}` } }).get(`${test.api}/contents`)
