@@ -22,7 +22,7 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
        .then(r => eventTypes = r.body)
        .then(r => cb(eventTypes))
        .then(r => cloud.delete(`${test.api}/${eventTypes.id}`));
-   }
+   };
 
    it('it should allow CUD for /timeline-event-types/:id/properties', () => {
      const cb = (eventTypes) => {
@@ -37,8 +37,8 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
              eventProperties = r.body;
              eventProperties.label = faker.random.word();
          })
-         cloud.patch(`${test.api}/${eventTypes.id}/properties`,eventProperties)
-           .then(r => {
+         .then(r => cloud.patch(`${test.api}/${eventTypes.id}/properties/${eventProperties.id}`,eventProperties))
+         .then(r => {
                expect(r).to.have.statusCode(200) &&
                expect(r.body).to.not.be.null &&
                expect(r.body).to.be.an('object') &&
@@ -73,7 +73,7 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
         .then(r => {
                     expect(r).to.have.statusCode(200) &&
                     expect(r.body).to.be.empty;
-                 })
+                 });
      };
      return eventTypesWrap(cb);
    });
