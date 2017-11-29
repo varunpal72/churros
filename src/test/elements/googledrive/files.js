@@ -62,10 +62,7 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
   });
 
   const fileWrap = (conditionChecks) => {
-    let jpgFile = __dirname + '/assets/Penguins.jpg';
-    let pngFile = __dirname + '/assets/Dice.png';
-    let textFile = __dirname + '/assets/textFile.txt';
-    let jpgFileBody, pngFileBody, textFileBody;
+    let jpgFileBody,jpgFile = __dirname + '/assets/Penguins.jpg';
     return cloud.withOptions({ qs: { path: `/${directoryPath}/Penguins.jpg`, overwrite: 'true' } }).postFile(`${test.api}`, jpgFile)
       .then(r => jpgFileBody = r.body)
       .then(r => conditionChecks(jpgFileBody))
