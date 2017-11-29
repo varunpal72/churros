@@ -1,13 +1,31 @@
-
 const tools = require('core/tools');
-const logger = require('winston');
+const winston = require('winston');
 const swaggerParser = require('swagger-parser');
 const cloud = require('core/cloud');
+const props = require('core/props');
 
+const logger = new(winston.Logger)({
+    transports: [
+        // colorize the output to the console
+        new(winston.transports.Console)({            
+            colorize: true,
+            level: 'debug'
+        })
+    ]
+});
+
+
+/**
+ * validate get model
+ * @param  {Object} apiResponse        The API response
+ * @param  {string} pattern            The local file system path to verify API
+ */
 const validateGetModel = (apiResponse, pattern) => {  
-    
-    // validate api value and patten value.
-    
+
+    //logger.info(props.getForKey(element, 'oauth.api.key'))
+
+
+    // validate api value and patten value.    
     let validatedDereferenceDocs;
       return returnElementDocs('jira')
       .then(r => dereference(r.body))
@@ -16,15 +34,10 @@ const validateGetModel = (apiResponse, pattern) => {
       //.then(r => get(api, validationCb, options))
       .then(r => {//console.log(validatedDereferenceDocs)
         compare(pattern, validatedDereferenceDocs, apiResponse.body)    
-      })      
-      //.then(r => console.log(r))       
-      // .then(r => { validate(r) });
-  
-  };
+      })        
+};
   
 exports.validateGetModel = (apiResponse, pattern) =>  validateGetModel(apiResponse, pattern);
-
-const invalidType = ['{objectName}', 'bulk', 'ping', 'objects' ];
 
 const returnElementDocs = (elementkeyOrId) => {   
     let elementObj;
@@ -33,33 +46,28 @@ const returnElementDocs = (elementkeyOrId) => {
     .then(r => cloud.get(`elements/${elementObj.id}/docs`))      
 };
 
-exports.returnElementDocs = (elementkeyOrId) =>  returnElementDocs(elementkeyOrId);
+// const validate = (docs) => { 
+//   return new Promise((res, rej) => {
+//   var definitions = Object.keys(docs.paths).map(path => {    
+//     if(invalidType.indexOf(path.split('/')[1]) == -1 && 
+//     Object.keys(docs.paths[path]).indexOf('get') > -1) {                               
+//       return { //[path] : { 
+//         "parameters" : docs.paths[path]['get']['parameters'],
+//         "schema" : docs.paths[path]['get']['responses']['200']['schema'],
+//         "path" : path }         
+//     }
+//     return null;    
+//   }).filter((definition) => {       
+//       return definition != null
+//   })
+//   //console.log(definitions)
+//   res(definitions)
+// })
+// }
 
-const validate = (docs) => { 
-  return new Promise((res, rej) => {
-  var definitions = Object.keys(docs.paths).map(path => {    
-    if(invalidType.indexOf(path.split('/')[1]) == -1 && 
-    Object.keys(docs.paths[path]).indexOf('get') > -1) {                               
-      return { //[path] : { 
-        "parameters" : docs.paths[path]['get']['parameters'],
-        "schema" : docs.paths[path]['get']['responses']['200']['schema'],
-        "path" : path }         
-    }
-    return null;    
-  }).filter((definition) => {       
-      return definition != null
-  })
-  //console.log(definitions)
-  res(definitions)
-})
-}
-
-exports.validate = (docs) =>  validate(docs);
 
 const compare = (pattern, docs, apiResponse) => { 
   return new Promise((res, rej) => {
-  //console.log(docs.paths[pattern])
-  //console.log(docs.paths['agents'])
   if(docs.paths[pattern] === undefined) {    
       rej(`cannot find input pattern '${pattern}' `)  
   }
@@ -70,18 +78,19 @@ const compare = (pattern, docs, apiResponse) => {
   if(Array.isArray(apiResponse)) {    
     if(schema['items'] === undefined) {
       const msg = 'API returns array of objects. Model expected to be an Array'
-      console.log(msg)
+      logger.info(msg)
       rej(msg)
     } else {
       const primaryKey = schema['items']['x-primary-key']
       primaryKey === undefined ? 
-      console.log('Primary key is not found') : console.log(`Primary key is : ${primaryKey}`)             
+      logger.info('Primary key is not found') : logger.info(`************ Primary key ************** : ${primaryKey}`)                         
+      logger.info('%j', JSON.stringify(apiResponse[0]))
       compareGetModelWithResponse(schema['items']['properties'], apiResponse[0])
     }
   } else {
     if(schema['items'] !== undefined) {
       const msg = 'API returns object. Model expected to be an Object'
-      console.log(msg)
+      logger.info(msg)
       rej(msg)      
     } else {
 
@@ -99,47 +108,51 @@ const dereference = (docs) => {
   })
 }
 
-exports.dereference = (docs) =>  dereference(docs);
-
-function traverse(o ) {
-  for (i in o) {
-      if (!!o[i] && typeof(o[i])=="object") {
-          console.log(i, o[i])
-          traverse(o[i] );
-      }
-  }
-}  
-
-const compareGetModelWithResponse = (docsProperties, APIProperties) => {
+const compareGetModelWithResponse = (docsProperties, apiProperties) => {
   
-  for (var i in APIProperties) {
-    if (!!APIProperties[i] && typeof(APIProperties[i])=="object") {
-        //console.log(i, APIProperties[i])
-        if(docsProperties[i] === undefined) {
-          console.log('missing properties : ', i)
-        }
-        // console.log('APIProperties[i] : ', i)
-        // console.log('docsProperties : ')
-        // console.log(Object.keys(docsProperties))    
-        compareGetModelWithResponse(docsProperties[i]['properties'] ,APIProperties[i]);
-    } else {
-        console.log('APIProperties[i] : ', i)
-        console.log('docsProperties : ')
-        console.log(Object.keys(docsProperties))
-        if (Object.keys(docsProperties).indexOf(i) > -1) {
-          console.log(i, ' is present in docsProperties' )
+  if(Array.isArray(apiProperties) ) {
+    if(apiProperties.length == 0)
+       {logger.info(' cannot compare null array',)
+           return}
+     if(typeof(apiProperties[0]) !== "object") {
+        if(docsProperties['type'] === typeof(apiProperties[0])) {
+            logger.info('types are matched' )
         } else {
-          console.error(i, ' not present in docsProperties' )
+            logger.error(i, ' types are not matched' )
+        }        
+        return 
+     } 
+     compareGetModelWithResponse(docsProperties, apiProperties[0]);      
+     return        
+  }  
+   for (var i in apiProperties) {        
+    if (!!apiProperties[i] && typeof(apiProperties[i]) == "object") {          
+        if(docsProperties[i] === undefined) {
+             //logger.error(i, ' is not present in Model' )            
+            // return
+            logger.error(i, ' of type ',typeof(apiProperties[i]) ,' is not present in Model' )
+        } else{
+            logger.info(i ,' : {\n')
+            //logger.info(Array.isArray(apiProperties[i])) 
+            if(Array.isArray(apiProperties[i])) {
+                compareGetModelWithResponse(docsProperties[i]['items'] ,apiProperties[i]);
+            } else {
+                compareGetModelWithResponse(docsProperties[i]['properties'] ,apiProperties[i]);            
+            }       
+            logger.info('\n}')
+        }        
+    }    
+    else {        
+        if (Object.keys(docsProperties).indexOf(i) > -1) {
+          logger.info(i, ' is present in Model')
+         if(docsProperties[i]['type'] === typeof(apiProperties[i])) {
+            logger.info(i, ' types are matched' )
+         } else {
+            logger.error(i, ' types are not matched' )
+         }         
+        } else {        
+          logger.error(i, ' of type ',typeof(apiProperties[i]) ,' is not present in Model' )
         }
-
     }
-  }
-
-  // for (var i in docsProperties) {
-  //   if (!!docsProperties[i] && typeof(docsProperties[i])=="object") {
-  //       console.log(i, docsProperties[i])
-  //       compareGetModelWithResponse(docsProperties[i]);
-  //   }
-  // }  
-  //Object.keys(docsProperties['properties'])
+  } 
 }
