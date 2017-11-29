@@ -34,9 +34,7 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
              eventProperties.label = faker.random.word();
          })
          .then(r => cloud.patch(`${test.api}/${eventTypes.id}/properties/${eventProperties.id}`,eventProperties))
-         .then(r => {
-               expect(r.body).to.contain.key('label');
-           })
+         .then(r => expect(r.body).to.contain.key('label'))
          .then(r => cloud.delete(`${test.api}/${eventTypes.id}/properties/${eventProperties.id}`));
      };
      return eventTypesWrap(cb);
@@ -46,9 +44,7 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
      const cb = (eventTypes) => {
        let events;
        return cloud.post(`${test.api}/${eventTypes.id}/events`,eventsPayload)
-         .then(r => {
-                     expect(r.body).to.be.empty;
-                  })
+         .then(r => expect(r.body).to.be.empty)
          .then(r => cloud.get(`${test.api}/${eventTypes.id}/events/${eventsPayload.id}`))
          .then(r => {
                     expect(r.body).to.contain.key('email');
@@ -57,9 +53,7 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
                     events.email = faker.internet.email();
                   })
         .then(r => cloud.patch(`${test.api}/${eventTypes.id}/events/${eventsPayload.id}`,events))
-        .then(r => {
-                    expect(r.body).to.be.empty;
-                 });
+        .then(r => expect(r.body).to.be.empty);
      };
      return eventTypesWrap(cb);
    });
