@@ -29,20 +29,12 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
        let eventProperties;
        return cloud.post(`${test.api}/${eventTypes.id}/properties`,propertiesPayload)
          .then(r => {
-             expect(r).to.have.statusCode(200) &&
-             expect(r.body).to.not.be.null &&
-             expect(r.body).to.be.an('object') &&
-             expect(Object.keys(r.body)).to.have.length.above(0) &&
              expect(r.body).to.contain.key('name');
              eventProperties = r.body;
              eventProperties.label = faker.random.word();
          })
          .then(r => cloud.patch(`${test.api}/${eventTypes.id}/properties/${eventProperties.id}`,eventProperties))
          .then(r => {
-               expect(r).to.have.statusCode(200) &&
-               expect(r.body).to.not.be.null &&
-               expect(r.body).to.be.an('object') &&
-               expect(Object.keys(r.body)).to.have.length.above(0) &&
                expect(r.body).to.contain.key('label');
            })
          .then(r => cloud.delete(`${test.api}/${eventTypes.id}/properties/${eventProperties.id}`));
@@ -55,15 +47,10 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
        let events;
        return cloud.post(`${test.api}/${eventTypes.id}/events`,eventsPayload)
          .then(r => {
-                     expect(r).to.have.statusCode(200) &&
                      expect(r.body).to.be.empty;
                   })
          .then(r => cloud.get(`${test.api}/${eventTypes.id}/events/${eventsPayload.id}`))
          .then(r => {
-                    expect(r).to.have.statusCode(200) &&
-                    expect(r.body).to.not.be.null &&
-                    expect(r.body).to.be.an('object') &&
-                    expect(Object.keys(r.body)).to.have.length.above(0) &&
                     expect(r.body).to.contain.key('email');
                     expect(r.body).to.have.property('id', `${eventsPayload.id}`);
                     events = r.body;
@@ -71,7 +58,6 @@ suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
                   })
         .then(r => cloud.patch(`${test.api}/${eventTypes.id}/events/${eventsPayload.id}`,events))
         .then(r => {
-                    expect(r).to.have.statusCode(200) &&
                     expect(r.body).to.be.empty;
                  });
      };
