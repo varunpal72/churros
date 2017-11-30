@@ -84,8 +84,8 @@ const compare = (pattern, docs, apiResponse) => {
       const primaryKey = schema['items']['x-primary-key']
       primaryKey === undefined ? 
       logger.info('Primary key is not found') : logger.info(`************ Primary key ************** : ${primaryKey}`)                         
-      logger.info('%j', JSON.stringify(apiResponse[0]))
-      compareGetModelWithResponse(schema['items']['properties'], apiResponse[0])
+    //  logger.info('%j', JSON.stringify(apiResponse[0]))
+      compareGetModelWithResponse(schema['items']['properties'], apiResponse[0], '   ')
     }
   } else {
     if(schema['items'] !== undefined) {
@@ -108,51 +108,68 @@ const dereference = (docs) => {
   })
 }
 
-const compareGetModelWithResponse = (docsProperties, apiProperties) => {
+const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) => {
   
   if(Array.isArray(apiProperties) ) {
     if(apiProperties.length == 0)
-       {logger.info(' cannot compare null array',)
+       {logger.info(logSpaces, ' key is present but respnse array is null cannot check')
            return}
      if(typeof(apiProperties[0]) !== "object") {
         if(docsProperties['type'] === typeof(apiProperties[0])) {
-            logger.info('types are matched' )
+            logger.info(logSpaces, ' types are matched' )
         } else {
-            logger.error(i, ' types are not matched' )
+            logger.error(logSpaces, i, ' types are not matched' )
         }        
         return 
      } 
-     compareGetModelWithResponse(docsProperties, apiProperties[0]);      
+     compareGetModelWithResponse(docsProperties, apiProperties[0],logSpaces + '  ');      
      return        
   }  
+
    for (var i in apiProperties) {        
     if (!!apiProperties[i] && typeof(apiProperties[i]) == "object") {          
         if(docsProperties[i] === undefined) {
-             //logger.error(i, ' is not present in Model' )            
-            // return
-            logger.error(i, ' of type ',typeof(apiProperties[i]) ,' is not present in Model' )
-        } else{
-            logger.info(i ,' : {\n')
-            //logger.info(Array.isArray(apiProperties[i])) 
-            if(Array.isArray(apiProperties[i])) {
-                compareGetModelWithResponse(docsProperties[i]['items'] ,apiProperties[i]);
-            } else {
-                compareGetModelWithResponse(docsProperties[i]['properties'] ,apiProperties[i]);            
-            }       
-            logger.info('\n}')
-        }        
+            logger.error(logSpaces, i, ' of type ',typeof(apiProperties[i]) ,' is not present in Model' )       
+            continue;
+        } 
+        logger.info(logSpaces, i ,': {')        
+        if(Array.isArray(apiProperties[i])) {
+            compareGetModelWithResponse(docsProperties[i]['items'] ,apiProperties[i], logSpaces + '  ');
+        } else {
+            compareGetModelWithResponse(docsProperties[i]['properties'] ,apiProperties[i], logSpaces + '  ');            
+        }       
+        logger.info(logSpaces, '}')                        
     }    
-    else {        
-        if (Object.keys(docsProperties).indexOf(i) > -1) {
-          logger.info(i, ' is present in Model')
-         if(docsProperties[i]['type'] === typeof(apiProperties[i])) {
-            logger.info(i, ' types are matched' )
-         } else {
-            logger.error(i, ' types are not matched' )
-         }         
-        } else {        
-          logger.error(i, ' of type ',typeof(apiProperties[i]) ,' is not present in Model' )
-        }
+    else {         
+        checkPresence(docsProperties, i,  typeof(apiProperties[i]), logSpaces)        
     }
   } 
+}
+
+
+const checkPresence = (docsProperties, key, keyType, logSpaces) => {
+    
+   // logger.info(docsProperties[key])
+    if(Object.keys(docsProperties).indexOf(key) === -1) {
+    logger.error(logSpaces, key, ' of type ', keyType ,' is not present in Model' )
+        return 
+    }            
+    if(docsProperties[key]['type'] === keyType) {
+        logger.info(logSpaces, key, ' of type ', keyType ,' present in Model types are matched' )
+        return
+    }
+    logger.error(logSpaces, key, ' present in Model types but are not matched' )
+    
+
+    
+    // if(docsProperties[key] === undefined) {
+    //     logger.info(logSpaces, key, ' is present in Model')
+    //    if(docsProperties[i]['type'] === typeof(apiProperties[key])) {
+    //       logger.info(logSpaces, key, ' types are matched' )
+    //    } else {
+    //       logger.error(logSpaces, key, ' types are not matched' )
+    //    }         
+    //   } else {        
+    //     logger.error(logSpaces, key, ' of type ',typeof(apiProperties[key]) ,' is not present in Model' )
+    //   }
 }
