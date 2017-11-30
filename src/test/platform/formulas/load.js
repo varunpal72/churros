@@ -10,6 +10,7 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
 const provisioner = require('core/provisioner');
+const props = require('core/props');
 
 const genCloseioEvent = (action, num) => {
   const event = require('./assets/events/raw-closeio-account-obj');
@@ -117,9 +118,12 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: false }, (test) => 
     if (kissmetricsId) provisioner.delete(closeioId);
   });
 
-  const numFormulaInstances = process.env.NUM_FORMULA_INSTANCES ? process.env.NUM_FORMULA_INSTANCES : 2;
-  const numEvents = process.env.NUM_EVENTS ? process.env.NUM_EVENTS : 50;
-  const numInOneEvent = process.env.NUM_OBJECTS_PER_EVENT ? process.env.NUM_OBJECTS_PER_EVENT : 5;
+//  const numFormulaInstances = process.env.NUM_FORMULA_INSTANCES ? process.env.NUM_FORMULA_INSTANCES : 2;
+//  const numEvents = process.env.NUM_EVENTS ? process.env.NUM_EVENTS : 50;
+//  const numInOneEvent = process.env.NUM_OBJECTS_PER_EVENT ? process.env.NUM_OBJECTS_PER_EVENT : 5;
+    const numFormulaInstances = process.env.NUM_FORMULA_INSTANCES ? process.env.NUM_FORMULA_INSTANCES : 1;
+    const numEvents = process.env.NUM_EVENTS ? process.env.NUM_EVENTS : 1;
+    const numInOneEvent = process.env.NUM_OBJECTS_PER_EVENT ? process.env.NUM_OBJECTS_PER_EVENT : 1;
 
   it('should handle a very large event payload repeatedly using sfdc', () => {
     const formula = require('./assets/formulas/complex-successful-formula');
@@ -235,6 +239,30 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: false }, (test) => 
     const formulaInstance = require('./assets/formulas/customer-formulas/kissmetrics-instance');
     formulaInstance.configuration.sourceInstanceId = sfdcId;
     formulaInstance.configuration.kissmetricsInstanceId = kissmetricsId;
+
+    let formulaId;
+    let formulaInstances = [];
+    let deletes = [];
+    return cloud.post(test.api, formula, fSchema)
+      .then(r => formulaId = r.body.id)
+      .then(() => createXInstances(numFormulaInstances, formulaId, formulaInstance))
+      .then(ids => ids.map(id => formulaInstances.push(id)))
+      .then(r => simulateTrigger(numEvents, sfdcId, genWebhookEvent('update', numInOneEvent), common.generateSfdcEvent))
+      .then(r => pollAllExecutions(formulaId, formulaInstances, numInOneEvent * numEvents, 1))
+      .then(r => formulaInstances.forEach(id => deletes.push(cloud.delete(`/formulas/${formulaId}/instances/${id}`))))
+      .then(r => chakram.all(deletes))
+      .then(r => common.deleteFormula(formulaId))
+      .catch(e => {
+        if (formulaId) common.deleteFormula(formulaId);
+        throw new Error(e);
+    });
+  });
+
+  it('should handle a high load for the Nintex Event Transformation formula', () => {
+    const formula = require('./assets/formulas/customer-formulas/nintex-790');
+    const formulaInstance = require('./assets/formulas/customer-formulas/nintex-790-instance');
+    formulaInstance.configuration["element.instance"] = sfdcId;
+    formulaInstance.configuration["event.notification.url"] = "https://httpbin.org/post";
 
     let formulaId;
     let formulaInstances = [];
