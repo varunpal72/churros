@@ -249,7 +249,6 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
   let response;
   boomGoesTheDynamite(name, () => {
     const baseUrl = faker.fake(props.get('event.callback.url'));
-
     const url = baseUrl + '?returnQueue';
     const addResource = (r) => addMethod ? addMethod(r) : cloud.withOptions(options).post(api, r);
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
