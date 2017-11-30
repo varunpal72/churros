@@ -104,6 +104,7 @@ suite.forPlatform('formulas', { name: 'formulas load', skip: false }, (test) => 
     .then(() => cleaner.formulas.withName('number2'))
     .then(() => cleaner.formulas.withName('complex_starwars_sucessful'))
     .then(() => cleaner.formulas.withName('Kissmetrics Events/Props'))
+    .then(() => cleaner.formulas.withName('Nintex 790 - Load Test'))
     .then(r => common.provisionSfdcWithWebhook())
     .then(r => sfdcId = r.body.id)
     .then(r => provisioner.create('kissmetrics'))
