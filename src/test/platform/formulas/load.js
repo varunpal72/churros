@@ -10,7 +10,6 @@ const chakram = require('chakram');
 const expect = chakram.expect;
 const logger = require('winston');
 const provisioner = require('core/provisioner');
-const props = require('core/props');
 
 const genCloseioEvent = (action, num) => {
   const event = require('./assets/events/raw-closeio-account-obj');
