@@ -79,7 +79,7 @@ suite.forElement('documents', 'files', { payload: payload }, (test) => {
             revisionId = r.body[0].id;
         })
         .then(() => cloud.get(`${test.api}/${jpgFileBody.id}/revisions/${revisionId}`))
-        .then(r => expect(r.body).to.contain.key('mimeType'));
+        .then(r => expect(r.body).to.contain.key('fileName'));
     };
     return fileWrap(revisionChecks);
   });
