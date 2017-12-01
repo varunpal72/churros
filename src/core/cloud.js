@@ -62,15 +62,6 @@ const get = (api, validationCb, options) => {
  */
 exports.get = (api, validationCb) => get(api, validationCb, null);
 
-/**
- * HTTP GET For Model
- * @param  {string} api          The API to call
- * @param  {Function} validationCb The optional validation callback function to use to validate the HTTP response
- * @return {Promise}  A Promise that resolves to the HTTP response
- */
-exports.validateGetModel = (api, validationCb) => validateGetModel(api, validationCb, null);
-
-
 const modifyPayload = (payload, options) => {
   if (!options || !options.churros) return payload;
   let updatePayload = options.churros.updatePayload;
