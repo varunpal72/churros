@@ -1,0 +1,8 @@
+{
+    "name": "RT Test - ReadyTalk to Acton",
+    "configuration": {
+      "acton.instance.id": "{REPLACE}",
+      "readytalk.instance.id": "{REPLACE}",
+      "readytalk.meeting.id": "{id}"
+    }
+}
