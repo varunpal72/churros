@@ -1,36 +1,42 @@
 /** @module core/model */
 'use strict';
 const tools = require('core/tools');
-// todo : work on instantiating logger again
-const winston = require('winston');
+const logger = require('winston');
+logger
+.remove(logger.transports.Console)
+.add(logger.transports.Console, {    
+    colorize: true,
+    prettyPrint: true,    
+});
+
+
 const swaggerParser = require('swagger-parser');
 const cloud = require('core/cloud');
 const props = require('core/props');
 
-// todo : work on instantiating logger again
-const logger = new (winston.Logger)({
-    transports: [
-        new (winston.transports.Console)({
-            colorize: true,
-            level: 'info'
-        })
-    ]
-});
+// const logger = new (winston.Logger)({
+//     transports: [
+//         new (winston.transports.Console)({
+//             colorize: true,
+//             level: 'info'
+//         })
+//     ]
+// });
 
 
 /**
  * validate get model
  * @param  {Object} apiResponse        The API response
- * @param  {string} pattern            The local file system path to verify API
+ * @param  {string} pattern            The api path to find referenced model
  */
-const validateGetModel = (apiResponse, pattern) => {
+const validateResponseModel = (apiResponse, pattern) => {
 
     let element = props.get('element');
-    let validatedDereferenceDocs;
+    let elementDocs;
 
     return getElementDocs(element)
         .then(r => dereference(r.body))
-        .then(r => validatedDereferenceDocs = r)
+        .then(r => elementDocs = r)
         .then(r =>
             //{
             // todo : remove as below is for debug perspective
@@ -39,12 +45,12 @@ const validateGetModel = (apiResponse, pattern) => {
             //  console.log('printed')
             // });
             //logger.debug(validatedDereferenceDocs)
-            compare(pattern, validatedDereferenceDocs, apiResponse.body)
+            compare(pattern, elementDocs, apiResponse.body)
         //}
         ).catch(r => tools.logAndThrow('Failed to validate model :', r))
 };
 
-exports.validateGetModel = (apiResponse, pattern) => validateGetModel(apiResponse, pattern);
+exports.validateResponseModel = (apiResponse, pattern) => validateResponseModel(apiResponse, pattern);
 
 const getElementDocs = (elementkeyOrId) => {
     let elementObj;
@@ -61,60 +67,84 @@ const dereference = (docs) => {
     })
 }
 
-const compare = (pattern, docs, apiResponseBody) => {
-    return new Promise((res, rej) => {        
+
+
+const compare = (pattern, elementDocs, apiResponseBody) => {
+    return new Promise((res, rej) => {  
+        let schema;      
         try {
-            validatedocsAgainestResponse(pattern, docs, apiResponseBody)
+            schema = validatedocsAgainestResponse(pattern, elementDocs, apiResponseBody)
         } catch (ex) {
             rej(ex);
         }    
-        let isDocsGetAll = Array.isArray(apiResponseBody)
-        const schema = docs.paths[pattern]['get']['responses']['200']['schema']
+        let isResponseBodyArray = Array.isArray(apiResponseBody)
+        //const schema = elementDocs.paths[pattern]['get']['responses']['200']['schema']
         let logSpaces = '   '
-        if (isDocsGetAll) {
+        if (isResponseBodyArray) {
             validatePrimaryKey(schema['items']['x-primary-key'])
             compareGetModelWithResponse(schema['items']['properties'], apiResponseBody[0], logSpaces)
         } else {
-            validatePrimaryKey(schema['properties']['x-primary-key'])
+            validatePrimaryKey(schema['x-primary-key'])
             compareGetModelWithResponse(schema['properties'], apiResponseBody, logSpaces)
         }
         res({})
     })
 }
 
-const validatedocsAgainestResponse = (pattern, docs, apiResponseBody) => {
-    // todo : optimize these may be putting validations to other functions
-    if (docs.paths[pattern] === undefined) {
+const methods = ['get', 'post', 'put', 'delete', 'patch'];
+
+const invalidType = ['{objectName}', 'bulk', 'ping', 'objects' ];
+
+const validateOperationID = (pattern, elementDocs) => {       
+    for(const path of  Object.keys(elementDocs.paths)) {        
+        for(const method of  methods) {            
+            if (elementDocs.paths[path].hasOwnProperty(method) 
+            && elementDocs.paths[path][method]['operationId'] === pattern) {                
+                return {"schema" :  elementDocs.paths[path][method], "method" : method }
+            }
+        }            
+    }
+}
+
+
+const validatedocsAgainestResponse = (pattern, elementDocs, apiResponseBody) => {    
+    
+    //If found it will be equal to elementDocs.paths[path][method]
+    let docsResponses = validateOperationID(pattern, elementDocs)
+
+    if(typeof docsResponses === 'undefined') {
         throw new Error(`cannot find input pattern '${pattern}' `)
     }
-    if (docs.paths[pattern]['get'] === undefined) {
-        throw new Error(`cannot find get model definition in docs for '${pattern}' `)
-    }
-    if (docs.paths[pattern]['get']['responses'] === undefined) {
-        throw new Error(`cannot find get model definition in docs for '${pattern}' `)
-    }
-    if (docs.paths[pattern]['get']['responses']['200'] === undefined) {
+    
+    let docsResponsesSchema = docsResponses['schema']
+    
+    if (docsResponsesSchema['responses']['200'] === undefined) {
         throw new Error(`cannot find get model definition in docs for '${pattern}' `)
     }
     if(typeof apiResponseBody === undefined) {
         throw new Error(`undefined api response body '${pattern}' `)
     }
-    let isDocsGetAll = Array.isArray(apiResponseBody)
+    let isResponseBodyArray = Array.isArray(apiResponseBody)
 
-    if(isDocsGetAll && apiResponseBody.length === 0  ) {        
+    if(isResponseBodyArray && apiResponseBody.length === 0  ) {        
         throw new Error(`apiResponseBody is empty array. create object first '${pattern}' `)         
     } 
     // todo: remove hardcode 'get' and write code for the same          
     // todo: check if it is getall then we should have items and its type with in it. if res is having array then it is getall
-    const schema = docs.paths[pattern]['get']['responses']['200']['schema']
+    const schema = docsResponsesSchema['responses']['200']['schema']
 
-    if (isDocsGetAll && schema['items'] === undefined) {
-        throw new Error(`models configured as object expected array '${pattern}' `)
+    // if (isResponseBodyArray && docsResponses['method'] === 'post' && schema['properties'] === undefined) {
+    //     throw new Error(`may be models configured as array expected object '${pattern}' `)
+    // }
+
+    if (isResponseBodyArray && schema['items'] === undefined) {
+        throw new Error(`may be models configured as object expected array '${pattern}' `)
     }
 
-    if (!isDocsGetAll && schema['properties'] === undefined) {
-        throw new Error(`models configured as array expected object '${pattern}' `)
+    if (!isResponseBodyArray && schema['properties'] === undefined) {
+        throw new Error(`may bemodels configured as array expected object '${pattern}' `)
     }
+    return schema
 }
 
 const validatePrimaryKey = (primaryKey) => {    
@@ -136,8 +166,8 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
                 logger.error(logSpaces, i, ' types are not matched')
             }
             return
-        }
-        compareGetModelWithResponse(docsProperties, apiProperties[0], doubleLogSpaces(logSpaces));
+        }                
+        compareGetModelWithResponse(docsProperties['properties'], apiProperties[0], doubleLogSpaces(logSpaces));
         return
     }
     if (isEmpty(docsProperties)) {
@@ -155,6 +185,7 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
         }        
         if (Array.isArray(apiProperties[i])) {
             logger.info(logSpaces, i, ': {[')
+            //logger.info(docsProperties)
             compareGetModelWithResponse(docsProperties[i]['items'], apiProperties[i], doubleLogSpaces(logSpaces))
             logger.info(logSpaces, ']}')
             continue;
