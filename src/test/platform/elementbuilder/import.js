@@ -32,7 +32,7 @@ suite.forPlatform('element import', {}, (test) => {
         expect(r.body).to.not.be.empty;
         expect(r.body.name).to.equal('http://autotask.net/ATWS/v1_5/');
         atElement = r.body;
-        atElement.key = `churrosImport${faker.address.zipCode()}`
+        atElement.key = `churrosImport${faker.address.zipCode()}`;
       })
       // Create the element
       .then(r => crudElement('key', atElement, atElement, schema));
