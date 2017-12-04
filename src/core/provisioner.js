@@ -204,6 +204,7 @@ const oauth = (element, args, config) => {
         secret: args.secret,
         realmId: query.realmId,
         dataSource: query.dataSource,
+        org: query.org,
         token: query.token
       };
       if(args && args.debug) {
