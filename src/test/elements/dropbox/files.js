@@ -28,6 +28,12 @@ suite.forElement('documents','files',(test) => {
 
   it('should allow GET /files/revisions by path', () => {
       return cloud.withOptions({ qs: { path: `/${directoryPath}/brady.jpg`}}).get(`${test.api}/revisions`)
-      .then(r => expect(r.body.filter(obj => obj.fileName === 'brady.jpg')).to.not.be.empty);
+      .then(r => {
+        expect(r.body.filter(obj => obj.fileName === 'brady.jpg')).to.not.be.empty;
+        revisionId = r.body[0].id;
+      })
+      .then(() => cloud.withOptions({ qs: { path: `/${directoryPath}/brady.jpg`}}).get(`${test.api}/revisions/${revisionId}`))
+      .then(r => expect(r.body.fileName).to.equal("brady.jpg"));
   });
+
 });
