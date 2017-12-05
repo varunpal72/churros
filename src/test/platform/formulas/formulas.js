@@ -223,7 +223,7 @@ suite.forPlatform('formulas', opts, (test) => {
     };
 
     const backupValidator = (formulas) => {
-      const backup = formulas.filter(formula => formula.name == `${f.name}-v1-engine-backup`)
+      const backup = formulas.filter(formula => formula.name === `${f.name}-v1-engine-backup`);
       expect(backup).to.have.length(1);
       expect(backup[0].engine).to.equal('v1');
     };
