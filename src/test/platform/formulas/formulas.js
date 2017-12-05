@@ -222,8 +222,8 @@ suite.forPlatform('formulas', opts, (test) => {
       expect(formula.engine).to.equal('v3');
     };
 
-    const upgradeValidator = (formulas) => {
-      const backup = formulas.filter(formula => formula.name == `${f.name}-v1-backup`)
+    const backupValidator = (formulas) => {
+      const backup = formulas.filter(formula => formula.name == `${f.name}-v1-engine-backup`)
       expect(backup).to.have.length(1);
       expect(backup[0].engine).to.equal('v1');
     };
@@ -231,7 +231,7 @@ suite.forPlatform('formulas', opts, (test) => {
     let formulaId;
     return cloud.post(test.api, f, schema)
       .then(r => formulaId = r.body.id)
-      .then(r => cloud.put(`${test.api}/${formulaId}/upgrad e/v3`))
+      .then(r => cloud.put(`${test.api}/${formulaId}/upgrade/v3`))
       .then(r => upgradeValidator(r.body))
       .then(() => cloud.get(test.api))
       .then(r => backupValidator(r.body))
