@@ -366,7 +366,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
         expect(consolidated['end.continue']).to.equal(true);
       });
     };
-    return manualTriggerTest('notification-step', null, { foo: 'bar' }, 2, validator, null, null, {'notification.email': 'laura+tester@cloud-elements.com'});
+    return manualTriggerTest('notification-step', null, { foo: 'bar' }, 2, validator, null, null, {'notification.email': 'tester@cloud-elements.com'});
   });
 
 

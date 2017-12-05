@@ -8,7 +8,7 @@
     "name": "end",
     "type": "script",
     "properties": {
-      "body": "notify.email('laura+tester@cloud-elements.com', 'test subject', 'test message'); done(trigger.args);"
+      "body": "notify.email('tester@cloud-elements.com', 'test subject', 'test message'); done(trigger.args);"
     }
   }]
 }
