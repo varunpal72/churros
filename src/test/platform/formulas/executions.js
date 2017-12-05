@@ -377,9 +377,6 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
         const ses = e.stepExecutions;
         ses.filter(se => se.stepName !== 'end').map(validateSuccessfulStepExecution);
-
-        const consolidated = consolidateStepExecutionValues(ses);
-        // expect(JSON.parse(consolidated['end.request']).body).to.contain('this is a test message');
       });
     };
     return manualTriggerTest('amqp-step', null, { foo: 'bar' }, 3, validator);
