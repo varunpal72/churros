@@ -177,7 +177,7 @@ suite.forPlatform('formulas', opts, (test) => {
       });
   });
 
-  it('should allow setting the engine flag to use bodenstein to execute a formula', () => {
+  it('should allow setting the engine flag to v3 for a compatible a formula', () => {
     const f = common.genFormula({});
     const patchBody = {
       engine: 'v3',
@@ -199,7 +199,7 @@ suite.forPlatform('formulas', opts, (test) => {
       });
   });
 
-  it('should not allow upgrading a formula to bodenstein with unsupported steps', () => {
+  it('should not allow setting the engine flag to v3 for a formula with unsupported steps', () => {
     const f = common.genFormula({});
     f.steps = [{
       "name": "unsupported-by-bode",
@@ -213,6 +213,34 @@ suite.forPlatform('formulas', opts, (test) => {
       expect(r).to.have.statusCode(400);
       expect(r.body.message).to.contain('Invalid formula for the v3 engine');
     });
+  });
+
+  it('should upgrade a formula to v3 and keep a backup for rollback', () => {
+    const f = common.genFormula({});
+
+    const upgradeValidator = (formula) => {
+      expect(formula.engine).to.equal('v3');
+    };
+
+    const upgradeValidator = (formulas) => {
+      const backup = formulas.filter(formula => formula.name == `${f.name}-v1-backup`)
+      expect(backup).to.have.length(1);
+      expect(backup[0].engine).to.equal('v1');
+    };
+
+    let formulaId;
+    return cloud.post(test.api, f, schema)
+      .then(r => formulaId = r.body.id)
+      .then(r => cloud.put(`${test.api}/${formulaId}/upgrad e/v3`))
+      .then(r => upgradeValidator(r.body))
+      .then(() => cloud.get(test.api))
+      .then(r => backupValidator(r.body))
+      .then(cleaner.formulas.withName(`${f.name}-v1-engine-backup`))
+      .then(r => cloud.delete(`${test.api}/${formulaId}`))
+      .catch(e => {
+        if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
+        throw new Error(e);
+      });
   });
 
   test
