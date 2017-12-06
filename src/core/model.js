@@ -38,7 +38,7 @@ const validateResponseModel = (apiResponse, pattern) => {
         //     logger.debug(elementDocs)
         //     compare(pattern, elementDocs, apiResponse.body)
         //     }
-            compare(pattern, elementDocs, apiResponse.body)        
+            compare(pattern, elementDocs, apiResponse)        
         ).catch(r => tools.logAndThrow('Failed to validate model :', r))
 };
 
@@ -61,8 +61,9 @@ const dereference = (docs) => {
 
 
 
-const compare = (pattern, elementDocs, apiResponseBody) => {
+const compare = (pattern, elementDocs, apiResponse) => {
     return new Promise((res, rej) => {  
+        let apiResponseBody = apiResponse.body
         let schema;      
         try {
             schema = validatedocsAgainestResponse(pattern, elementDocs, apiResponseBody)
@@ -79,7 +80,7 @@ const compare = (pattern, elementDocs, apiResponseBody) => {
             validatePrimaryKey(schema['x-primary-key'])
             compareGetModelWithResponse(schema['properties'], apiResponseBody, logSpaces)
         }
-        res({})
+        res(apiResponse)
     })
 }
 
@@ -208,6 +209,7 @@ const checkPresence = (docsProperties, key, keyType, logSpaces) => {
         logger.error(logSpaces, key, ' is not present in Model')
         return
     }
+    //TODO : optimize the code
     if(keyType === 'number') {
         keyType = 'integer'
     } 
