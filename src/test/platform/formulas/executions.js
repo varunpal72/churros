@@ -185,7 +185,7 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
   /**
    * Handles the basic formula execution test for a formula that has a manual trigger type
    */
-  const manualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus, optionalNumSes) => {
+  const manualTriggerTest = (fName, configuration, trigger, numSevs, validator, executionStatus, optionalNumSes, settings) => {
     const f = require(`./assets/formulas/${fName}`);
     let fi = { name: 'churros-manual-formula-instance' };
 
@@ -193,6 +193,10 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
 
     if (configuration) {
       fi.configuration = configuration;
+    }
+
+    if (settings) {
+      fi.settings = settings;
     }
 
     const validatorWrapper = (executions) => {
@@ -331,6 +335,51 @@ suite.forPlatform('formulas', { name: 'formula executions' }, (test) => {
       });
     };
     return eventTriggerTest('simple-no-return-console-formula', 1, 2, validator);
+  });
+
+  it('should properly handle a formula with a step that uses notify.email', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        expect(e.status).to.equal('success');
+
+        const ses = e.stepExecutions;
+        ses.filter(se => se.stepName !== 'end').map(validateSuccessfulStepExecution);
+
+        const consolidated = consolidateStepExecutionValues(ses);
+
+        expect(JSON.parse(consolidated['end.notify'])).to.have.length(1);
+        expect(JSON.parse(consolidated['end.notify'])[0].subject).to.equal('test subject');
+      });
+    };
+    return manualTriggerTest('notify-email', null, { foo: 'bar' }, 2, validator);
+  });
+
+  it('should properly handle a formula with a notification step', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        expect(e.status).to.equal('success');
+
+        const ses = e.stepExecutions;
+        ses.filter(se => se.stepName !== 'end').map(validateSuccessfulStepExecution);
+
+        const consolidated = consolidateStepExecutionValues(ses);
+        expect(consolidated['end.continue']).to.equal(true);
+      });
+    };
+    return manualTriggerTest('notification-step', null, { foo: 'bar' }, 2, validator, null, null, {'notification.email': 'tester@cloud-elements.com'});
+  });
+
+
+  it('should properly handle a formula with an amqp step', () => {
+    const validator = (executions) => {
+      executions.map(e => {
+        expect(e.status).to.equal('success');
+
+        const ses = e.stepExecutions;
+        ses.filter(se => se.stepName !== 'end').map(validateSuccessfulStepExecution);
+      });
+    };
+    return manualTriggerTest('amqp-step', null, { foo: 'bar' }, 3, validator);
   });
 
   it('should properly handle a formula with a v1 step that contains invalid json', () => {
