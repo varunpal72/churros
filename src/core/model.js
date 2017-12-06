@@ -3,11 +3,11 @@
 const tools = require('core/tools');
 const logger = require('winston');
 logger
-.remove(logger.transports.Console)
-.add(logger.transports.Console, {    
-    colorize: true,
-    prettyPrint: true,    
-});
+    .remove(logger.transports.Console)
+    .add(logger.transports.Console, {
+        colorize: true,
+        prettyPrint: true,
+    });
 
 
 const swaggerParser = require('swagger-parser');
@@ -29,16 +29,16 @@ const validateResponseModel = (apiResponse, pattern) => {
         .then(r => dereference(r.body))
         .then(r => elementDocs = r)
         .then(r =>
-        //     {
-        //    // todo : remove as below is for debug perspective
-        //     var fs = require('fs');
-        //     fs.writeFile('myjsonfile1.json', JSON.stringify(elementDocs) , 'utf8', function() {
-        //      console.log('printed')
-        //     });
-        //     logger.debug(elementDocs)
-        //     compare(pattern, elementDocs, apiResponse.body)
-        //     }
-            compare(pattern, elementDocs, apiResponse)        
+            //     {
+            //    // todo : remove as below is for debug perspective
+            //     var fs = require('fs');
+            //     fs.writeFile('myjsonfile1.json', JSON.stringify(elementDocs) , 'utf8', function() {
+            //      console.log('printed')
+            //     });
+            //     logger.debug(elementDocs)
+            //     compare(pattern, elementDocs, apiResponse.body)
+            //     }
+            compare(pattern, elementDocs, apiResponse)
         ).catch(r => tools.logAndThrow('Failed to validate model :', r))
 };
 
@@ -62,14 +62,14 @@ const dereference = (docs) => {
 
 
 const compare = (pattern, elementDocs, apiResponse) => {
-    return new Promise((res, rej) => {  
+    return new Promise((res, rej) => {
         let apiResponseBody = apiResponse.body
-        let schema;      
+        let schema;
         try {
             schema = validatedocsAgainestResponse(pattern, elementDocs, apiResponseBody)
         } catch (ex) {
             rej(ex);
-        }    
+        }
         let isResponseBodyArray = Array.isArray(apiResponseBody)
         //const schema = elementDocs.paths[pattern]['get']['responses']['200']['schema']
         let logSpaces = '   '
@@ -86,42 +86,42 @@ const compare = (pattern, elementDocs, apiResponse) => {
 
 const methods = ['get', 'post', 'put', 'delete', 'patch'];
 
-const invalidType = ['{objectName}', 'bulk', 'ping', 'objects' ];
+const invalidType = ['{objectName}', 'bulk', 'ping', 'objects'];
 
-const validateOperationID = (pattern, elementDocs) => {       
-    for(const path of  Object.keys(elementDocs.paths)) {        
-        for(const method of  methods) {            
-            if (elementDocs.paths[path].hasOwnProperty(method) 
-            && elementDocs.paths[path][method]['operationId'] === pattern) {                
-                return {"schema" :  elementDocs.paths[path][method], "method" : method }
+const validateOperationID = (pattern, elementDocs) => {
+    for (const path of Object.keys(elementDocs.paths)) {
+        for (const method of methods) {
+            if (elementDocs.paths[path].hasOwnProperty(method)
+                && elementDocs.paths[path][method]['operationId'] === pattern) {
+                return { "schema": elementDocs.paths[path][method], "method": method }
             }
-        }            
+        }
     }
 }
 
 
-const validatedocsAgainestResponse = (pattern, elementDocs, apiResponseBody) => {    
-    
+const validatedocsAgainestResponse = (pattern, elementDocs, apiResponseBody) => {
+
     //If found it will be equal to elementDocs.paths[path][method]
     let docsResponses = validateOperationID(pattern, elementDocs)
 
-    if(typeof docsResponses === 'undefined') {
+    if (typeof docsResponses === 'undefined') {
         throw new Error(`cannot find input pattern '${pattern}' `)
     }
-    
+
     let docsResponsesSchema = docsResponses['schema']
-    
+
     if (docsResponsesSchema['responses']['200'] === undefined) {
         throw new Error(`cannot find get model definition in docs for '${pattern}' `)
     }
-    if(typeof apiResponseBody === undefined) {
+    if (typeof apiResponseBody === undefined) {
         throw new Error(`undefined api response body '${pattern}' `)
     }
     let isResponseBodyArray = Array.isArray(apiResponseBody)
 
-    if(isResponseBodyArray && apiResponseBody.length === 0  ) {        
-        throw new Error(`apiResponseBody is empty array. create object first '${pattern}' `)         
-    } 
+    if (isResponseBodyArray && apiResponseBody.length === 0) {
+        throw new Error(`apiResponseBody is empty array. create object first '${pattern}' `)
+    }
     // todo: remove hardcode 'get' and write code for the same          
     // todo: check if it is getall then we should have items and its type with in it. if res is having array then it is getall
     const schema = docsResponsesSchema['responses']['200']['schema']
@@ -140,13 +140,17 @@ const validatedocsAgainestResponse = (pattern, elementDocs, apiResponseBody) => 
     return schema
 }
 
-const validatePrimaryKey = (primaryKey) => {    
+const validatePrimaryKey = (primaryKey) => {
     primaryKey === undefined ?
-    logger.info('Primary key is not found') : logger.info(`************ Primary key ************** : ${primaryKey}`)    
+        logger.info('Primary key is not found') : logger.info(`************ Primary key ************** : ${primaryKey}`)
 }
 
 const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) => {
 
+    if (isEmpty(docsProperties)) {
+        logger.error(logSpaces, 'Either model object has no fields or type mismatch ')
+        return
+    }
     if (Array.isArray(apiProperties)) {
         if (apiProperties.length == 0) {
             logger.info(logSpaces, ' key is present however response array has no elements')
@@ -155,20 +159,20 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
         if (typeof (apiProperties[0]) !== "object") {
             if (docsProperties['type'] === typeof (apiProperties[0])) {
                 logger.info(logSpaces, ' types are matched')
-            } else {                
+            } else {
                 logger.error(logSpaces, i, ' types are not matched')
             }
             return
-        }                
+        }
         compareGetModelWithResponse(docsProperties['properties'], apiProperties[0], doubleLogSpaces(logSpaces));
         return
-    }    
-    if (isEmpty(docsProperties)) {
-        logger.error(logSpaces, 'Either model is configured array but required object or model is null')
-        return
     }
-    for (var i in apiProperties) {        
-        if (typeof (apiProperties[i]) !== "object") {            
+    // if (isEmpty(docsProperties)) {
+    //     logger.error(logSpaces, 'Either model is configured array but required object or model is null')
+    //     return
+    // }
+    for (var i in apiProperties) {
+        if (typeof (apiProperties[i]) !== "object") {
             //logger.info(docsProperties[i], typeof (apiProperties[i]))
             checkPresence(docsProperties, i, typeof (apiProperties[i]), logSpaces)
             continue;
@@ -176,7 +180,7 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
         if (docsProperties[i] === undefined) {
             logger.error(logSpaces, i, ' is not present in Model')
             continue;
-        }        
+        }
         if (Array.isArray(apiProperties[i])) {
             logger.info(logSpaces, i, ': {[')
             //logger.info(docsProperties)
@@ -195,8 +199,8 @@ const doubleLogSpaces = (logSpaces) => {
 }
 
 const isEmpty = (obj) => {
-    for(var key in obj) {
-        if(obj.hasOwnProperty(key))
+    for (var key in obj) {
+        if (obj.hasOwnProperty(key))
             return false;
     }
     return true;
@@ -210,9 +214,9 @@ const checkPresence = (docsProperties, key, keyType, logSpaces) => {
         return
     }
     //TODO : optimize the code
-    if(keyType === 'number') {
+    if (keyType === 'number') {
         keyType = 'integer'
-    } 
+    }
     if (docsProperties[key]['type'] === keyType) {
         logger.info(logSpaces, key, ' types are matched')
         return
