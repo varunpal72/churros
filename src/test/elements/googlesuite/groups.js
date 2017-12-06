@@ -20,12 +20,14 @@ suite.forElement('general', 'groups', { payload: payload }, (test) => {
   return cloud.post(test.api, payload)
    .then(r => {
 	       groupId=r.body.id;
-	       payload.etag=r.body.etag
+	       payload.etag=r.body.etag;
               })
-  // .then(r => cloud.patch(`${test.api}/${groupId}`, payload))
    .then(r => cloud.get(`${test.api}/${groupId}`))
    .then(r => cloud.withOptions({ qs: { id: 'all' } }).get(`/hubs/general/groups-batch`))
+   .then(r => cloud.patch(`${test.api}/${groupId}`, payload))
    .then(r => cloud.patch(`${test.api}/${groupId}/members`, groupMemberPayload))
-   .then(r => cloud.delete(`${test.api}/${groupId}`))
+   .then(r => cloud.delete(`${test.api}/${groupId}`));
   });
+
+  test.should.supportNextPagePagination(1);
 });

@@ -11,11 +11,11 @@ suite.forElement('general', 'contacts', { payload: payload }, (test) => {
   return cloud.post(test.api, payload)
    .then(r => {
 	       contactId=r.body.id;
-	       payload.etag = r.body.etag
+	       payload.etag = r.body.etag;
               })
    .then(r => cloud.patch(`${test.api}/${contactId}`, payload))
    .then(r => cloud.get(`${test.api}/${contactId}`))
    .then(r => cloud.withOptions({ qs: { id: 'me' } }).get(`/hubs/general/contacts-batch`))
-   .then(r => cloud.delete(`${test.api}/${contactId}`))
+   .then(r => cloud.delete(`${test.api}/${contactId}`));
   });
 });
