@@ -14,15 +14,6 @@ const swaggerParser = require('swagger-parser');
 const cloud = require('core/cloud');
 const props = require('core/props');
 
-// const logger = new (winston.Logger)({
-//     transports: [
-//         new (winston.transports.Console)({
-//             colorize: true,
-//             level: 'info'
-//         })
-//     ]
-// });
-
 
 /**
  * validate get model
@@ -38,15 +29,16 @@ const validateResponseModel = (apiResponse, pattern) => {
         .then(r => dereference(r.body))
         .then(r => elementDocs = r)
         .then(r =>
-            //{
-            // todo : remove as below is for debug perspective
-            // var fs = require('fs');
-            // fs.writeFile('myjsonfile1.json', JSON.stringify(validatedDereferenceDocs) , 'utf8', function() {
-            //  console.log('printed')
-            // });
-            //logger.debug(validatedDereferenceDocs)
-            compare(pattern, elementDocs, apiResponse.body)
-        //}
+        //     {
+        //    // todo : remove as below is for debug perspective
+        //     var fs = require('fs');
+        //     fs.writeFile('myjsonfile1.json', JSON.stringify(elementDocs) , 'utf8', function() {
+        //      console.log('printed')
+        //     });
+        //     logger.debug(elementDocs)
+        //     compare(pattern, elementDocs, apiResponse.body)
+        //     }
+            compare(pattern, elementDocs, apiResponse.body)        
         ).catch(r => tools.logAndThrow('Failed to validate model :', r))
 };
 
@@ -162,20 +154,21 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
         if (typeof (apiProperties[0]) !== "object") {
             if (docsProperties['type'] === typeof (apiProperties[0])) {
                 logger.info(logSpaces, ' types are matched')
-            } else {
+            } else {                
                 logger.error(logSpaces, i, ' types are not matched')
             }
             return
         }                
         compareGetModelWithResponse(docsProperties['properties'], apiProperties[0], doubleLogSpaces(logSpaces));
         return
-    }
+    }    
     if (isEmpty(docsProperties)) {
-        logger.error(logSpaces, 'configured array required object')
+        logger.error(logSpaces, 'Either model is configured array but required object or model is null')
         return
     }
     for (var i in apiProperties) {        
-        if (typeof (apiProperties[i]) !== "object") {
+        if (typeof (apiProperties[i]) !== "object") {            
+            //logger.info(docsProperties[i], typeof (apiProperties[i]))
             checkPresence(docsProperties, i, typeof (apiProperties[i]), logSpaces)
             continue;
         }
@@ -215,9 +208,12 @@ const checkPresence = (docsProperties, key, keyType, logSpaces) => {
         logger.error(logSpaces, key, ' is not present in Model')
         return
     }
+    if(keyType === 'number') {
+        keyType = 'integer'
+    } 
     if (docsProperties[key]['type'] === keyType) {
         logger.info(logSpaces, key, ' types are matched')
         return
     }
-    logger.error(logSpaces, key, ' types but are not matched')
+    logger.error(logSpaces, key, ' types are not matched')
 }
