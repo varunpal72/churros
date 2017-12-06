@@ -215,7 +215,7 @@ const oauth = (element, args, config) => {
 };
 
 const oauth1 = (element, args) => {
-  const oauthTokenUrl = `/elements/${element}/oauth/token`;
+  const oauthTokenUrl = `/elements/${tools.getBaseElement(element)}/oauth/token`;
   return cloud.withOptions(args.options).get(oauthTokenUrl)
     .then(r => {
       expect(r).to.have.statusCode(200);
