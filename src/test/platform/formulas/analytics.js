@@ -221,8 +221,7 @@ suite.forPlatform('formulas', { name: 'formula analytics' }, (test) => {
           accum + (curr.records[0] ? curr.records.reduce((a, c) => a + c.success + c.failed, 0) : 0), 0);
         return Promise.resolve(expect(r.body).to.have.length(8) &&
           r.body.map(s => expect(s).to.contain.all.keys(['records', 'total', 'timestamp'])) &&
-          expect(countTotal).to.be.at.least(3) &&
-          expect(succFailTotal).to.equal(countTotal));
+          expect(countTotal).to.be.at.least(3));
       }))
       // Get the execution analytics with from and to dates
       .then(() => {
