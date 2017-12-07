@@ -11,10 +11,8 @@ const eventsPayload = tools.requirePayload(`${__dirname}/assets/timelineevents.j
 
 suite.forElement('crm', 'timeline-event-types', {payload: payload}, (test) => {
 
-  it('should test CRUD for /timeline-event-types', () => {
     test.should.supportPagination("id");
     test.should.supportCrud();
-  });
 
   const eventTypesWrap = (cb) => {
      let eventTypes;
