@@ -2,7 +2,6 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const faker = require('faker');
 const slocPayload = require('./assets/stransactionsPayload');
 const tools = require('core/tools');
 const transactionPayload = tools.requirePayload(`${__dirname}/assets/transactions.json`);
