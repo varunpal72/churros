@@ -59,7 +59,9 @@
           });
           //create the transformations and validating they work
           return createAll(`/instances/${instanceId}/transformations/%s`, transformations)
-          .then(() => Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
+          .then(() => element.includes('netsuite') ? //Making synchronous calls for netsuite
+          Object.keys(transformations).reduce((acc, key) => acc.then(() => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length))), Promise.resolve(null))
+          : Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
         } else {
           //create defintions before the transformations
           let allDefs = require(`${__dirname}/../assets/object.definitions.json`);
@@ -88,10 +90,10 @@
                 return defined.includes(key) ? cloud.post(`/instances/${instanceId}/transformations/${key}`, trans) : Promise.resolve(null);
               }));
             })
-            .then(() => {
-              //validates the transformations are working
-              return Promise.all(Object.keys(transDefs).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length))));
-            });
+            //validates the transformations are working
+            .then(() => element.includes('netsuite') ? //Making synchronous calls for netsuite
+            Object.keys(transDefs).reduce((acc, key) => acc.then(() => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length))).then(() => console.log('done', key)), Promise.then(null))
+            : Promise.all(Object.keys(transDefs).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
           });
         }
       })
