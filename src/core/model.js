@@ -122,7 +122,7 @@ const validatedocsAgainestResponse = (pattern, elementDocs, apiResponseBody) => 
     if (isResponseBodyArray && apiResponseBody.length === 0) {
         throw new Error(`apiResponseBody is empty array. create object first '${pattern}' `)
     }
-    // todo: remove hardcode 'get' and write code for the same          
+    // todo: remove hardcode 'get' and write code for the same
     // todo: check if it is getall then we should have items and its type with in it. if res is having array then it is getall
     const schema = docsResponsesSchema['responses']['200']['schema']
 
@@ -157,7 +157,12 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
             return
         }
         if (typeof (apiProperties[0]) !== "object") {
-            if (docsProperties['type'] === typeof (apiProperties[0])) {
+          let keyType = typeof (apiProperties[0]);
+            //TODO : optimize the code
+            if (typeof keyType === 'number') {
+                keyType = 'integer'
+            }
+            if (docsProperties['type'] === keyType) {
                 logger.info(logSpaces, ' types are matched')
             } else {
                 logger.error(logSpaces, i, ' types are not matched')
