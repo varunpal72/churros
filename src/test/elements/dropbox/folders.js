@@ -4,16 +4,12 @@ const expect = require('chakram').expect;
 const suite = require('core/suite');
 const cloud = require('core/cloud');
 const tools = require('core/tools');
-const faker = require('faker');
 const folderPayload = require('./assets/folders.json');
 
 suite.forElement('documents', 'folders', (test) => {
   let rootId = "%252F";
   let rootPath = "/";
   let random = `${tools.randomStr('abcdefghijklmnopqrstuvwxyz1234567890', 20)}`;
-  let directoryPath = faker.random.word();
-  let jpgFile = __dirname + '/assets/brady.jpg';
-  let jpgFileBody, dirId;
 
 
 
