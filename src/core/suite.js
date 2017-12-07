@@ -249,7 +249,6 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
   let response;
   boomGoesTheDynamite(name, () => {
     const baseUrl = faker.fake(props.get('event.callback.url'));
-
     const url = baseUrl + '?returnQueue';
     const addResource = (r) => addMethod ? addMethod(r) : cloud.withOptions(options).post(api, r);
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
@@ -348,8 +347,10 @@ const itBulkDownload = (name, hub, metadata, options, opts, endpoint) => {
       // get bulk query results in CSV
       .then(r => getCsv ? cloud.withOptions(csvMeta)
         .get(`/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-          let bulkDownloadResults = tools.getKey(tools.csvParse(r.body), 'id');
-          expect(bulkDownloadResults).to.deep.equal(tools.getKey(bulkResults, 'id'));
+          if (typeof r.body === 'string') {
+            let bulkDownloadResults = tools.getKey(tools.csvParse(r.body), 'id');
+            expect(bulkDownloadResults).to.deep.equal(tools.getKey(bulkResults, 'id'));
+          }
         }) : Promise.resolve(null));
   }, options ? options.skip : false);
 };

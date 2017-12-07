@@ -7,11 +7,13 @@
   const logger = require('winston');
   const swaggerParser = require('swagger-parser');
   const _ = require('lodash');
+  const argv = require('optimist').argv;
 
   const createAll = (urlTemplate, list) => {
     return Object.keys(list).sort()
       .reduce((p, key) => p.then(() => {
-        return cloud.post(util.format(urlTemplate, key), list[key])
+        //if there is a 409 then we don't need to create another since it is already there
+        return cloud.post(util.format(urlTemplate, key), list[key], r => r.response.statusCode === 409 ? null : expect(r).to.have.statusCode(200))
         .catch(err => cloud.post(util.format(urlTemplate, key), list[key]));
       }), Promise.resolve(true)); // initial
   };
@@ -25,9 +27,13 @@
       hub = props.get('hub');
       instanceName = props.get('instanceName');
     });
-    it('should provision', () => expect(instanceName).to.not.equal('churros-backup'));
+    it('should provision', () => {
+      if (argv.backup !== 'only backup') {
+        expect(instanceName).to.not.equal('churros-backup');
+      }
+    });
     it('should GET /objects', () => {
-      return cloud.get('/objects').then(r => expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
+      return cloud.get('/objects').then(r => hub === 'documents' ? null : expect(r).to.have.statusCode(200) && expect(r.body).to.not.be.empty);
     });
 
     it.skip('docs', () => cloud.get(`/elements/${props.getForKey(element, 'elementId')}/docs`)
@@ -53,7 +59,9 @@
           });
           //create the transformations and validating they work
           return createAll(`/instances/${instanceId}/transformations/%s`, transformations)
-          .then(() => Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
+          .then(() => element.includes('netsuite') ? //Making synchronous calls for netsuite
+          Object.keys(transformations).reduce((acc, key) => acc.then(() => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length))), Promise.resolve(null))
+          : Promise.all(Object.keys(transformations).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
         } else {
           //create defintions before the transformations
           let allDefs = require(`${__dirname}/../assets/object.definitions.json`);
@@ -82,10 +90,10 @@
                 return defined.includes(key) ? cloud.post(`/instances/${instanceId}/transformations/${key}`, trans) : Promise.resolve(null);
               }));
             })
-            .then(() => {
-              //validates the transformations are working
-              return Promise.all(Object.keys(transDefs).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length))));
-            });
+            //validates the transformations are working
+            .then(() => element.includes('netsuite') ? //Making synchronous calls for netsuite
+            Object.keys(transDefs).reduce((acc, key) => acc.then(() => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length))).then(() => console.log('done', key)), Promise.then(null))
+            : Promise.all(Object.keys(transDefs).map(key => cloud.get(`/hubs/${hub}/${key}`).catch(() => ({body: []})).then(r => expect(r.body.length).to.equal(r.body.filter(t => t.idTransformed).length)))));
           });
         }
       })
