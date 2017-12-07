@@ -16,8 +16,9 @@ suite.forElement('general', 'groups', { payload: payload }, (test) => {
  
 
   let groupId;
-  it('should test CRUD of  groups', () => {
-  return cloud.post(test.api, payload)
+  it('should test CRUDS of  groups', () => {
+  return cloud.get(test.api)
+   .then(r => cloud.post(test.api, payload))
    .then(r => {
 	       groupId=r.body.id;
 	       payload.etag=r.body.etag;
