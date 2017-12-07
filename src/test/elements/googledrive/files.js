@@ -19,7 +19,7 @@ const propertiesPayload = {
   }
 };
 
-let directoryPath = faker.random.word();
+let directoryPath = faker.random.uuid();
 
 suite.forElement('documents', 'files', { payload: payload }, (test) => {
 
