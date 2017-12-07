@@ -10,6 +10,8 @@ const expect = chakram.expect;
 const cloud = require('core/cloud');
 const tools = require('core/tools');
 const props = require('core/props');
+const defaults = require('core/defaults');
+const provisioner = require('core/provisioner');
 const logger = require('winston');
 const request = require('request');
 const fs = require('fs');
@@ -663,7 +665,30 @@ const run = (api, resource, options, defaultValidation, tests, hub) => {
   if (options.skip || propsSkip) {
     describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   } else {
-    describe(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
+    if (options.useElement) {
+      console.log('hits', name);
+      describe(name, () => {
+        let oldToken = defaults.getToken();
+        let oldInstanceId = global.instanceId;
+        before(() => {
+          console.log('before', options.useElement);
+          return provisioner.create(options.useElement)
+        })
+        after(() => {
+          console.log('after');
+          defaults.token(oldToken);
+          global.instanceId = oldInstanceId;
+        })
+        console.log('describe', name);
+        return runTests(api, options.payload, defaultValidation, tests, hub)
+      });
+    } else {
+      describe(name, () => {
+        before(() => console.log('token', defaults.getToken()))
+        console.log('describe', name);
+        return runTests(api, options.payload, defaultValidation, tests, hub)
+      });
+    }
   }
 };
 
