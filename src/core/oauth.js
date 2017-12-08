@@ -178,7 +178,7 @@ const manipulateDom = (element, browser, r, username, password, config) => {
         .then((element) => element.click(), (err) => {}); // ignore this
 
       browser.wait(() => {
-        return browser.getTitle().then((title) => !title);
+        return browser.getTitle().then((title) => !title || title === 'Cloud Elements');
       }, 5000);
 
       return browser.getCurrentUrl();
@@ -557,6 +557,8 @@ const manipulateDom = (element, browser, r, username, password, config) => {
       //browser.findElement(webdriver.By.id('user_oauth_approval')).click();
       return browser.getCurrentUrl();
     case 'zendesk':
+    case 'zendesk--oauthtest':
+    case 'zendesk--oauthtest-non-default':
       browser.get(r.body.oauthUrl);
       browser.switchTo().frame(0);
       browser.findElement(webdriver.By.id('user_email')).sendKeys(username);
