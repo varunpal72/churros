@@ -215,27 +215,35 @@ suite.forPlatform('formulas', opts, (test) => {
     });
   });
 
-  it('should upgrade a formula to v3 and keep a backup for rollback', () => {
-    const f = common.genFormula({});
-
-    const upgradeValidator = (formula) => {
-      expect(formula.engine).to.equal('v3');
+  it('should upgrade a formula to v3', () => {
+    const genF = () => {
+      let f = require('./assets/formulas/complex-to-upgrade.json');
+      f.name = tools.random();
+      return f;
     };
 
-    const backupValidator = (formulas) => {
-      const backup = formulas.filter(formula => formula.name === `${f.name}-v1-engine-backup`);
-      expect(backup).to.have.length(1);
-      expect(backup[0].engine).to.equal('v1');
+    const validator = (formula) => {
+      expect(formula.engine).to.equal('v3');
+
+      const looper = formula.steps.filter(s => s.name === 'looper')[0];
+      expect(looper.properties.list).to.equal('${steps.ten_ids_please.ids}');
+
+      const invalid = formula.steps.filter(s => s.name === 'invalid_request_step')[0];
+      expect(invalid.properties.api).to.equal('/nosuchresource/${steps.get_contacts.response[0].id}');
+
+      const get = formula.steps.filter(s => s.name === 'get_contacts')[0];
+      expect(get.properties.elementInstanceId).to.equal('${config.trigger_instance}');
+
+      const retrieve = formula.steps.filter(s => s.name === 'retrieve_contact')[0];
+      expect(retrieve.properties.api).to.equal('/hubs/crm/contacts/${steps.looper.entry}');
+      expect(retrieve.properties.path).to.equal(undefined);      
     };
 
     let formulaId;
-    return cloud.post(test.api, f, schema)
+    return cloud.post(test.api, genF(), schema)
       .then(r => formulaId = r.body.id)
       .then(r => cloud.put(`${test.api}/${formulaId}/upgrade/v3`))
-      .then(r => upgradeValidator(r.body))
-      .then(() => cloud.get(test.api))
-      .then(r => backupValidator(r.body))
-      .then(cleaner.formulas.withName(`${f.name}-v1-engine-backup`))
+      .then(r => validator(r.body))
       .then(r => cloud.delete(`${test.api}/${formulaId}`))
       .catch(e => {
         if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
