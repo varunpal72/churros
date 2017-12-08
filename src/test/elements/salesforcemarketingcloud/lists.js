@@ -70,7 +70,7 @@ suite.forElement('marketing', 'lists', { payload: payload }, (test) => {
       })
       .then(r => cloud.delete(`${test.api}/${listId}/contacts/${contactId1}`))
       .then(r => cloud.delete(`${test.api}/${listId}/contacts/${contactId2}`));
-  })
+  });
 
   after(() => cloud.delete(`${test.api}/${listId}`));
 });
