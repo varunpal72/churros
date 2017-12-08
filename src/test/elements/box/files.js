@@ -6,7 +6,8 @@ const cloud = require('core/cloud');
 const faker = require('faker');
 const tools = require('core/tools');
 const payload = tools.requirePayload(`${__dirname}/assets/customFields.json`);
-const temPayload = tools.requirePayload(`${__dirname}/assets/template.json`);
+const temPayload1 = tools.requirePayload(`${__dirname}/assets/template.json`);
+const temPayload2 = tools.requirePayload(`${__dirname}/assets/template.json`);
 const lock = () => ({
   "is_download_prevented": false,
   "expires_at": "2030-12-12T10:55:30-08:00"
@@ -84,7 +85,7 @@ suite.forElement('documents', 'files', null, (test) => {
     let fileId1, tempKey;
     let updatePayload = {
       "template": "customer",
-      "path": "/" + temPayload.fields[0].key,
+      "path": "/" + temPayload1.fields[0].key,
       "value": "madhuri",
       "scope": "enterprise"
     };
@@ -93,7 +94,7 @@ suite.forElement('documents', 'files', null, (test) => {
     let query1 = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => fileId1 = r.body.id)
-      .then(r => cloud.post('/hubs/documents/custom-fields/templates', temPayload))
+      .then(r => cloud.post('/hubs/documents/custom-fields/templates', temPayload1))
       .then(r => {
         tempKey = r.body.templateKey;
         updatePayload.template = r.body.templateKey;
@@ -107,6 +108,31 @@ suite.forElement('documents', 'files', null, (test) => {
       .then(r => cloud.patch(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`, updatePayload))
       .then(r => cloud.withOptions({ qs: { scope: "enterprise" } }).delete(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`))
       .then(r => cloud.delete('/hubs/documents/files/' + fileId1));
+
+  });
+  
+  it('should support list payload for PUT /files/:id/custom-fields', () => {
+    let fileId1, tempKey;
+    let updatePayload = {
+      "path": "/" + temPayload2.fields[0].key,
+      "value": "madhuri",
+    };
+    let updateList = [];
+    updateList.push(updatePayload);
+    
+    let path = __dirname + '/../assets/brady.jpg';
+    let pathParam = { path: `/brady-${faker.address.zipCode()}.jpg` };
+    return cloud.withOptions({ qs: pathParam }).postFile('/hubs/documents/files', path)
+      .then(r => fileId1 = r.body.id)
+      .then(() => cloud.post('/hubs/documents/custom-fields/templates', temPayload2))
+      .then(r => {
+        tempKey = r.body.templateKey;
+        payload.template = r.body.templateKey;	
+      })
+      .then(() => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields`, payload))
+      .then(() => cloud.withOptions({qs:{scope: 'enterprise', template: tempKey}}).put(`/hubs/documents/files/${fileId1}/custom-fields`, updateList))
+      .then(() => cloud.withOptions({ qs: { scope: "enterprise" } }).delete(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`))
+      .then(() => cloud.delete('/hubs/documents/files/' + fileId1));
 
   });
 
