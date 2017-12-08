@@ -200,6 +200,7 @@ const oauth = (element, args, config, elementId) => {
   return cloud.withOptions(addParamsToOptions(args.options)).get(url)
     .then(r => {
       expect(r).to.have.statusCode(200);
+      if(useDefaultUrl) args.secret = r.body.configuration.secret;
       return o(element, r, args.username, args.password, config);
     })
     .catch(err => {
@@ -264,7 +265,7 @@ const orchestrateCreate = (element, args, baseApi, cb, elementId) => {
         props.getForKey(element, 'oauth.callback.url');
       logger.debug('Using callback URL: ' + config.ec['oauth.callback.url']);
       return parseProps(element, useDefaultUrl)
-        .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
+        .then(r => (type === 'oauth1' && !useDefaultUrl) ? oauth1(element, r) : r)
         .then(r => addDebugToParams(args, r))
         .then(r => oauth(element, r, config.ec, elementId))
         .then(r => cb(type, config, r));

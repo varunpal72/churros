@@ -23,6 +23,11 @@ suite.forPlatform('provisionv2', (test) => {
    .then(r => expect(r.body.id).to.not.be.null);
   });
 
+  it('should provision instance with v2 and non default api key/secret', () => {
+   return provisioner.createWithDefault('zendesk--oauthtest')
+   .then(r => expect(r.body.id).to.not.be.null);
+  });
+
   it('should create an instance or something', () => {
     return provisioner.create('zendesk')
     .then(r => {instanceId2 = r.body.id;});
@@ -32,5 +37,11 @@ suite.forPlatform('provisionv2', (test) => {
    return provisioner.update('zendesk--oauthtest-non-default', instanceId2)
    .then(r => expect(r.body.id).to.not.be.null);
   });
+
+  //try some oauth1
+
+  it('should do some oauth1 stuff', () => provisioner.create('desk'));
+
+  it('should do some oauth1 stuff', () => provisioner.createWithDefault('desk'));
 
 });
