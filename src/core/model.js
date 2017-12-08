@@ -9,11 +9,12 @@ logger
         colorize: true,
         prettyPrint: true,
     });
-
-
 const swaggerParser = require('swagger-parser');
 const cloud = require('core/cloud');
 const props = require('core/props');
+
+const green = "\x1b[32m";
+const red = "\x1b[31m";
 
 const getElementDocs = (elementkeyOrId) => {
     let elementObj;
@@ -102,76 +103,63 @@ const isEmpty = (obj) => {
     return true;
 };
 
+const checkType = (docsPropertiesKey, key, keyType, logSpaces) => {
+
+    if (typeof keyType === 'number') {
+        keyType = 'integer';
+    }
+    if (docsPropertiesKey.type === keyType) {
+        logger.info(green, logSpaces, key);
+        return;
+    }
+    logger.error(red, logSpaces, key, ' present but types are not matched');
+};
+
 const checkPresence = (docsProperties, key, keyType, logSpaces) => {
 
     if (Object.keys(docsProperties).indexOf(key) === -1) {
-        //logger.error(logSpaces, key, ' of type ', keyType, ' is not present in Model')
-        logger.error(logSpaces, key, ' is not present in Model');
+        logger.error(red, logSpaces, key);
         return;
     }
-    //TODO : optimize the code
-    if (keyType === 'number') {
-        keyType = 'integer';
-    }
-    if (docsProperties[key].type === keyType) {
-        logger.info(logSpaces, key, ' types are matched');
-        return;
-    }
-    logger.error(logSpaces, key, ' types are not matched');
+    checkType(docsProperties[key], key, keyType, logSpaces);
 };
-
 
 const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) => {
 
     if (isEmpty(docsProperties)) {
-        logger.error(logSpaces, 'Either model object has no fields or type mismatch ');
+        logger.error(green, logSpaces, 'Either model object has no fields or type mismatch ');
         return;
     }
     if (Array.isArray(apiProperties)) {
         if (apiProperties.length === 0) {
-            logger.info(logSpaces, ' key is present however response array has no elements');
+            logger.info(green, logSpaces, ' key is present however response array has no elements');
             return;
         }
         if (typeof (apiProperties[0]) !== "object") {
-            let keyType = typeof (apiProperties[0]);
-            //TODO : optimize the code
-            if (typeof keyType === 'number') {
-                keyType = 'integer';
-            }
-            if (docsProperties.type === keyType) {
-                logger.info(logSpaces, ' types are matched');
-            } else {
-                logger.error(logSpaces, ' types are not matched');
-            }
+            checkType(docsProperties.type, apiProperties[0], typeof (apiProperties[0]), logSpaces);
             return;
         }
         compareGetModelWithResponse(docsProperties.properties, apiProperties[0], doubleLogSpaces(logSpaces));
         return;
     }
-    // if (isEmpty(docsProperties)) {
-    //     logger.error(logSpaces, 'Either model is configured array but required object or model is null')
-    //     return
-    // }
     for (var i in apiProperties) {
         if (typeof (apiProperties[i]) !== "object") {
-            //logger.info(docsProperties[i], typeof (apiProperties[i]))
             checkPresence(docsProperties, i, typeof (apiProperties[i]), logSpaces);
             continue;
         }
         if (docsProperties[i] === undefined) {
-            logger.error(logSpaces, i, ' is not present in Model');
+            logger.error(red, logSpaces, i);
             continue;
         }
         if (Array.isArray(apiProperties[i])) {
-            logger.info(logSpaces, i, ': {[');
-            //logger.info(docsProperties)
+            logger.info(green, logSpaces, i, ': {[');
             compareGetModelWithResponse(docsProperties[i].items, apiProperties[i], doubleLogSpaces(logSpaces));
-            logger.info(logSpaces, ']}');
+            logger.info(green, logSpaces, ']}');
             continue;
         }
-        logger.info(logSpaces, i, ': {');
+        logger.info(green, logSpaces, i, ': {');
         compareGetModelWithResponse(docsProperties[i].properties, apiProperties[i], doubleLogSpaces(logSpaces));
-        logger.info(logSpaces, '}');
+        logger.info(green, logSpaces, '}');
     }
 };
 
