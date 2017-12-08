@@ -40,7 +40,8 @@
       .then(s => new Promise((res, rej) => swaggerParser.validate(s.body, (err, api) => err ? rej(err) : res()))));
 
     it('metadata', () => cloud.get(`elements/${props.getForKey(element, 'elementId')}/metadata`).then(r => expect(r.body).to.not.be.empty && expect(r).to.have.statusCode(200)));
-    it('transformations', () => {
+    it('transformations', function() {
+      argv.transform ? this.skip() : null; //no need to do this twice
       let error;
       // clear current transformations
       return cloud.delete(`/instances/${instanceId}/transformations`).catch(() => {})
