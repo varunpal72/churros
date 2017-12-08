@@ -65,8 +65,8 @@ const parseOauthUrlProps = element => {
   return args;
 };
 
-const parseProps = (element, isv2) => {
-  const args = isV2 ? parseDefaultOauthUrlProps(element) : parseOauthUrlProps(element);
+const parseProps = (element, useDefaultUrl) => {
+  const args = useDefaultUrl ? parseDefaultOauthUrlProps(element) : parseOauthUrlProps(element);
 
   return new Promise((res, rej) => res(args));
 };
@@ -124,20 +124,20 @@ const addDebugToParams = (args, params) => {
   return params;
 };
 
-const createInstance = (element, config, providerData, baseApi, instanceId, statusCode) => {
-  const status = statusCode ? statusCode : 200;
+const getInstanceUrl = instanceId => instanceId ? `/instances/${instanceId}` : '/instances'
+
+const createOrUpdateInstance = (element, config, providerData, baseApi, instanceId) => {
   config.element = tools.getBaseElement(element);
   const instance = genInstance(config);
-  const performCreateOrUpdate = instanceId ? cloud.put : cloud.post;
+  const isUpdate = !!instanceId;
+  const performCreateOrUpdate = isUpdate ? cloud.put : cloud.post;
 
-  baseApi = (baseApi) ? baseApi : `/instances${instanceId ? '/' + instanceId : ''}`;
-  logger.info("the base api is going to be &s", baseApi);
+  baseApi = (baseApi) ? baseApi : getInstanceUrl(instanceId);
   if (providerData) instance.providerData = providerData;
   return getPollerConfig(tools.getBaseElement(element), instance)
     .then(r => performCreateOrUpdate(baseApi, addParams(r, element)))
     .then(r => {
-      expect(r).to.have.statusCode(status);
-      if(status !== 200) return;
+      expect(r).to.have.statusCode(200);
       logger.debug('Created %s element instance with ID: %s', element, r.body.id);
       defaults.token(r.body.token);
       global.instanceId = r.body.id;
@@ -194,8 +194,9 @@ const createExternalInstance = (element, config, providerData) => {
 };
 
 const oauth = (element, args, config, elementId) => {
-  const elementPathVar = elementId ? elementId : tools.getBaseElement(element);
-  const url = `/elements/${elementPathVar}/oauth/url${elementId ? '/default' : ''}`;
+  const useDefaultUrl = !!elementId;
+  const elementPathVar = useDefaultUrl ? elementId : tools.getBaseElement(element);
+  const url = `/elements/${elementPathVar}/oauth/url${useDefaultUrl ? '/default' : ''}`;
   logger.debug('GET %s with options %s', url, JSON.stringify(addParams(args.options)));
   return cloud.withOptions(addParamsToOptions(args.options)).get(url)
     .then(r => {
@@ -244,13 +245,14 @@ const oauth1 = (element, args) => {
 /**
  * Handles orchestrating this create, which can flow different ways depending on what type of
  * provisioning this element support
- * @param  {string} element  The element key
- * @param  {object} args     The args to pass on the create instance call
- * @param  {string} baseApi  The base API
+ * @param  {string} element   The element key
+ * @param  {object} args      The args to pass on the create instance call
+ * @param  {string} baseApi   The base API
+ * @param  {string} elementId The element ID to use if using the default oauth url
  * @return {Promise}         JS promise that resolves to the instance created
  */
 const orchestrateCreate = (element, args, baseApi, cb, elementId) => {
-  const isv2 = !!elementId;
+  const useDefaultUrl = !!elementId;
   const type = props.getOptionalForKey(element, 'provisioning');
   const config = genConfig(props.all(element), args);
   config.element = element;
@@ -262,7 +264,7 @@ const orchestrateCreate = (element, args, baseApi, cb, elementId) => {
         props.get('oauth.callback.url') :
         props.getForKey(element, 'oauth.callback.url');
       logger.debug('Using callback URL: ' + config.ec['oauth.callback.url']);
-      return parseProps(element, isv2)
+      return parseProps(element, useDefaultUrl)
         .then(r => (type === 'oauth1') ? oauth1(element, r) : r)
         .then(r => addDebugToParams(args, r))
         .then(r => oauth(element, r, config.ec, elementId))
@@ -271,7 +273,7 @@ const orchestrateCreate = (element, args, baseApi, cb, elementId) => {
       const cp = `${__dirname}/../test/elements/${element}/provisioner`;
       return require(cp).create(config);
     default:
-      return createInstance(element, config, undefined, baseApi);
+      return createOrUpdateInstance(element, config, undefined, baseApi);
   }
 };
 
@@ -298,22 +300,35 @@ exports.create = (element, args, baseApi) => {
     if (external && type === 'oauth2') return createExternalInstance(element, config.ec, r);
     if (external && type === 'oauth1') throw Error('External Authentication via churros is not yet implemented for OAuth1');
 
-    return createInstance(element, config, r, baseApi);
+    return createOrUpdateInstance(element, config, r, baseApi);
   };
   return orchestrateCreate(element, args, baseApi, cb);
 };
-
+/**
+ * Provision an existing element instance
+ * @param {string} element The element key
+ * @param {Object} args All properties that are available in churros props for this element
+ * @param {string} baseApi The base API
+ * @param {string} instanceId The instanceId used to update the instance
+ * @return {Promise}  A promise that resolves to the HTTP response after attempting to update the element instance
+ */
 exports.update = (element, args, baseApi, instanceId) => {
   const cb = (type, config, r) => {
-    return createInstance(element, config, r, baseApi, instanceId);
+    return createOrUpdateInstance(element, config, r, baseApi, instanceId);
   };
   return orchestrateCreate(element, args, baseApi, cb);
 };
 
-
-exports.createV2 = (element, args, baseApi) => {
+/**
+ * Provision an element instance with the default OAuth app URL
+ * @param {string} element The element key
+ * @param {Object} args All properties that are available in churros props for this element
+ * @param {string} baseApi The base API
+ * @return {Promise}  A promise that resolves to the HTTP response after attempting to create the element instance using the default OAuth app url
+ */
+exports.createWithDefault = (element, args, baseApi) => {
     const cb = (type, config, r) => {
-      return createInstance(element, config, r, baseApi);
+      return createOrUpdateInstance(element, config, r, baseApi);
     };
   const elementKey = tools.getBaseElement(element);
   return cloud.get(`elements/${elementKey}`)
@@ -321,9 +336,17 @@ exports.createV2 = (element, args, baseApi) => {
   .then(r => orchestrateCreate(element, args, baseApi, cb, r));
 };
 
-exports.updateV2 = (element, args, baseApi, instanceId, statusCode) => {
+/**
+ * Update an element instance with the default OAuth app URL
+ * @param {string} element The element key
+ * @param {Object} args All properties that are available in churros props for this element
+ * @param {string} baseApi The base API
+ * @param {string} instanceId The instanceId used to update the instance
+ * @return {Promise}  A promise that resolves to the HTTP response after attempting to update the element instance using the default OAuth app url
+ */
+exports.updateWithDefault = (element, args, baseApi, instanceId) => {
     const cb = (type, config, r) => {
-      return createInstance(element, config, r, baseApi, instanceId, statusCode);
+      return createOrUpdateInstance(element, config, r, baseApi, instanceId);
     };
   const elementKey = tools.getBaseElement(element);
   return cloud.get(`elements/${elementKey}`)

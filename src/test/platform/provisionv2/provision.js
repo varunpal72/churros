@@ -14,12 +14,12 @@ suite.forPlatform('provisionv2', (test) => {
    });
 
   it('should re-provision instance created in v1 with v2', () => {
-   return provisioner.updateV2('zendesk--oauthtest', config, null, instanceId)
+   return provisioner.updateWithDefault('zendesk--oauthtest', config, null, instanceId)
    .then(r => expect(r.body.id).to.equal(instanceId));
   });
 
   it('should provision instance with v2 and non default api key/secret', () => {
-   return provisioner.create('zendesk--oauthtest-non-default')
+   return provisioner.createWithDefault('zendesk--oauthtest-non-default')
    .then(r => expect(r.body.id).to.not.be.null);
   });
 
