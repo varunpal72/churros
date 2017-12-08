@@ -61,7 +61,6 @@ const parseOauthUrlProps = element => {
     }
   };
   props.getOptionalForKey(element, 'extra.oauth.params') ? args.options.qs = Object.assign({}, args.options.qs, props.getOptionalForKey(element, 'extra.oauth.params')) : null;
-  }
   return args;
 };
 
@@ -124,7 +123,7 @@ const addDebugToParams = (args, params) => {
   return params;
 };
 
-const getInstanceUrl = instanceId => instanceId ? `/instances/${instanceId}` : '/instances'
+const getInstanceUrl = instanceId => instanceId ? `/instances/${instanceId}` : '/instances';
 
 const createOrUpdateInstance = (element, config, providerData, baseApi, instanceId) => {
   config.element = tools.getBaseElement(element);
