@@ -15,11 +15,14 @@ const lock = () => ({
 
 
 suite.forElement('documents', 'files', null, (test) => {
-
+  afterEach(done => {
+    //We were getting a 429 before this
+    setTimeout(done, 2500);
+  });
   it('should allow PUT /files/:id/lock and DELETE /files/:id/lock', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${faker.random.number()}.jpg` };
+    let query = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
       .then(r => cloud.put('/hubs/documents/files/' + fileId + '/lock', null, null, lock))
@@ -30,7 +33,7 @@ suite.forElement('documents', 'files', null, (test) => {
   it('should support links for files/:id/links without raw payload', () => {
     let fileId;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${faker.random.number()}.jpg` };
+    let query = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => fileId = r.body.id)
       .then(r => cloud.get("/hubs/documents/files/" + fileId + "/links"))
@@ -42,7 +45,7 @@ suite.forElement('documents', 'files', null, (test) => {
     let fileId;
     let filePath;
     let path = __dirname + '/../assets/brady.jpg';
-    let query = { path: `/brady-${faker.random.number()}.jpg` };
+    let query = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query }).postFile('/hubs/documents/files', path)
       .then(r => {
         fileId = r.body.id;
@@ -56,8 +59,8 @@ suite.forElement('documents', 'files', null, (test) => {
   it('should fail when copying file with existing file name', () => {
     let fileId1, fileId2, filePath1, filePath2;
     let path = __dirname + '/../assets/brady.jpg';
-    let query1 = { path: `/brady-${faker.random.number()}.jpg` };
-    let query2 = { path: `/brady-${faker.random.number()}.jpg` };
+    let query1 = { path: `/brady-${faker.address.zipCode()}.jpg` };
+    let query2 = { path: `/brady-${faker.address.zipCode()}.jpg` };
 
     return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => {
@@ -87,20 +90,21 @@ suite.forElement('documents', 'files', null, (test) => {
     };
 
     let path = __dirname + '/../assets/brady.jpg';
-    let query1 = { path: `/brady-${faker.random.number()}.jpg` };
+    let query1 = { path: `/brady-${faker.address.zipCode()}.jpg` };
     return cloud.withOptions({ qs: query1 }).postFile('/hubs/documents/files', path)
       .then(r => fileId1 = r.body.id)
       .then(r => cloud.post('/hubs/documents/custom-fields/templates', temPayload))
       .then(r => {
         tempKey = r.body.templateKey;
         updatePayload.template = r.body.templateKey;
-        payload.template = r.body.templateKey;
+		payload.template = r.body.templateKey;	
       })
-      .then(r => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields`, payload))
       .then(r => cloud.get(`/hubs/documents/files/${fileId1}/custom-fields`))
+      .then(r => cloud.post(`/hubs/documents/files/${fileId1}/custom-fields`, payload))
       .then(r => cloud.put(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
       .then(r => cloud.patch(`/hubs/documents/files/${fileId1}/custom-fields`, updatePayload))
       .then(r => cloud.withOptions({ qs: { scope: "enterprise" } }).get(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`))
+      .then(r => cloud.patch(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`, updatePayload))
       .then(r => cloud.withOptions({ qs: { scope: "enterprise" } }).delete(`/hubs/documents/files/${fileId1}/custom-fields/${tempKey}`))
       .then(r => cloud.delete('/hubs/documents/files/' + fileId1));
 

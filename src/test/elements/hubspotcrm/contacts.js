@@ -11,7 +11,6 @@ const moment = require('moment');
 var contactsId = 396139;
 
 suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
-  test.should.supportPagination();
   it('should test CRUD for /contacts and GET /contacts/{id}/activities', () => {
     const updatePayload = {
       "properties": {
@@ -82,6 +81,7 @@ suite.forElement('crm', 'contacts', { payload: payload }, (test) => {
       .then(r => cloud.delete('/organizations/elements/hubspotcrm/transformations/churrosTestObject'))
       .then(r => cloud.delete('/organizations/objects/churrosTestObject/definitions'));
   });
+  test.should.supportNextPagePagination(1);
 });
 
 suite.forElement('crm', `contacts/${contactsId}/activities`, { payload: payload }, (test) => {

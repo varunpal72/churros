@@ -188,6 +188,16 @@ const itUpdate404 = (name, api, payload, invalidId, method, chakramUpdateCb, opt
   boomGoesTheDynamite(n, () => cloud.withOptions(options).update(api, (payload || {}), (r) => expect(r).to.have.statusCode(404), chakramUpdateCb), options ? options.skip : false);
 };
 
+const itUpdate403 = (name, api, payload, method, chakramUpdateCb, options) => {
+  const n = name || `should throw a 403 when trying to ${method} ${api} with improper permissions`;
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).update(api, (payload || {}), (r) => expect(r).to.have.statusCode(403), chakramUpdateCb), options ? options.skip : false);
+};
+
+const itUpdate400 = (name, api, payload, method, chakramUpdateCb, options) => {
+  const n = name || `should throw a 400 when trying to ${method} ${api} with invalid params`;
+  boomGoesTheDynamite(n, () => cloud.withOptions(options).update(api, (payload || {}), (r) => expect(r).to.have.statusCode(400), chakramUpdateCb), options ? options.skip : false);
+};
+
 const itPostError = (name, httpCode, api, payload, options) => {
   const suffix = payload ? 'invalid JSON body' : 'empty JSON body';
   let n = name || `should throw a ${httpCode} when trying to create a(n) ${api} with an ${suffix}`;
@@ -239,7 +249,6 @@ const itPolling = (name, pay, api, options, validationCb, payload, resource, add
   let response;
   boomGoesTheDynamite(name, () => {
     const baseUrl = faker.fake(props.get('event.callback.url'));
-
     const url = baseUrl + '?returnQueue';
     const addResource = (r) => addMethod ? addMethod(r) : cloud.withOptions(options).post(api, r);
     const defaultValidation = (r) => expect(r).to.have.statusCode(200);
@@ -338,8 +347,10 @@ const itBulkDownload = (name, hub, metadata, options, opts, endpoint) => {
       // get bulk query results in CSV
       .then(r => getCsv ? cloud.withOptions(csvMeta)
         .get(`/hubs/${hub}/bulk/${bulkId}/${endpoint}`, r => {
-          let bulkDownloadResults = tools.getKey(tools.csvParse(r.body), 'id');
-          expect(bulkDownloadResults).to.deep.equal(tools.getKey(bulkResults, 'id'));
+          if (typeof r.body === 'string') {
+            let bulkDownloadResults = tools.getKey(tools.csvParse(r.body), 'id');
+            expect(bulkDownloadResults).to.deep.equal(tools.getKey(bulkResults, 'id'));
+          }
         }) : Promise.resolve(null));
   }, options ? options.skip : false);
 };
@@ -389,6 +400,11 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      */
     return400OnPost: () => itPostError(name, 400, api, payload, options),
     /**
+     * HTTP PUT that validates that the response is a 400
+     * @memberof module:core/suite.test.should
+     */
+    return400OnPut: () => itUpdate400(name, api, payload, 'PUT', chakram.put, options),
+    /**
      * HTTP POST that validates that the response is a 409
      * @memberof module:core/suite.test.should
      */
@@ -399,6 +415,12 @@ const runTests = (api, payload, validationCb, tests, hub) => {
      * @memberof module:core/suite.test.should
      */
     return404OnPatch: (invalidId) => itUpdate404(name, api, payload, invalidId, 'PATCH', chakram.patch, options),
+    /**
+     * HTTP PUT that validates that the response is a 403
+     * @param {string} [invalidId=-1] The invalid ID
+     * @memberof module:core/suite.test.should
+     */
+    return403OnPut: () => itUpdate403(name, api, payload, 'PUT', chakram.put, options),
     /**
      * HTTP PUT that validates that the response is a 404
      * @param {string} [invalidId=-1] The invalid ID
