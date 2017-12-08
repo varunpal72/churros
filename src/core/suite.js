@@ -665,9 +665,9 @@ const run = (api, resource, options, defaultValidation, tests, hub) => {
   if (options.skip || propsSkip) {
     describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   } else {
-    if (options.useElement) {
-      console.log('hits', name);
-      describe(name, () => {
+    describe(name, () => {
+      if (options.useElement) {
+        console.log('hits', name);
         let oldToken = defaults.getToken();
         let oldInstanceId = global.instanceId;
         before(() => {
@@ -680,15 +680,11 @@ const run = (api, resource, options, defaultValidation, tests, hub) => {
           global.instanceId = oldInstanceId;
         })
         console.log('describe', name);
-        return runTests(api, options.payload, defaultValidation, tests, hub)
-      });
-    } else {
-      describe(name, () => {
+      } else { //take out this else when this goes "live"
         before(() => console.log('token', defaults.getToken()))
-        console.log('describe', name);
-        return runTests(api, options.payload, defaultValidation, tests, hub)
-      });
-    }
+      }
+      return runTests(api, options.payload, defaultValidation, tests, hub)
+    });
   }
 };
 
