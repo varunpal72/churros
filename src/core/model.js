@@ -166,6 +166,8 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
 
 const compare = (pattern, elementDocs, apiResponse) => {
     return new Promise((res, rej) => {
+        logger.info(`\n\n`);
+        logger.info(`validating model for pattern ${pattern} \n\n`);
         let apiResponseBody = apiResponse.body;
         let schema;
         try {
