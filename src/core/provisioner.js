@@ -130,7 +130,6 @@ const createOrUpdateInstance = (element, config, providerData, baseApi, instance
   const instance = genInstance(config);
   const isUpdate = !!instanceId;
   const performCreateOrUpdate = isUpdate ? cloud.put : cloud.post;
-
   baseApi = (baseApi) ? baseApi : getInstanceUrl(instanceId);
   if (providerData) instance.providerData = providerData;
   return getPollerConfig(tools.getBaseElement(element), instance)
