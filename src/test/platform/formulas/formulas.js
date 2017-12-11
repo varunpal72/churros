@@ -215,14 +215,14 @@ suite.forPlatform('formulas', opts, (test) => {
     });
   });
 
-  it('should upgrade a formula to v3', () => {
+  it('should allow upgrading a formula to v3 and reverting it back to v1', () => {
     const genF = () => {
       let f = require('./assets/formulas/complex-to-upgrade.json');
       f.name = tools.random();
       return f;
     };
 
-    const validator = (formula) => {
+    const validatorUpdate = (formula) => {
       expect(formula.engine).to.equal('v3');
 
       const looper = formula.steps.filter(s => s.name === 'looper')[0];
@@ -239,11 +239,30 @@ suite.forPlatform('formulas', opts, (test) => {
       expect(retrieve.properties.path).to.equal(undefined);      
     };
 
+    const validatorRollback = (formula) => {
+      expect(formula.engine).to.not.equal('v3');
+
+      const looper = formula.steps.filter(s => s.name === 'looper')[0];
+      expect(looper.properties.list).to.equal('ten_ids_please.ids');
+
+      const invalid = formula.steps.filter(s => s.name === 'invalid_request_step')[0];
+      expect(invalid.properties.api).to.equal('/nosuchresource/${get_contacts.response[0].id}');
+
+      const get = formula.steps.filter(s => s.name === 'get_contacts')[0];
+      expect(get.properties.elementInstanceId).to.equal('${trigger_instance}');
+
+      const retrieve = formula.steps.filter(s => s.name === 'retrieve_contact')[0];
+      expect(retrieve.properties.api).to.equal('/hubs/crm/contacts/{entry}');
+      expect(retrieve.properties.path).to.equal('${looper}');
+    };
+
     let formulaId;
     return cloud.post(test.api, genF(), schema)
       .then(r => formulaId = r.body.id)
       .then(r => cloud.put(`${test.api}/${formulaId}/upgrade/v3`))
-      .then(r => validator(r.body))
+      .then(r => validatorUpdate(r.body))
+      .then(r => cloud.delete(`${test.api}/${formulaId}/upgrade/v3`))
+      .then(r => validatorRollback(r.body))
       .then(r => cloud.delete(`${test.api}/${formulaId}`))
       .catch(e => {
         if (formulaId) cloud.delete(`${test.api}/${formulaId}`);
