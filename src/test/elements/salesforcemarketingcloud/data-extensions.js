@@ -25,15 +25,12 @@ suite.forElement('marketing', 'data-extensions', { payload: payload }, (test) =>
   test.should.supportCeqlSearch('id');
 
   it('should allow CU for /data-extensions/:id/rows', () => {
-    let id, customerKey;
+    let id;
     return cloud.post(test.api, payload)
-      .then(r => {
-        id = r.body.id;
-        customerKey = r.body.CustomerKey;
-      })
-      .then(r => cloud.post(`${test.api}/${customerKey}/rows`, dataExtensionsRowsPayload))
-      .then(r => cloud.put(`${test.api}/${customerKey}/rows`, putPayload))
-      .then(r => cloud.patch(`${test.api}/${customerKey}/rows`, patchPayload))
+      .then(r => id = r.body.id)
+      .then(r => cloud.post(`${test.api}/${id}/rows`, dataExtensionsRowsPayload))
+      .then(r => cloud.put(`${test.api}/${id}/rows`, putPayload))
+      .then(r => cloud.patch(`${test.api}/${id}/rows`, patchPayload))
       .then(r => cloud.delete(`${test.api}/${id}`));
   });
 });
