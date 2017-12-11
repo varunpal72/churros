@@ -22,7 +22,7 @@
   describe('Basic tests', () => {
     let element, instanceId, hub, instanceName;
     before(() => {
-      element = props.get('element');
+      element = tools.getBaseElement(props.get('element'));
       instanceId = props.get('instanceId');
       hub = props.get('hub');
       instanceName = props.get('instanceName');
