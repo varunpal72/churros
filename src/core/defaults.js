@@ -57,7 +57,7 @@ exports.reset = () => {
  * @param {string} token The element token to include on any subsequent HTTP calls
  */
 exports.token = (token) => {
-  elementToken = token
+  elementToken = token;
   logger.debug('Adding token to our default request headers');
   chakram.setRequestDefaults({
     baseUrl: baseUrl,

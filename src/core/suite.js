@@ -669,29 +669,38 @@ const run = (api, resource, options, defaultValidation, tests, hub) => {
   options = options || {};
   const name = options.name || resource;
   let propsSkip = false;
-  try { propsSkip = props.getOptionalForKey(props.get('element'), 'skip'); } catch (e) {}
+  try {
+    let element = props.get('element');
+    propsSkip = props.getOptionalForKey(element, 'skip');
+    //Will only run on endpoints specified if given
+    let endpoints = props.getOptionalForKey(element, 'endpoints');
+    if (endpoints && !endpoints.includes(resource)) { options.skip = true; }
+  } catch (e) {}
   if (options.skip || propsSkip) {
     describe.skip(name, () => runTests(api, options.payload, defaultValidation, tests, hub));
   } else {
-    describe(name, () => {
-      if (options.useElement) {
-        console.log('hits', name);
-        let oldToken = defaults.getToken();
-        let oldInstanceId = global.instanceId;
+    describe(name, function() {
+      let ctx = this;
+      if (options.useElement) { //Run on a different cred set if given
+        let oldToken;
+        let oldInstanceId;
         before(() => {
-          console.log('before', options.useElement);
-          return provisioner.create(options.useElement)
-        })
+          //skip if not part of endpoints
+          let endpoints = props.getOptionalForKey(options.useElement, 'endpoints');
+          if (endpoints && !endpoints.includes(resource)) { return ctx.skip(); }
+          oldToken = defaults.getToken();
+          oldInstanceId = global.instanceId;
+          return provisioner.create(options.useElement);
+        });
         after(() => {
-          console.log('after');
-          defaults.token(oldToken);
-          global.instanceId = oldInstanceId;
-        })
-        console.log('describe', name);
-      } else { //take out this else when this goes "live"
-        before(() => console.log('token', defaults.getToken()))
+          return provisioner.delete(global.instanceId).catch(() => {})
+          .then(() => {
+            defaults.token(oldToken);
+            global.instanceId = oldInstanceId;
+          });
+        });
       }
-      return runTests(api, options.payload, defaultValidation, tests, hub)
+      return runTests(api, options.payload, defaultValidation, tests, hub);
     });
   }
 };
