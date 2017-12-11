@@ -20,14 +20,14 @@ suite.forPlatform('provisionv2', (test) => {
   });
 
    it('should create an instance or something', () => {
-     return provisioner.create('zendesk')
+     return provisioner.create('bullhorn--v1')
      .then(r => {oauth2instanceId = r.body.id;});
    });
 
-  it('should re-provision instance created in v1 with v2', () => {
-   return provisioner.updateWithDefault('zendesk--oauthtest', config, null, oauth2instanceId)
-   .then(r => expect(r.body.id).to.equal(oauth2instanceId));
-  });
+   it('should re-provision instance created in v1 with v2', () => {
+    return provisioner.updateWithDefault('bullhorn--v2', config, null, oauth2instanceId)
+    .then(r => expect(r.body.id).to.equal(oauth2instanceId));
+   });
 
   it('should provision instance with v2 and non default api key/secret', () => {
    return provisioner.create('zendesk--oauthtest-non-default')
