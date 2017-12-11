@@ -12,6 +12,7 @@ logger
 const swaggerParser = require('swagger-parser');
 const cloud = require('core/cloud');
 const props = require('core/props');
+const moment = require('moment')
 
 const green = "\x1b[32m";
 const red = "\x1b[31m";
@@ -103,25 +104,41 @@ const isEmpty = (obj) => {
     return true;
 };
 
-const checkType = (docsPropertiesKey, key, keyType, logSpaces) => {
+const checkType = (docsPropertiesKey, key, keyValue, logSpaces) => {
    
-    if (keyType === 'number') {        
-        keyType = 'integer';     
-    }
+    const keyType = typeof keyValue;       
     if (docsPropertiesKey.type === keyType) {
         logger.info(green, logSpaces, key);
         return;
     }
+    if((docsPropertiesKey.type === 'number' || docsPropertiesKey.type === 'integer')
+    && ((keyType === 'number' || keyType === 'integer'))) {
+        logger.info(green, logSpaces, key);
+        return;
+    }
+    // TODO : validation for date datetype
+   // const date = new Date(keyValue);
+   // logger.info(date);
+   //    const date = new Date(keyValue);
+   //    console.log(keyType);
+   //    if(keyType === 'string' && keyValue.indexOf('\'') !== -1 ||  keyValue.indexOf('-') !== -1) {
+   //        logger.info(date);
+   //    }
+    // if(date !== 'Invalid Date' && docsPropertiesKey.type === 'date') {
+    //     logger.info(green, logSpaces, key);
+    //     return;
+    // }
+
     logger.error(red, logSpaces, key, ' present but types are not matched found \"', keyType ,'\"',' required ', docsPropertiesKey.type);
 };
 
-const checkPresence = (docsProperties, key, keyType, logSpaces) => {
+const checkPresence = (docsProperties, key, keyValue, logSpaces) => {
 
     if (Object.keys(docsProperties).indexOf(key) === -1) {
         logger.error(red, logSpaces, key);
         return;
     }
-    checkType(docsProperties[key], key, keyType, logSpaces);
+    checkType(docsProperties[key], key, keyValue, logSpaces);
 };
 
 const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) => {
@@ -136,7 +153,7 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
             return;
         }
         if (typeof (apiProperties[0]) !== "object") {
-            checkType(docsProperties.type, apiProperties[0], typeof (apiProperties[0]), logSpaces);
+            checkType(docsProperties.type, apiProperties[0], apiProperties[0], logSpaces);
             return;
         }
         compareGetModelWithResponse(docsProperties.properties, apiProperties[0], doubleLogSpaces(logSpaces));
@@ -144,7 +161,7 @@ const compareGetModelWithResponse = (docsProperties, apiProperties, logSpaces) =
     }
     for (var i in apiProperties) {
         if (typeof (apiProperties[i]) !== "object") {
-            checkPresence(docsProperties, i, typeof (apiProperties[i]), logSpaces);
+            checkPresence(docsProperties, i, apiProperties[i], logSpaces);
             continue;
         }
         if (docsProperties[i] === undefined) {
