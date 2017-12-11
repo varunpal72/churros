@@ -104,15 +104,15 @@ const isEmpty = (obj) => {
 };
 
 const checkType = (docsPropertiesKey, key, keyType, logSpaces) => {
-
-    if (typeof keyType === 'number') {
-        keyType = 'integer';
+   
+    if (keyType === 'number') {        
+        keyType = 'integer';     
     }
     if (docsPropertiesKey.type === keyType) {
         logger.info(green, logSpaces, key);
         return;
     }
-    logger.error(red, logSpaces, key, ' present but types are not matched');
+    logger.error(red, logSpaces, key, ' present but types are not matched found \"', keyType ,'\"',' required ', docsPropertiesKey.type);
 };
 
 const checkPresence = (docsProperties, key, keyType, logSpaces) => {
