@@ -1,6 +1,7 @@
 const provisioner = require('core/provisioner');
 const suite = require('core/suite');
 const expect = require('chakram').expect;
+const cloud = require('core/cloud');
 const config = {
   "oauth.callback.url":"https://auth.cloudelements.io/oauth",
 };
@@ -9,14 +10,14 @@ suite.forPlatform('provisionv2', (test) => {
   let oauth2instanceId, oauth2instanceId2, oauth2instanceId3, oauth2instanceId4, oauth1instanceId, oauth1instanceId2;
 
   after(() => {
-    cloud.delete(`instances/${oauth2instanceId}`);
-    cloud.delete(`instances/${oauth2instanceId2}`);
-    cloud.delete(`instances/${oauth2instanceId3}`);
-    cloud.delete(`instances/${oauth2instanceId4}`);
-    cloud.delete(`instances/${oauth1instanceId}`);
-    cloud.delete(`instances/${oauth1instanceId2}`);
+    return cloud.delete(`instances/${oauth2instanceId}`)
+    .then(r => cloud.delete(`instances/${oauth2instanceId2}`))
+    .then(r => cloud.delete(`instances/${oauth2instanceId3}`))
+    .then(r => cloud.delete(`instances/${oauth2instanceId4}`))
+    .then(r => cloud.delete(`instances/${oauth1instanceId}`))
+    .then(r => cloud.delete(`instances/${oauth1instanceId2}`));
 
-  })
+  });
 
    it('should create an instance or something', () => {
      return provisioner.create('zendesk')
@@ -52,8 +53,8 @@ suite.forPlatform('provisionv2', (test) => {
   });
 
   it('should update instance with v2 and non default api key/secret', () => {
-   return provisioner.update('zendesk--oauthtest-non-default', oauth2instanceId2)
-   .then(r => expect(r.body.id).to.not.be.null);
+   return provisioner.update('zendesk--oauthtest-non-default', null, null, oauth2instanceId2)
+   .then(r => expect(r.body.id).to.equal(oauth2instanceId2));
   });
 
   //try some oauth1
