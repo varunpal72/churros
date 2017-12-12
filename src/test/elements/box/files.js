@@ -111,6 +111,10 @@ suite.forElement('documents', 'files', null, (test) => {
 
   });
 
+  /**
+  * /files/revisions endpoint doesn't return current revision. 
+  * While we don't offer the POST /revisions endpoint we'll need to hardcode the file data
+  */
   it('it should allow RS for documents/files/:id/revisions', () => {
     const fileId = 158316363797;
     let revisionId;
