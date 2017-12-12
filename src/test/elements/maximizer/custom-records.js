@@ -19,7 +19,7 @@ suite.forElement('crm', 'custom-records', (test) => {
       .then(() => cloud.post(test.api, customrecordPayload))
       .then(r => {
         customrecordId = r.body.Key;
-        expect(r.body.Name).to.equal(customrecordPayload.Name)
+        expect(r.body.Name).to.equal(customrecordPayload.Name);
       })
       .then(() => cloud.withOptions({ qs: { where: `Name='${customrecordPayload.Name}'` } }).get(test.api))
       .then(r => expect(r.body[0].Name).to.equal(customrecordPayload.Name))
