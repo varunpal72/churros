@@ -2,31 +2,31 @@
 
 const suite = require('core/suite');
 const cloud = require('core/cloud');
-const customrecordPayload = require('./assets/customrecords.json');
 const expect = require('chakram').expect;
+const tools = require('core/tools');
+const faker = require('faker');
+
+const customrecordPayload = tools.requirePayload(`${__dirname}/assets/customrecords.json`);
 
 suite.forElement('crm', 'custom-records', (test) => {
-  test.should.supportPagination('id');
+
+  test.should.supportPagination();
+
   it('should allow CRUDS for /custom-records', () => {
     let customrecordId;
     return cloud.get(test.api)
-      .then(r => {
-        customrecordPayload.ApplicationId = r.body[0].ApplicationId;
-      })
-      .then(r => cloud.post(test.api, customrecordPayload))
+      .then(r => customrecordPayload.ApplicationId = r.body[0].ApplicationId)
+      .then(() => cloud.post(test.api, customrecordPayload))
       .then(r => {
         customrecordId = r.body.Key;
-        expect(r.body.Name === customrecordPayload.Name).to.not.be.empty;
+        expect(r.body.Name).to.equal(customrecordPayload.Name)
       })
-      .then(r => cloud.withOptions({ qs: { where: "Name='CustomRecordName'" } }).get(test.api))
-      .then(r => {
-        expect(r.body[0].Name === customrecordPayload.Name).to.not.be.empty;
-      })
-      .then(r => cloud.get(`${test.api}/${customrecordId}`))
-      .then(r => cloud.patch(`${test.api}/${customrecordId}`, customrecordPayload))
-      .then(r => {
-        expect(r.body.Name === customrecordPayload.Name).to.not.be.empty;
-      })
-      .then(r => cloud.delete(`${test.api}/${customrecordId}`));
+      .then(() => cloud.withOptions({ qs: { where: `Name='${customrecordPayload.Name}'` } }).get(test.api))
+      .then(r => expect(r.body[0].Name).to.equal(customrecordPayload.Name))
+      .then(() => cloud.get(`${test.api}/${customrecordId}`))
+      .then(() => customrecordPayload.Name = faker.random.word())
+      .then(() => cloud.patch(`${test.api}/${customrecordId}`, customrecordPayload))
+      .then(r => expect(r.body.Name).to.equal(customrecordPayload.Name))
+      .then(() => cloud.delete(`${test.api}/${customrecordId}`));
   });
 });
