@@ -6,12 +6,18 @@ const expect = require('chakram').expect;
 
 
 suite.forElement('finance', 'bills-payments', null, (test) => {
+  var recordNo;
   it(`should allow RS for ${test.api}`, () => {
-    let recordNo;
     return cloud.get(test.api)
-      .then(r => recordNo = r.body[0].RECORDNO)
-      .then(cloud.get(test.api + "/${recordNo}"))
-      .then(cloud.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } })
+      .then((r) => {
+        if (r.body.length > 0) {
+          recordNo = r.body[0].RECORDNO;
+        } else {
+          return;
+        }
+      })
+      .then((r) => cloud.get(test.api + "/${recordNo}"))
+      .then((r) => cloud.withOptions({ qs: { where: 'whenmodified>\'08/13/2016 05:26:37\'' } })
         .get(test.api)
         .then((r) => {
           expect(r).to.have.statusCode(200);
